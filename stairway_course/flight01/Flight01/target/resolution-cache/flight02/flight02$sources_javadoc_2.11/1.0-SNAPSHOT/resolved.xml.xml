@@ -4,7 +4,7 @@
 		module="flight02$sources_javadoc_2.11"
 		revision="1.0-SNAPSHOT"
 		status="integration"
-		publication="20150511173931"
+		publication="20150520110120"
 	/>
 	<configurations>
 		<conf name="compile" visibility="public" description=""/>
