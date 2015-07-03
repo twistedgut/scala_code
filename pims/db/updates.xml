@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- see http://www.liquibase.org/documentation/databasechangelog.html
+     and http://www.liquibase.org/documentation/changeset.html
+     for documentation -->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+        >
+
+    <include file="patches/00001-base_schema.sql" relativeToChangelogFile="true" />
+    <changeSet author="j.maslen" id="1" />
+
+    <include file="patches/00002-test_data.sql" relativeToChangelogFile="true" />
+    <changeSet author="r.gladwell" id="2" />
+
+</databaseChangeLog>

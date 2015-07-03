@@ -1,0 +1,20 @@
+global:
+  ldap_group: Fulfilment-Stock
+
+# HIERA PACKAGE CONFIGURATION
+packages:
+  pims:
+    nap_role: nap_role_pims
+    hiera_role: pims
+    pulp_repo: pims
+    deployment_type: puppet-ssh
+
+# PROMOTION & TASKS/GOALS
+promotions:
+  dev:
+    order.prefix: 01
+# Uncomment this when integration tests are available
+#    test.targets: "integration"
+#    test.url: "http://pims-staging-fst.dave.net-a-porter.com:8080/"
+#    test.report.gatling: true
+#    test.autostart: true

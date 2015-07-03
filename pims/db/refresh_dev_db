@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# Work out dev db-name and user to use
+DB_NAME="${APP_DB_NAME}"
+: ${DB_NAME:="pims"}
+DB_USER="${APP_DB_USER}"
+: ${DB_USER:="pimsadmin"}
+DB_PASS="${APP_DB_PASSWORD}"
+: ${DB_PASS:="userpw"}
+
+ROOT_NAME=root
+
+echo "DB: $DB_NAME"
+echo "USER: $DB_USER"
+
+# Drop existing db
+echo "DROP DATABASE IF EXISTS $DB_NAME" | mysql -u$ROOT_NAME
+echo "CREATE DATABASE $DB_NAME" | mysql -u$ROOT_NAME
+
+# Create user if it does not exist
+echo "GRANT ALL PRIVILEGES ON $DB_NAME.* TO $DB_USER@localhost identified by '$DB_PASS'" | mysql -u$ROOT_NAME
+
+if [ "$DB_METHOD" == 'legacy' ]; then
+for file in ./db/patches/*.sql;
+  do
+    echo "Applying patch file: $file"
+    cat $file | mysql -u$ROOT_NAME $DB_NAME
+  done
+else
+  java -jar /usr/share/java/liquibase.jar --changeLogFile="db/updates.xml" --url="jdbc:mysql://localhost/$DB_NAME?useUnicode=true&characterEncoding=utf8" --username=$DB_USER --password=$DB_PASS --classpath="/usr/share/java/mysql-connector-java.jar" update
+fi

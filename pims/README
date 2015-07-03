@@ -1,0 +1,22 @@
+Packaging Inventory Management Service
+====================================================
+
+A service that records data about different packaging materials, and the amount of each in stock
+
+Install virtualbox (https://www.virtualbox.org/) and vagrant (https://www.vagrantup.com/)
+
+Install the Virtualbox Guest-Additions plugin for vagrant:
+vagrant plugin install vagrant-vbguest
+
+Checkout this repo: git clone ssh://git@stash.vm.wtf.nap:7999/whm/pims.git
+
+To access the Swagger documentation, run the app and then visit http://localhost:4242/docs/index.html
+(or use port 8080 if not running on the vagrant box)
+
+Getting Started
+===============
+
+vagrant up
+vagrant ssh
+
+You will find the source code in a shared folder: /vagrant

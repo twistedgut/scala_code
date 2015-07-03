@@ -1,0 +1,9 @@
+[base-techops-x86_64]
+name=base-techops-x86_64
+enabled=1
+gpgcheck=0
+
+baseurl=http://pulp.wtf.nap/pulp/repos/base/techops/x86_64/
+
+keepcache=0
+metadata_expire=1
