@@ -9,10 +9,12 @@
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
         >
 
-    <include file="patches/00001-base_schema.sql" relativeToChangelogFile="true" />
-    <changeSet author="j.maslen" id="1" />
+  <changeSet author="j.maslen" id="1">
+    <sqlFile path="patches/00001-base_schema.sql" relativeToChangelogFile="true" />
+  </changeSet>
 
-    <include file="patches/00002-test_data.sql" relativeToChangelogFile="true" />
-    <changeSet author="r.gladwell" id="2" />
+  <changeSet author="r.gladwell" id="2">
+    <sqlFile path="patches/00002-test_data.sql" relativeToChangelogFile="true" />
+  </changeSet>
 
 </databaseChangeLog>

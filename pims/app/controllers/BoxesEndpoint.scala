@@ -1,13 +1,9 @@
 package controllers
 
-import play.api._
 import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import scala.util.Success
 import repository._
 import domain.Box
-import domain.Formats
-import scala.util._
 
 trait BoxesEndpoint extends Controller {
   this: Boxes with Formats =>
@@ -20,7 +16,5 @@ trait BoxesEndpoint extends Controller {
 }
 
 object BoxesEndpoint extends BoxesEndpoint
-                                with MySqlDatabase
-                                with SlickBoxes
-                                with SlickTables
+                                with Slick
                                 with Formats

@@ -1,4 +1,3 @@
-import controllers.BoxesEndpoint
 import org.specs2.runner._
 import org.specs2.mock.Mockito
 import org.junit.runner.RunWith
@@ -7,11 +6,12 @@ import play.api.mvc._
 import play.api.test._
 import play.api.test.Helpers._
 import play.api.libs.json._
+import controllers.
 import domain.Box
 import repository.Boxes
 import scala.util._
 import scala.concurrent._
-import domain.Formats
+import controllers.Formats
 import org.specs2.specification.Scope
 
 @RunWith(classOf[JUnitRunner])
@@ -23,7 +23,7 @@ class BoxesEndpointSpec extends PlaySpecification with Results with Mockito {
     override val boxes = mock[BoxesRepository]
   }
 
-  trait TestEndpoint extends Controller with BoxesEndpoint with MockBoxes with Formats with Scope
+  trait TestEndpoint extends Controller with Boxes with MockBoxes with Formats with Scope
 
   "create new boxes" in new TestEndpoint {
     // given
@@ -33,7 +33,7 @@ class BoxesEndpointSpec extends PlaySpecification with Results with Mockito {
                  """{
                     "code": "box1",
                     "name": "Box 1",
-                    "business_code": "bus1"
+                    "dc_code": "bus1"
                  }""")
 
     // when

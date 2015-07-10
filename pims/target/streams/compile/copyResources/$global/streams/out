@@ -1,0 +1,5 @@
+[0m[[0mdebug[0m] [0mCopy resource mappings: [0m
+[0m[[0mdebug[0m] [0m	(/vagrant/conf/application.conf,/vagrant/target/scala-2.11/classes/application.conf)[0m
+[0m[[0mdebug[0m] [0m	(/vagrant/conf/logback.xml,/vagrant/target/scala-2.11/classes/logback.xml)[0m
+[0m[[0mdebug[0m] [0m	(/vagrant/conf/routes,/vagrant/target/scala-2.11/classes/routes)[0m
+[0m[[0mdebug[0m] [0m	(/vagrant/conf/test.conf,/vagrant/target/scala-2.11/classes/test.conf)[0m

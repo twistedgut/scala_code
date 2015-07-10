@@ -10,23 +10,24 @@ lazy val root = (project in file(".")).
 
     libraryDependencies ++= Seq(
       "com.typesafe.slick" %% "slick" % "3.0.0",
-      //"org.slf4j" % "slf4j-nop" % "1.6.4",
+      "org.slf4j" % "slf4j-nop" % "1.6.4",
   	  jdbc,
       cache,
       ws,
-  	  "mysql" % "mysql-connector-java" % "5.1.35",
-      specs2 % Test,
-  	  "com.h2database" % "h2" % "1.4.187" % Test
+      specs2 % "test, it",
+  	  "mysql" % "mysql-connector-java" % "5.1.35"
     )
   ).
 
+  // Testing
+  configs(IntegrationTest).
+  settings(Defaults.itSettings: _*).
+  settings(Testing.settings: _*).
+
   // Packaging (native-packager)
   enablePlugins(JavaServerAppPackaging).
-  settings(Packaging.settings: _*).
-  settings(
-    javaOptions in Universal ++= Seq(
-      "-Dconfig.file=/etc/packaging-service/application.conf"
-    )
-  )
+  settings(Packaging.settings: _*)
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
+
+play.PlayImport.PlayKeys.playDefaultPort := 8080

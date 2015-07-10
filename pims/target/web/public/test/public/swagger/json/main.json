@@ -1,0 +1,14 @@
+{
+  "swagger": "2.0",
+  "basePath": "/",
+  "tags":[
+    {
+      "name":"Boxes",
+      "description":""
+    }
+  ],
+  "paths": {
+  },
+  "definitions": {
+  }
+}

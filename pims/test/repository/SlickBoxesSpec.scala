@@ -7,61 +7,59 @@ import org.specs2.specification._
 import domain.Box
 import scala.concurrent.Await
 import scala.concurrent.duration._
+import test.TestData
 
 @RunWith(classOf[JUnitRunner])
 class SlickBoxesSpec extends Specification {
 
-  trait TestSlickBoxes extends SlickBoxes with InMemoryDatabase with TestDatabase with SlickTables with Scope
+  trait TestSlickBoxes extends SlickBoxes with MySqlDatabase with TestDatabase with SlickTables with Scope {
+    val code = TestData.code
+  }
 
   "SlickBoxes" should {
 
     "create box record on create" in new TestSlickBoxes {
       // given
-      database.created
-      val box = Box("/dc1/inner/box1", "Box 1", "bus1")
+      val box = Box(s"/dc1/inner/$code", "Box 1", "bus1")
 
       // when
       Await.result(boxes store box, 1.seconds)
 
       // then
-      database.boxForCode("/dc1/inner/box1") must_== ("/dc1/inner/box1", "Box 1")
-
+      database.boxForCode(s"/dc1/inner/$code") must_== (s"/dc1/inner/$code", "Box 1")
     }
 
     "create business link on create box" in new TestSlickBoxes {
       // given
-      database.created
-      val box = Box("/dc1/inner/box1", "Box 1", "bus1")
+      val box = Box(s"/dc1/inner/$code", "Box 1", "bus1")
 
       // when
       Await.result(boxes store box, 1.seconds)
 
       // then
-      database.businessesForBox("/dc1/inner/box1") must contain("bus1")
+      database.businessesForBox(s"/dc1/inner/$code") must contain("bus1")
     }
 
-    "create data centre relationship on create box" in new TestSlickBoxes {
+    "create distribution centre relationship on create box" in new TestSlickBoxes {
       // given
-      database.created
-      val box = Box("/dc1/inner/box1", "Box 1", "bus1")
+      val box = Box(s"/dc1/inner/$code", "Box 1", "bus1")
 
       // when
       Await.result(boxes store box, 1.seconds)
 
       // then
-      database.dcForBox("/dc1/inner/box1") must_== Some("dc1")
+      database.dcForBox(s"/dc1/inner/$code") must_== Some("dc1")
     }
 
     "create matching entry in quantity table on create box" in new TestSlickBoxes {
       // given
-      database.created
-      val box = Box("/dc1/inner/box1", "Box 1", "bus1")
+      val box = Box(s"/dc1/inner/$code", "Box 1", "bus1")
 
       // when
       Await.result(boxes store box, 1.seconds)
 
       // then
-      database.quantity("/dc1/inner/box1") must_== Some(0)
+      database.quantity(s"/dc1/inner/$code") must_== Some(0)
     }
   }
 

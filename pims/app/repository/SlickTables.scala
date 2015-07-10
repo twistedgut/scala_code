@@ -1,8 +1,5 @@
 package repository
 
-//import slick.driver.H2Driver.api._
-import slick.driver.MySQLDriver.api._
-
 trait SlickTables {
   this: SlickDatabase =>
 
@@ -39,7 +36,7 @@ trait SlickTables {
 
   val businessToBoxTable = TableQuery[BusinessToBoxTable]
 
-  class DataCentreTable(tag:Tag) extends Table[(Int, String, String)](tag, "dc") {
+  class DistributionCentreTable(tag:Tag) extends Table[(Int, String, String)](tag, "dc") {
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
     def code = column[String]("code")
     def name = column[String]("name")
@@ -47,7 +44,7 @@ trait SlickTables {
     def * = (id, code, name)
   }
 
-  val dataCentreTable = TableQuery[DataCentreTable]
+  val distributionCentreTable = TableQuery[DistributionCentreTable]
 
   class QuantityTable(tag:Tag) extends Table[(Int, Int, Int)](tag, "quantity") {
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)

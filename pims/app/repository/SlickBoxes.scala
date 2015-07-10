@@ -1,11 +1,10 @@
 package repository
 
 import domain.Box
-import scala.concurrent.ExecutionContext.Implicits.global
+import slick.dbio.Effect.{Write, Read}
+import slick.profile.SqlAction
 import scala.concurrent.Future
-
-import slick.driver.MySQLDriver.api._
-//import slick.driver.H2Driver.api._
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 trait SlickBoxes extends Boxes {
   this: SlickTables with SlickDatabase =>
@@ -14,44 +13,53 @@ trait SlickBoxes extends Boxes {
 
   class BoxesDatabase extends BoxesRepository {
 
+    import driver.api._
+
     val boxCode = """/(\w+)/\w+/\w+""".r
 
-    private def lookupDcAndBusiness(box: Box, dc_code: String): Future[(Int, Int)] = {
+    private def lookupDcAndBusinessAction(box: Box, dcCode: String): DBIOAction[(Int, Int), NoStream, Effect.Read] = {
       val query = for {
-        dc <- dataCentreTable if dc.code === dc_code
-        business <- businessTable if business.code === box.business_code
+        dc <- distributionCentreTable if dc.code === dcCode
+        business <- businessTable if business.code === box.dc_code
       } yield(dc.id, business.id)
 
-      db.run(query.result.head)
+      query.result.head
     }
 
-    private def insertBox(box: Box, dc_id: Int): Future[Int] = {
-      db.run((boxesTable returning boxesTable.map(_.id)) += ((-1, box.code, box.name, dc_id)))
+    private def insertBoxAction(box: Box, dcId: Int): DBIOAction[Int, NoStream, Effect.Write] = {
+      (boxesTable returning boxesTable.map(_.id)) += ((-1, box.code, box.name, dcId))
     }
 
-    private def insertAssociatedData(box_id: Int, bus_id: Int): Future[Unit] = {
-      val insert =
-        DBIO.seq(
-          businessToBoxTable += ((-1, box_id, bus_id)),
-          quantityTable += ((-1, box_id, 0))
-        )
-
-      db.run(insert)
+    private def insertAssociatedDataAction(boxId: Int, busId: Int): DBIOAction[Unit, NoStream, Effect.Write] = {
+      DBIO.seq(
+        businessToBoxTable += ((-1, boxId, busId)),
+        quantityTable      += ((-1, boxId, 0))
+      )
     }
 
-    override def store(box: Box) = {
+    /**
+     * Fetch the boxId for a given box code
+     */
+    def getBoxId(boxCode: String): SqlAction[Option[Int], NoStream, Read] =
+      boxesTable
+        .filter(_.code === boxCode)
+        .map(_.id)
+        .result
+        .headOption
+
+    override def store(box: Box): Future[Unit] = {
       box.code match {
         case boxCode(dc_code) => {
-          for {
-            (dc_id, bus_id) <- lookupDcAndBusiness(box, dc_code)
-            box_id <- insertBox(box, dc_id)
-            _ <- insertAssociatedData(box_id, bus_id)
-          } yield()
+          val actions =
+            for {
+              (dc_id, bus_id) <- lookupDcAndBusinessAction(box, dc_code)
+              box_id          <- insertBoxAction(box, dc_id)
+              _               <- insertAssociatedDataAction(box_id, bus_id)
+            } yield ()
+
+          db.run(actions.transactionally)
         }
       }
-
     }
-
   }
-
 }

@@ -1,3 +1,4 @@
 package domain
 
-case class Quantity(boxCode: String, quantity: Int)
+case class UpdateQuantity(quantity: Int)
+case class Quantity(boxId: Int, quantity: Int)

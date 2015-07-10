@@ -3,11 +3,15 @@ Vagrant.configure(2) do |config|
 
   config.vm.box = "chef/centos-6.6"
 
-  config.vm.network "forwarded_port", guest: 8080, host: 4242
+  config.vm.network "forwarded_port", guest: 8080, host: 4244
 
   config.vm.provider "virtualbox" do |vb|
    vb.memory = "2048"
   end
+
+  # Map ~/.ivy2 on the local machine to ~/.ivy2 on the VM.
+  # If ~/.ivy2 doesn't exist on the local machine, it is created.
+  config.vm.synced_folder "~/.ivy2", "/home/vagrant/.ivy2", create: true
 
   # TODO: Setup puppet (or something else) to do this for us
   latest_java = "/usr/java/latest"
@@ -25,8 +29,6 @@ Vagrant.configure(2) do |config|
     sudo yum install mlocate -y
     echo 'export IT_SERVER_PORT='8080'' >> /home/vagrant/.bashrc
     echo 'export IT_SERVER_HOST='0.0.0.0'' >> /home/vagrant/.bashrc
-    sudo echo '[mysqld]\ndatadir=/var/lib/mysql\nsocket=/var/lib/mysql/mysql.sock\nuser=mysql\nsymbolic-links=0\nsql_mode=ANSI_QUOTES' > /etc/my.cnf
-    sudo service mysqld restart
     sudo update-alternatives --install /usr/bin/java java #{latest_java}/bin/java 1
     sudo update-alternatives --install /usr/bin/javac javac #{latest_java}/bin/javac 1
     sudo update-alternatives --set java #{latest_java}/bin/java

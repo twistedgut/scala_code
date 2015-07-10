@@ -1,14 +1,25 @@
 package repository
 
-import domain.Quantity
-import scala.concurrent.Future
+import domain._
+import scala.concurrent._
 
 trait Quantities {
-
-  val quantityUpdate: QuantityRepository
+  val quantities: QuantityRepository
 
   trait QuantityRepository {
-    def increment(quantity: Quantity): Future[Boolean]
-  }
+    /**
+     * Search the database for the quantity with the specified box code.
+     */
+    def read(code: String): Future[BoxQuantity]
 
+    /**
+     * Increment or decrement the quantity of the box with the specified box code in the database.
+     *
+     * @returns `Success(quantity)` or `Failure(NotFoundException())`.
+     */
+    def inc(code: String, uq: UpdateQuantity): Future[Unit]
+    def dec(code: String, uq: UpdateQuantity): Future[Unit]
+//    def dec(code: String, quant: Quantity)(implicit ec: ExecutionContext): Future[Quantity]
+
+  }
 }

@@ -27,7 +27,7 @@ CREATE TABLE link_business__box (
 
 CREATE TABLE quantity (
     id SERIAL PRIMARY KEY,
-    box_id INT NOT NULL REFERENCES box(id) UNIQUE,
+    box_id INT NOT NULL REFERENCES box(id),
     quantity INT
 );
 -- rollback DROP TABLE quantity;
