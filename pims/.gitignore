@@ -1,0 +1,17 @@
+/RUNNING_PID
+/logs/
+/project/*-shim.sbt
+/project/project/
+/project/target/
+/target/
+*/target/
+.vagrant
+.idea
+*.iml
+*.sublime-workspace
+*.DS_Store
+/.idea
+/.idea_modules
+/.classpath
+/.project
+/.settings
