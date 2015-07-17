@@ -1,0 +1,84 @@
+<div id="doc3">
+    <form method="post" action="" name="promo_edit">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+        <input type="hidden" name="event_id" value="[%event.id%]" />
+
+        <div id="hd">
+            <h2>
+                Event Management System :
+                Create New Event
+            </h2>
+        </div>
+
+        <div id="bd">
+            <table>
+                <tr>
+                    <td>
+                        Internal Event Name:
+                    </td>
+                    <td>
+                        <input type="text" name="event_name" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        Event Type:
+                    </td>
+                    <td>
+                        <select name="event_type">
+                            <option value="">[Please Select]</option>
+                            <option value="ggg">Going going gone</option>
+                            <option value="promotion">Promotion</option>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        Due Date:
+                    </td>
+                    <td>
+                        <input type="text" name="due_date" id="due_date" autocomplete="no" size="12" value="" class="show-cal-icon" [%disabled%]>
+                        <div id="calendar_due_date"  class="nap_calendar"></div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        Website:
+                    </td>
+                    <td>
+                        <select name="applicability_website">
+                            <option value="">[Please Select]</option>
+                            [% WHILE (website = websites.next) %]
+                            <option id="website_[%website.id%]" value="[%website.id%]" [%disabled%]>[%website.name%]</option>
+                            [% END %]
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        [% IF is_readonly %]
+                        &nbsp;
+                        [% ELSE %]
+                        <input type="submit" name="action" value="Continue" class="button" style="float:right;" />
+                        [% END %]
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+
+<!-- Calendar Magic -->
+<script type="text/javascript">
+    var due_date = new YAHOO.widget.NapCalendar;
+    due_date.config.calDivId  = 'calendar_due_date';
+    due_date.config.textField = 'due_date';
+    due_date.init();
+</script>

@@ -1,0 +1,111 @@
+#!/usr/bin/env perl
+use NAP::policy;
+package XT::DC::Messaging::Producer::WMS::FakeShipmentReady {
+use NAP::policy "tt", 'class';
+use XT::DC::Messaging::Spec::WMS;
+use XTracker::Config::Local 'config_var';
+
+with 'NAP::Messaging::Role::Producer';
+
+sub message_spec {
+    return XT::DC::Messaging::Spec::WMS::shipment_ready();
+}
+
+has '+type' => ( default => 'shipment_ready' );
+has '+destination' => ( default => config_var('WMS_Queues','xt_wms_fulfilment') );
+
+sub transform {
+    my ($self, $header, $payload ) = @_;
+    $payload->{version} = '1.0';
+    return ( $header, $payload );
+}
+
+}
+
+package main;
+use NAP::policy "tt";
+use Getopt::Long;
+use Pod::Usage;
+use FindBin::libs;
+use FindBin::libs qw( base=lib_dynamic );
+use XTracker::Role::WithAMQMessageFactory;
+
+my ($shipment_id, @container_items);
+
+{
+my $p=Getopt::Long::Parser->new(
+    config => [qw(
+        no_auto_abbrev
+        no_getopt_compat
+        no_gnu_compat
+        no_permute
+        no_bundling
+        no_ignore_case
+        no_auto_version
+        no_auto_help
+             )],
+);
+my $help;
+$p->getoptions(
+    'shipment_id=i' => \$shipment_id,
+    'container_items=s@' => \@container_items,
+    'help|h' => \$help,
+) or pod2usage(2);
+
+pod2usage(1) if $help;
+
+pod2usage(2) unless $shipment_id && @container_items;
+}
+
+my $payload = {
+    shipment_id => 's-' . $shipment_id,
+    containers => process_container_items(\@container_items),
+};
+
+my $factory = XTracker::Role::WithAMQMessageFactory->build_msg_factory;
+
+use Data::Dumper;
+warn Dumper($payload);
+
+$factory->transform_and_send('XT::DC::Messaging::Producer::WMS::FakeShipmentReady',$payload);
+
+sub process_container_items {
+    my ($container_items) = @_;
+
+    my @containers;
+    foreach my $container_item_set (@$container_items) {
+        my @parts = split(/:/, $container_item_set);
+        my $container_id = shift @parts;
+        my @items;
+        foreach my $part (@parts) {
+            my ($sku, $quantity) = split(/=/, $part);
+            push @items, {
+                'sku' => $sku,
+                'quantity' => $quantity,
+            };
+        }
+        push @containers, {
+            container_id => $container_id,
+            items => \@items,
+        };
+    }
+
+    return \@containers;
+}
+
+
+1;
+
+__END__
+
+=head1 NAME
+
+send_shipment_ready - send the C<shipment_ready> message
+
+=head1 SYNOPSIS
+
+  send_shipment_ready --shipment_id 12345 --container_items M001735700001:12345-012=1
+
+  send_shipment_ready --shipment_id 12345 --container_items P001735700001:12345-012=1 --container_items M001735700002:12345-013=3:12345-014=1
+
+=cut

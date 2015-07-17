@@ -1,0 +1,213 @@
+{
+   "expected_config_vars" : {
+      "base" : {
+         "AMQOrders": null,
+         "Producer::Stock::ThirdPartyUpdate": null,
+         "Producer::Stock::DetailedLevelChange": null,
+         "Model::MessageQueue": null,
+         "BarCode_Printers": null,
+
+         "Carrier_Premier": [
+            "default_returns_routing_code",
+            "default_returns_start_window",
+            "default_returns_end_window",
+            "default_exchange_reshipment_replacement_routing_code"
+         ],
+         "PaymentService": [
+            "payment_form_url",
+            "service_url",
+            "basic_auth_username",
+            "basic_auth_password"
+         ],
+         "DistributionCentre" : [
+            "name",
+            "timezone",
+            "country",
+            "alpha-2",
+            "origin",
+            "contact",
+            "fax",
+            "default_carrier",
+            "default_ground_carrier",
+            "express",
+            "premier",
+            "arma_accept_exchange_charges",
+            "has_delivery_signature_optout",
+            "crm_sms_suffix",
+            "expect_AWB",
+            "return_export_reason_prefix",
+            "post_code_label"
+         ],
+         "NominatedDay" : [
+            "credit_check_urgency_window_before_selection_time__minutes",
+            "default_sla_duration_before_dispatch__minutes",
+            "minimum_sla_duration_before_dispatch__minutes",
+            "min_selection_dispatch_period__minutes",
+            "view_number_of_days_into_future",
+            "max_daily_shipment_count",
+            "nominated_day_cap_alert_every_n",
+            "alert_emails_to"
+         ],
+         "Stock_Location" : [
+            "suffix_format",
+            "suggest_location",
+            "floors_start",
+            "floors_end",
+            "zones_start",
+            "zones_end",
+            "locations_start",
+            "locations_end",
+            "levels_start",
+            "levels_end"
+         ],
+         "WebsiteAPI" : [
+            "host_prefix",
+            "useragent_class",
+            "fake_response_dir"
+         ],
+         "SSH" : null,
+         "Database_Job_Queue" : null,
+         "Database_Central_Job_Queue" : null,
+         "Database_xtracker" : null,
+         "Database_jobqueue_schema" : null,
+         "Database_patcher_schema" : null,
+         "Database_XTracker_DC1" : null,
+         "Database_XTracker_DC2" : null,
+         "Database_Web_Live_NAP" : null,
+         "Database_Web_DC1_Live_NAP" : null,
+         "Database_Web_DC2_Live_NAP" : null,
+         "Database_Web_DC1_Staging_NAP" : null,
+         "Database_Web_DC2_Staging_NAP" : null,
+         "Database_Web_Live_OUTNET" : null,
+         "Database_Web_DC1_Live_OUTNET" : null,
+         "Database_Web_DC2_Live_OUTNET" : null,
+         "Database_Web_DC1_Staging_OUTNET" : null,
+         "Database_Web_DC2_Staging_OUTNET" : null,
+         "DefaultPickingPrinters" : null
+      },
+      "DC1" : {
+         "2_Printer" : null,
+         "3_Printer" : null,
+         "Database_pws_schema_Intl" : null,
+         "Database_pws_schema_AM" : null,
+         "Company_NAP": [
+            "addr",
+            "fax",
+            "return_addr",
+            "return_postcode",
+            "tel",
+            "freephone",
+            "contact_hours",
+            "ca_tel",
+            "premier_tel",
+            "premier_contact_hours"
+         ],
+         "Company_OUTNET": [
+            "addr",
+            "fax",
+            "return_addr",
+            "return_postcode",
+            "tel",
+            "freephone",
+            "contact_hours",
+            "ca_tel",
+            "premier_tel",
+            "premier_contact_hours"
+         ],
+         "Company_MRP": [
+            "addr",
+            "fax",
+            "return_addr",
+            "return_postcode",
+            "tel",
+            "freephone",
+            "contact_hours",
+            "ca_tel",
+            "premier_tel",
+            "premier_contact_hours"
+         ],
+         "Currency": [
+            "local_currency_code",
+            "additional_currency"
+         ]
+      },
+      "DC2" : {
+         "Company_NAP": [
+            "addr",
+            "fax",
+            "return_addr",
+            "return_postcode",
+            "tel",
+            "freephone",
+            "contact_hours",
+            "ca_tel",
+            "premier_tel",
+            "premier_contact_hours"
+         ],
+         "Company_OUTNET": [
+            "addr",
+            "fax",
+            "return_addr",
+            "return_postcode",
+            "tel",
+            "freephone",
+            "contact_hours",
+            "ca_tel",
+            "premier_tel",
+            "premier_contact_hours"
+         ],
+         "Company_MRP": [
+            "addr",
+            "fax",
+            "return_addr",
+            "return_postcode",
+            "tel",
+            "freephone",
+            "contact_hours",
+            "ca_tel",
+            "premier_tel",
+            "premier_contact_hours"
+         ],
+         "Currency": [
+            "local_currency_code"
+         ]
+      },
+      "DC3" : {
+         "Company_NAP": [
+            "addr",
+            "return_addr",
+            "tel",
+            "freephone",
+            "contact_hours",
+            "ca_tel",
+            "premier_tel",
+            "premier_contact_hours"
+         ],
+         "Company_OUTNET": [
+            "addr",
+            "return_addr",
+            "tel",
+            "freephone",
+            "contact_hours",
+            "ca_tel",
+            "premier_tel",
+            "premier_contact_hours"
+         ],
+         "Company_MRP": [
+            "addr",
+            "return_addr",
+            "tel",
+            "freephone",
+            "contact_hours",
+            "ca_tel",
+            "premier_tel",
+            "premier_contact_hours"
+         ],
+         "Currency": [
+            "local_currency_code",
+            "additional_currency",
+            "additional_currency"
+         ]
+      }
+   }
+}

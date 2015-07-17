@@ -1,0 +1,15 @@
+[% disablemenus = 1; %]
+[% IF pigeonhole_id_list %]
+<p class="display_msg">
+Please take barcode(s) for [% pigeonhole_id_list %] to Packing Exception before continuing.
+</p>
+[% END %]
+<p>Are there any remaining items in tote[% container_ids.size == 1 ? '' : 's' %] <span id="totes">[% container_ids.join(', ') %]</span>?</p>
+
+<form name="validate_empty_tote" action="" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <div class="formrow divideabove dividebelow">
+        <input name="not_empty" type="submit" value="Yes" class="large_button xlarge">
+        <input name="is_empty" type="submit" value="No" class="large_button xlarge">
+    </div>
+</form>

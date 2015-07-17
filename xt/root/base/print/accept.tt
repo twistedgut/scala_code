@@ -1,0 +1,80 @@
+<html>
+<head>
+<!-- Template name: [% template.name %] -->
+<title></title>
+<meta http-equiv=content-type content="text/html; charset=utf8">
+<style type="text/css">
+.print_report_header {background-color:#c5c5c5; height:24px; font-weight:bold}
+.print_report_data {background-color:#f2f2f2; height:24px}
+</style>
+</head>
+<body>
+<font face="arial">
+<table cellspacing="0" cellpadding="0" width="650" border="0">
+    <tbody>
+        <tr valign="top">
+            <td>
+                <h1>Putaway Sheet</h1>
+                <h4>Printed: [% print_date %]</h4>
+                <h4>Booked in at putaway: [% local_date(main_booked_in_date.date, 'naughty_local_time_zone', 1) %]</h4>
+                <h4>Booked in at surplus: [% local_date(surplus_booked_in_date.date, 'naughty_local_time_zone', 1) %]</h4><br>
+            </td>
+            <td align="right">
+                <table width="200" border="3" cellpadding="5" cellspacing="0" bordercolor="#000000" style="border-style:solid">
+                    <tr>
+                        <td align="center"><h1>Goods In</h1></td>
+                    </tr>
+                    <tr>
+                        <td align="center"><h1>Surplus Accepted</h1></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td align="left"><br><h2><b>Delivery Number: [% delivery_id %]</b></h2></p></td>
+        </tr>
+        <tr>
+            <td align="left"><img src="[% 'delivery-' _ delivery_id _ '.png' %]"><br><br></td>
+        </tr>
+        <tr>
+            <td align="right"><br><h2><b>Sub-Delivery Number: [% group_id %]</b></h2></p></td>
+        </tr>
+        <tr>
+            <td align="right"><img src="[% 'sub_delivery-' _ group_id _ '.png' %]"><br><br></td>
+        </tr>
+    </tbody>
+</table>
+<br><br>
+
+<table width="650" border="2" cellpadding="10" cellspacing="0" bordercolor="#000000" style="border-style:solid">
+    <tbody>
+        <tr>
+            <td><b>Designer:</b> [% product.designer %]</td>
+        </tr>
+        <tr>
+            <td><b>Description:</b> [% product.description %]</td>
+        </tr>
+        <tr>
+            <td><b>Colour:</b> [% product.colour %]</td>
+        </tr>
+    </tbody>
+</table>
+
+<table width="650">
+    <tbody>
+        <tr class="print_report_header">
+            <td>SKU</td>
+            <td>Size</td>
+        </tr>
+
+        [% FOREACH item = process_group_items %]
+        <tr class="print_report_data">
+            <td>[% item.product_id %]-[% item.size_id %]</td>
+            <td>[% item.designer_size %]</td>
+        </tr>
+        [% END %]
+    </tbody>
+</table>
+
+</body>
+</html>

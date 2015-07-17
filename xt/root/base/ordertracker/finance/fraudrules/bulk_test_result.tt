@@ -1,0 +1,100 @@
+[%- BLOCK order_list -%]
+
+    [% IF count > 0 %]
+
+        <br />
+
+        <h2>[% message %] Order[% 's' IF count > 1 %]</h2>
+
+        <table id="table_order_[% type %]" class="data wide-data">
+
+            <thead>
+
+                <tr class="dividebelow divideabove">
+                    <td class="tableHeader">Order Number</td>
+                    <td class="tableHeader">Deciding Rule</td>
+                    <td class="tableHeader">Order Status</td>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                [% FOREACH item IN items %]
+
+                    <tr class="dividebelow" id="table_[% type %]_row_[% item.order.order_nr %]">
+                        <td width="15%"><a href="/CustomerCare/OrderSearch/OrderView?order_id=[% item.order.id %]">[% item.order.order_nr %]</a></td>
+                        <td width="70">[% item.engine_outcome.decisioning_rule.name || 'None (Default Action)' %]</td>
+                        <td width="15%">[% item.engine_outcome.action_order_status.status %]</td>
+                    </tr>
+
+                [% END%]
+
+            </tbody>
+
+        </table>
+
+    [% END %]
+
+[%- END -%]
+<div class="formrow divideabove">
+    <label for="ruleset">Rules to Test:</label>
+    <span id="ruleset">[% ruleset %]</span>
+</div>
+
+<div class="formrow divideabove">
+    <label for="expected_result">Expected Result:</label>
+    <span id="expected_result">[% expected_result %]</span>
+</div>
+
+<div class="formrow divideabove">
+    <label for="orders">Order Count:</label>
+    <span id="orders" style="width:650px; height: 100px">[% valid_count || 'None' %]</span>
+</div>
+
+[% IF valid_count > 0 %]
+
+    <br />
+
+    <table width="100%">
+
+        <tr>
+
+            <td width="20%" />
+
+            [% IF dry_run.has_passes_and_failures %]
+
+                <td id="td_order_passes" width="20%" class="fraudscreen___test_pass_fail fraudscreen__test_passes">[% dry_run.pass_count_as_string %]</td>
+
+                <td width="20%" />
+
+                <td id="td_order_failures" width="20%" class="fraudscreen___test_pass_fail fraudscreen__test_fails">[% dry_run.failure_count_as_string %]</td>
+
+            [% ELSE %]
+
+                <td width="20%" />
+
+                [% IF dry_run.all_passed %]
+
+                    <td id="td_all_passed" width="20%" class="fraudscreen___test_pass_fail fraudscreen__test_passes">[% dry_run.all_passed_as_string %]</td>
+
+                [% ELSIF dry_run.all_failed %]
+
+                    <td id="td_all_failed" width="20%" class="fraudscreen___test_pass_fail fraudscreen__test_fails">[% dry_run.all_failed_as_string %]</td>
+
+                [% END %]
+
+                <td width="20%" />
+
+            [% END %]
+
+            <td width="20%" />
+
+        </tr>
+
+    </table>
+
+    [% PROCESS order_list type='failures' message='Failed' count=dry_run.failure_count items=dry_run.failures %]
+    [% PROCESS order_list type='passes' message='Passed' count=dry_run.pass_count items=dry_run.passes %]
+
+[% END %]

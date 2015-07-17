@@ -1,0 +1,18 @@
+<pre>
+
+h1. DC2A
+    * DCA-1397: New recodes printer for DC2
+    * DCA-2007: Location management - allow more levels to be selected
+    * DCA-2117: Zoom fix for DC2 handhelds
+  PRL phase only:
+    * DCA-1884: Consume updated stock_adjust message
+    * DCA-1963: Show recodes on putaway prep page
+    * DCA-1962: Validate pack_lane_status identifiers
+    * DCA-2059: Support order search by allocation id
+    * DCA-1255: Send container_empty to PRLs from XT
+    * DCA-1972: Putaway problem resolution - unrecognised error resolution
+    * DCA-1975: Timezone in pick message
+    * DCA-1976, DCA-1977: Pack lanes fixes
+    * DCA-1941: Allow switching between XT and PRL on a handheld
+
+</pre>

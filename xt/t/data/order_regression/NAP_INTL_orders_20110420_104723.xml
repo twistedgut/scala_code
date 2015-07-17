@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ORDERS>
+  <ORDER O_ID="1451998" ORDER_DATE="2011-04-20 10:47" CHANNEL="NAP-INTL" CUST_ID="1089740" CUST_IP="10.5.2.33" USED_STORED_CREDIT_CARD="F" LOGGED_IN_USERNAME="suma.binger@net-a-porter.com">
+    <TENDER_LINE TL_ID="1482267" TYPE="Card" RANK="1">
+      <VALUE CURRENCY="GBP">686.50</VALUE>
+      <PAYMENT_DETAILS>
+        <PRE_AUTH_CODE>20001008</PRE_AUTH_CODE>
+      </PAYMENT_DETAILS>
+    </TENDER_LINE>
+    <BILLING_DETAILS>
+      <NAME>
+        <TITLE>Miss</TITLE>
+        <FIRST_NAME>suma</FIRST_NAME>
+        <LAST_NAME>binger</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>United Kingdom</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2 />
+        <ADDRESS_LINE_3>United Kingdom</ADDRESS_LINE_3>
+        <TOWNCITY>London</TOWNCITY>
+        <COUNTY />
+        <STATE />
+        <POSTCODE>W2 4YN</POSTCODE>
+        <COUNTRY>GB</COUNTRY>
+      </ADDRESS>
+      <CONTACT_DETAILS>
+        <TELEPHONE TYPE="HOME" />
+        <TELEPHONE TYPE="MOBILE" />
+        <TELEPHONE TYPE="OFFICE">111</TELEPHONE>
+        <EMAIL>suma.binger@net-a-porter.com</EMAIL>
+      </CONTACT_DETAILS>
+    </BILLING_DETAILS>
+    <DELIVERY_DETAILS>
+      <NAME>
+        <TITLE>Miss</TITLE>
+        <FIRST_NAME>suma</FIRST_NAME>
+        <LAST_NAME>binger</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>United Kingdom</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2 />
+        <ADDRESS_LINE_3>United Kingdom</ADDRESS_LINE_3>
+        <TOWNCITY>London</TOWNCITY>
+        <COUNTY />
+        <STATE />
+        <POSTCODE>W2 4YN</POSTCODE>
+        <COUNTRY>GB</COUNTRY>
+      </ADDRESS>
+      <ORDER_LINE OL_ID="6151419" DESCRIPTION="London Premier 1" SKU="900005-001" QUANTITY="1" OL_SEQ="1">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">9.58</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">1.92</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      <ORDER_LINE OL_ID="6151420" DESCRIPTION="Faithful De-Manta leather tote" SKU="106021-005" QUANTITY="1" OL_SEQ="2">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">562.50</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">112.50</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      <ORDER_LINE OL_ID="6151421" DESCRIPTION="Signature Packaging" SKU="900006-001" QUANTITY="1" OL_SEQ="3">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+    </DELIVERY_DETAILS>
+    <GROSS_TOTAL>
+      <VALUE CURRENCY="GBP">686.50</VALUE>
+    </GROSS_TOTAL>
+    <POSTAGE>
+      <VALUE CURRENCY="GBP">11.50</VALUE>
+    </POSTAGE>
+  </ORDER>
+</ORDERS>
+

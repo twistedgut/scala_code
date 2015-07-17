@@ -1,0 +1,4146 @@
+[% NAP_CONFIG_HEADER %]
+[% PATH_PREFIX=''; IF LOCAL_DEVEL; PATH_PREFIX = XTDC_BASE_DIR _ '/tmp'; END %]
+
+<URL>
+    url   [% DC1_HOSTNAME %]
+</URL>
+
+<StickyPages>
+    enable_sticky_pages     [% ENABLE_STICKY_PAGES_DC1 %]
+</StickyPages>
+
+<PackingToTote>
+    max_shipments_in_tote   99
+</PackingToTote>
+
+<Email>
+    send_email   [% SEND_EMAIL %]
+
+[% IF NAP_ENV == 'DAVE(genesis)' %]
+    redirect_address [% XTRACKER_EMAIL_REDIRECT_ADDRESS %]
+    xtracker_email   xtracker.DAVE@net-a-porter.com
+    shipping_email   shipping.DAVE@net-a-porter.com
+    customercare_email   customercare.DAVE@net-a-porter.com
+    dhl_manifest_backup_email_from shipping.DAVE@net-a-porter.com
+[% ELSE %]
+    xtracker_email   xtracker@net-a-porter.com
+    shipping_email   shipping@net-a-porter.com
+    customercare_email   customercare@net-a-porter.com
+    dhl_manifest_backup_email_from shipping@net-a-porter.com
+[% END %]
+    accountrequest_email   perl@net-a-porter.com
+    exchange_host   gaffer
+    promotion_alert   event-report@net-a-porter.com
+    dc-returns_email   DC1-RETURNS@net-a-porter.com
+    warehouse_samples_email   dc1-samples@net-a-porter.com
+    stockadmin_email   Inventory_UK_Team@net-a-porter.com
+    xtadmin_email   perl@net-a-porter.com
+    goodsin_email   GoodsInUK@net-a-porter.com
+    fulfilment_email   fulfilment@net-a-porter.com
+    app_support    application_support@net-a-porter.com
+    pws_stock_adjustment_email dl_stock_consistency_dc1@net-a-porter.com
+    pws_reservation_adjustment_email dl_reservation_consistency_dc1@net-a-porter.com
+    dhl_manifest_backup_email dhlmanifestbackup@net-a-porter.com
+    late_postcodes nextdayexclusionsDC1@net-a-porter.com
+</Email>
+
+<Email_NAP>
+[% IF NAP_ENV == 'DAVE(genesis)' %]
+    customercare_email   customercare.DAVE@net-a-porter.com
+    localreturns_email   premier.DAVE@net-a-porter.com
+    shipping_email   shipping.DAVE@net-a-porter.com
+    dispatch_email   dispatch.DAVE@net-a-porter.com
+    returns_email   returns.DAVE@net-a-porter.com
+    fashionadvisor_email   fashionconsultant.DAVE@net-a-porter.com
+    samples_email   samples.DAVE@net-a-porter.com
+    personalshopping_email   MyShop.DAVE@net-a-porter.com
+    dc-returns_email   DC1-RETURNS.DAVE@net-a-porter.com
+    premier_email   premier.DAVE@net-a-porter.com
+    fulfilment_email   fulfilment.DAVE@net-a-porter.com
+    goodsin_email   GoodsInUK.DAVE@net-a-porter.com
+    sample_arrival_email   DC1-Samples.DAVE@net-a-porter.com
+    crm_email egaintest11.DAVE@net-a-porter.com
+    multi_tender_notice_email   shipping.DAVE@net-a-porter.com
+[% ELSE %]
+    customercare_email   customercare@net-a-porter.com
+    localreturns_email   premier@net-a-porter.com
+    shipping_email   shipping@net-a-porter.com
+    dispatch_email   dispatch@net-a-porter.com
+    returns_email   returns@net-a-porter.com
+    fashionadvisor_email   fashionconsultant@net-a-porter.com
+    samples_email   samples@net-a-porter.com
+    personalshopping_email   MyShop@net-a-porter.com
+    dc-returns_email   DC1-RETURNS@net-a-porter.com
+    premier_email   premier@net-a-porter.com
+    fulfilment_email   fulfilment@net-a-porter.com
+    goodsin_email   GoodsInUK@net-a-porter.com
+    sample_arrival_email   DC1-Samples@net-a-porter.com
+    crm_email [% CRM_NAP_EMAIL_DC1 %]
+    multi_tender_notice_email   shipping@net-a-porter.com
+[% END %]
+</Email_NAP>
+
+<Email_OUTNET>
+[% IF NAP_ENV == 'DAVE(genesis)' %]
+    customercare_email   customercare.DAVE@theoutnet.com
+    localreturns_email   premier.DAVE@theoutnet.com
+    shipping_email   shipping.DAVE@theoutnet.com
+    dispatch_email   dispatch.DAVE@theoutnet.com
+    returns_email   customercare.DAVE@theoutnet.com
+    fashionadvisor_email   customercare.DAVE@theoutnet.com
+    samples_email   samples.DAVE@theoutnet.com
+    personalshopping_email   customercare.DAVE@theoutnet.com
+    dc-returns_email   DC1-RETURNS.DAVE@theoutnet.com
+    premier_email   premier.DAVE@theoutnet.com
+    fulfilment_email   fulfilment.DAVE@theoutnet.com
+    goodsin_email   GoodsInUK.DAVE@theoutnet.com
+    sample_arrival_email   DC1-Samples.DAVE@theoutnet.com
+    crm_email egaintest11.DAVE@net-a-porter.com
+    multi_tender_notice_email   TONetShippingUK1.DAVE@TheOutnet.com
+[% ELSE %]
+    customercare_email   customercare@theoutnet.com
+    localreturns_email   premier@theoutnet.com
+    shipping_email   shipping@theoutnet.com
+    dispatch_email   dispatch@theoutnet.com
+    returns_email   customercare@theoutnet.com
+    fashionadvisor_email   customercare@theoutnet.com
+    samples_email   samples@theoutnet.com
+    personalshopping_email   customercare@theoutnet.com
+    dc-returns_email   DC1-RETURNS@theoutnet.com
+    premier_email   premier@theoutnet.com
+    fulfilment_email   fulfilment@theoutnet.com
+    goodsin_email   GoodsInUK@theoutnet.com
+    sample_arrival_email   DC1-Samples@theoutnet.com
+    crm_email [% CRM_OUTNET_EMAIL_DC1 %]
+    multi_tender_notice_email   TONetShippingUK1@TheOutnet.com
+[% END %]
+</Email_OUTNET>
+
+<Email_MRP>
+[% IF NAP_ENV == 'DAVE(genesis)' %]
+    customercare_email   customercare.DAVE@mrporter.com
+    localreturns_email   premier.DAVE@mrporter.com
+    shipping_email   shipping.DAVE@mrporter.com
+    dispatch_email   dispatch.DAVE@mrporter.com
+    returns_email   returns.DAVE@mrporter.com
+    fashionadvisor_email   customercare.DAVE@mrporter.com
+    samples_email   samples.DAVE@mrporter.com
+    personalshopping_email   personalshopping.DAVE@mrporter.com
+    dc-returns_email   DC1-RETURNS.DAVE@mrporter.com
+    premier_email   premier.DAVE@mrporter.com
+    fulfilment_email   fulfilment.DAVE@mrporter.com
+    goodsin_email   GoodsInUK.DAVE@mrporter.com
+    sample_arrival_email   DC1-Samples.DAVE@mrporter.com
+    crm_email egaintest11.DAVE@net-a-porter.com
+    multi_tender_notice_email   shipping.DAVE@mrporter.com
+[% ELSE %]
+    customercare_email   customercare@mrporter.com
+    localreturns_email   premier@mrporter.com
+    shipping_email   shipping@mrporter.com
+    dispatch_email   dispatch@mrporter.com
+    returns_email   returns@mrporter.com
+    fashionadvisor_email   customercare@mrporter.com
+    samples_email   samples@mrporter.com
+    personalshopping_email   personalshopping@mrporter.com
+    dc-returns_email   DC1-RETURNS@mrporter.com
+    premier_email   premier@mrporter.com
+    fulfilment_email   fulfilment@mrporter.com
+    goodsin_email   GoodsInUK@mrporter.com
+    sample_arrival_email   DC1-Samples@mrporter.com
+    crm_email [% CRM_MRP_EMAIL_DC1 %]
+    multi_tender_notice_email shipping@mrporter.com
+[% END %]
+</Email_MRP>
+
+<Email_JC>
+[% IF NAP_ENV == 'DAVE(genesis)' %]
+    customercare_email   customercare.DAVE@jimmychooonline.com
+    localreturns_email   londonpremier.DAVE@jimmychooonline.com
+    shipping_email   shipping.DAVE@jimmychooonline.com
+    dispatch_email   shipping.DAVE@jimmychooonline.com
+    returns_email   customercare.DAVE@jimmychooonline.com
+    fashionadvisor_email   customercare.DAVE@jimmychooonline.com
+    samples_email   JCDistribution.DAVE@jimmychooonline.com
+    personalshopping_email   customercare.DAVE@jimmychooonline.com
+    dc-returns_email   JCDistributionUK.DAVE@jimmychooonline.com
+    premier_email   londonpremier.DAVE@jimmychooonline.com
+    fulfilment_email   JCDistribution.DAVE@jimmychooonline.com
+    goodsin_email   JCDistribution.DAVE@jimmychooonline.com
+    sample_arrival_email   JCDistribution.DAVE@jimmychooonline.com
+    multi_tender_notice_email   JCShippingUK.DAVE@jimmychooonline.com
+[% ELSE %]
+    customercare_email   customercare@jimmychooonline.com
+    localreturns_email   londonpremier@jimmychooonline.com
+    shipping_email   shipping@jimmychooonline.com
+    dispatch_email   shipping@jimmychooonline.com
+    returns_email   customercare@jimmychooonline.com
+    fashionadvisor_email   customercare@jimmychooonline.com
+    samples_email   JCDistribution@jimmychooonline.com
+    personalshopping_email   customercare@jimmychooonline.com
+    dc-returns_email   JCDistributionUK@jimmychooonline.com
+    premier_email   londonpremier@jimmychooonline.com
+    fulfilment_email   JCDistribution@jimmychooonline.com
+    goodsin_email   JCDistribution@jimmychooonline.com
+    sample_arrival_email   JCDistribution@jimmychooonline.com
+    multi_tender_notice_email   JCShippingUK@jimmychooonline.com
+[% END %]
+</Email_JC>
+
+<Company_NAP>
+    tel   +44 (0) 20 3471 4510
+    freephone   0800 044 5700
+    return_addr   UNIT 3, CHARLTON GATE BUSINESS PARK<br>ANCHOR AND HOPE LANE, CHARLTON<br>LONDON<br>UNITED KINGDOM
+    fax   +44 (0) 20 3471 4599
+    addr   1 THE VILLAGE OFFICES, WESTFIELD LONDON SHOPPING CENTRE, ARIEL WAY, LONDON, W12 7GF
+    return_postcode   SE7 7RU
+    contact_hours   24 hours a day, seven days a week
+    ca_tel   +44 (0) 20 3471 4510
+    premier_tel 0800 044 5703
+    # cheaper for Mobiles to dial 0330
+    premier_tel_mobile_friendly 0330 022 5703
+    premier_contact_hours 8am-9pm weekdays, 9am-5pm weekends
+
+    <DC_Address>
+        addr1   Unit 3, Charlton Gate Business Park
+        addr2   Anchor and Hope Lane
+        addr3   LONDON
+        postcode SE7 7RU
+        city   London
+    </DC_Address>
+</Company_NAP>
+
+<Company_OUTNET>
+    tel   +44 (0) 20 3471 4777
+    freephone   0800 011 4250
+    return_addr   UNIT 4, OLD PARKBURY LANE<br>COLNEY STREET, ST ALBANS<br>HERTFORDSHIRE<br>UNITED KINGDOM
+    fax   +44 (0) 20 3471 4599
+    addr   1 THE VILLAGE OFFICES, WESTFIELD LONDON SHOPPING CENTRE, ARIEL WAY, LONDON, W12 7GF
+    return_postcode   AL2 2DZ
+    contact_hours   24 hours a day, seven days a week
+    ca_tel   +44 (0) 20 3471 4777
+    premier_tel 0800 044 5710
+    # cheaper for Mobiles to dial 0330
+    premier_tel_mobile_friendly 0330 022 5710
+    premier_contact_hours 8am-9pm weekdays, 9am-5pm weekends
+
+    <DC_Address>
+        addr1   Unit 4, Old Parkbury Lane
+        addr2   Colney Street
+        addr3   St Albans
+        postcode AL2 2DZ
+        city   Hertfordshire
+    </DC_Address>
+</Company_OUTNET>
+
+<Company_MRP>
+    tel   +44 (0) 20 3471 4090
+    freephone   0800 044 5705
+    return_addr   UNIT 3, CHARLTON GATE BUSINESS PARK<br>ANCHOR AND HOPE LANE, CHARLTON<br>LONDON<br>UNITED KINGDOM
+    fax   +44 (0) 20 3471 4599
+    addr   1 THE VILLAGE OFFICES, WESTFIELD LONDON SHOPPING CENTRE, ARIEL WAY, LONDON, W12 7GF
+    return_postcode   SE7 7RU
+    contact_hours   24 hours a day, seven days a week
+    ca_tel   +44 (0) 20 3471 4090
+    premier_tel 0800 044 5708
+    # cheaper for Mobiles to dial 0330
+    premier_tel_mobile_friendly 0330 022 5708
+    premier_contact_hours 8am-9pm weekdays, 9am-5pm weekends
+
+    <DC_Address>
+        addr1   Unit 3, Charlton Gate Business Park
+        addr2   Anchor and Hope Lane
+        addr3   LONDON
+        postcode SE7 7RU
+        city   London
+    </DC_Address>
+</Company_MRP>
+
+<Company_JC>
+    tel   +44 (0)20 3471 4799
+    freephone   0800 044 3221
+    return_addr   UNIT 3, CHARLTON GATE BUSINESS PARK<br>ANCHOR AND HOPE LANE, CHARLTON<br>LONDON<br>UNITED KINGDOM
+    fax   +44 (0) 20 3471 4599
+    addr   J. Choo (OS) Limited, 10 Howick Place, London, SW1P 1GW United Kingdom
+    return_postcode   SE7 7RU
+    contact_hours   24 hours a day, seven days a week
+    ca_tel   +44 (0)20 3471 4799
+
+    <DC_Address>
+        addr1   Unit 3, Charlton Gate Business Park
+        addr2   Anchor and Hope Lane
+        addr3   LONDON
+        postcode SE7 7RU
+        city   London
+    </DC_Address>
+</Company_JC>
+
+<OrderImporter_NAP>
+    send_error_email    yes
+</OrderImporter_NAP>
+
+<OrderImporter_OUTNET>
+    send_error_email    yes
+</OrderImporter_OUTNET>
+
+<OrderImporter_MRP>
+    send_error_email    yes
+</OrderImporter_MRP>
+
+<OrderImporter_JC>
+    send_error_email    no
+</OrderImporter_JC>
+
+<OrderNumber_RegEx>
+    regex   JC[A-Z]+\d+
+    regex   \d+
+
+    #
+    # list the format for any Order Numbers that are no longer
+    # 'current' here, so they can still be searched for
+    #
+    # pre-2008 order numbers have hyphens
+    legacy_regex    \d+-\d+
+</OrderNumber_RegEx>
+
+<Samples>
+    country   United Kingdom
+    addr2   Westfield London Shopping Centre, Ariel Way
+    tel   +44 (0) 20 3471 4500
+    fax   +44 (0) 20 3471 4599
+    addr3   LONDON W12 7GF
+    addr1   1 The Village Offices
+</Samples>
+
+<DistributionCentre>
+    name   DC1
+    timezone Europe/London
+    country   United Kingdom
+    alpha-2 GB
+    origin  LON
+    contact   Steve Crease
+    fax   +44 (0) 20 7255 4590
+    default_carrier   DHL Express
+    default_ground_carrier   DHL Express
+    express   London Express
+    premier   London Premier
+    arma_accept_exchange_charges yes
+    has_delivery_signature_optout yes
+    can_opt_out_of_requiring_a_delivery_signature no
+    crm_sms_suffix bulksms.co.uk
+    expect_AWB  1
+    # appears on Returns Proforma
+    return_export_reason_prefix British
+    post_code_label POST CODE
+    paper_size  letter
+</DistributionCentre>
+
+<Tax>
+    default_tax_name   VAT
+</Tax>
+
+<XTracker>
+    google_api_key   [% DC1_GOOGLE_API_KEY %]
+    authentication   ldap
+    build_constants yes
+    instance   INTL
+</XTracker>
+
+<pws_data_transfer>
+    source_name                 XTracker_DC1
+    <sink>
+        <staging>
+            sink_name           Web_DC1_Staging
+            sink_environment    staging
+            sink_site           intl
+        </staging>
+        <live>
+            sink_name           Web_DC1_Live
+            sink_environment    live
+            sink_site           intl
+        </live>
+    </sink>
+</pws_data_transfer>
+
+<Returns_NAP>
+    charge_shipping   0
+    refund_shipping   1
+    expiry_days   14
+    # this is the number of days that are stated in the RMA emails
+    # it should NOT BE USED to calculate any dates with, for that
+    # use the 'return_cutoff_days' field in the 'shipping_account' table
+    email_copy_only_days_to_request_return_from_dispatch 14
+    # this is number of days after which Returns would be cancelled automatically
+    auto_expire_return_days    45
+    # this is number of days after which Exchange would be cancelled automatically
+    auto_expire_exchange_days   45
+    should_capture_arma_errors  0
+    # this is to evaluate if the return has to be created if we are able to process
+    # on line item should we accept a return if and only if all the items are processed correctly
+    raise_failure_for_any_line_item 0
+</Returns_NAP>
+
+<Returns_OUTNET>
+    charge_shipping   1
+    refund_shipping   1
+    expiry_days   14
+    # this is the number of days that are stated in the RMA emails
+    # it should NOT BE USED to calculate any dates with, for that
+    # use the 'return_cutoff_days' field in the 'shipping_account' table
+    email_copy_only_days_to_request_return_from_dispatch 14
+    # this is number of days after which Returns would be cancelled automatically
+    auto_expire_return_days    45
+    # this is number of days after which Exchange would be cancelled automatically
+    auto_expire_exchange_days   45
+    should_capture_arma_errors  0
+    # this is to evaluate if the return has to be created if we are able to process
+    # on line item should we accept a return if and only if all the items are processed correctly
+    raise_failure_for_any_line_item 0
+</Returns_OUTNET>
+
+<Returns_MRP>
+    charge_shipping   0
+    refund_shipping   1
+    expiry_days   14
+    # this is the number of days that are stated in the RMA emails
+    # it should NOT BE USED to calculate any dates with, for that
+    # use the 'return_cutoff_days' field in the 'shipping_account' table
+    email_copy_only_days_to_request_return_from_dispatch 14
+    # this is number of days after which Returns would be cancelled automatically
+    auto_expire_return_days    45
+    # this is number of days after which Exchange would be cancelled automatically
+    auto_expire_exchange_days   45
+    should_capture_arma_errors  0
+    # this is to evaluate if the return has to be created if we are able to process
+    # on line item should we accept a return if and only if all the items are processed correctly
+    raise_failure_for_any_line_item 0
+</Returns_MRP>
+
+<Returns_JC>
+    charge_shipping   0
+    refund_shipping   1
+    expiry_days   14
+    # this is the number of days that are stated in the RMA emails
+    # it should NOT BE USED to calculate any dates with, for that
+    # use the 'return_cutoff_days' field in the 'shipping_account' table
+    email_copy_only_days_to_request_return_from_dispatch 30
+    # this is number of days after which Returns would be cancelled automatically
+    auto_expire_return_days    45
+    # this is number of days after which Exchange would be cancelled automatically
+    auto_expire_exchange_days   45
+    should_capture_arma_errors  1
+    # this is to evaluate if the return has to be created if we are able to process
+    # on line item should we accept a return if and only if all the items are processed correctly
+    raise_failure_for_any_line_item 1
+</Returns_JC>
+
+<PaymentService_NAP>
+    merchant_channel   NAP-XT-INTL
+    merchant_url   [% PAYMENT_SERVICE_NAP_MERCHANT_URL %]
+    dc_channel   NAP-DC1
+</PaymentService_NAP>
+
+<PaymentService_OUTNET>
+    merchant_channel   OUT-XT-INTL
+    merchant_url   [% PAYMENT_SERVICE_OUTNET_MERCHANT_URL %]
+    dc_channel   NAP-DC1
+</PaymentService_OUTNET>
+
+<PaymentService_MRP>
+    merchant_channel   MRP-XT-INTL
+    merchant_url   [% PAYMENT_SERVICE_MRP_MERCHANT_URL %]
+    dc_channel   NAP-DC1
+</PaymentService_MRP>
+
+<PaymentService_JC>
+    merchant_channel   JC-XT-TPFS-INTL
+    merchant_url   [% PAYMENT_SERVICE_JC_MERCHANT_URL %]
+    dc_channel   NAP-DC1
+</PaymentService_JC>
+
+<Voucher>
+    [%# Note that MRP voucher dimensions are 128x83mm, but we don't care enough
+    to channelise voucher dimensions %]
+    length 14.8
+    width 10.5
+    height 0.2
+    weight 0.103
+    country_of_origin United Kingdom
+    fabric_content Paper
+    hs_code 490110
+</Voucher>
+
+<NominatedDay>
+    credit_check_urgency_window_before_selection_time__minutes 240
+
+    [%# sla_cutoff is set to nominated_dispatch_time - this value to
+        make sure it gets packed in time. %]
+    default_sla_duration_before_dispatch__minutes 120
+
+
+    [%# the minimum time to sla_cutoff, to give fulfilment staff time
+        to pick & pack %]
+    minimum_sla_duration_before_dispatch__minutes 60
+
+
+    [%# once a shipment is selected how much time is needed to ensure
+        it is ready for dispatch %]
+    min_selection_dispatch_period__minutes 60
+
+    view_number_of_days_into_future 7
+
+
+    [%# the number of nominated day shipments we can process before we start
+        warning or restricting other orders %]
+    max_daily_shipment_count 5000
+
+
+    alert_emails_to DC1NominatedDayAlerts@net-a-porter.com
+    nominated_day_cap_alert_every_n 20
+</NominatedDay>
+
+
+<CMSService>
+    base_url        [% CMS_API_BASE_URL_DC1 %]
+    port            [% CMS_API_PORT_DC1 %]
+    url_path        [% CMS_API_URL_PATH_DC1 %]
+    username        [% CMS_API_USERNAME_DC1 %]
+    password        [% CMS_API_PASSWORD_DC1 %]
+    timeout         [% CMS_API_TIMEOUT_DC1 %]
+</CMSService>
+
+<CMSService_NAP>
+    use_service yes
+</CMSService_NAP>
+
+<CMSService_OUTNET>
+    use_service no
+</CMSService_OUTNET>
+
+<CMSService_MRP>
+    use_service no
+</CMSService_MRP>
+
+<CMSService_JC>
+    use_service yes
+</CMSService_JC>
+
+
+
+
+<job_queue>
+    default_feedback_to   4
+    pidfilebase   [% XTDC_LOGS_DIR %]/dc_job_queue
+[% IF DEV_ENV %]
+    failed_job_email_to   [% XTRACKER_EMAIL_REDIRECT_ADDRESS %]
+[% ELSE %]
+    failed_job_email_to   [% JOB_QUEUE_FAILED_EMAIL %]
+[% END %]
+
+    num_procs   1
+    on_strike   0
+    allow_scab   0
+
+    <worker-group Failed>
+        job   FailedJob
+    </worker-group>
+
+    # new operators; messages for operators; ...
+    <worker-group Operator>
+        job   Send::Operator::Message
+        job   Receive::Operator::Import
+        job   Receive::Operator::Message
+    </worker-group>
+
+    # respond to upload related tasks as quickly as possible
+    <worker-group Upload>
+        job   Receive::Product::Update
+        job   Receive::Product::WearItWith
+        job   Receive::Product::UploadDate
+        job   Receive::Upload::DoUpload
+        job   Receive::Upload::RelatedProducts
+        job   Receive::Product::ColourVariationGroups
+    </worker-group>
+
+    # see m.knoop or chisel for explanation over splitting this out post 90k
+    # messages
+    <worker-group ColourVariation>
+        job   Receive::Product::ColourVariation
+    </worker-group>
+
+    # this task just add/deletes/moves whatsnew entries;
+    # there are many of them when an update is triggered, and no obvious
+    # reason to not have a separate worker to race through them
+    <worker-group WhatsNew>
+        job   Send::Upload::Completed
+        job   Send::Upload::Status
+    </worker-group>
+
+    <worker-group Event>
+        job   Receive::Event::FreezeCustomers
+        job   Receive::Event::GenerateCoupons
+        job   Receive::Event::LyrisExport
+    </worker-group>
+
+    # anything we receive as a piece of work that we aren't sure we can
+    # separate out further
+    <worker-group Incoming>
+        job   Receive::Product::Comment
+        job   Receive::Product::NavigationClassification
+        job   Receive::Product::NavigationTag
+        job   Receive::Product::ReportingClassification
+        job   Receive::RetailMgmt::Designer
+        job   Receive::RetailMgmt::DesignerCategory
+        job   Receive::RetailMgmt::Navigation
+        job   Receive::RetailMgmt::ReportingClassification
+        job   Receive::Sample::Request
+    </worker-group>
+
+    # These can be quite slow especially when they are about
+    # to transfer a load of products from NaP to The Outnet
+    <worker-group Markdown>
+        job   Receive::Product::Markdowns
+        job   Receive::Product::ChannelTransfer
+    </worker-group>
+
+    # anything we send to Fulcrum, that we aren't sure we can separate out
+    # further
+    <worker-group SendToFulcrum>
+        job   Send::Product::Comment
+        job   Send::Product::Delivered
+        job   Send::Product::ShippingData
+        job   Send::Product::StockSummary
+        job   Send::Product::Transfered
+    </worker-group>
+
+    # anything we send to the web-site, that we aren't sure we can separate
+    # out further
+    <worker-group SendToWeb>
+        job   Send::Product::WebUpdate
+        job   Send::Event::ToWebsite
+    </worker-group>
+
+    <worker-group Documents>
+       job   Receive::Generate::PDF
+       job   Receive::StockControl::Reservation::PreparePDF
+    </worker-group>
+
+    <worker-group IntheBoxPromotion>
+        job Receive::NAPEvents::CustomerSegment
+    </worker-group>
+
+    <worker-group FraudRules>
+        job Receive::Order::ApplyFraudRules
+
+        # CANDO-8384: make sure this Worker is in only ONE 'worker-group'
+        #             otherwise it might lead to DB locks and defeat the
+        #             purpose of moving the Metrics Update to the JQ
+        job Receive::Fraud::UpdateFraudRuleMetrics
+    </worker-group>
+
+    <worker-group ServiceUpdates>
+        job Receive::Customer::CustomerValue
+        job Receive::Customer::CustomerCategory
+    </worker-group>
+
+    <worker-group Search>
+        # make sure this worker is only in one 'worker-group' as the Searches
+        # can take a while to do and so should be done one at a time
+        job Receive::Search::OrdersByDesigner
+    </worker-group>
+
+    <worker-group DBAdmin>
+        job Receive::DB::RunBackFillJob
+    </worker-group>
+
+</job_queue>
+
+<Model::MessageQueue>
+   base_class NAP::Messaging::Catalyst::MessageQueueAdaptor
+   <args>
+     <servers>
+       hostname   [% DC1_AMQ_BROKER_HOSTNAME %]
+       port       [% DC1_AMQ_BROKER_PORT %]
+     </servers>
+     sending_method with_receipt
+     <extra_connection_builder_args>
+       <socket_options>
+         keep_alive 1
+       </socket_options>
+       receipt_timeout 10
+     </extra_connection_builder_args>
+     log_sending_at_level info
+[% IF DEV_ENV || AMQ_LOG_ALL_MESSAGES %]
+     trace_basedir    [% PATH_PREFIX %][% AMQ_DUMP_DIR_PATH %]
+     trace 1
+     trace_permissions            0666
+     trace_directory_permissions  0777
+[% END %]
+   </args>
+# NOTE: the traits value needs [] around if there's only one (to force it to be
+# an array), but if we want multiple traits we need multiple lines without [].
+[% IF DEV_ENV && ! AMQ_REALLY_SEND %]
+   traits +Net::Stomp::MooseHelpers::TraceOnly
+   traits +NAP::Messaging::Role::LogOutgoingMessages
+[% ELSIF ( DEV_ENV && AMQ_REALLY_SEND ) || AMQ_LOG_ALL_MESSAGES %]
+   traits +Net::Stomp::MooseHelpers::TraceStomp
+   traits +NAP::Messaging::Role::LogOutgoingMessages
+[% ELSE %]
+   traits [ +NAP::Messaging::Role::LogOutgoingMessages ]
+[% END %]
+</Model::MessageQueue>
+
+<Currency>
+    additional_currency   EUR
+    local_currency_code   GBP
+</Currency>
+
+<PreOrderAddress>
+    # All the 'field_required' entries must be valid methods on the
+    # XTracker::Schema::Result::Public::OrderAddress object.
+    field_required                      first_name
+    field_required                      last_name
+    field_required                      address_line_1
+    field_required                      towncity
+    field_required                      country
+    postcode_required_for_country       United States
+    postcode_required_for_country       United Kingdom
+</PreOrderAddress>
+
+<IncorrectWebsiteCountry>
+    country     United States
+    country     Hong Kong
+</IncorrectWebsiteCountry>
+
+<1_Printer>
+    name Finance
+    lp_name accounts
+</1_Printer>
+
+<2_Printer>
+    name Fulfilment
+    lp_name fulfilment
+</2_Printer>
+
+<3_Printer>
+    name Premier Address Card
+    lp_name london-address
+</3_Printer>
+
+<4_Printer>
+    name Premier Shipping
+    lp_name london-shipping
+</4_Printer>
+
+<5_Printer>
+    name Picking - EIP
+    lp_name picking-eip
+</5_Printer>
+
+<6_Printer>
+    name Picking - Normal
+    lp_name picking-regular
+</6_Printer>
+
+<7_Printer>
+    name Returns
+    lp_name returns
+</7_Printer>
+
+<9_Printer>
+    name IT Department
+    lp_name tech
+</9_Printer>
+
+<10_Printer>
+    name Goods In Barcode - Large
+    lp_name goodsinBarcodeLarge
+    print_language ZPL
+</10_Printer>
+
+<11_Printer>
+    name Goods In Barcode - Small
+    lp_name goodsinBarcodeSmall
+    print_language ZPL
+</11_Printer>
+
+<12_Printer>
+    name Returns In Barcode - Small
+    lp_name returnsBarcodeSmall
+    department_small Default
+    print_language ZPL
+</12_Printer>
+
+<13_Printer>
+    name Returns In Barcode - Large
+    lp_name returnsBarcodeLarge
+    department_large Default
+    print_language ZPL
+</13_Printer>
+
+<15_Printer>
+    name Inventory
+    lp_name inventory
+</15_Printer>
+
+<16_Printer>
+    name Finance - Dome
+    lp_name finance-dome
+</16_Printer>
+
+<17_Printer>
+    name Sample Room Barcode - Small
+    lp_name sampleRoomBarcodeSmall
+    department_small Sample
+    print_language EPL2
+</17_Printer>
+
+<18_Printer>
+    name Sample Room Barcode - Large
+    lp_name sampleRoomBarcodeLarge
+    ssh_proxy goblin
+    department_large Sample
+    print_language EPL2
+</18_Printer>
+
+<19_Printer>
+    name U5 Shipping Document 1
+    lp_name shippingdocument01
+</19_Printer>
+
+<20_Printer>
+    name U5 Shipping Document 2
+    lp_name shippingdocument02
+</20_Printer>
+
+<21_Printer>
+    name U5 Shipping Label 1
+    lp_name shippinglabel01
+    print_language ZPL
+</21_Printer>
+
+<22_Printer>
+    name U5 Shipping Label 2
+    lp_name shippinglabel02
+    print_language ZPL
+</22_Printer>
+
+<23_Printer>
+    name Tech 3rd Floor
+    lp_name tech3rd
+</23_Printer>
+
+<24_Printer>
+    name RTV
+    lp_name rtv
+</24_Printer>
+
+<25_Printer>
+    name Fulfilment Barcode
+    lp_name fulfilmentBarcode
+    print_language ZPL
+</25_Printer>
+
+<26_Printer>
+    name Retag Ground Floor - Small
+    lp_name RetagGroundFloorSmall
+    print_language ZPL
+</26_Printer>
+
+<27_Printer>
+    name Retag Ground Floor - Large
+    lp_name RetagGroundFloorLarge
+    print_language ZPL
+</27_Printer>
+
+<28_Printer>
+    name Retag 2nd Floor - Small
+    lp_name Retag2ndFloorSmall
+    print_language ZPL
+</28_Printer>
+
+<29_Printer>
+    name Retag 2nd Floor - Large
+    lp_name Retag2ndFloorLarge
+    print_language ZPL
+</29_Printer>
+
+<30_Printer>
+    name Picking - Outnet
+    lp_name OutnetPicking
+</30_Printer>
+
+<31_Printer>
+    name Retag 2nd Floor - Small 2
+    lp_name RetagOutnet
+    print_language ZPL
+</31_Printer>
+
+<47_Printer>
+    name U1 Shipping Document 6
+    lp_name shippingdocument06
+</47_Printer>
+
+<51_Printer>
+    name U1 Shipping Label 6
+    lp_name shippinglabel06
+    print_language ZPL
+</51_Printer>
+
+<52_Printer>
+    name Sample Picking - Europa
+    lp_name europa_doc
+</52_Printer>
+
+<53_Printer>
+    name Stock Sheet
+    lp_name europa_doc
+</53_Printer>
+
+<54_Printer>
+    name Fast Track Sheet
+    lp_name europa_doc
+</54_Printer>
+
+<55_Printer>
+    name GI Barcode - Large
+    lp_name europa_lbl_lrg
+    print_language ZPL
+</55_Printer>
+
+<56_Printer>
+    name GI Barcode - Small
+    lp_name europa_lbl_sml
+    print_language ZPL
+</56_Printer>
+
+<57_Printer>
+    name Sample Picking Sheet
+    lp_name sample_doc
+</57_Printer>
+
+<61_Printer>
+    name Premier Shipping 1
+    lp_name premiershipping01
+</61_Printer>
+
+<62_Printer>
+    name Premier Shipping 2
+    lp_name premiershipping02
+</62_Printer>
+
+<63_Printer>
+    name Premier Shipping 3 (Unit 1)
+    lp_name u1_premiershipping_03
+</63_Printer>
+
+# For testing
+<65_Printer>
+    name Premier Address Card 99
+    lp_name premiercard01
+</65_Printer>
+
+## APS-341 returns stations 6-16
+
+<100_Printer>
+    name U1 Shipping Document 1
+    lp_name shippingdocument07
+</100_Printer>
+
+<101_Printer>
+    name U1 Shipping Label 1
+    lp_name shippinglabel07
+    print_language ZPL
+</101_Printer>
+
+<102_Printer>
+    name U1 Shipping Document 2
+    lp_name shippingdocument08
+</102_Printer>
+
+<103_Printer>
+    name U1 Shipping Label 2
+    lp_name shippinglabel08
+    print_language ZPL
+</103_Printer>
+
+<104_Printer>
+    name U1 Shipping Document 3
+    lp_name shippingdocument09
+</104_Printer>
+
+<105_Printer>
+    name U1 Shipping Label 3
+    lp_name shippinglabel09
+    print_language ZPL
+</105_Printer>
+
+<106_Printer>
+    name U1 Shipping Document 4
+    lp_name shippingdocument10
+</106_Printer>
+
+<107_Printer>
+    name U1 Shipping Label 4
+    lp_name shippinglabel10
+    print_language ZPL
+</107_Printer>
+
+<108_Printer>
+    name U1 Shipping Document 5
+    lp_name shippingdocument11
+</108_Printer>
+
+<109_Printer>
+    name U1 Shipping Label 5
+    lp_name shippinglabel11
+    print_language ZPL
+</109_Printer>
+
+
+#### END APS-341
+
+<300_Printer>
+    name Premier Address Card 1
+    lp_name premiercard01
+</300_Printer>
+
+<301_Printer>
+    name Premier Address Card 2
+    lp_name premiercard02
+</301_Printer>
+
+<302_Printer>
+    name Premier Address Card 3 (Unit 1)
+    lp_name u1_premiercard_03
+</302_Printer>
+
+<310_Printer>
+    name Picking Premier Address Card 0
+    lp_name u1_premiercard_pick_00
+</310_Printer>
+<311_Printer>
+    name Picking Premier Address Card 1
+    lp_name u1_premiercard_pick_01
+</311_Printer>
+<312_Printer>
+    name Picking Premier Address Card 2
+    lp_name u1_premiercard_pick_02
+</312_Printer>
+<313_Printer>
+    name Picking Premier Address Card 3
+    lp_name u1_premiercard_pick_03
+</313_Printer>
+<314_Printer>
+    name Picking Premier Address Card 4
+    lp_name u1_premiercard_pick_04
+</314_Printer>
+<315_Printer>
+    name Picking Premier Address Card 5
+    lp_name u1_premiercard_pick_05
+</315_Printer>
+<316_Printer>
+    name Picking Premier Address Card 6
+    lp_name u1_premiercard_pick_06
+</316_Printer>
+<317_Printer>
+    name Picking Premier Address Card 7
+    lp_name u1_premiercard_pick_07
+</317_Printer>
+<318_Printer>
+    name Picking Premier Address Card 8
+    lp_name u1_premiercard_pick_08
+</318_Printer>
+<319_Printer>
+    name Picking Premier Address Card 9
+    lp_name u1_premiercard_pick_09
+</319_Printer>
+<320_Printer>
+    name Picking Premier Address Card 10
+    lp_name u1_premiercard_pick_10
+</320_Printer>
+<321_Printer>
+    name Picking Premier Address Card 11
+    lp_name u1_premiercard_pick_11
+</321_Printer>
+<322_Printer>
+    name Picking Premier Address Card 12
+    lp_name u1_premiercard_pick_12
+</322_Printer>
+<323_Printer>
+    name Picking Premier Address Card 13
+    lp_name u1_premiercard_pick_13
+</323_Printer>
+<324_Printer>
+    name Picking Premier Address Card 14
+    lp_name u1_premiercard_pick_14
+</324_Printer>
+<325_Printer>
+    name Picking Premier Address Card 15
+    lp_name u1_premiercard_pick_15
+</325_Printer>
+<326_Printer>
+    name Picking Premier Address Card 16
+    lp_name u1_premiercard_pick_16
+</326_Printer>
+
+<350_Printer>
+    name U1 Packing Exception Gift Card NAP
+    lp_name u1_napgift_pe_00
+</350_Printer>
+<351_Printer>
+    name U1 Supervisor Gift Card NAP
+    lp_name u1_napgift_sup_00
+</351_Printer>
+<352_Printer>
+    name U1 Packing Exception Gift Card MRP
+    lp_name u1_mrpgift_pe_00
+</352_Printer>
+<353_Printer>
+    name U1 Supervisor Gift Card MRP
+    lp_name u1_mrpgift_sup_00
+</353_Printer>
+<354_Printer>
+    name U1 Packing Exception MRP Label Printer
+    lp_name u1_mrpsticker_pe_00
+</354_Printer>
+<355_Printer>
+    name U1 Supervisor MRP Label Printer
+    lp_name u1_mrpsticker_sup_00
+</355_Printer>
+<356_Printer>
+    name U1 Packing Exception Premier Address Card
+    lp_name u1_premiercard_pe_00
+</356_Printer>
+<357_Printer>
+    name U1 Supervisor Premier Address Card
+    lp_name u1_premiercard_sup_00
+</357_Printer>
+<358_Printer>
+    name Decant - Small
+    lp_name u3_decant_mezz_sml
+    print_language ZPL
+[%- IF DEV_ENV %]
+    ssh_proxy MOCK_SSH
+[%- END %]
+</358_Printer>
+<359_Printer>
+    name Decant - Large
+    lp_name u3_decant_mezz_lge
+    print_language ZPL
+[%- IF DEV_ENV %]
+    ssh_proxy MOCK_SSH
+[%- END %]
+</359_Printer>
+<360_Printer>
+    name Spare 1 - Small
+    lp_name spare1_sml
+    print_language ZPL
+[%- IF DEV_ENV %]
+    ssh_proxy MOCK_SSH
+[%- END %]
+</360_Printer>
+<361_Printer>
+    name Spare 1 - Large
+    lp_name spare1_lge
+    print_language ZPL
+[%- IF DEV_ENV %]
+    ssh_proxy MOCK_SSH
+[%- END %]
+</361_Printer>
+<362_Printer>
+    name Spare 2 - Small
+    lp_name spare2_sml
+    print_language ZPL
+[%- IF DEV_ENV %]
+    ssh_proxy MOCK_SSH
+[%- END %]
+</362_Printer>
+<363_Printer>
+    name Spare 2 - Large
+    lp_name spare2_lge
+    print_language ZPL
+[%- IF DEV_ENV %]
+    ssh_proxy MOCK_SSH
+[%- END %]
+</363_Printer>
+<364_Printer>
+    name Spare 3 - Small
+    lp_name spare3_sml
+    print_language ZPL
+[%- IF DEV_ENV %]
+    ssh_proxy MOCK_SSH
+[%- END %]
+</364_Printer>
+<365_Printer>
+    name Spare 3 - Large
+    lp_name spare3_lge
+    print_language ZPL
+[%- IF DEV_ENV %]
+    ssh_proxy MOCK_SSH
+[%- END %]
+</365_Printer>
+
+<366_Printer>
+    name Inventory Label - Small
+    lp_name inv_label_01
+    print_language ZPL
+</366_Printer>
+
+<367_Printer>
+    name Inventory Label - Large
+    lp_name inv_label_02
+    print_language ZPL
+[%- IF DEV_ENV %]
+    ssh_proxy MOCK_SSH
+[%- END %]
+</367_Printer>
+
+<368_Printer>
+    name Picking - RTV Inspect
+    lp_name picking-regular
+[% IF DEV_ENV %]
+    ssh_proxy MOCK_SSH
+[% END %]
+</368_Printer>
+
+<369_Printer>
+    name Printer_Station_QualityControl_01
+    lp_name quality_control_printer_01
+</369_Printer>
+
+<370_Printer>
+    name Printer_Station_QualityControl_02
+    lp_name quality_control_printer_02
+</370_Printer>
+
+<371_Printer>
+    name Printer_Station_QualityControl_Spare_01
+    lp_name spare_01
+</371_Printer>
+
+<372_Printer>
+    name Printer_Station_QualityControl_Spare_02
+    lp_name spare_02
+</372_Printer>
+
+<373_Printer>
+    name Printer_Station_QualityControl_Spare_03
+    lp_name spare_03
+</373_Printer>
+
+<374_Printer>
+    name Gift Card NAP 0
+    lp_name u1_napgift_pick_00
+</374_Printer>
+
+<375_Printer>
+    name Gift Card NAP 1
+    lp_name u1_napgift_pick_01
+</375_Printer>
+
+<376_Printer>
+    name Gift Card NAP 2
+    lp_name u1_napgift_pick_02
+</376_Printer>
+
+<377_Printer>
+    name Gift Card NAP 3
+    lp_name u1_napgift_pick_03
+</377_Printer>
+
+<378_Printer>
+    name Gift Card NAP 4
+    lp_name u1_napgift_pick_04
+</378_Printer>
+
+<379_Printer>
+    name Gift Card NAP 5
+    lp_name u1_napgift_pick_05
+</379_Printer>
+
+<380_Printer>
+    name Gift Card NAP 6
+    lp_name u1_napgift_pick_06
+</380_Printer>
+
+<381_Printer>
+    name Gift Card NAP 7
+    lp_name u1_napgift_pick_07
+</381_Printer>
+
+<382_Printer>
+    name Gift Card NAP 8
+    lp_name u1_napgift_pick_08
+</382_Printer>
+
+<383_Printer>
+    name Gift Card NAP 9
+    lp_name u1_napgift_pick_09
+</383_Printer>
+
+<384_Printer>
+    name Gift Card NAP 10
+    lp_name u1_napgift_pick_10
+</384_Printer>
+
+<385_Printer>
+    name Gift Card NAP 11
+    lp_name u1_napgift_pick_11
+</385_Printer>
+
+<386_Printer>
+    name Gift Card NAP 12
+    lp_name u1_napgift_pick_12
+</386_Printer>
+
+<387_Printer>
+    name Gift Card MRP 0
+    lp_name u1_mrpgift_pick_00
+</387_Printer>
+
+<388_Printer>
+    name Gift Card MRP 1
+    lp_name u1_mrpgift_pick_01
+</388_Printer>
+
+<389_Printer>
+    name Gift Card MRP 2
+    lp_name u1_mrpgift_pick_02
+</389_Printer>
+
+<390_Printer>
+    name Gift Card MRP 3
+    lp_name u1_mrpgift_pick_03
+</390_Printer>
+
+<391_Printer>
+    name Gift Card MRP 4
+    lp_name u1_mrpgift_pick_04
+</391_Printer>
+
+<392_Printer>
+    name Gift Card MRP 5
+    lp_name u1_mrpgift_pick_05
+</392_Printer>
+
+<393_Printer>
+    name Gift Card MRP 6
+    lp_name u1_mrpgift_pick_06
+</393_Printer>
+
+<394_Printer>
+    name Gift Card MRP 7
+    lp_name u1_mrpgift_pick_07
+</394_Printer>
+
+<395_Printer>
+    name Gift Card MRP 8
+    lp_name u1_mrpgift_pick_08
+</395_Printer>
+
+<396_Printer>
+    name Gift Card MRP 9
+    lp_name u1_mrpgift_pick_09
+</396_Printer>
+
+<397_Printer>
+    name Gift Card MRP 10
+    lp_name u1_mrpgift_pick_10
+</397_Printer>
+
+<398_Printer>
+    name Gift Card MRP 11
+    lp_name u1_mrpgift_pick_11
+</398_Printer>
+
+<399_Printer>
+    name Gift Card MRP 12
+    lp_name u1_mrpgift_pick_12
+</399_Printer>
+
+<402_Printer>
+    name jimmy_choo_barcode_label_small_01
+    lp_name jimmy_choo_barcode_label_small_01
+    print_language ZPL
+</402_Printer>
+
+<403_Printer>
+    name jimmy_choo_barcode_label_large_01
+    lp_name jimmy_choo_barcode_label_large_01
+    print_language ZPL
+[%- IF DEV_ENV %]
+    ssh_proxy MOCK_SSH
+[%- END %]
+</403_Printer>
+
+<404_Printer>
+    name Jimmy Choo Location Label Large
+    lp_name jimmy_choo_location_label_large_01
+    print_language ZPL
+</404_Printer>
+
+<406_Printer>
+    name jc_quality_control_printer_01
+    lp_name jc_quality_control_printer_01
+</406_Printer>
+
+<408_Printer>
+    name JC_RTV
+    lp_name jc_rtv
+</408_Printer>
+
+<409_Printer>
+    name JC Fast Track Sheet
+    lp_name jc_fast_track_sheet
+</409_Printer>
+
+<411_Printer>
+    name JCSampleVendorGoodsIn
+    lp_name jc_sample_vendor_goods_in
+    department_small Returns
+    print_language EPL2
+</411_Printer>
+
+<413_Printer>
+    name JC Picking - RTV Inspect
+    lp_name jc-picking-regular
+[% IF DEV_ENV %]
+    ssh_proxy MOCK_SSH
+[% END %]
+</413_Printer>
+
+<414_Printer>
+    name JC Shipping Document 1
+    lp_name jc_shippingdocument01
+</414_Printer>
+
+<415_Printer>
+    name JC Shipping Label 1
+    lp_name jc_shippinglabel01
+    print_language ZPL
+</415_Printer>
+
+<416_Printer>
+    name JC Premier Shipping 1
+    lp_name jc_premiershipping01
+</416_Printer>
+
+<417_Printer>
+    name JC Premier Address Card 1
+    lp_name jc_premiercard01
+</417_Printer>
+
+<418_Printer>
+    name JC Shipping Document 2
+    lp_name jc_shippingdocument02
+</418_Printer>
+
+<419_Printer>
+    name JC Shipping Label 2
+    lp_name jc_shippinglabel02
+    print_language ZPL
+</419_Printer>
+
+<420_Printer>
+    name JC Premier Shipping 2
+    lp_name jc_premiershipping02
+</420_Printer>
+
+<421_Printer>
+    name JC Premier Address Card 2
+    lp_name jc_premiercard02
+</421_Printer>
+
+<422_Printer>
+    name Picking Premier Address Card 40
+    lp_name u4_premiercard_pick_40
+</422_Printer>
+
+<423_Printer>
+    name Picking MRP Printer 40
+    lp_name u4_mrpsticker_pick_40
+</423_Printer>
+
+<424_Printer>
+    name Gift Card NAP 40
+    lp_name u4_napgift_pick_40
+</424_Printer>
+
+<425_Printer>
+    name Gift Card MRP 40
+    lp_name u4_mrpgift_pick_40
+</425_Printer>
+
+<426_Printer>
+    name Picking Premier Address Card 41
+    lp_name u4_premiercard_pick_41
+</426_Printer>
+
+<427_Printer>
+    name Picking MRP Printer 41
+    lp_name u4_mrpsticker_pick_41
+</427_Printer>
+
+<428_Printer>
+    name Gift Card NAP 41
+    lp_name u4_napgift_pick_41
+</428_Printer>
+
+<429_Printer>
+    name Gift Card MRP 41
+    lp_name u4_mrpgift_pick_41
+</429_Printer>
+
+<430_Printer>
+    name Picking Premier Address Card 42
+    lp_name u4_premiercard_pick_42
+</430_Printer>
+
+<431_Printer>
+    name Picking MRP Printer 42
+    lp_name u4_mrpsticker_pick_42
+</431_Printer>
+
+<432_Printer>
+    name Gift Card NAP 42
+    lp_name u4_napgift_pick_42
+</432_Printer>
+
+<433_Printer>
+    name Gift Card MRP 42
+    lp_name u4_mrpgift_pick_42
+</433_Printer>
+
+<452_Printer>
+    section packing
+    name U1 MRP Printer 17
+    lp_name u1_mrpsticker_pack_17
+</452_Printer>
+
+<453_Printer>
+    section packing
+    name U1 MRP Printer 18
+    lp_name u1_mrpsticker_pack_18
+</453_Printer>
+
+<454_Printer>
+    section packing
+    name U1 MRP Printer 19
+    lp_name u1_mrpsticker_pack_19
+</454_Printer>
+
+<455_Printer>
+    section packing
+    name U1 MRP Printer 20
+    lp_name u1_mrpsticker_pack_20
+</455_Printer>
+
+<456_Printer>
+    name U1 Pigeon Hole MRP Label Printer
+    lp_name u1_mrpsticker_pick_00
+</456_Printer>
+
+<457_Printer>
+    name U1 MRP Printer 1
+    lp_name u1_mrpsticker_pick_01
+</457_Printer>
+
+<458_Printer>
+    name U1 MRP Printer 2
+    lp_name u1_mrpsticker_pick_02
+</458_Printer>
+
+<459_Printer>
+    name U1 MRP Printer 3
+    lp_name u1_mrpsticker_pick_03
+</459_Printer>
+
+<460_Printer>
+    name U1 MRP Printer 4
+    lp_name u1_mrpsticker_pick_04
+</460_Printer>
+
+<461_Printer>
+    name U1 MRP Printer 5
+    lp_name u1_mrpsticker_pick_05
+</461_Printer>
+
+<462_Printer>
+    name U1 MRP Printer 6
+    lp_name u1_mrpsticker_pick_06
+</462_Printer>
+
+<463_Printer>
+    name U1 MRP Printer 7
+    lp_name u1_mrpsticker_pick_07
+</463_Printer>
+
+<464_Printer>
+    name U1 MRP Printer 8
+    lp_name u1_mrpsticker_pick_08
+</464_Printer>
+
+<465_Printer>
+    name U1 MRP Printer 9
+    lp_name u1_mrpsticker_pick_09
+</465_Printer>
+
+<466_Printer>
+    name U1 MRP Printer 10
+    lp_name u1_mrpsticker_pick_10
+</466_Printer>
+
+<467_Printer>
+    name U1 MRP Printer 11
+    lp_name u1_mrpsticker_pick_11
+</467_Printer>
+
+<468_Printer>
+    name U1 MRP Printer 12
+    lp_name u1_mrpsticker_pick_12
+</468_Printer>
+
+<480_Printer>
+    name returns_in_printer_17
+    lp_name returns_in_printer_17
+</480_Printer>
+
+<481_Printer>
+    name returns_in_printer_18
+    lp_name returns_in_printer_18
+</481_Printer>
+
+<500_Printer>
+    name Packing Doc U1 01
+    lp_name pack_u1_document_01
+</500_Printer>
+
+<501_Printer>
+    name Packing Doc U1 02
+    lp_name pack_u1_document_02
+</501_Printer>
+
+<502_Printer>
+    name Packing Doc U1 03
+    lp_name pack_u1_document_03
+</502_Printer>
+
+<503_Printer>
+    name Packing Doc U1 04
+    lp_name pack_u1_document_04
+</503_Printer>
+
+<504_Printer>
+    name Packing Doc U1 05
+    lp_name pack_u1_document_05
+</504_Printer>
+
+<505_Printer>
+    name Packing Doc U1 06
+    lp_name pack_u1_document_06
+</505_Printer>
+
+<506_Printer>
+    name Packing Doc U1 07
+    lp_name pack_u1_document_07
+</506_Printer>
+
+<507_Printer>
+    name Packing Doc U1 08
+    lp_name pack_u1_document_08
+</507_Printer>
+
+<508_Printer>
+    name Packing Doc U1 09
+    lp_name pack_u1_document_09
+</508_Printer>
+
+<509_Printer>
+    name Packing Doc U1 10
+    lp_name pack_u1_document_10
+</509_Printer>
+
+<510_Printer>
+    name Packing Doc U1 11
+    lp_name pack_u1_document_11
+</510_Printer>
+
+<511_Printer>
+    name Packing Doc U1 12
+    lp_name pack_u1_document_12
+</511_Printer>
+
+<512_Printer>
+    name Packing Doc U1 13
+    lp_name pack_u1_document_13
+</512_Printer>
+
+<513_Printer>
+    name Packing Doc U1 14
+    lp_name pack_u1_document_14
+</513_Printer>
+
+<514_Printer>
+    name Packing Doc U1 15
+    lp_name pack_u1_document_15
+</514_Printer>
+
+<515_Printer>
+    name Packing Doc U1 16
+    lp_name pack_u1_document_16
+</515_Printer>
+
+<516_Printer>
+    name Packing Doc U1 17
+    lp_name pack_u1_document_17
+</516_Printer>
+
+<517_Printer>
+    name Packing Doc U1 18
+    lp_name pack_u1_document_18
+</517_Printer>
+
+<518_Printer>
+    name Packing Doc U1 19
+    lp_name pack_u1_document_19
+</518_Printer>
+
+<519_Printer>
+    name Packing Doc U1 20
+    lp_name pack_u1_document_20
+</519_Printer>
+
+<520_Printer>
+    name Packing Doc U1 21
+    lp_name pack_u1_document_21
+</520_Printer>
+
+<521_Printer>
+    name Packing Doc U1 22
+    lp_name pack_u1_document_22
+</521_Printer>
+
+<522_Printer>
+    name Packing Doc U1 23
+    lp_name pack_u1_document_23
+</522_Printer>
+
+<523_Printer>
+    name Packing Doc U1 24
+    lp_name pack_u1_document_24
+</523_Printer>
+
+<524_Printer>
+    name Packing Doc U1 25
+    lp_name pack_u1_document_25
+</524_Printer>
+
+<525_Printer>
+    name Packing Doc U1 26
+    lp_name pack_u1_document_26
+</525_Printer>
+
+<526_Printer>
+    name Packing Doc U1 27
+    lp_name pack_u1_document_27
+</526_Printer>
+
+<527_Printer>
+    name Packing Doc U1 28
+    lp_name pack_u1_document_28
+</527_Printer>
+
+<528_Printer>
+    name Packing Doc U1 29
+    lp_name pack_u1_document_29
+</528_Printer>
+
+<529_Printer>
+    name Packing Doc U1 30
+    lp_name pack_u1_document_30
+</529_Printer>
+
+<530_Printer>
+    name Packing Doc U1 31
+    lp_name pack_u1_document_31
+</530_Printer>
+
+<531_Printer>
+    name Packing Doc U1 32
+    lp_name pack_u1_document_32
+</531_Printer>
+
+<532_Printer>
+    name Packing Doc U1 33
+    lp_name pack_u1_document_33
+</532_Printer>
+
+<533_Printer>
+    name Packing Doc U1 34
+    lp_name pack_u1_document_34
+</533_Printer>
+
+<534_Printer>
+    name Packing Doc U1 35
+    lp_name pack_u1_document_35
+</534_Printer>
+
+<535_Printer>
+    name Packing Doc U1 36
+    lp_name pack_u1_document_36
+</535_Printer>
+
+<536_Printer>
+    name Packing Doc U1 37
+    lp_name pack_u1_document_37
+</536_Printer>
+
+<537_Printer>
+    name Packing Doc U1 38
+    lp_name pack_u1_document_38
+</537_Printer>
+
+<538_Printer>
+    name Packing Doc U1 39
+    lp_name pack_u1_document_39
+</538_Printer>
+
+<539_Printer>
+    name Packing Doc U1 40
+    lp_name pack_u1_document_40
+</539_Printer>
+
+<540_Printer>
+    name Packing Doc U1 41
+    lp_name pack_u1_document_41
+</540_Printer>
+
+<541_Printer>
+    name Packing Doc U1 42
+    lp_name pack_u1_document_42
+</541_Printer>
+
+<542_Printer>
+    name Packing Doc U1 43
+    lp_name pack_u1_document_43
+</542_Printer>
+
+<543_Printer>
+    name Packing Doc U1 44
+    lp_name pack_u1_document_44
+</543_Printer>
+
+<544_Printer>
+    name Packing Doc U1 45
+    lp_name pack_u1_document_45
+</544_Printer>
+
+<545_Printer>
+    name Packing Doc U1 46
+    lp_name pack_u1_document_46
+</545_Printer>
+
+<546_Printer>
+    name Packing Doc U1 47
+    lp_name pack_u1_document_47
+</546_Printer>
+
+<547_Printer>
+    name Packing Doc U1 48
+    lp_name pack_u1_document_48
+</547_Printer>
+
+<548_Printer>
+    name Packing Doc U1 49
+    lp_name pack_u1_document_49
+</548_Printer>
+
+<549_Printer>
+    name Packing Doc U1 40
+    lp_name pack_u1_document_40
+</549_Printer>
+
+<550_Printer>
+    name Packing Doc U1 41
+    lp_name pack_u1_document_41
+</550_Printer>
+
+<551_Printer>
+    name Packing Doc U1 42
+    lp_name pack_u1_document_42
+</551_Printer>
+
+<552_Printer>
+    name Packing Doc U1 43
+    lp_name pack_u1_document_43
+</552_Printer>
+
+<553_Printer>
+    name Packing Doc U1 44
+    lp_name pack_u1_document_44
+</553_Printer>
+
+<554_Printer>
+    name Packing Doc U1 45
+    lp_name pack_u1_document_45
+</554_Printer>
+
+<555_Printer>
+    name Packing Doc U1 46
+    lp_name pack_u1_document_46
+</555_Printer>
+
+<556_Printer>
+    name Packing Doc U1 47
+    lp_name pack_u1_document_47
+</556_Printer>
+
+<557_Printer>
+    name Packing Doc U1 48
+    lp_name pack_u1_document_48
+</557_Printer>
+
+<558_Printer>
+    name Packing Doc U1 49
+    lp_name pack_u1_document_49
+</558_Printer>
+
+<559_Printer>
+    name Packing Doc U1 50
+    lp_name pack_u1_document_50
+</559_Printer>
+
+<560_Printer>
+    name Packing Doc U1 51
+    lp_name pack_u1_document_51
+</560_Printer>
+
+<561_Printer>
+    name Packing Doc U1 52
+    lp_name pack_u1_document_52
+</561_Printer>
+
+<562_Printer>
+    name Packing Doc U1 53
+    lp_name pack_u1_document_53
+</562_Printer>
+
+<563_Printer>
+    name Packing Doc U1 54
+    lp_name pack_u1_document_54
+</563_Printer>
+
+<564_Printer>
+    name Packing Doc U1 55
+    lp_name pack_u1_document_55
+</564_Printer>
+
+<565_Printer>
+    name Packing Doc U1 56
+    lp_name pack_u1_document_56
+</565_Printer>
+
+<566_Printer>
+    name Packing Doc U1 57
+    lp_name pack_u1_document_57
+</566_Printer>
+
+<567_Printer>
+    name Packing Doc U1 58
+    lp_name pack_u1_document_58
+</567_Printer>
+
+<568_Printer>
+    name Packing Doc U1 59
+    lp_name pack_u1_document_59
+</568_Printer>
+
+<569_Printer>
+    name Packing Doc U1 60
+    lp_name pack_u1_document_60
+</569_Printer>
+
+<570_Printer>
+    name Packing Doc U1 61
+    lp_name pack_u1_document_61
+</570_Printer>
+
+<571_Printer>
+    name Packing Doc U1 62
+    lp_name pack_u1_document_62
+</571_Printer>
+
+<572_Printer>
+    name Packing Doc U1 63
+    lp_name pack_u1_document_63
+</572_Printer>
+
+<573_Printer>
+    name Packing Doc U1 64
+    lp_name pack_u1_document_64
+</573_Printer>
+
+<574_Printer>
+    name Packing Doc U1 65
+    lp_name pack_u1_document_65
+</574_Printer>
+
+<575_Printer>
+    name Packing Doc U1 66
+    lp_name pack_u1_document_66
+</575_Printer>
+
+<576_Printer>
+    name Packing Doc U1 67
+    lp_name pack_u1_document_67
+</576_Printer>
+
+<577_Printer>
+    name Packing Doc U1 68
+    lp_name pack_u1_document_68
+</577_Printer>
+
+<578_Printer>
+    name Packing Doc U1 69
+    lp_name pack_u1_document_69
+</578_Printer>
+
+<579_Printer>
+    name Packing Doc U1 70
+    lp_name pack_u1_document_70
+</579_Printer>
+
+<580_Printer>
+    name Packing Doc U1 71
+    lp_name pack_u1_document_71
+</580_Printer>
+
+<581_Printer>
+    name Packing Doc U1 72
+    lp_name pack_u1_document_72
+</581_Printer>
+
+<582_Printer>
+    name Packing Doc U1 73
+    lp_name pack_u1_document_73
+</582_Printer>
+
+<583_Printer>
+    name Packing Doc U1 74
+    lp_name pack_u1_document_74
+</583_Printer>
+
+<584_Printer>
+    name Packing Doc U1 75
+    lp_name pack_u1_document_75
+</584_Printer>
+
+<585_Printer>
+    name Packing Doc U1 76
+    lp_name pack_u1_document_76
+</585_Printer>
+
+<586_Printer>
+    name Packing Doc U1 77
+    lp_name pack_u1_document_77
+</586_Printer>
+
+<587_Printer>
+    name Packing Doc U1 78
+    lp_name pack_u1_document_78
+</587_Printer>
+
+<588_Printer>
+    name Packing Doc U1 79
+    lp_name pack_u1_document_79
+</588_Printer>
+
+<589_Printer>
+    name Packing Doc U1 80
+    lp_name pack_u1_document_80
+</589_Printer>
+
+<590_Printer>
+    name Packing Doc U1 81
+    lp_name pack_u1_document_81
+</590_Printer>
+
+<591_Printer>
+    name Packing Doc U1 82
+    lp_name pack_u1_document_82
+</591_Printer>
+
+<592_Printer>
+    name Packing Doc U1 83
+    lp_name pack_u1_document_83
+</592_Printer>
+
+<593_Printer>
+    name Packing Doc U1 84
+    lp_name pack_u1_document_84
+</593_Printer>
+
+<594_Printer>
+    name Packing Doc U1 85
+    lp_name pack_u1_document_85
+</594_Printer>
+
+<595_Printer>
+    name Packing Doc U1 86
+    lp_name pack_u1_document_86
+</595_Printer>
+
+<596_Printer>
+    name Packing Doc U1 87
+    lp_name pack_u1_document_87
+</596_Printer>
+
+<597_Printer>
+    name Packing Doc U1 88
+    lp_name pack_u1_document_88
+</597_Printer>
+
+<598_Printer>
+    name Packing Doc U1 89
+    lp_name pack_u1_document_89
+</598_Printer>
+
+<599_Printer>
+    name Packing Doc U1 90
+    lp_name pack_u1_document_90
+</599_Printer>
+
+<600_Printer>
+    name Packing Doc U1 91
+    lp_name pack_u1_document_91
+</600_Printer>
+
+<601_Printer>
+    name Packing Doc U1 92
+    lp_name pack_u1_document_92
+</601_Printer>
+
+<602_Printer>
+    name Packing Doc U1 93
+    lp_name pack_u1_document_93
+</602_Printer>
+
+<603_Printer>
+    name Packing Doc U1 94
+    lp_name pack_u1_document_94
+</603_Printer>
+
+<604_Printer>
+    name Packing Doc U4 01
+    lp_name pack_u4_document_01
+</604_Printer>
+
+<605_Printer>
+    name Packing Doc U4 02
+    lp_name pack_u4_document_02
+</605_Printer>
+
+<606_Printer>
+    name Packing Doc U4 03
+    lp_name pack_u4_document_03
+</606_Printer>
+
+<607_Printer>
+    name Packing Doc U4 04
+    lp_name pack_u4_document_04
+</607_Printer>
+
+<608_Printer>
+    name Packing Doc U4 05
+    lp_name pack_u4_document_05
+</608_Printer>
+
+<609_Printer>
+    name Packing Doc U4 06
+    lp_name pack_u4_document_06
+</609_Printer>
+
+<610_Printer>
+    name Packing Doc U4 07
+    lp_name pack_u4_document_07
+</610_Printer>
+
+<611_Printer>
+    name Packing Doc U4 08
+    lp_name pack_u4_document_08
+</611_Printer>
+
+<612_Printer>
+    name Packing Doc U4 09
+    lp_name pack_u4_document_09
+</612_Printer>
+
+<613_Printer>
+    name Packing Doc U4 10
+    lp_name pack_u4_document_10
+</613_Printer>
+
+<614_Printer>
+    name Packing Doc U4 11
+    lp_name pack_u4_document_11
+</614_Printer>
+
+<615_Printer>
+    name Packing Doc U4 12
+    lp_name pack_u4_document_12
+</615_Printer>
+
+<616_Printer>
+    name Packing Doc U4 13
+    lp_name pack_u4_document_13
+</616_Printer>
+
+<617_Printer>
+    name Packing Doc U4 14
+    lp_name pack_u4_document_14
+</617_Printer>
+
+<618_Printer>
+    name Packing Doc U4 15
+    lp_name pack_u4_document_15
+</618_Printer>
+
+<619_Printer>
+    name Packing Doc U4 16
+    lp_name pack_u4_document_16
+</619_Printer>
+
+<620_Printer>
+    name Packing Doc U4 17
+    lp_name pack_u4_document_17
+</620_Printer>
+
+<621_Printer>
+    name Packing Doc U4 18
+    lp_name pack_u4_document_18
+</621_Printer>
+
+<622_Printer>
+    name Packing Doc U4 19
+    lp_name pack_u4_document_19
+</622_Printer>
+
+<623_Printer>
+    name Packing Doc U4 20
+    lp_name pack_u4_document_20
+</623_Printer>
+
+<624_Printer>
+    name Packing Doc U4 21
+    lp_name pack_u4_document_21
+</624_Printer>
+
+<625_Printer>
+    name Packing Doc U4 22
+    lp_name pack_u4_document_22
+</625_Printer>
+
+<626_Printer>
+    name Packing Doc U4 23
+    lp_name pack_u4_document_23
+</626_Printer>
+
+<627_Printer>
+    name Packing Doc U4 24
+    lp_name pack_u4_document_24
+</627_Printer>
+
+<628_Printer>
+    name Packing Doc U4 25
+    lp_name pack_u4_document_25
+</628_Printer>
+
+<629_Printer>
+    name Packing Doc U4 26
+    lp_name pack_u4_document_26
+</629_Printer>
+
+<630_Printer>
+    name Packing Doc U4 27
+    lp_name pack_u4_document_27
+</630_Printer>
+
+<631_Printer>
+    name Packing Doc U4 28
+    lp_name pack_u4_document_28
+</631_Printer>
+
+<632_Printer>
+    name Packing Lab U1 01
+    lp_name pack_u1_label_01
+</632_Printer>
+
+<633_Printer>
+    name Packing Lab U1 02
+    lp_name pack_u1_label_02
+</633_Printer>
+
+<634_Printer>
+    name Packing Lab U1 03
+    lp_name pack_u1_label_03
+</634_Printer>
+
+<635_Printer>
+    name Packing Lab U1 04
+    lp_name pack_u1_label_04
+</635_Printer>
+
+<636_Printer>
+    name Packing Lab U1 05
+    lp_name pack_u1_label_05
+</636_Printer>
+
+<637_Printer>
+    name Packing Lab U1 06
+    lp_name pack_u1_label_06
+</637_Printer>
+
+<638_Printer>
+    name Packing Lab U1 07
+    lp_name pack_u1_label_07
+</638_Printer>
+
+<639_Printer>
+    name Packing Lab U1 08
+    lp_name pack_u1_label_08
+</639_Printer>
+
+<640_Printer>
+    name Packing Lab U1 09
+    lp_name pack_u1_label_09
+</640_Printer>
+
+<641_Printer>
+    name Packing Lab U1 10
+    lp_name pack_u1_label_10
+</641_Printer>
+
+<642_Printer>
+    name Packing Lab U1 11
+    lp_name pack_u1_label_11
+</642_Printer>
+
+<643_Printer>
+    name Packing Lab U1 12
+    lp_name pack_u1_label_12
+</643_Printer>
+
+<644_Printer>
+    name Packing Lab U1 13
+    lp_name pack_u1_label_13
+</644_Printer>
+
+<645_Printer>
+    name Packing Lab U1 14
+    lp_name pack_u1_label_14
+</645_Printer>
+
+<646_Printer>
+    name Packing Lab U1 15
+    lp_name pack_u1_label_15
+</646_Printer>
+
+<647_Printer>
+    name Packing Lab U1 16
+    lp_name pack_u1_label_16
+</647_Printer>
+
+<648_Printer>
+    name Packing Lab U1 17
+    lp_name pack_u1_label_17
+</648_Printer>
+
+<649_Printer>
+    name Packing Lab U1 18
+    lp_name pack_u1_label_18
+</649_Printer>
+
+<650_Printer>
+    name Packing Lab U1 19
+    lp_name pack_u1_label_19
+</650_Printer>
+
+<651_Printer>
+    name Packing Lab U1 20
+    lp_name pack_u1_label_20
+</651_Printer>
+
+<652_Printer>
+    name Packing Lab U1 21
+    lp_name pack_u1_label_21
+</652_Printer>
+
+<653_Printer>
+    name Packing Lab U1 22
+    lp_name pack_u1_label_22
+</653_Printer>
+
+<654_Printer>
+    name Packing Lab U1 23
+    lp_name pack_u1_label_23
+</654_Printer>
+
+<655_Printer>
+    name Packing Lab U1 24
+    lp_name pack_u1_label_24
+</655_Printer>
+
+<656_Printer>
+    name Packing Lab U1 25
+    lp_name pack_u1_label_25
+</656_Printer>
+
+<657_Printer>
+    name Packing Lab U1 26
+    lp_name pack_u1_label_26
+</657_Printer>
+
+<658_Printer>
+    name Packing Lab U1 27
+    lp_name pack_u1_label_27
+</658_Printer>
+
+<659_Printer>
+    name Packing Lab U1 28
+    lp_name pack_u1_label_28
+</659_Printer>
+
+<660_Printer>
+    name Packing Lab U1 29
+    lp_name pack_u1_label_29
+</660_Printer>
+
+<661_Printer>
+    name Packing Lab U1 30
+    lp_name pack_u1_label_30
+</661_Printer>
+
+<662_Printer>
+    name Packing Lab U1 31
+    lp_name pack_u1_label_31
+</662_Printer>
+
+<663_Printer>
+    name Packing Lab U1 32
+    lp_name pack_u1_label_32
+</663_Printer>
+
+<664_Printer>
+    name Packing Lab U1 33
+    lp_name pack_u1_label_33
+</664_Printer>
+
+<665_Printer>
+    name Packing Lab U1 34
+    lp_name pack_u1_label_34
+</665_Printer>
+
+<666_Printer>
+    name Packing Lab U1 35
+    lp_name pack_u1_label_35
+</666_Printer>
+
+<667_Printer>
+    name Packing Lab U1 36
+    lp_name pack_u1_label_36
+</667_Printer>
+
+<668_Printer>
+    name Packing Lab U1 37
+    lp_name pack_u1_label_37
+</668_Printer>
+
+<669_Printer>
+    name Packing Lab U1 38
+    lp_name pack_u1_label_38
+</669_Printer>
+
+<670_Printer>
+    name Packing Lab U1 39
+    lp_name pack_u1_label_39
+</670_Printer>
+
+<671_Printer>
+    name Packing Lab U1 40
+    lp_name pack_u1_label_40
+</671_Printer>
+
+<672_Printer>
+    name Packing Lab U1 41
+    lp_name pack_u1_label_41
+</672_Printer>
+
+<673_Printer>
+    name Packing Lab U1 42
+    lp_name pack_u1_label_42
+</673_Printer>
+
+<674_Printer>
+    name Packing Lab U1 43
+    lp_name pack_u1_label_43
+</674_Printer>
+
+<675_Printer>
+    name Packing Lab U1 44
+    lp_name pack_u1_label_44
+</675_Printer>
+
+<676_Printer>
+    name Packing Lab U1 45
+    lp_name pack_u1_label_45
+</676_Printer>
+
+<677_Printer>
+    name Packing Lab U1 46
+    lp_name pack_u1_label_46
+</677_Printer>
+
+<678_Printer>
+    name Packing Lab U1 47
+    lp_name pack_u1_label_47
+</678_Printer>
+
+<679_Printer>
+    name Packing Lab U1 48
+    lp_name pack_u1_label_48
+</679_Printer>
+
+<680_Printer>
+    name Packing Lab U1 49
+    lp_name pack_u1_label_49
+</680_Printer>
+
+<681_Printer>
+    name Packing Lab U1 40
+    lp_name pack_u1_label_40
+</681_Printer>
+
+<682_Printer>
+    name Packing Lab U1 41
+    lp_name pack_u1_label_41
+</682_Printer>
+
+<683_Printer>
+    name Packing Lab U1 42
+    lp_name pack_u1_label_42
+</683_Printer>
+
+<684_Printer>
+    name Packing Lab U1 43
+    lp_name pack_u1_label_43
+</684_Printer>
+
+<685_Printer>
+    name Packing Lab U1 44
+    lp_name pack_u1_label_44
+</685_Printer>
+
+<686_Printer>
+    name Packing Lab U1 45
+    lp_name pack_u1_label_45
+</686_Printer>
+
+<687_Printer>
+    name Packing Lab U1 46
+    lp_name pack_u1_label_46
+</687_Printer>
+
+<688_Printer>
+    name Packing Lab U1 47
+    lp_name pack_u1_label_47
+</688_Printer>
+
+<689_Printer>
+    name Packing Lab U1 48
+    lp_name pack_u1_label_48
+</689_Printer>
+
+<690_Printer>
+    name Packing Lab U1 49
+    lp_name pack_u1_label_49
+</690_Printer>
+
+<691_Printer>
+    name Packing Lab U1 50
+    lp_name pack_u1_label_50
+</691_Printer>
+
+<692_Printer>
+    name Packing Lab U1 51
+    lp_name pack_u1_label_51
+</692_Printer>
+
+<693_Printer>
+    name Packing Lab U1 52
+    lp_name pack_u1_label_52
+</693_Printer>
+
+<694_Printer>
+    name Packing Lab U1 53
+    lp_name pack_u1_label_53
+</694_Printer>
+
+<695_Printer>
+    name Packing Lab U1 54
+    lp_name pack_u1_label_54
+</695_Printer>
+
+<696_Printer>
+    name Packing Lab U1 55
+    lp_name pack_u1_label_55
+</696_Printer>
+
+<697_Printer>
+    name Packing Lab U1 56
+    lp_name pack_u1_label_56
+</697_Printer>
+
+<698_Printer>
+    name Packing Lab U1 57
+    lp_name pack_u1_label_57
+</698_Printer>
+
+<699_Printer>
+    name Packing Lab U1 58
+    lp_name pack_u1_label_58
+</699_Printer>
+
+<700_Printer>
+    name Packing Lab U1 59
+    lp_name pack_u1_label_59
+</700_Printer>
+
+<701_Printer>
+    name Packing Lab U1 60
+    lp_name pack_u1_label_60
+</701_Printer>
+
+<702_Printer>
+    name Packing Lab U1 61
+    lp_name pack_u1_label_61
+</702_Printer>
+
+<703_Printer>
+    name Packing Lab U1 62
+    lp_name pack_u1_label_62
+</703_Printer>
+
+<704_Printer>
+    name Packing Lab U1 63
+    lp_name pack_u1_label_63
+</704_Printer>
+
+<705_Printer>
+    name Packing Lab U1 64
+    lp_name pack_u1_label_64
+</705_Printer>
+
+<706_Printer>
+    name Packing Lab U1 65
+    lp_name pack_u1_label_65
+</706_Printer>
+
+<707_Printer>
+    name Packing Lab U1 66
+    lp_name pack_u1_label_66
+</707_Printer>
+
+<708_Printer>
+    name Packing Lab U1 67
+    lp_name pack_u1_label_67
+</708_Printer>
+
+<709_Printer>
+    name Packing Lab U1 68
+    lp_name pack_u1_label_68
+</709_Printer>
+
+<710_Printer>
+    name Packing Lab U1 69
+    lp_name pack_u1_label_69
+</710_Printer>
+
+<711_Printer>
+    name Packing Lab U1 70
+    lp_name pack_u1_label_70
+</711_Printer>
+
+<712_Printer>
+    name Packing Lab U1 71
+    lp_name pack_u1_label_71
+</712_Printer>
+
+<713_Printer>
+    name Packing Lab U1 72
+    lp_name pack_u1_label_72
+</713_Printer>
+
+<714_Printer>
+    name Packing Lab U1 73
+    lp_name pack_u1_label_73
+</714_Printer>
+
+<715_Printer>
+    name Packing Lab U1 74
+    lp_name pack_u1_label_74
+</715_Printer>
+
+<716_Printer>
+    name Packing Lab U1 75
+    lp_name pack_u1_label_75
+</716_Printer>
+
+<717_Printer>
+    name Packing Lab U1 76
+    lp_name pack_u1_label_76
+</717_Printer>
+
+<718_Printer>
+    name Packing Lab U1 77
+    lp_name pack_u1_label_77
+</718_Printer>
+
+<719_Printer>
+    name Packing Lab U1 78
+    lp_name pack_u1_label_78
+</719_Printer>
+
+<720_Printer>
+    name Packing Lab U1 79
+    lp_name pack_u1_label_79
+</720_Printer>
+
+<721_Printer>
+    name Packing Lab U1 80
+    lp_name pack_u1_label_80
+</721_Printer>
+
+<722_Printer>
+    name Packing Lab U1 81
+    lp_name pack_u1_label_81
+</722_Printer>
+
+<723_Printer>
+    name Packing Lab U1 82
+    lp_name pack_u1_label_82
+</723_Printer>
+
+<724_Printer>
+    name Packing Lab U1 83
+    lp_name pack_u1_label_83
+</724_Printer>
+
+<725_Printer>
+    name Packing Lab U1 84
+    lp_name pack_u1_label_84
+</725_Printer>
+
+<726_Printer>
+    name Packing Lab U1 85
+    lp_name pack_u1_label_85
+</726_Printer>
+
+<727_Printer>
+    name Packing Lab U1 86
+    lp_name pack_u1_label_86
+</727_Printer>
+
+<728_Printer>
+    name Packing Lab U1 87
+    lp_name pack_u1_label_87
+</728_Printer>
+
+<729_Printer>
+    name Packing Lab U1 88
+    lp_name pack_u1_label_88
+</729_Printer>
+
+<730_Printer>
+    name Packing Lab U1 89
+    lp_name pack_u1_label_89
+</730_Printer>
+
+<731_Printer>
+    name Packing Lab U1 90
+    lp_name pack_u1_label_90
+</731_Printer>
+
+<732_Printer>
+    name Packing Lab U1 91
+    lp_name pack_u1_label_91
+</732_Printer>
+
+<733_Printer>
+    name Packing Lab U1 92
+    lp_name pack_u1_label_92
+</733_Printer>
+
+<734_Printer>
+    name Packing Lab U1 93
+    lp_name pack_u1_label_93
+</734_Printer>
+
+<735_Printer>
+    name Packing Lab U1 94
+    lp_name pack_u1_label_94
+</735_Printer>
+
+<736_Printer>
+    name Packing Lab U4 01
+    lp_name pack_u4_label_01
+</736_Printer>
+
+<737_Printer>
+    name Packing Lab U4 02
+    lp_name pack_u4_label_02
+</737_Printer>
+
+<738_Printer>
+    name Packing Lab U4 03
+    lp_name pack_u4_label_03
+</738_Printer>
+
+<739_Printer>
+    name Packing Lab U4 04
+    lp_name pack_u4_label_04
+</739_Printer>
+
+<740_Printer>
+    name Packing Lab U4 05
+    lp_name pack_u4_label_05
+</740_Printer>
+
+<741_Printer>
+    name Packing Lab U4 06
+    lp_name pack_u4_label_06
+</741_Printer>
+
+<742_Printer>
+    name Packing Lab U4 07
+    lp_name pack_u4_label_07
+</742_Printer>
+
+<743_Printer>
+    name Packing Lab U4 08
+    lp_name pack_u4_label_08
+</743_Printer>
+
+<744_Printer>
+    name Packing Lab U4 09
+    lp_name pack_u4_label_09
+</744_Printer>
+
+<745_Printer>
+    name Packing Lab U4 10
+    lp_name pack_u4_label_10
+</745_Printer>
+
+<746_Printer>
+    name Packing Lab U4 11
+    lp_name pack_u4_label_11
+</746_Printer>
+
+<747_Printer>
+    name Packing Lab U4 12
+    lp_name pack_u4_label_12
+</747_Printer>
+
+<748_Printer>
+    name Packing Lab U4 13
+    lp_name pack_u4_label_13
+</748_Printer>
+
+<749_Printer>
+    name Packing Lab U4 14
+    lp_name pack_u4_label_14
+</749_Printer>
+
+<750_Printer>
+    name Packing Lab U4 15
+    lp_name pack_u4_label_15
+</750_Printer>
+
+<751_Printer>
+    name Packing Lab U4 16
+    lp_name pack_u4_label_16
+</751_Printer>
+
+<752_Printer>
+    name Packing Lab U4 17
+    lp_name pack_u4_label_17
+</752_Printer>
+
+<753_Printer>
+    name Packing Lab U4 18
+    lp_name pack_u4_label_18
+</753_Printer>
+
+<754_Printer>
+    name Packing Lab U4 19
+    lp_name pack_u4_label_19
+</754_Printer>
+
+<755_Printer>
+    name Packing Lab U4 20
+    lp_name pack_u4_label_20
+</755_Printer>
+
+<756_Printer>
+    name Packing Lab U4 21
+    lp_name pack_u4_label_21
+</756_Printer>
+
+<757_Printer>
+    name Packing Lab U4 22
+    lp_name pack_u4_label_22
+</757_Printer>
+
+<758_Printer>
+    name Packing Lab U4 23
+    lp_name pack_u4_label_23
+</758_Printer>
+
+<759_Printer>
+    name Packing Lab U4 24
+    lp_name pack_u4_label_24
+</759_Printer>
+
+<760_Printer>
+    name Packing Lab U4 25
+    lp_name pack_u4_label_25
+</760_Printer>
+
+<761_Printer>
+    name Packing Lab U4 26
+    lp_name pack_u4_label_26
+</761_Printer>
+
+<762_Printer>
+    name Packing Lab U4 27
+    lp_name pack_u4_label_27
+</762_Printer>
+
+<763_Printer>
+    name Packing Lab U4 28
+    lp_name pack_u4_label_28
+</763_Printer>
+
+<764_Printer>
+    name Packing Lab JC 01
+    lp_name pack_jc_label_01
+</764_Printer>
+
+<765_Printer>
+    name Packing Lab JC 02
+    lp_name pack_jc_label_02
+</765_Printer>
+
+<766_Printer>
+    name Packing Lab JC 03
+    lp_name pack_jc_label_03
+</766_Printer>
+
+<767_Printer>
+    name Packing Lab JC 04
+    lp_name pack_jc_label_04
+</767_Printer>
+
+<768_Printer>
+    name Packing Lab JC 05
+    lp_name pack_jc_label_05
+</768_Printer>
+
+<769_Printer>
+    name Packing Doc JC 01
+    lp_name pack_jc_document_01
+</769_Printer>
+
+<770_Printer>
+    name Packing Doc JC 02
+    lp_name pack_jc_document_02
+</770_Printer>
+
+<771_Printer>
+    name Packing Doc JC 03
+    lp_name pack_jc_document_03
+</771_Printer>
+
+<772_Printer>
+    name Packing Doc JC 04
+    lp_name pack_jc_document_04
+</772_Printer>
+
+<773_Printer>
+    name Packing Doc JC 05
+    lp_name pack_jc_document_05
+</773_Printer>
+
+<774_Printer>
+    name Packing Address Card JC 01
+    lp_name pack_jc_addresscard_01
+</774_Printer>
+
+<800_Printer>
+    name RAD Packing QA - small
+    lp_name rad_packing_qa_small
+    print_language ZPL
+</800_Printer>
+
+<801_Printer>
+    name RAD Packing QA - large
+    lp_name rad_packing_qa_large
+    print_language ZPL
+</801_Printer>
+
+<802_Printer>
+    name DC1 Xcage - small
+    lp_name dc1_xcage_small
+    print_language ZPL
+</802_Printer>
+
+<803_Printer>
+    name DC1 Xcage - large
+    lp_name dc1_xcage_large
+    print_language ZPL
+</803_Printer>
+
+<804_Printer>
+    name Picking Premier Address Card 91
+    lp_name u9_premiercard_pick_91
+</804_Printer>
+
+<805_Printer>
+    name Picking Premier Address Card 92
+    lp_name u9_premiercard_pick_92
+</805_Printer>
+
+<806_Printer>
+    name Shipping
+    lp_name shipping
+</806_Printer>
+
+<900_Printer>
+    name RAD Packing Lab 01
+    lp_name rad_packing_1_lab
+</900_Printer>
+
+<901_Printer>
+    name RAD Packing Doc 01
+    lp_name rad_packing_1_doc
+</901_Printer>
+
+<902_Printer>
+    name RAD Packing Lab 02
+    lp_name rad_packing_2_lab
+</902_Printer>
+
+<903_Printer>
+    name RAD Packing Doc 02
+    lp_name rad_packing_2_doc
+</903_Printer>
+
+<904_Printer>
+    name RAD Packing Lab 03
+    lp_name rad_packing_3_lab
+</904_Printer>
+
+<905_Printer>
+    name RAD Packing Doc 03
+    lp_name rad_packing_3_doc
+</905_Printer>
+
+<906_Printer>
+    name RAD Packing Lab 04
+    lp_name rad_packing_4_lab
+</906_Printer>
+
+<907_Printer>
+    name RAD Packing Doc 04
+    lp_name rad_packing_4_doc
+</907_Printer>
+
+<908_Printer>
+    name RAD Packing Lab 05
+    lp_name rad_packing_5_lab
+</908_Printer>
+
+<909_Printer>
+    name RAD Packing Doc 05
+    lp_name rad_packing_5_doc
+</909_Printer>
+
+<910_Printer>
+    name RAD Packing Lab 06
+    lp_name rad_packing_6_lab
+</910_Printer>
+
+<911_Printer>
+    name RAD Packing Doc 06
+    lp_name rad_packing_6_doc
+</911_Printer>
+
+<912_Printer>
+    name RAD Packing Lab 07
+    lp_name rad_packing_7_lab
+</912_Printer>
+
+<913_Printer>
+    name RAD Packing Doc 07
+    lp_name rad_packing_7_doc
+</913_Printer>
+
+<914_Printer>
+    name RAD Packing Lab 08
+    lp_name rad_packing_8_lab
+</914_Printer>
+
+<915_Printer>
+    name RAD Packing Doc 08
+    lp_name rad_packing_8_doc
+</915_Printer>
+
+<916_Printer>
+    name RAD Packing Lab 09
+    lp_name rad_packing_9_lab
+</916_Printer>
+
+<917_Printer>
+    name RAD Packing Doc 09
+    lp_name rad_packing_9_doc
+</917_Printer>
+
+<918_Printer>
+    name RAD Packing Lab 10
+    lp_name rad_packing_10_lab
+</918_Printer>
+
+<919_Printer>
+    name RAD Packing Doc 10
+    lp_name rad_packing_10_doc
+</919_Printer>
+
+<920_Printer>
+    name RAD Packing Lab 11
+    lp_name rad_packing_11_lab
+</920_Printer>
+
+<921_Printer>
+    name RAD Packing Doc 11
+    lp_name rad_packing_11_doc
+</921_Printer>
+
+<922_Printer>
+    name RAD Packing Lab 12
+    lp_name rad_packing_12_lab
+</922_Printer>
+
+<923_Printer>
+    name RAD Packing Doc 12
+    lp_name rad_packing_12_doc
+</923_Printer>
+
+<924_Printer>
+    name RAD Packing Lab 13
+    lp_name rad_packing_13_lab
+</924_Printer>
+
+<925_Printer>
+    name RAD Packing Doc 13
+    lp_name rad_packing_13_doc
+</925_Printer>
+
+<926_Printer>
+    name RAD Packing Lab 14
+    lp_name rad_packing_14_lab
+</926_Printer>
+
+<927_Printer>
+    name RAD Packing Doc 14
+    lp_name rad_packing_14_doc
+</927_Printer>
+
+<928_Printer>
+    name RAD Packing Lab 15
+    lp_name rad_packing_15_lab
+</928_Printer>
+
+<929_Printer>
+    name RAD Packing Doc 15
+    lp_name rad_packing_15_doc
+</929_Printer>
+
+<930_Printer>
+    name RAD Packing Lab 16
+    lp_name rad_packing_16_lab
+</930_Printer>
+
+<931_Printer>
+    name RAD Packing Doc 16
+    lp_name rad_packing_16_doc
+</931_Printer>
+
+<932_Printer>
+    name RAD Packing Lab 17
+    lp_name rad_packing_17_lab
+</932_Printer>
+
+<933_Printer>
+    name RAD Packing Doc 17
+    lp_name rad_packing_17_doc
+</933_Printer>
+
+<934_Printer>
+    name RAD Packing Lab 18
+    lp_name rad_packing_18_lab
+</934_Printer>
+
+<935_Printer>
+    name RAD Packing Doc 18
+    lp_name rad_packing_18_doc
+</935_Printer>
+
+<936_Printer>
+    name RAD Packing Lab 19
+    lp_name rad_packing_19_lab
+</936_Printer>
+
+<937_Printer>
+    name RAD Packing Doc 19
+    lp_name rad_packing_19_doc
+</937_Printer>
+
+<938_Printer>
+    name RAD Packing Lab 20
+    lp_name rad_packing_20_lab
+</938_Printer>
+
+<939_Printer>
+    name RAD Packing Doc 20
+    lp_name rad_packing_20_doc
+</939_Printer>
+
+<940_Printer>
+    name RAD Packing Lab 21
+    lp_name rad_packing_21_lab
+</940_Printer>
+
+<941_Printer>
+    name RAD Packing Doc 21
+    lp_name rad_packing_21_doc
+</941_Printer>
+
+<942_Printer>
+    name RAD Packing Lab 22
+    lp_name rad_packing_22_lab
+</942_Printer>
+
+<943_Printer>
+    name RAD Packing Doc 22
+    lp_name rad_packing_22_doc
+</943_Printer>
+
+<944_Printer>
+    name RAD Packing Lab 23
+    lp_name rad_packing_23_lab
+</944_Printer>
+
+<945_Printer>
+    name RAD Packing Doc 23
+    lp_name rad_packing_23_doc
+</945_Printer>
+
+<946_Printer>
+    name RAD Packing Lab 24
+    lp_name rad_packing_24_lab
+</946_Printer>
+
+<947_Printer>
+    name RAD Packing Doc 24
+    lp_name rad_packing_24_doc
+</947_Printer>
+
+<948_Printer>
+    name RAD Packing Lab 25
+    lp_name rad_packing_25_lab
+</948_Printer>
+
+<949_Printer>
+    name RAD Packing Doc 25
+    lp_name rad_packing_25_doc
+</949_Printer>
+
+<950_Printer>
+    name RAD Packing Lab 26
+    lp_name rad_packing_26_lab
+</950_Printer>
+
+<951_Printer>
+    name RAD Packing Doc 26
+    lp_name rad_packing_26_doc
+</951_Printer>
+
+<952_Printer>
+    name RAD Packing Lab 27
+    lp_name rad_packing_27_lab
+</952_Printer>
+
+<953_Printer>
+    name RAD Packing Doc 27
+    lp_name rad_packing_27_doc
+</953_Printer>
+
+<954_Printer>
+    name RAD Packing Lab 28
+    lp_name rad_packing_28_lab
+</954_Printer>
+
+<955_Printer>
+    name RAD Packing Doc 28
+    lp_name rad_packing_28_doc
+</955_Printer>
+
+<956_Printer>
+    name RAD Packing Lab 29
+    lp_name rad_packing_29_lab
+</956_Printer>
+
+<957_Printer>
+    name RAD Packing Doc 29
+    lp_name rad_packing_29_doc
+</957_Printer>
+
+<958_Printer>
+    name RAD Packing Lab 30
+    lp_name rad_packing_30_lab
+</958_Printer>
+
+<959_Printer>
+    name RAD Packing Doc 30
+    lp_name rad_packing_30_doc
+</959_Printer>
+
+<960_Printer>
+    name RAD Packing Lab 31
+    lp_name rad_packing_31_lab
+</960_Printer>
+
+<961_Printer>
+    name RAD Packing Doc 31
+    lp_name rad_packing_31_doc
+</961_Printer>
+
+<962_Printer>
+    name RAD Packing Lab 32
+    lp_name rad_packing_32_lab
+</962_Printer>
+
+<963_Printer>
+    name RAD Packing Doc 32
+    lp_name rad_packing_32_doc
+</963_Printer>
+
+<964_Printer>
+    name RAD Packing Lab 33
+    lp_name rad_packing_33_lab
+</964_Printer>
+
+<965_Printer>
+    name RAD Packing Doc 33
+    lp_name rad_packing_33_doc
+</965_Printer>
+
+<966_Printer>
+    name RAD Packing Lab 34
+    lp_name rad_packing_34_lab
+</966_Printer>
+
+<967_Printer>
+    name RAD Packing Doc 34
+    lp_name rad_packing_34_doc
+</967_Printer>
+
+<968_Printer>
+    name RAD Packing Lab 35
+    lp_name rad_packing_35_lab
+</968_Printer>
+
+<969_Printer>
+    name RAD Packing Doc 35
+    lp_name rad_packing_35_doc
+</969_Printer>
+
+<970_Printer>
+    name RAD Packing Lab 36
+    lp_name rad_packing_36_lab
+</970_Printer>
+
+<971_Printer>
+    name RAD Packing Doc 36
+    lp_name rad_packing_36_doc
+</971_Printer>
+
+<972_Printer>
+    name RAD Packing Lab 37
+    lp_name rad_packing_37_lab
+</972_Printer>
+
+<973_Printer>
+    name RAD Packing Doc 37
+    lp_name rad_packing_37_doc
+</973_Printer>
+
+<974_Printer>
+    name RAD Packing Lab 38
+    lp_name rad_packing_38_lab
+</974_Printer>
+
+<975_Printer>
+    name RAD Packing Doc 38
+    lp_name rad_packing_38_doc
+</975_Printer>
+
+<976_Printer>
+    name RAD Packing Lab 39
+    lp_name rad_packing_39_lab
+</976_Printer>
+
+<977_Printer>
+    name RAD Packing Doc 39
+    lp_name rad_packing_39_doc
+</977_Printer>
+
+<978_Printer>
+    name RAD Packing Lab 40
+    lp_name rad_packing_40_lab
+</978_Printer>
+
+<979_Printer>
+    name RAD Packing Doc 40
+    lp_name rad_packing_40_doc
+</979_Printer>
+
+<980_Printer>
+    name RAD Packing Lab 41
+    lp_name rad_packing_41_lab
+</980_Printer>
+
+<981_Printer>
+    name RAD Packing Doc 41
+    lp_name rad_packing_41_doc
+</981_Printer>
+
+<982_Printer>
+    name RAD Packing Lab 42
+    lp_name rad_packing_42_lab
+</982_Printer>
+
+<983_Printer>
+    name RAD Packing Doc 42
+    lp_name rad_packing_42_doc
+</983_Printer>
+
+<984_Printer>
+    name RAD Packing Lab 43
+    lp_name rad_packing_43_lab
+</984_Printer>
+
+<985_Printer>
+    name RAD Packing Doc 43
+    lp_name rad_packing_43_doc
+</985_Printer>
+
+<986_Printer>
+    name RAD Packing Lab 44
+    lp_name rad_packing_44_lab
+</986_Printer>
+
+<987_Printer>
+    name RAD Packing Doc 44
+    lp_name rad_packing_44_doc
+</987_Printer>
+
+<988_Printer>
+    name RAD Packing Lab 45
+    lp_name rad_packing_45_lab
+</988_Printer>
+
+<989_Printer>
+    name RAD Packing Doc 45
+    lp_name rad_packing_45_doc
+</989_Printer>
+
+<990_Printer>
+    name RAD Packing Lab 46
+    lp_name rad_packing_46_lab
+</990_Printer>
+
+<991_Printer>
+    name RAD Packing Doc 46
+    lp_name rad_packing_46_doc
+</991_Printer>
+
+<992_Printer>
+    name RAD Packing Lab 47
+    lp_name rad_packing_47_lab
+</992_Printer>
+
+<993_Printer>
+    name RAD Packing Doc 47
+    lp_name rad_packing_47_doc
+</993_Printer>
+
+<994_Printer>
+    name RAD Packing Lab 48
+    lp_name rad_packing_48_lab
+</994_Printer>
+
+<995_Printer>
+    name RAD Packing Doc 48
+    lp_name rad_packing_48_doc
+</995_Printer>
+
+<996_Printer>
+    name RAD Packing Lab 49
+    lp_name rad_packing_49_lab
+</996_Printer>
+
+<997_Printer>
+    name RAD Packing Doc 49
+    lp_name rad_packing_49_doc
+</997_Printer>
+
+<998_Printer>
+    name RAD Packing Lab 50
+    lp_name rad_packing_50_lab
+</998_Printer>
+
+<999_Printer>
+    name RAD Packing Doc 50
+    lp_name rad_packing_50_doc
+</999_Printer>
+
+<1000_Printer>
+    name RAD Packing Lab 51
+    lp_name rad_packing_51_lab
+</1000_Printer>
+
+<1001_Printer>
+    name RAD Packing Doc 51
+    lp_name rad_packing_51_doc
+</1001_Printer>
+
+<1002_Printer>
+    name RAD Packing Lab 52
+    lp_name rad_packing_52_lab
+</1002_Printer>
+
+<1003_Printer>
+    name RAD Packing Doc 52
+    lp_name rad_packing_52_doc
+</1003_Printer>
+
+<1004_Printer>
+    name RAD Packing Lab 53
+    lp_name rad_packing_53_lab
+</1004_Printer>
+
+<1005_Printer>
+    name RAD Packing Doc 53
+    lp_name rad_packing_53_doc
+</1005_Printer>
+
+<1006_Printer>
+    name RAD Packing Lab 54
+    lp_name rad_packing_54_lab
+</1006_Printer>
+
+<1007_Printer>
+    name RAD Packing Doc 54
+    lp_name rad_packing_54_doc
+</1007_Printer>
+
+<DefaultPickingPrinters>
+    regular_customer Picking - Normal
+    regular_staff Picking - Normal
+    fast_customer Picking - EIP
+    fast_staff Picking - EIP
+    regular_customer_OUTNET Picking - Outnet
+    regular__staff_OUTNET Picking - Outnet
+    fast_customer_OUTNET Picking - Outnet
+    fast_staff_OUTNET Picking - Outnet
+    stock_transfer_europa Sample Picking - Europa
+    channel_transfer Goods In
+</DefaultPickingPrinters>
+
+<DefaultLabelPrinters>
+    large goodsinBarcodeLarge
+    small goodsinBarcodeSmall
+</DefaultLabelPrinters>
+
+<Settings>
+    stock_counting   off
+    instance   UK
+</Settings>
+
+<DHL>
+    xmlpi_address    [% EA_DHL_XMLPI_ADDRESS %]
+    xmlpi_password   [% EA_DHL_XMLPI_PASSWORD %]
+    xmlpi_username   [% EA_DHL_XMLPI_USERNAME %]
+
+    xmlpi_dhl_url               http://www.dhl.com
+    xmlpi_datatypes_url         http://www.dhl.com/datatypes
+    xmlpi_dct_request_url       http://www.dhl.com/DCTRequestdatatypes
+    xmlpi_schema_url            http://www.w3.org/2001/XMLSchema-instance
+    xmlpi_dct_location_url      http://www.dhl.com DCT-req.xsd
+    xmlpi_rou_location_url      http://www.dhl.com routing-global-req.xsd
+    xmlpi_svl_location_url      http://www.dhl.com ship-val-global-req.xsd
+    xmlpi_svl_header            ShipmentRequest
+    xmlpi_dct_header            DCTRequest
+    xmlpi_rou_header            RouteRequest
+
+    xmlpi_use_dhl_logo          0
+    xmlpi_language_code         en
+    xmlpi_region_code           EU
+    xmlpi_label_template        8X4_CI_thermal
+    xmlpi_schema_version        2.0
+    xmlpi_routing_version       1.0
+    xmlpi_zpl2_page_demarcation (?<=\^XZ)\s(?=\^XA)
+    xmlpi_label_resolution      300
+    use_2nd_gen_products   no
+    dhl_api_timeout      [% DC1_DHL_API_TIMEOUT %]
+
+    # list Country codes where the Town should be auto filled
+    # (with the county) if blank when calling the API so that
+    # DHL doesn't reject the request as town is a required field
+    <autofill_town_if_blank>
+        HK      1
+    </autofill_town_if_blank>
+    # for these country codes the city field is autofilled as
+    # they do not have a the city defined, but require it for the DHL
+    # capability address validation service
+    <autofill_address_validation_city>
+        HK      Hong Kong
+    </autofill_address_validation_city>
+    # for these country codes the alternate country code must be used for
+    # the DHL capability address validation service
+    <alternate_country_code_for_validation>
+      BL XY  # Saint Barthelemy
+      CW XC  # Curacao
+      SX XM  # Sint Maarten
+    </alternate_country_code_for_validation>
+</DHL>
+
+<Units>
+    weight   kgs
+    dimensions   cm
+</Units>
+
+<LDAP>
+    domain   [% LDAP_DOMAIN_0 %]
+    domain   [% LDAP_DOMAIN_1 %]
+    domain   [% LDAP_DOMAIN_2 %]
+    domain   [% LDAP_DOMAIN_3 %]
+    host     [% LONDON_LDAP_SERVER || '""' %]
+    host     [% NY_LDAP_SERVER || '""' %]
+    host     [% APAC_LDAP_SERVER || '""' %]
+    default_ldap_login      ldap_xtracker
+    default_ldap_password   Friday23ap
+    default_ldap_timeout    10
+    default_ldap_port       3268
+    binddn   [% LDAP_BIND_USER %]
+    bindpw   [% LDAP_BIND_PASS %]
+</LDAP>
+
+<Producer::DLP::Update>
+[% IF DEV_ENV %]
+ destination /queue/dlp-update-dc1
+[% ELSE %]
+ destination /queue/dlp-update-dc2
+[% END %]
+</Producer::DLP::Update>
+
+<Producer::Order::Reimbursement>
+  destination /queue/order-refund/dc1
+</Producer::Order::Reimbursement>
+
+<Producer::DCQuery::FraudAnswer>
+  <routes_map>
+    outbound_answer_queue /queue/dc3/fraud-answer
+  </routes_map>
+</Producer::DCQuery::FraudAnswer>
+
+<Producer::DCQuery::FraudQuery>
+  <routes_map>
+    outbound_query_queue /queue/dc3/fraud-query
+  </routes_map>
+</Producer::DCQuery::FraudQuery>
+
+<DCQuery>
+  query_enabled 0
+</DCQuery>
+
+<IWS>
+    rollout_phase    [% IWS_ROLLOUT_PHASE_DC1 %]
+    location_name    [% IWS_LOCATION_NAME_DC1 %]
+</IWS>
+
+<JimmyChooOrder>
+    test_data           t/data/json_orders/jimmychoo/dc1
+</JimmyChooOrder>
+
+<MrPorterOrder>
+    test_data           t/data/json_orders/mrporter/dc1
+</MrPorterOrder>
+
+<GiftMessages>
+    disable_automatic_gift_messages 1
+</GiftMessages>
+
+<Reconciliation>
+    script_dir            iws_reconciliation
+
+    report_email          [% IWS_RECONCILIATION_REPORT_EMAIL_DC1 %]
+    report_email_template email_report
+
+    prl_report_email      [% PRL_RECONCILIATION_REPORT_EMAIL_DC1 %]
+
+    summary_report_file   summary_report.txt
+    error_report_file     error_report.txt
+
+    iws_stock_export_file iws_stock_export.csv
+    xt_stock_export_file  xt_stock_export.csv
+    skus_in_iws_only_file skus_in_iws_only.csv
+    skus_in_xt_only_file  skus_in_xt_only.csv
+    skus_that_differ_file skus_that_differ.csv
+
+
+    # be mindful that if this is larger than the cron interval
+    # that the process script runs under, you might
+    # end up with multiple processes trying to grab
+    # the file -- only one should succeed, though,
+    # but it's still a waste of resources
+
+    seconds_until_stable    20
+    seconds_between_checks   5
+    max_stability_checks   100
+
+    iws_hostnames              [% IWS_RECONCILIATION_HOSTNAME_DC1 %]
+    iws_incoming_share_path    [% IWS_RECONCILIATION_SHARE_PATH_DC1 %]
+    iws_processed_share_path   [% IWS_RECONCILIATION_PROCESSED_PATH_DC1 %]
+
+    reports_dir           reconciliation
+
+    dir_create_mask       [% IWS_RECONCILIATION_DIR_CREATE_MASK %]
+
+    iws_samba_username    [% IWS_RECONCILIATION_SHARE_USERNAME_DC1 %]
+    iws_samba_password    [% IWS_RECONCILIATION_SHARE_PASSWORD_DC1 %]
+    iws_samba_workgroup   [% IWS_RECONCILIATION_SHARE_WORKGROUP_DC1 %]
+
+    iws_samba_read_size   [% IWS_RECONCILIATION_SHARE_READ_SIZE %]
+    iws_samba_create_mask [% IWS_RECONCILIATION_SHARE_CREATE_MASK %]
+</Reconciliation>
+
+<Fulfilment>
+    labelling_subsection    1
+    invalid_shipments_colspan  8
+    requires_picksheet 0
+    requires_packing_station 1
+    minimum_minutes_passed_before_hold_release_allows_new_sla 10
+    klarna_invoice_retrieval_timeout 30
+</Fulfilment>
+
+<Routing>
+    script_dir            routing
+
+    report_email          [% ROUTING_REPORT_EMAIL_DC1 %]
+    report_email_template email_report
+
+    summary_report_file   summary_report.txt
+    error_report_file     error_report.txt
+
+    # be mindful that if this is larger than the cron interval
+    # that the process script runs under, you might
+    # end up with multiple processes trying to grab
+    # a file -- only one should succeed, though,
+    # but it's still a waste of resources
+
+    # these stability checks are set to take less time that the
+    # IWS reconciliation ones, because the IWS file can be large,
+    # whereas the routing files are small
+
+    seconds_until_stable     7
+    seconds_between_checks   3
+    max_stability_checks   100
+
+    incoming_predelivery_share     [% ROUTING_PRE_SHARE_NAME_DC1 %]
+    processed_predelivery_share    [% ROUTING_PRE_PROCESSED_NAME_DC1 %]
+    incoming_postdelivery_share    [% ROUTING_POST_SHARE_NAME_DC1 %]
+    processed_postdelivery_share   [% ROUTING_POST_PROCESSED_NAME_DC1 %]
+
+    reports_dir           routing
+
+    dir_create_mask       [% ROUTING_DIR_CREATE_MASK %]
+
+    samba_username    [% ROUTING_SHARE_USERNAME_DC1 %]
+    samba_password    [% ROUTING_SHARE_PASSWORD_DC1 %]
+    samba_workgroup   [% ROUTING_SHARE_WORKGROUP_DC1 %]
+
+    samba_read_size   [% ROUTING_SHARE_READ_SIZE %]
+    samba_create_mask [% ROUTING_SHARE_CREATE_MASK %]
+</Routing>
+
+<Reimbursements>
+    # euros or sterling
+    maximum_credit_value  100
+</Reimbursements>
+
+<Valid_Payments>
+    valid_payments_threshold   10
+</Valid_Payments>
+
+<BarCode_Printers>
+    # We don't need the keyed array if we just list locations. When we port the
+    # rest of the barcode printers we should use the locations' order to
+    # determine the display order
+    location RAD Item Count Station 01
+    location RAD Item Count Station 02
+    location RAD Item Count Station 03
+    location RAD Returns QC Station 01
+    location RAD Returns QC Station 02
+    location RAD Returns QC Station 03
+    location Returns QC Station 03
+    location Returns QC Station 05
+    <GoodsIn>
+        <0>
+            label Goods In
+            small Goods In Barcode - Small
+            large Goods In Barcode - Large
+        </0>
+        <1>
+            label Returns In
+            small Returns In Barcode - Small
+            large Returns In Barcode - Large
+        </1>
+        <2>
+            label Fulfilment
+            small Fulfilment Barcode
+            large Fulfilment Barcode
+        </2>
+        <3>
+            label Sample Room
+            small Sample Room Barcode - Small
+            large Sample Room Barcode - Large
+        </3>
+        <4>
+            label Retag - Ground Floor
+            small Retag Ground Floor - Small
+            large Retag Ground Floor - Large
+        </4>
+        <5>
+            label Retag - 2nd Floor (A)
+            small Retag 2nd Floor - Small 2
+            large Retag 2nd Floor - Large
+        </5>
+        <6>
+            label Retag - 2nd Floor (B)
+            small Retag 2nd Floor - Small
+            large Retag 2nd Floor - Large
+        </6>
+        <7>
+            label Europa - Goods In
+            small GI Barcode - Small
+            large GI Barcode - Large
+        </7>
+        <8>
+            label Decant
+            small Decant - Small
+            large Decant - Large
+        </8>
+        <9>
+            label Spare 1
+            small Spare 1 - Small
+            large Spare 1 - Large
+        </9>
+        <10>
+            label Spare 2
+            small Spare 2 - Small
+            large Spare 2 - Large
+        </10>
+        <11>
+            label Spare 3
+            small Spare 3 - Small
+            large Spare 3 - Large
+        </11>
+        <12>
+            label Inventory
+            small Inventory Label - Small
+            large Inventory Label - Large
+        </12>
+        <13>
+            label Jimmy Choo
+            small jimmy_choo_barcode_label_small_01
+            large jimmy_choo_barcode_label_large_01
+        </13>
+        <14>
+            label RAD Packing QA
+            small RAD Packing QA - small
+            large RAD Packing QA - large
+        </14>
+        <15>
+            label DC1 Xcage
+            small DC1 Xcage - small
+            large DC1 Xcage - large
+        </15>
+    </GoodsIn>
+</BarCode_Printers>
+
+<Carrier_Premier>
+    default_returns_routing_code    A
+    default_returns_start_window    10:00
+    default_returns_end_window      21:00
+    default_exchange_reshipment_replacement_routing_code   A
+    # indicates whether Address Lines should be truncated
+    # if they exceed a maximum length when generating the file
+    truncate_address_lines_in_routing_file  yes
+</Carrier_Premier>
+
+<Print_Document>
+    requires_dangerous_goods_note 1
+    requires_premier_nonpacking_printouts 0
+    requires_premier_packing_printouts 1
+    requires_shipping_input_form_printouts 0
+    page_size   a4
+</Print_Document>
+
+<Stock_Location>
+    # this shows the suffix format of DC locations
+    suffix_format ....
+    suggest_location 0
+    show_barcode_long_location_format 1
+
+    # for providing drop downs for locations
+    floors_start    1
+    floors_end      9
+    units_start     1
+    units_end       9
+    aisles_start    01
+    aisles_end      99
+    bays_start      01
+    bays_end        99
+    positions_start 01
+    positions_end   99
+    zones_start     A
+    zones_end       Z
+    locations_start 001
+    locations_end   999
+    levels_start    A
+    levels_end      Z
+</Stock_Location>
+
+<Pricing>
+    <ProductSellingPrice>
+        remove_vat      1
+    </ProductSellingPrice>
+</Pricing>
+
+<PRL>
+    rollout_phase    [% PRL_ROLLOUT_PHASE_DC1 %]
+
+    # Not actually used anywhere in xtracker yet for DC1,
+    # but this is approximately what we think they do in
+    # real life.
+    <Goods_In_Container_Types>
+        Flat        tote
+        Hanging     tote
+        Oversized   tote
+        Awkward     oversize_container
+        Cage        tote
+    </Goods_In_Container_Types>
+</PRL>
+
+<PackingException>
+    # When a Shipment is resolved in PE; whether to send the
+    # Containers to Packing by using an Induction Point (a place where
+    # a user scans a Container/Shipment onto the Conveyor or walk it over).
+    #
+    # Note: Use
+    # maybe_condition_config_var("PackingException", "is_sent_to_packing_via_induction_point")
+    # to get this value, it may depend on the PRL rollout phase.
+    is_sent_to_packing_via_induction_point 0
+</PackingException>
+
+<Putaway>
+
+    # When cancelled items from Packing Exception are taken to
+    # Putaway, they are scanned into a...
+    #
+    # Note: This config value determines which subclass of
+    # XT::Data::Fulfilment::Putaway is being used. If you think you
+    # need to branch on this value, please try to put the behaviour in
+    # those classes instead.
+    #
+    intransit_type "Container"
+
+    # Location names for transferring items to Putaway (Putaway Prep
+    # only, currently) from e.g. Packing Exception. This isn't used
+    # atm in this DC.
+    <Locations>
+        Cancelled    "Cancelled-to-Putaway"
+    </Locations>
+</Putaway>
+
+<ParallelOrderImporterTunableParameters>
+    max_orders_per_importer    [% MAX_ORDERS_PER_IMPORTER_DC1 %]
+    max_concurrent_importers   [% MAX_CONCURRENT_IMPORTERS_DC1 %]
+    max_orders_without_pausing [% MAX_ORDERS_WITHOUT_PAUSING_DC1 %]
+    max_files_per_splitter     [% MAX_FILES_PER_SPLITTER_DC1 %]
+    max_concurrent_splitters   [% MAX_CONCURRENT_SPLITTERS_DC1 %]
+    max_deadlock_attempts      [% MAX_DEADLOCK_ATTEMPTS_DC1 %]
+    max_deadlock_delay         [% MAX_DEADLOCK_DELAY_DC1 %]
+    min_deadlock_delay         [% MIN_DEADLOCK_DELAY_DC1 %]
+</ParallelOrderImporterTunableParameters>
+
+<Customer>
+    default_language_preference    en
+</Customer>
+
+<Seaview>
+    service_url       [% SEAVIEW_SERVICE_URL %]
+    ssl               [% SEAVIEW_SSL %]
+    useragent_class   [% SEAVIEW_USERAGENT_CLASS %]
+    retry_limit       [% SEAVIEW_RETRY_LIMIT %]
+    address_updates   [% SEAVIEW_ADDRESS_UPDATES %]
+    useragent_timeout 5
+    fake_response_dir [% XTDC_BASE_DIR %]/t/data/seaview
+</Seaview>
+
+<SSL>
+    ca_cert_file [% XTDC_CONF_DIR %][% XTDC_SSL_LOCATION %][% NAP_CA_CERT_FILE %]
+    client_cert_file [% XTDC_CONF_DIR %][% XTDC_SSL_LOCATION %][% XTDC1_CLIENT_CERT_FILE %]
+    private_key_file [% XTDC_CONF_DIR %][% XTDC_SSL_LOCATION %][% XTDC1_PRIVATE_KEY_FILE %]
+</SSL>
+
+<Solr_NAP>
+    product_service_url     [% PRODUCTSERVICE_SOLR_CORE_NAP %]
+    designer_service_url    [% DESIGNERSERVICE_SOLR_CORE_NAP %]
+</Solr_NAP>
+
+<Solr_OUTNET>
+    product_service_url     [% PRODUCTSERVICE_SOLR_CORE_OUT %]
+    designer_service_url    [% DESIGNERSERVICE_SOLR_CORE_OUT %]
+</Solr_OUTNET>
+
+<Solr_MRP>
+    product_service_url     [% PRODUCTSERVICE_SOLR_CORE_MRP %]
+    designer_service_url    [% DESIGNERSERVICE_SOLR_CORE_MRP %]
+</Solr_MRP>
+
+<Solr_JC>
+    product_service_url     [% PRODUCTSERVICE_SOLR_CORE_JCH %]
+    designer_service_url    [% DESIGNERSERVICE_SOLR_CORE_JCH %]
+</Solr_JC>
+
+<GeoLocation>
+    db_filename         GeoLiteCity.dat
+    remote_filename     GeoLiteCity.dat
+    remote_urlpath      http://geolite.maxmind.com/download/geoip/database/
+</GeoLocation>
+
+<RTVChannelPrinterName>
+    NAP       RTV
+    MRP       RTV
+    OUTNET    RTV
+    JC        JC_RTV
+</RTVChannelPrinterName>
+
+<FastTrackChannelPrinterName>
+    NAP       Fast Track Sheet
+    MRP       Fast Track Sheet
+    OUTNET    Fast Track Sheet
+    JC        JC Fast Track Sheet
+</FastTrackChannelPrinterName>
+
+<SampleVendorGoodsInChannelPrinterName>
+    NAP       Returns In Barcode - Small
+    MRP       Returns In Barcode - Small
+    OUTNET    Returns In Barcode - Small
+    JC        JCSampleVendorGoodsIn
+</SampleVendorGoodsInChannelPrinterName>
+
+<InspectRTVChannelPrinterName>
+    NAP      Picking - RTV Inspect
+    MRP      Picking - RTV Inspect
+    OUTNET   Picking - RTV Inspect
+    JC       JC Picking - RTV Inspect
+</InspectRTVChannelPrinterName>
+
+<SetRTVChannelPrinterName>
+    NAP      Picking - RTV Inspect
+    MRP      Picking - RTV Inspect
+    OUTNET   Picking - RTV Inspect
+    JC       JC Picking - RTV Inspect
+</SetRTVChannelPrinterName>
+
+<UPS>
+    enabled 0
+[% IF UPS__USE_FAKE_API_CALLS %]
+    use_fake_api_calls 1
+[% END %]
+</UPS>
+
+<Warehouse>
+    printer_source          [% PRINTER_SOURCE %]
+    cups_printer_source     /etc/cups/printers.conf
+    file_printer_source     [% XTDC_BASE_DIR %]/t/conf/printers_dc1.conf
+    hold_if_invalid_address 1
+</Warehouse>
+
+<SOS>
+    enabled 1
+    enabled_for_nominated_day 1
+[% IF DEV_ENV %]
+    api_class Test::SOS::SLARequest::Mocked
+[% ELSE %]
+    api_class SOS::SLARequest
+[% END %]
+    emergency_sla_interval_in_minutes 120
+    emergency_sla_initial_pick_priority 20
+    alert_emails_to failed_sos_sla_request_alerts@net-a-porter.com
+</SOS>
+
+# Patcher applies patches from these directories.
+# Applying patches when nap.property feature
+# switches are triggered is now possible.
+
+<PatcherDirs>
+    # this config is run through perl + bash and eval'ed.
+    # spaces, quotes, highly likely to break 'make'
+    folder Common
+    folder DC1
+</PatcherDirs>
+
+<CubiscanSambaShare>
+    username    [% XTDC1_CUBISCAN_SAMBA_USERNAME %]
+    password    [% XTDC1_CUBISCAN_SAMBA_PASSWORD %]
+    workgroup   [% XTDC1_CUBISCAN_SAMBA_WORKGROUP %]
+    server      [% XTDC1_CUBISCAN_SAMBA_SERVER %]
+    dir         [% XTDC1_CUBISCAN_SAMBA_DIR %]
+</CubiscanSambaShare>
+
+<AMQBrowser>
+    hostname   [% DC1_AMQ_BROKER_HOSTNAME %]
+    web_port   8161
+    username   [% AMQ_BROKER_WEB_USERNAME %]
+    password   [% AMQ_BROKER_WEB_PASSWORD %]
+</AMQBrowser>
+
+<Metrics>
+    graphite_hostname       [% GRAPHITE_HOSTNAME %]
+    graphite_metric_prefix  metrics.[% IF DEV_ENV %]dave[% ELSE %]prod[% END %].dc1.xtracker
+</Metrics>
+

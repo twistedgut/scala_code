@@ -1,0 +1,18 @@
+<pre>
+
+h1. CANDO
+    * CANDO-3032: fix missing server selector on login form and show correct model
+    * CANDO-2809: do not call dbl_submit_token things
+
+h1. APS
+    * APS-5111: PSGI: Product approval spreadsheet download fix (by Matt Ryall)
+
+h1. Emergency fixes (already deployed)
+    * REL-14375 - Upgrade Warehouse Common - bump minimum version.
+    * FIX: use /var/data/sessions for XT sessions (LOCAL_DEVEL=0)
+    * HOTFIX: use /var/data/sessions for XT sessions
+    * PSGI: Disable CSRF checks
+    * Plack::Middleware::CSRFBlock does not work in a multi-app
+          server environment
+
+</pre>

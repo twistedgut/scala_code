@@ -1,0 +1,81 @@
+<html>
+<head>
+<!-- Template name: [% template.name %] -->
+<title></title>
+<style type="text/css">
+<!--
+body { margin-top: 1cm; margin-left: 0.5cm; }
+//-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" TEXT="#000000">
+
+<h1>Measurement Form</h1><br>
+<br>
+<br>
+
+<table width="90%" cellpadding="4" cellspacing="0" border="1" class="data">
+    <tr height="30">
+        <td width="15%">Product ID</td>
+        <td width="85%">[% product.id %]</td>
+    </tr>
+    <tr height="30">
+        <td>Designer</td>
+        <td>[% product.designer %]</td>
+    </tr>
+    <tr height="30">
+        <td>Description</td>
+        <td>[% product.description %]</td>
+    </tr>
+    <tr height="30">
+        <td>Style No.</td>
+        <td>[% product.style_number %]</td>
+    </tr>
+    <tr height="30">
+        <td>Designer Colour</td>
+        <td>[% product.designer_colour || '-' %] ([% product.designer_colour_code || '-' %]) %]</td>
+    </tr>
+    <tr height="30">
+        <td>Product Type</td>
+        <td>[% product.product_type %]</td>
+    </tr>
+    <tr height="30">
+        <td>Size Scheme</td>
+        <td>[% product.size_scheme || '-' %]</td>
+    </tr>
+</table>
+<br>
+<br>
+<br>
+<table width="90%" cellpadding="10" cellspacing="0" border="1" class="data">
+    <tr>
+        <td colspan="8" class="dividerHeader"></td>
+    </tr>
+    <tr>
+        <td width="15%" class="tableHeader">[% INCLUDE page_elements/headerspacer.tt %]SKU</td>
+        <td width="15%" class="tableHeader">NAP Size</td>
+        <td width="15%" class="tableHeader">Designer Size</td>
+        [% FOREACH mid = required.keys.nsort %]
+            <td width="10%" class="tableHeader">[% required.$mid %]</td>
+        [% END %]
+    </tr>
+    <tr>
+        <td colspan="8" class="dividerHeader"></td>
+    </tr>
+    [% FOREACH varid = variants.keys.nsort %]
+        <tr>
+            <td>[% INCLUDE page_elements/headerspacer.tt %][% product.id %]-[% var_data.$varid.size_id %]</td>
+            <td>[% var_data.$varid.size %]</td>
+            <td>[% product.size_scheme _ ' ' IF product.size_scheme; var_data.$varid.designer_size %]</td>
+            [% FOREACH mid = variants.$varid.keys.nsort %]
+                <td>[% variants.$varid.$mid %]&nbsp;</td>
+            [% END %]
+        </tr>
+        <tr>
+            <td colspan="8" class="divider"></td>
+        </tr>
+    [% END %]
+</table>
+</body>
+</html>
+

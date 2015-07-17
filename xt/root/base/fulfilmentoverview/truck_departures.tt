@@ -1,0 +1,40 @@
+
+<h3>Truck Departures</h3>
+
+[% IF truck_departures.keys.size OR late_shipments.keys.size %]
+
+    [% INCLUDE fulfilmentoverview/overview_basic_layout.tt %]
+
+    <div id="truck_departures_parameters">
+        <form name="truck_params" action="/Fulfilment/FulfilmentOverview" method="GET">
+            <div class="formrow formstart divideabove dividebelow">
+                <label for="number_of_days">No. of days fulfilment:</label>
+                <select name="number_of_days" id="number_of_days">
+                    [% FOREACH i IN [1 .. 10] %]
+                        <option value="[% i %]" [% IF i == fulfilment_days %] selected='selected' %][% END %]>[% i %]</option>
+                    [% END %]
+                </select>
+            </div>
+            <div class="formrow divideabove dividebelow">
+                <label for="channel_id">Channels:</label>
+                [% FOREACH channel IN channels %]
+                    <span>[% channel.name %]:</span>
+                    <input type="checkbox" name="channel_id" value="[% channel.id %]"
+                        [% IF selected_channels.grep(channel.id).size > 0 %]checked="checked"[% END %] />
+                [% END %]
+            </div>
+            <div class="formrow buttons formend aftertable">
+                [% INCLUDE page_elements/forms/submit_button.tt %]
+            </div>
+        </form>
+    </div>
+
+[% ELSE %]
+
+    <p>No truck departures have been found for [% number_of_days %] days.</p>
+
+[% END %]
+
+<p class="info">
+The following are excluded from this view: On Hold, Sample and Staff shipments.
+</p>

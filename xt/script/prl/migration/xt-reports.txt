@@ -1,0 +1,17 @@
+Reports to run on the XT database
+
+(See also DCA-2065)
+
+Shipments (*not* orders) on hold:
+
+  SELECT s.id,sc.class,st.type,v.product_id,v.size_id
+  FROM shipment s
+  JOIN shipment_item si ON si.shipment_id=s.id
+  JOIN shipment_status ss ON s.shipment_status_id=ss.id
+  JOIN variant v ON si.variant_id=v.id
+  JOIN shipment_type st ON s.shipment_type_id=st.id
+  JOIN shipment_class sc ON s.shipment_class_id=sc.id
+  WHERE ss.status='Hold'
+    AND v.product_id in (334442,334443);
+
+Limiting by PID is a good idea.

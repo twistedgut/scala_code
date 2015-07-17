@@ -1,0 +1,53 @@
+<pre>
+
+
+h1. CANDO - Customer & Orders
+
+* CANDO-7981: Fix schema singleton warnings in lib/XTracker/Order/Actions/ProcessPayment.pm
+* CANDO-8361 BUG: XTDC2 > Orders > Change Address > Invalid State error
+* CANDO-8247: PreOrder Listing Summary Page
+* CANDO-8384: CONRAD - Update Fraud Rule Metrics using Job Queue to avoid DB Locks
+* CANDO-8372: Choose Address page (part of Edit Address function) is slow to load
+* CANDO-8383: Add Plack Middleware to XTracker to log all requests before processing
+
+
+h1. DC2A - DC2 Automation
+
+*
+
+
+h1. DCOP - DC Operations
+
+*
+
+
+h1. SHIP - Expedited Shippping
+
+*
+
+
+h1. WHM - Warehouse
+
+*
+
+
+
+h1. Other
+
+h2. BS - Build Support
+
+*
+
+h2. PM - Product Management
+
+*
+
+h2. SAS - Search & Aggregation
+
+*
+
+h2. Misc
+
+*
+
+</pre>

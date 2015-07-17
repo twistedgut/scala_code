@@ -1,0 +1,28 @@
+<pre>
+h1. Projects
+
+h2. Enhancements [RED]
+    * EN-1513: Update footers with new DC2 address
+    * EN-1481: nowrap to date field on sample return
+    * Updated and added Ben's script to update product shipping restrictions
+      on the website after changing the ship_restriction/location in xtracker.
+
+h2. DCEA [orange]
+    * Picking
+    ** Picking screen now requires operators to pick into totes.
+    ** Put shipment on hold due to missing items sends appropriate WMS AMQ messages
+    * Packing
+    ** Packers will now scan a tote instead of a pick sheet to start the pack (though scanning the pick sheet will still work for now)
+    ** Once a tote is scanned, the packer will be informed if there are multiple shipments in the tote.
+    ** Once a tote is scanned, the packer will be informed if there are multiple totes for the shipment.
+    ** Packer is also informed as to which shipment items are in which tote
+    ** Packing screen now displays all information previously available to the packer on the pick sheet
+    * Packing QC
+    ** Supervisor can add packing exception notes which are displayed back to the packer once the shipment is fixed
+    * Other fulfillment
+    ** Cancel shipment during fulfillment process sends appropriate WMS AMQ messages
+    ** Amend shipment during fulfillment process sends appropriate WMS AMQ messages
+    * Inventory
+    ** Product Storage Type can be updated. Though only if the item is not currently in stock
+
+</pre>

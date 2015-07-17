@@ -1,0 +1,70 @@
+.fraudscreen__page_buttons {
+    text-align:right;
+}
+
+.fraudscreen__page_buttons BUTTON.button {
+    margin-left: 5px;
+}
+
+#fraudscreen__push_to_staging_button, #fraudscreen__cancel_changes_button, .fraudscreen__force_commit_option {
+    display:none;
+}
+
+#fraudscreen__rules_popup {
+    display:none;
+}
+
+IMG.key_icon {
+    display: inline;
+    margin-left: 2px;
+    width: 10px;
+    height: 10px;
+}
+
+DIV.log_title_wrapper {
+    width: 100%;
+    border-bottom: 1px solid #333;
+    margin-bottom: 10px;
+}
+DIV.log_title_wrapper DIV.log_title {
+    display: inline;
+    float: left;
+}
+DIV.log_title_wrapper DIV.log_title_toggle {
+    display: inline;
+    float: right;
+    padding-top: 7px;
+}
+DIV.log_title_wrapper DIV.log_title_toggle .log_toggle_more {
+    display: none;
+}
+DIV.log_title_wrapper DIV.log_title_toggle .log_toggle_less {
+    display: block;
+}
+
+#fraud_rules_log {
+    display: none;
+}
+
+#fraudscreen__change_log_message {
+    display: none;
+    /* hide scroll bars IE likes to show */
+    overflow: hidden;
+}
+
+#fraudscreen__change_log_message form div {
+    width: 100%;
+}
+
+#fraudscreen__log_message {
+    /* tells the TEXTAREA how wide it should actually be */
+    width: 100%;
+}
+
+#fraudrules__popup_login {
+    display: none;
+}
+
+#fraudscreen__list_items {
+    display: none;
+}

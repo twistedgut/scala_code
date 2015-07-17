@@ -1,0 +1,332 @@
+=====================================
+XT 2012.08.04 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               : 26.06.2012
+Cherwell           : 
+Release Manager    : Sham
+Build Manager      : Tom
+TechOps            : 
+Backend Developer  : 
+Frontend Developer : 
+QA                 : 
+PCI Authorised by  : 
+
+2 - CHANGELOG
+-------------
+http://gitosis.net-a-porter.com/cgit/xt/tree/CHANGES/2012.08.04?h=release/2012.08
+
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2012.08/xt-2012.08.04-0.noarch.rpm
+
+Do this for DC1, DC2 and DC3.
+
+4 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+
+DCA-81
+------
+Add the following to /etc/nap.properties:
+
+PRL_ROLLOUT_PHASE_DC1 0
+PRL_ROLLOUT_PHASE_DC2 0
+PRL_ROLLOUT_PHASE_DC3 0
+
+
+CANDO: Pre-Order
+----------------
+Add the following new properties to /etc/nap.properties
+
+    IMAGE_HOST_URL            http://cache.net-a-porter.com
+    IMAGE_HOST_URL_SSL        https://www.net-a-porter.com
+
+Also, please make sure the new SSL certificate is in place 
+and that nginx conf have been updated accordingly for DC1 and DC2.
+
+Add the following new properties to /etc/nap.properties
+
+    # parallel order importer config
+    #
+    MAX_ORDERS_PER_IMPORTER_DC1     7
+    MAX_CONCURRENT_IMPORTERS_DC1    3
+    MAX_FILES_PER_SPLITTER_DC1      50
+    MAX_CONCURRENT_SPLITTERS_DC1    3
+    MAX_ORDERS_PER_IMPORTER_DC2     7
+    MAX_CONCURRENT_IMPORTERS_DC2    3
+    MAX_FILES_PER_SPLITTER_DC2      50
+    MAX_CONCURRENT_SPLITTERS_DC2    3
+    MAX_ORDERS_PER_IMPORTER_DC3     7
+    MAX_CONCURRENT_IMPORTERS_DC3    3
+    MAX_FILES_PER_SPLITTER_DC3      50
+    MAX_CONCURRENT_SPLITTERS_DC3    3
+
+
+WHM-977, DCA-272
+----------------
+1. Stop cups -
+
+    For DC1, DC2, DC3: stop the CUPS daemon (sudo /etc/init.d/cups stop)
+
+2. Update printers.conf -
+
+2.1:  For DC1, DC2, DC3: add the following entries to /etc/cups/printers.conf:
+
+<Printer item_count_01_large>
+Info item_count_01_large
+Location dc1
+DeviceURI lpd://item_count_01_large/auto
+State Idle
+StateTime 1292927406
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer item_count_01_small>
+Info item_count_01_small
+Location dc1
+DeviceURI lpd://item_count_01_small/auto
+State Idle
+StateTime 1292927406
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer item_count_02_large>
+Info item_count_02_large
+Location dc1
+DeviceURI lpd://item_count_02_large/auto
+State Idle
+StateTime 1292927406
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer item_count_02_small>
+Info item_count_02_small
+Location dc1
+DeviceURI lpd://item_count_02_small/auto
+State Idle
+StateTime 1292927406
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer item_count_03_large>
+Info item_count_03_large
+Location dc1
+DeviceURI lpd://item_count_03_large/auto
+State Idle
+StateTime 1292927406
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer item_count_03_small>
+Info item_count_03_small
+Location dc1
+DeviceURI lpd://item_count_03_small/auto
+State Idle
+StateTime 1292927406
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer item_count_04_large>
+Info item_count_04_large
+Location dc1
+DeviceURI lpd://item_count_04_large/auto
+State Idle
+StateTime 1292927406
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer item_count_04_small>
+Info item_count_04_small
+Location dc1
+DeviceURI lpd://item_count_04_small/auto
+State Idle
+StateTime 1292927406
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer item_count_05_large>
+Info item_count_05_large
+Location dc1
+DeviceURI lpd://item_count_05_large/auto
+State Idle
+StateTime 1292927406
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer item_count_05_small>
+Info item_count_05_small
+Location dc1
+DeviceURI lpd://item_count_05_small/auto
+State Idle
+StateTime 1292927406
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+
+2.2 For DC2 *ONLY*:
+
+    In /etc/cups/printers.conf for each following pair replace key with value:
+
+    "<Printer picking-dc024>"               ==>  "<Printer RTVPicking>"
+    "<Printer rtv-024>"                     ==>  "<Printer rtv>"
+    "<Printer samples_021>"                 ==>  "<Printer SamplesPicking>"
+    "<Printer samples_and_fasttrack_022>"   ==>  "<Printer fasttrack>"
+    "<Printer dc2_021_label_small>"         ==>  "<Printer fulfilment-bc-small>"
+    "<Printer dc2_021_label_large>"         ==>  "<Printer fulfilment-bc-large>"
+    "DeviceURI lpd://picking-dc024/auto"    ==>  "DeviceURI lpd://RTVPicking/auto"
+    "DeviceURI lpd://rtv-024/auto"          ==>  "DeviceURI lpd://rtv/auto"
+    "DeviceURI lpd://samples_021/auto"      ==>  "DeviceURI lpd://SamplesPicking/auto"
+    "DeviceURI lpd://samples_and_fasttrack_022/auto" ==> "DeviceURI lpd://fasttrack/auto"
+    "DeviceURI lpd://dc2_021_label_small/auto"       ==> "DeviceURI lpd://fulfilment-bc-small/auto"
+    "DeviceURI lpd://dc2_021_label_large/auto"       ==> "DeviceURI lpd://fulfilment-bc-large/auto"
+
+
+3. Update hosts -
+
+For DC1:
+
+    Add the following entries to /etc/hosts on DC1:
+
+    10.3.3.199 item_count_01_large
+    10.3.3.198 item_count_01_small
+    10.3.17.203 item_count_02_large
+    10.3.17.204 item_count_02_small
+
+For DC2:
+
+    Add the following entries to /etc/hosts on DC2:
+
+    10.7.7.179 item_count_01_large
+    10.7.7.178 item_count_01_small
+    10.7.7.198 item_count_02_large
+    10.7.7.197 item_count_02_small
+
+    Also, update some existing entries: for each pair replace key with value:
+
+    "picking-dc024"         ==> "RTVPicking"
+    "rtv-024"               ==> "rtv"
+    "samples_021"           ==> "SamplesPicking"
+    "dc2_021_label_small"   ==> "fulfilment-bc-small"
+    "dc2_021_label_large"   ==> "fulfilment-bc-large"
+    "samples_and_fasttrack_022" ==> "fasttrack"
+
+
+For DC3:
+
+    Let's add some comments we can use as placeholders when we sort out the
+    printers, so add the following entries:
+
+    # TBD item_count_01_large
+    # TBD item_count_01_small
+    # TBD item_count_02_large
+    # TBD item_count_02_small
+
+4. Start cups -
+
+    For DC1, DC2, DC3: start the CUPS daemon (sudo /etc/init.d/cups start)
+
+
+
+5 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+sudo yum install xt
+
+6 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+Execute the following command on both DCs: perl /opt/xt/deploy/xtracker/script/oneoffs/whm/whm-754-extract_channel_transfer_date_from_logs.pl
+Email the output to whm-dev@net-a-porter.com
+
+Remove the following settings from /etc/nap.properties:
+
+    FULFILMENT_AUTO_SELECT_DC1
+    FULFILMENT_AUTO_SELECT_COUNT_DC1
+    FULFILMENT_AUTO_SELECT_DC2
+    FULFILMENT_AUTO_SELECT_COUNT_DC2
+    FULFILMENT_AUTO_SELECT_DC3
+    FULFILMENT_AUTO_SELECT_COUNT_DC3
+
+7 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

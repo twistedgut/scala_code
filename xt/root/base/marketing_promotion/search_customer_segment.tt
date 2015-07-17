@@ -1,0 +1,89 @@
+<span class="title">Customer Segment Search</span><br>
+<form name="customer_segment_search_form" action="Search" method="post">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+<input type="hidden" name="search" value="1">
+<div class="formrow divideabove dividebelow">
+    <label for="customer_number">Customer Number</label>
+    <input type="text" name="customer_number" />
+</div>
+<div class="formrow dividebelow">
+    <label for="first_name">Customer Segment Name</label>
+    <input type="text" name="segment_name" />
+</div>
+<div class="formrow buttons aftertable">
+    <input type="submit" name="submit" value="Submit &raquo;" class="button">
+</div>
+</form>
+
+[% USE Dumper %]
+[% IF customer %]
+    <h3 class="title-[% channel_config.$sales_channel %]">Customer Search</h3>
+    [% IF customer_segment.size %]
+    <br>
+
+    <b>Customer:</b>&nbsp;[% customer.first_name %] [% customer.last_name %]<br />
+    <b>Customer Number:</b>&nbsp; [% customer.is_customer_number %]<br />
+    <br>
+            <table class="wide-data data" id="customer_[% customer.id %]">
+                <thead>
+                    <tr>
+                        <th width="20%">Customer Segment Name</th>
+                        <th width="15%">Creation Date</th>
+                        <th width="15%">Count of Customers</th>
+                        <th width="10%">Status</th>
+                    </tr>
+                </thead>
+                <tbody id='segement_body'>
+                    [% FOREACH segment IN customer_segment %]
+
+                    <tr class="dividebelow">
+<!--<td>[% Dumper.dump(segment) %]</td> -->
+                        <td><a href="/NAPEvents/InTheBox/CustomerSegment/Edit?segment_id=[% segment.id %]&action=edit">[% segment.name %] </a></td>
+                        <td>[% segment.created_date.dmy %]</td>
+                        <td>[% segment.get_customer_count %]</td>
+                        <td>[% IF segment.enabled %] Active [% ELSE %] Disabled [% END %]</td>
+                    </tr>
+                    [% END %]
+                </tbody>
+            </table>
+            <br>
+
+    [% ELSE %]
+        <strong>Customer not assigned to any customer segment</strong>
+    [% END %]
+[% ELSIF segment_flag %]
+    <h3> Customer Segment Search</h3>
+    [% IF customer_segment.size %]
+    <br>
+    <b>Customer Segment Name:</b>&nbsp;[% segment_name %]<br />
+    <br>
+        <table class="wide-data data" id="customer_[% customer.id %]">
+                <thead>
+                    <tr>
+                        <th width="20%">Customer Segment Name</th>
+                        <th width="10%">Creation Date</th>
+                        <th width="15%">Channel Name</th>
+                        <th width="10%">Count of Customers</th>
+                        <th width="10%">Status</th>
+                    </tr>
+                </thead>
+                <tbody id='segement_body'>
+                    [% FOREACH segment IN customer_segment %]
+                        [% SET channel_id = segment.channel_id %]
+                    <tr class="dividebelow">
+                        <td><a href="/NAPEvents/InTheBox/CustomerSegment/Edit?segment_id=[% segment.id %]&action=edit">[% segment.name %] </a></td>
+                        <td>[% segment.created_date.dmy %]</td>
+                        <td>[% channels.$channel_id.name %] </td>
+                        <td>[% segment.get_customer_count %]</td>
+                        <td>[% IF segment.enabled %] Active [% ELSE %] Disabled [% END %]</td>
+                    </tr>
+                    [% END %]
+                </tbody>
+            </table>
+            <br>
+
+    [% ELSE %]
+        <strong>Customer Segment name not found</strong>
+    [% END %]
+
+[% END %]

@@ -1,0 +1,69 @@
+#!/opt/xt/xt-perl/bin/perl
+use strict;
+use warnings;
+
+use DateTime;
+use WWW::Mechanize;
+
+my ($dd,$mm,$yyyy);
+
+my $url = $ARGV[0]
+    or die "usage: $0 <PWSURL>\n";
+
+my ($pid) = ($url =~ m{(\d+)\z}xms);
+
+#warn qq{Looking for PID #$pid\n};
+
+my $mech = WWW::Mechanize->new();
+# login
+$mech->get( q{http://xtracker.net-a-porter.com/Login} );
+$mech->submit_form(
+    form_name => q{loginForm},
+    fields => {
+        username => $ENV{XTUSER} || q{numpty},
+        pass     => $ENV{XTPASS} || q{dumpty},
+    }
+);
+
+die q{failed to login}
+    if (not $mech->success);
+
+if ($mech->content =~ m{Login}) {
+    die qq{failed to login as } . ($ENV{XTUSER} || q{numpty}) . qq{\nusage: XTUSER=user XTPASS=pass product_age <websiteurl>\n};
+}
+
+$mech->get(
+    qq{http://xtracker.net-a-porter.com/StockControl/Inventory/Overview?product_id=$pid}
+);
+
+if ($mech->content =~ m{
+    <td>
+    .+
+    href=".+product_id=$pid"
+    .+
+    </td>
+    \s+
+    <td>\d{2}-\d{2}-\d{4}</td>
+    \s+
+    <td>(\d\d)-(\d\d)-(\d\d\d\d)</td>
+}xms) {
+    ($dd,$mm,$yyyy) = ($1, $2, $3);
+}
+
+else {
+    die "no date";
+}
+
+
+my $dt = DateTime->new(
+    day     => $dd,
+    month   => $mm,
+    year    => $yyyy,
+);
+
+print "Product #$pid Upload Date: " . $dt->ymd . "\n";
+print "Six weeks old on:           " . $dt->add( weeks => 6)->ymd . "\n";
+print "\n";
+print "Product Website URL: " . $url . "\n";
+print "Product Fulcrum URL: http://fulcrum.net-a-porter.com/product/$pid\n";
+print "Product XTDC1 URL:   http://xtracker/StockControl/Inventory/Overview?product_id=$pid\n";

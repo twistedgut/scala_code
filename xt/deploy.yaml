@@ -1,0 +1,72 @@
+# XT Unicorn Deployment Configuration
+
+global:
+
+packages:
+  xt-uni:
+    nap_role: nap_role_xt
+    hiera_role: xt
+    pulp_repo: xt
+    deployment_type: puppet-ssh
+  warehouse-common:
+    nap_role: xt
+    hiera_role: ""
+    pulp_repo: xt
+    deployment_type: puppet-ssh
+  perl-nap-core:
+    nap_role: xt
+    hiera_role: ""
+    pulp_repo: xt
+    deployment_type: puppet-ssh
+  perl-nap-cpan:
+    nap_role: xt
+    hiera_role: ""
+    pulp_repo: xt
+    deployment_type: puppet-ssh
+  bootstrap:
+    nap_role: xt
+    hiera_role: ""
+    pulp_repo: xt
+    deployment_type: puppet-ssh
+  XT-Common:
+    nap_role: xt
+    hiera_role: ""
+    pulp_repo: xt
+    deployment_type: puppet-ssh
+  XT-Common-JQ:
+    nap_role: xt
+    hiera_role: ""
+    pulp_repo: xt
+    deployment_type: puppet-ssh
+  yui-nap:
+    nap_role: xt
+    hiera_role: ""
+    pulp_repo: xt
+    deployment_type: puppet-ssh
+  jquery-nap:
+    nap_role: xt
+    hiera_role: ""
+    pulp_repo: xt
+    deployment_type: puppet-ssh
+
+# PROMOTION & TASKS/GOALS
+promotions:
+  dev:
+    order.prefix: 01
+    test.targets:
+    test.url:
+
+  prelive:
+    order.prefix: 02
+    test.targets:
+    test.url:
+
+  prod_lega:
+    order.prefix: 03
+
+  prod_legb:
+    order.prefix: 04
+
+  likelive:
+    order.prefix: 05
+

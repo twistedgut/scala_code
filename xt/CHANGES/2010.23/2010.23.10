@@ -1,0 +1,12 @@
+<pre> 
+
+    h2. Bugs
+
+	* EN-1641: Changed the UPS Shipper Numbers to be the New Ones for both Sales Channels
+	* Allow cc/finance to preview shipment messages
+	* Fix XT WMS consumer to prevent it failing on process group lookup
+	* Fix order overview onclick card history
+	* fix bad config for AMQ (DCEA)
+	* Removed debug spew that causes live pain
+
+</pre>

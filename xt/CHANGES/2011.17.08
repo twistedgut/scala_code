@@ -1,0 +1,10 @@
+<pre>
+
+h1. APS - Application Support 
+     * APS-1199 and APS-1200 - UPLOAD/RESERVATION issue fixes
+
+
+h1. WHM - Warehouse Management
+
+     * Don't dispatch cancelled/cancel pending items
+</pre>

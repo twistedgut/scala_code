@@ -1,0 +1,226 @@
+<div id="tabContainer" class="yui-navset">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="tabChannelTable">
+        <tr>
+            <td width="95%" align="right"><span class="tab-label">Sales Channel:&nbsp;</td>
+            <td width="5%" align="right" nowrap>
+                <ul class="yui-nav">
+                    [% SET channel_count = 1 %]
+                    [% FOREACH channel = invoices.keys.sort %]
+                        [% SET invoice_count = 0 %]
+                        [% FOREACH class IN classes %]
+                            [% SET class_id = class.id %]
+                            [% FOREACH type IN types %]
+                                [% SET type_id = type.id %]
+                                [% SET invoice_count = invoice_count + (invoices.$channel.$class_id.$type_id.size OR 0 ) %]
+                            [% END %]
+                        [% END %]
+                        [%-
+                            SET selected_tab='';
+                            IF auto_show_channel && invoices.${auto_show_channel.name};
+                                IF channel == auto_show_channel.name;
+                                    selected_tab = ' class="selected"';
+                                END;
+                            ELSIF preferences.pref_channel_id && invoices.${preferences.sales_channel};
+                                IF channel == preferences.sales_channel;
+                                    selected_tab = ' class="selected"';
+                                END;
+                            ELSE;
+                                IF loop.count == 1;
+                                    selected_tab = ' class="selected"';
+                                END;
+                            END;
+                        -%]
+                        <li[% selected_tab %]><a href="#tab[% channel_count %]" class="contentTab-[% channel_config.$channel %]" style="text-decoration:none;"><em>[% channel %]&nbsp;&nbsp;([% invoice_count %])</em></a></li>
+                        [% SET channel_count = channel_count + 1 %]
+                    [% END %]
+                </ul>
+            </td>
+        </tr>
+    </table>
+    <div class="yui-content">
+
+        [% SET channel_count = 1 %]
+
+        [% FOREACH channel = invoices.keys.sort %]
+
+            <form name="activeInvoiceForm-[% channel_config.$channel %]" action="/Finance/ActiveInvoices/ProcessInvoices" method="post" onSubmit="return double_submit()" style="width: 100%;">
+            [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+            <div id="tab[% channel_count %]" class="tabWrapper-[% channel_config.$channel %]">
+            <div class="tabInsideWrapper">
+
+
+                [% FOREACH class IN classes %]
+                    [% SET class_id = class.id %]
+                    [% SET class_title = class.title %]
+
+                    [% IF (invoices.$channel.$class_id.size OR 0) > 0 %]
+
+                        [% FOREACH type IN types %]
+                            [% SET type_id = type.id %]
+                            [% SET type_title = type.title %]
+
+                            [% IF (invoices.$channel.$class_id.$type_id.size OR 0) > 0 %]
+
+                                <span id="heading_[% channel_count %]_[% class_id %]_[% type_id %]" class="title title-[% channel_config.$channel %]">[% class_title %] - [% type_title %]</span><br>
+                                <table id="table_[% channel_count %]_[% class_id %]_[% type_id %]" width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+                                    <thead>
+                                    <tr>
+                                        <td colspan="9" class="dividerHeader"></td>
+                                    </tr>
+                                    <tr height="24">
+                                        [% IF type_id == pre_order_type_id %]
+                                            <td width="15%" class="tableHeader">&nbsp;&nbsp;&nbsp;&nbsp;Pre-Order Number&nbsp;</td>
+                                        [% ELSE %]
+                                            <td width="15%" class="tableHeader">&nbsp;&nbsp;&nbsp;&nbsp;Order Number</td>
+                                        [% END %]
+                                        <td align="center" width="11%" class="tableHeader">Category</td>
+                                        <td width="20%" class="tableHeader">Customer</td>
+                                        <td width="18%" class="tableHeader">Age</td>
+                                        <td width="15%" class="tableHeader">Value</td>
+                                        [% IF auth_level > 1 %]
+                                            [% IF type_id == pre_order_type_id %]
+                                                <td class="tableHeader">&nbsp;</td>
+                                            [% ELSE %]
+                                                <td align="center" width="12%" class="tableHeader">Manual</td>
+                                            [% END %]
+                                            <td align="center" width="11%" class="tableHeader">Complete</td>
+                                            [%  IF type_id == db_constant('RENUMERATION_TYPE__CARD_DEBIT') %]
+                                               <td align="center" width="4%" class="tableHeader"></td>
+                                            [% ELSE %]
+                                               <td align="center" width="4%" class="tableHeader">Reset PSP</td>
+                                            [% END %]
+                                            <td width="7%" class="tableHeader"></td>
+                                        [% ELSE %]
+                                            <td width="12%" class="tableHeader">Status</td>
+                                        [% END %]
+                                    </tr>
+                                    <tr>
+                                        <td colspan="9" class="dividerHeader"></td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    [% FOREACH key = invoices.$channel.$class_id.$type_id.keys.nsort %]
+
+                                        [% SET tdclass = '' %]
+                                        [% SET invoice = invoices.$channel.$class_id.$type_id.$key %]
+
+                                        [% SET row_styles = [] %]
+                                        [% PROCESS page_elements/finance_high_priority.tt financepriority=invoice.priority %]
+                                        [% SET row_style = '' %]
+                                        [% IF row_styles.size; SET row_style = 'class="' _ row_styles.join(' ') _ '"'; END; %]
+
+                                        [% IF invoice.other_awb %]
+                                            [% row_style = 'class="warn"' %]
+                                        [% ELSIF invoice.sent_to_psp %]
+                                            [% row_style = 'class="refund_warn"' %]
+                                        [% END %]
+
+                                        <tr height="20">
+                                            [% IF invoice.is_preorder %]
+                                                <td [% row_style %]>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/StockControl/Reservation/PreOrder/Summary?pre_order_id=[% invoice.orders_id %]">[% invoice.order_nr %]</a></td>
+                                            [% ELSE %]
+                                                <td [% row_style %]>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/Finance/ActiveInvoices/OrderView?order_id=[% invoice.orders_id %]">[% invoice.order_nr %]</a></td>
+                                            [% END %]
+                                            <td [% row_style %] >[% PROCESS page_elements/show_customer_category.tt row=invoice %]</td>
+                                            <td [% row_style %]>[% invoice.name %]</td>
+                                            <td [% row_style %]>[% invoice.age %]</td>
+                                            <td [% row_style %]>[% invoice.currency %] [% invoice.total %]</td>
+                                            [% IF auth_level > 1 %]
+
+                                                [% IF invoice.status_id == 3 && ( (type_id == 1) || ( type_id == 2 && invoice.fulfilled == 1) ) %]
+
+                                                    <td [% row_style %] align="center"></td>
+                                                    [% IF invoice.sent_to_psp  %]
+                                                    <td [% row_style %] align="center"> </td>
+                                                    <td [% row_style %] align="center"><input payment_id="[% invoice.payment_id %]" class="reset_sent_to_psp_standard" name="reset_sent_to_psp-[% invoice.renum_id %]" value="1" type="checkbox" /></td>
+                                                    [% ELSE %]
+                                                    <td [% row_style %] align="center"><input name="refund_and_complete-[% invoice.renum_id %]" value="1" type="checkbox" /></td>
+                                                    <td [% row_style %] align="center"> </td>
+                                                    [% END %]
+
+                                                [% ELSIF invoice.status_id == 4 %]
+
+                                                    <td [% row_style %] align="center"><img src="/images/icons/tick.png"></td>
+                                                    [% IF invoice.sent_to_psp  %]
+                                                    <td [% row_style %] align="center"> </td>
+                                                    [% IF type_id == 3 %]
+                                                       <td [% row_style %] align="center"> </td>
+                                                    [% ELSE %]
+                                                      <td [% row_style %] align="center"><input payment_id="[% invoice.payment_id %]" class="reset_sent_to_psp_standard [% type.title %]" name="reset_sent_to_psp-[% invoice.renum_id %]" value="1" type="checkbox" /></td>
+                                                    [% END %]
+                                                    [% ELSE %]
+                                                    <td [% row_style %] align="center"><input name="complete-[% invoice.renum_id %]" value="1" type="checkbox" /></td>
+                                                    <td [% row_style %] align="center"> </td>
+                                                    [% END %]
+                                                [% ELSIF type_id == pre_order_type_id %]
+                                                    <td [% row_style %] align="center"></td>
+                                                    [% IF invoice.sent_to_psp  %]
+                                                    <td [% row_style %] align="center"> </td>
+                                                    <td [% row_style %] align="center"><input payment_id="[% invoice.payment_id %]" class="reset_sent_to_psp_preorder" name="reset_sent_to_psp_preorder-[% invoice.renum_id %]" value="1" type="checkbox" /></td>
+                                                    [% ELSE %]
+                                                    <td [% row_style %] align="center"><input name="refund_and_complete_preorder-[% invoice.renum_id %]" value="1" type="checkbox" /></td>
+                                                    <td [% row_style %] align="center"> </td>
+                                                    [% END %]
+
+                                                [% ELSE %]
+
+                                                    <td [% row_style %] align="center"><input name="print-[% invoice.renum_id %]" value="1" type="checkbox"></td>
+                                                    <td [% row_style %] align="center">-</td>
+                                                    <td [% row_style %] align="center"> </td>
+
+                                                [% END %]
+
+                                                [% IF type_id == pre_order_type_id %]
+                                                    <td [% row_style %]><a href="/Finance/ActiveInvoices/PreOrderInvoice?preorder_id=[% invoice.orders_id %]&action=Edit&invoice_id=[% invoice.renum_id %]"><img src="/images/icons/page_edit.png" alt="Edit"></a></td>
+                                                [% ELSE %]
+                                                    <td [% row_style %]><a href="/Finance/ActiveInvoices/Invoice?order_id=[% invoice.orders_id %]&shipment_id=[% invoice.shipment_id %]&action=Edit&invoice_id=[% invoice.renum_id %]"><img src="/images/icons/page_edit.png" alt="Edit"></a></td>
+                                                [% END %]
+                                            [% ELSE %]
+                                                <td [% row_style %]>[% invoice.status %]</td>
+                                            [% END %]
+                                        </tr>
+                                        <tr>
+                                            <td colspan="9" class="divider"></td>
+                                        </tr>
+                                    [% END %]
+                                    <tr>
+                                        <td colspan="9" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="9" class="blank" align="right">
+                                          [% IF type_id !=3 ||  type_id == pre_order_type_id  %]
+                                            <label for="selectall">Select all</label><input type="checkbox" id="selectAll" name="selectAll" value="Select all" />
+                                          [% END %]
+                                          <input type="submit" class="button" name="submit" value="Submit &raquo;">
+                                       </td>
+                                    </tr>
+                                </table>
+
+
+                                <br /><br />
+                            [% END %]
+                        [% END %]
+                        <br /><br />
+                    [% END %]
+                [% END %]
+
+            </div>
+            </div>
+            </form>
+
+            [% SET channel_count = channel_count + 1 %]
+        [% END %]
+    </div>
+</div>
+
+<script type="text/javascript">
+	$('input#selectAll').live("click", function(){
+		$(this).parents('table:eq(0)').find('input:checkbox').not('td.warn input:checkbox').not('td.refund_warn input:checkbox').not('input[name^="complete-"]:checkbox').not('input[name^="print-"]:checkbox').attr('checked', this.checked);
+	});
+</script>
+
+[% PROCESS page_elements/tab_script.tt %]
+[% PROCESS shared/refund_history.tt %]
+
+<br><br>

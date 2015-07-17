@@ -1,0 +1,56 @@
+<pre>
+
+
+h1. CANDO - Customer & Orders
+
+* CANDO-8553: Add Display Name to Email Templates.
+* CANDO-8560: Fix a bug that not all Pre-Orders are automatically going on hold.
+* CANDO-8534: Fix Pre-Order Payment Bug
+* CANDO-8425: Prevent difference between billing / shipping address & notify PSP of address change
+
+
+h1. DC2A - DC2 Automation
+
+* DCA-4176 : Check for allocation split over Full and GOH [Go Live]
+* NOJIRA   : Fix DEMOLISH bug caused by hash ordering introduced in 5.018
+* NOJIRA   : Update the PRL_ROLLOUT_PHASE in script/update_test_config_noddy.pl
+* NOJIRA   : Add txn_do to some database calls that were missing them
+* DCA-4218 : Don't sent prepare for completely short picked GOH allocations
+* DCA-4289 : Add index on allocation_item_log
+* TA-80    : Use receipts when sending AMQ messages
+
+h1. DCOP - DC Operations
+
+*
+
+
+h1. SHIP - Expedited Shippping
+
+*
+
+
+h1. WHM - Warehouse
+
+*
+
+
+
+h1. Other
+
+h2. BS - Build Support
+
+*
+
+h2. PM - Product Management
+
+*
+
+h2. SAS - Search & Aggregation
+
+*
+
+h2. Misc
+
+*
+
+</pre>

@@ -1,0 +1,51 @@
+[% channel_config = channel_data.channel_config %]
+[% IF ( channel_data.channel_box_list.keys.size ) %]
+    <div id="tabContainer" class="yui-navset">
+        [%
+        FOREACH channel_key IN channel_data.channel_box_list.keys;
+            all_channels.$channel_key.count = channel_data.channel_box_list.$channel_key.size;
+        END;
+        %]
+        [% PROCESS page_elements/channel_tabs.tt channel_list=all_channels use_channel_list_counts = 1 %]
+        <div class="yui-content">
+            [% SET channel_count = 1 %]
+            [% FOREACH channel = all_channels.keys.sort %]
+                <div id="tab[% channel_count %]" class="tabWrapper-[% channel_config.$channel %]">
+                    <div class="tabInsideWrapper">
+                        [% IF ( form_box_type == 'boxes') %]
+                            [% INCLUDE admin/packingboxadmin/create_outer_box_form.tt %]
+                            [% INCLUDE admin/packingboxadmin/display_outer_boxes.tt %]
+                        [% ELSIF ( form_box_type == 'inner_boxes') %]
+                            [% INCLUDE admin/packingboxadmin/create_inner_box_form.tt %]
+                            [% INCLUDE admin/packingboxadmin/display_inner_boxes.tt %]
+                        [% ELSE %]
+                            <h3>Box Type Not Found</h3>
+                            The box type entered [% $form_box_type %] is not recognised. The only valid arguments are box_type=boxes or box_type=inner_boxes.
+                        [% END %]
+                    </div>
+                </div>
+            [% END %]
+        </div>
+    </div>
+
+    [% PROCESS page_elements/tab_script.tt %]
+
+    <div id="addpodialog" title="Add Purchase Order">
+        <form>
+            <label>Purchase Order Number: </label><input id="addpopon" type="text" />
+            <table id="addpoboxes">
+                <tr><th>Box</th><th>Quantity</th></tr>
+            </table>
+        </form>
+    </div>
+
+    <script type="text/javascript" src="/javascript/pims.js"></script>
+    <!-- These vars are used by packadmin.js -->
+    <script type="text/javascript">
+        var dcCode = "[% dc_code %]";
+        var pims = new Pims("[% pims_url %]");
+    </script>
+    <script type="text/javascript" src="/javascript/packagingadmin/packadmin.js"></script>
+    <script type="text/javascript" src="/javascript/packagingadmin/packadmin2.js"></script>
+
+[% END %]

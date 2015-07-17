@@ -1,0 +1,71 @@
+README for XTDC t/
+==================
+
+Last updated: 06 August 2010
+
+"t/TEST" is a wrapper around an instance of Apache,
+intended to be used in tests.
+
+t/10-env
+
+    Tests which cover the setup of the environment.
+    All test harness call this.
+
+t/20-units
+
+    Unit tests, where a "unti" is the "smallest testable part of an
+    application" (http://en.wikipedia.org/wiki/Unit_testing)
+    That's the aspiration for making life easier; the reality is
+    rather messy: please help improve it.
+
+t/30-functional
+
+    Functional tests that cover larger aspects of the application,
+    where "aspect" is "a part of a programme that cross-cuts its core
+    concerns ... a feature linked to many parts of a program 
+    [though]... not necessarily the primary function of a program." 
+    (http://en.wikipedia.org/wiki/Aspect_(computer_science))
+    That's the aspiration for making life easier; the reality is
+    rather messy: please help improve it.
+    
+t/40-ua
+
+    Tests that use user agents (Mechanize or other).
+
+t/50-selenium
+
+    Tests that use the Selenium framework.
+
+t/60-external_apis
+
+    Tests of external APIs
+
+t/conf
+
+    Test environment configuration files.
+
+t/data
+
+	Test data.
+
+t/htdocs
+
+	Part of the test environment.
+
+t/lib
+
+	Libraries used by the test suite but not by 
+	the production system
+
+t/logs
+
+	Logs of the test server, t/TEST.
+
+t/tmp
+
+	Part of the test environment.
+
+SEE ALSO
+
+    * http://confluence.net-a-porter.com/display/BAK/XTDC+Test+Suite
+    * http://confluence.net-a-porter.com/display/BAK/Hudson

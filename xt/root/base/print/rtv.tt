@@ -1,0 +1,113 @@
+<html>
+<head>
+<!-- Template name: [% template.name %] -->
+<title></title>
+<style type="text/css">
+<!--
+body { margin-top: 1cm; margin-left: 0.5cm; }
+//-->
+</style>
+<meta http-equiv=content-type content="text/html; charset=utf8">
+</head>
+<body>
+<font face="arial">
+<table cellspacing="0" cellpadding="0" width="650" border="0">
+	<tbody>
+	<tr valign="top">
+		<td>
+            <h1>Stock Sheet</h1><h4>Printed: [% print_date %]</h4>
+            <h4>Booked in at putaway: [% local_date(main_booked_in_date.date, 'naughty_local_time_zone', 1) %]</h4>
+            <h4>Booked in at surplus: [% local_date(surplus_booked_in_date.date, 'naughty_local_time_zone', 1) %]</h4><br>
+        </td>
+		<td align="right">
+			<table width="200" border="3" cellpadding="5" cellspacing="0" bordercolor="#000000" style="border-style:solid">
+				<tr>
+					<td align="center">
+					    <h1>
+					    [% IF origin %]
+					        [% origin %]
+					    [% ELSE %]
+					        Goods In
+					    [% END %]
+					    </h1>
+					</td>
+				</tr>
+				<tr>
+					<td align="center"><h1>RTV</h1></td>
+				</tr>
+			</table>		
+		</td>
+	</tr>
+	<tr>
+		<td align="left"><br><h2><b>Delivery Number: [% delivery_id %]</b></h2></p></td>
+	</tr>
+	<tr>
+		<td align="left"><img src="[% 'delivery-' _ delivery_id _ '.png' %]"><br><br></td>
+	</tr>
+	<tr>
+		<td align="right"><br><h2><b>Sub-Delivery Number: [% group_id %]</b></h2></p></td>
+	</tr>
+	<tr>
+		<td align="right"><img src="[% 'sub_delivery-' _ group_id _ '.png' %]"><br><br></td>
+	</tr>
+	</tbody>
+</table>
+<br><br>
+
+<center>  
+<table width="70%" border="2" cellpadding="10" cellspacing="0" bordercolor="#000000" style="border-style:solid">
+	<tbody>
+	<tr>
+		<td>
+            <b>Designer:</b> [% product.designer %]
+		</td>
+	</tr>
+	<tr>
+		<td>
+            <b>Description:</b> [% product.description %]
+		</td>
+	</tr>
+	<tr>
+		<td>
+            <b>Colour:</b> [% product.colour %]
+		</td>
+	</tr>
+</table>
+</center>
+
+<table cellspacing="0" cellpadding="0" width="700" bgcolor="#f2f2f2" border="0">
+	<tbody>
+	<tr height="24" bgcolor="#c5c5c5">
+		<td><b>&nbsp;&nbsp;SKU&nbsp;&nbsp;</b></td>
+		<td><b>&nbsp;&nbsp;Size&nbsp;&nbsp;</b></td>
+		<td>&nbsp;&nbsp;</td>
+		<td><b>&nbsp;&nbsp;Quantity&nbsp;&nbsp;</b></td>
+	</tr>
+	
+	[% FOREACH item = process_group_items.nsort('size_id') %]
+	[% IF item.type == 'RTV' %]
+	    [% item_quantity_string = "<font size=\"4\"><b>$item.quantity&nbsp;($item.type)</b></font>" %]
+	[% ELSE %]
+	    [% item_quantity_string = "<font size=\"2\" color=\"grey\">$item.quantity&nbsp;($item.type)</font>" %]
+	[% END %]
+	<tr>
+		<td bgcolor="#f2f2f2" colspan="6" height=10>&nbsp;</td>
+	</tr>
+	<tr>
+		<td>&nbsp;&nbsp;<font size="3">[% item.product_id %]-[% item.size_id %]&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+		<td><font size="2">[% item.designer_size %]</font></td>
+		<td>&nbsp;&nbsp;</td>
+		<td>&nbsp;&nbsp;[% item_quantity_string %]</td>
+	</tr>
+	<tr>
+		<td bgcolor="#f2f2f2" colspan="6" height=10>&nbsp;</td>
+	</tr>
+	<tr>
+		<td colspan="6" bgcolor="#c2c2c2" height=1></td>
+	</tr> 
+	[% END %]  
+	</tbody>
+</table>
+</body>
+</html>
+

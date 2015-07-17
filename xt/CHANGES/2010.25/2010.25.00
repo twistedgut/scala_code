@@ -1,0 +1,12 @@
+<pre>
+h1. Projects
+
+h2. Red
+    * Enhanced add_slugs.pl to remove slugs as well
+
+h2. Black MrPorter
+    * Patches to create product.attribute and product.navigation_tree entries
+    for MrP designers and designer categories
+
+</pre>
+

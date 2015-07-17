@@ -1,0 +1,5 @@
+[% PROCESS 'stocktracker/goods_in/putaway_admin_group_status.inc'
+    # All the parameters are passed in from the test
+%]
+
+group_display_status is "[% group_display_status %]"

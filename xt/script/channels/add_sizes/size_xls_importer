@@ -1,0 +1,54 @@
+#!/opt/xt/xt-perl/bin/perl
+# vim: ts=8 sts=4 et sw=4 sr sta
+use strict;
+use warnings;
+
+use FindBin::libs;
+use FindBin::libs qw( base=lib_dynamic );
+use Data::Dump qw/pp/;
+use IO::File;
+use Text::CSV;
+use Size::Scheme;
+use XTracker::Database;
+use XTracker::Constants::FromDB qw(:channel);
+use XTracker::Config::Local;
+
+my $dc = config_var('DistributionCentre','name');
+my $db_type = "XTracker_$dc";
+my $dbh                 = XTracker::Database::get_database_handle({name => $db_type, type => 'readonly'} );
+my $schema              = XTracker::Database::get_schema_using_dbh($dbh, 'xtracker_schema' );
+my $size_scheme         = $schema->resultset('Public::SizeScheme');
+
+# reset sequence
+$dbh->do("select setval('size_scheme_id_seq',(select max(id) from size_scheme)+1)");
+$dbh->do("select setval('size_id_seq',(select max(id) from size)+1)");
+
+my $filename = $ARGV[0] || undef;
+if (not defined $filename) {
+    die "Cannot find file - $filename";
+}
+
+my $file = IO::File->new;
+if (not $file->open("< $filename")) {
+    die "Cannot open file:$filename";
+}
+
+my $csv = Text::CSV->new({ allow_whitespace => 1 });
+
+my $schemes = undef;
+
+while (my $line = $csv->getline($file)) {
+    my $cols    = \@{$line};
+    my $name    = shift @{$cols};
+    $name       =~ s/^\s+(.*?)\s+$/$1/;
+    my $scheme  = Size::Scheme->new({ name => $name });
+    foreach my $size (@{$cols}) {
+        $size   =~ s/^\s+(.*?)\s+$/$1/;
+        $scheme->add( $size );
+    } 
+    push @{$schemes}, $scheme;
+}
+
+$file->close;
+
+$_->add_to_db($size_scheme) foreach @{$schemes};

@@ -1,0 +1,386 @@
+[% IF form_submitted && num_return_items == 0 %]
+    <p class="error_msg">No items were selected, please try again.</p>
+    [% form_submitted = 0 %]
+[% END %]
+	
+<span class="title title-[% channel_config.$sales_channel %]">Select Item(s)</span><br>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+<form name="addItemForm" action="[% short_url %]/[% IF form_submitted %]AddReturnItem[% ELSE %]Returns/AddItem[% END %]?order_id=[% order_id %]&shipment_id=[% shipment_id %]&return_id=[% return_id %]" method="post" onSubmit="return validateForm()">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+<input type="hidden" name="select_items" value="1">
+    <tr>
+        <td colspan="9" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr height="24">
+        <td class="tableHeader" width="5%">&nbsp;&nbsp;&nbsp;</td>
+        <td class="tableHeader" width="22%">Product</td>
+        <td class="tableHeader" width="10%">Size</td>
+        <td class="tableHeader" width="8%">Select</td>
+        <td class="tableHeader" width="13%">Exchange</td>
+        <td class="tableHeader" width="15%">Exchange Size</td>
+        <td class="tableHeader" width="22%">Reason for Return</td>
+        <td class="tableHeader" width="11%">Full Refund</td>
+    </tr>
+    <tr>
+        <td colspan="9" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+
+    [% IF num_return_items && num_return_items > 0 %]
+        
+        [% FOREACH itemid = return_items.keys %]
+
+            [% IF return_items.$itemid.selected %]
+
+                <input type="hidden" name="selected-[% itemid %]" value="1">
+                <input type="hidden" name="type-[% itemid %]"value="[% return_items.$itemid.type %]">
+                <input type="hidden" name="exchange_variant-[% itemid %]"value="[% return_items.$itemid.exchange_variant_id %]">
+                <input type="hidden" name="reason_id-[% itemid %]"value="[% return_items.$itemid.reason_id %]">
+                <input type="hidden" name="full_refund-[% itemid %]"value="[% return_items.$itemid.full_refund %]">
+                <tr>
+                    <td align="center"><a href="[% shipment_items.$itemid.images.0 %]" title="View Product Image" target="new" class="imagezoom"><img src="/images/icons/image.png"></a></td>
+                    <td>[% shipment_items.$itemid.sku %]</td>
+                    <td>[% IF shipment_items.$itemid.short_name %][% shipment_items.$itemid.short_name %] [% END %][% shipment_items.$itemid.designer_size %][% IF shipment_items.$itemid.designer_size != shipment_items.$itemid.size %] ([% shipment_items.$itemid.size %])[% END %]</td>
+                    <td>Yes</td>
+                    <td>[% IF return_items.$itemid.type == 'Exchange' %]Yes[% ELSE %]No[% END %]</td>
+                    <td>[% IF return_items.$itemid.exchange_size %][% return_items.$itemid.exchange_size %][% ELSE %]n/a[% END %]</td>
+                    <td>[% return_items.$itemid.reason %]</td>
+                    <td>[% IF return_items.$itemid.full_refund %]Yes[% ELSE %]No[% END %]</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td colspan="7" valign="top"><i>[% shipment_items.$itemid.designer %] - [% shipment_items.$itemid.name %]</i></td>
+                </tr>
+                <tr>
+                    <td colspan="8" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+            [% END %]
+        [% END %]
+
+    [% ELSE %]
+
+        [% FOREACH itemid = shipment_items.keys %]
+            <tr>
+                [% IF shipment_items.$itemid.shipment_item_status_id == SHIPMENT_ITEM_STATUS__DISPATCHED && !shipment_items.$itemid.voucher %]
+                    <td align="center"><a href="[% shipment_items.$itemid.images.0 %]" title="View Product Image" target="new" class="imagezoom"><img src="/images/icons/image.png"></a></td>
+                    <td>[% shipment_items.$itemid.sku %]</td>
+                    <td>[% IF shipment_items.$itemid.short_name %][% shipment_items.$itemid.short_name %] [% END %][% shipment_items.$itemid.designer_size %][% IF shipment_items.$itemid.designer_size != shipment_items.$itemid.size %] ([% shipment_items.$itemid.size %])[% END %]</td>             
+                    <td><input type="checkbox" name="selected-[% itemid %]" value="1" onClick="enableFields('[% itemid %]')"></td>
+
+                    [% SET num_sizes = 0 %]
+                    [% FOREACH varid = shipment_items.$itemid.sizes.keys.nsort %]
+                        [% IF shipment_items.$itemid.sizes.$varid.quantity > 0 %]
+                            [% num_sizes = num_sizes + 1 %]	
+                        [% END %]
+                    [% END %]
+
+                    [% IF num_sizes > 0 %]
+                        <td><input type="radio" id="typeReturn-[% itemid %]" name="type-[% itemid %]" disabled value="Return" checked>&nbsp;No&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="typeExchange-[% itemid %]" name="type-[% itemid %]" disabled value="Exchange">&nbsp;Yes&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>
+                        
+                            <select id="exchangeSizes-[% itemid %]" name="exchange-[% itemid %]" disabled>
+                                <option value="0">Select...</option>
+                                <option value="0">------------</option>
+                                [% FOREACH varid = shipment_items.$itemid.sizes.keys.nsort %]
+                                    [% SET exch_size = shipment_items.$itemid.sizes.$varid %]
+                                    [% IF exch_size.quantity > 0 %]
+                                        
+                                        [% SET display_size = exch_size.designer_size %]
+                                        [% IF exch_size.sizing_name %]
+                                            [% display_size = exch_size.sizing_name _ ' ' _ display_size %]
+                                        [% END %]
+                                        [% IF exch_size.designer_size != exch_size.size %] 
+                                            [% display_size = display_size _ ' (' _ exch_size.size _ ')' %]
+                                        [% END %]
+
+                                        <option value="[% varid %]-[% display_size %]">[% display_size %]</option>									
+                                    [% END %]
+                                [% END %]
+                            </select>
+                        </td>
+                    [% ELSE %]
+                        <input type="hidden" name="type-[% itemid %]" value="Return">
+                        <td colspan="2">No sizes available</td>
+                    [% END %]
+                    
+                    <td>
+                        <select id="returnReason-[% itemid %]" name="reason_id-[% itemid %]" disabled>
+                            <option value="0">Select...</option>
+                            [% FOREACH id = reasons.keys.nsort %]
+                                <option value="[% id %]">[% reasons.$id %]</option>
+                            [% END %]
+                        </select>
+                    </td>
+                    <td><input id="fullRefund-[% itemid %]" type="checkbox" disabled name="full_refund-[% itemid %]" value="1"></td>
+                [% ELSE %]
+                    <td align="center"><a href="[% shipment_items.$itemid.images.0 %]" title="View Product Image" target="new" class="imagezoom" ><img src="/images/icons/image.png"></a></td>
+                    <td><span class="lowlight">[% shipment_items.$itemid.sku %]</span></td>
+                    <td><span class="lowlight">[% IF shipment_items.$itemid.short_name %][% shipment_items.$itemid.short_name %] [% END %][% shipment_items.$itemid.designer_size %][% IF shipment_items.$itemid.designer_size != shipment_items.$itemid.size %] ([% shipment_items.$itemid.size %])[% END %]</span></td> 
+                    <td colspan="5"><span class="lowlight">[% shipment_items.$itemid.status %]</span></td>
+                [% END %]
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td colspan="7" valign="top">[% IF shipment_items.$itemid.shipment_item_status_id != SHIPMENT_ITEM_STATUS__DISPATCHED %]<span class="lowlight">[% END %]<i>[% shipment_items.$itemid.designer %] - [% shipment_items.$itemid.name %]</i></td>
+            </tr>
+            <tr>
+                <td colspan="8" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        [% END %]	            
+    [% END %]
+</table>
+
+
+
+[% IF form_submitted %]
+    <br />
+    <br />
+        
+    <span class="title title-[% channel_config.$sales_channel %]">Refund/Debit</span><br>
+    
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="6" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="24">
+            <td class="tableHeader" width="20%">&nbsp;&nbsp;&nbsp;Product</td>
+            <td align="right" class="tableHeader" width="10%">Unit Price</td>
+            <td align="right" class="tableHeader" width="10%">Tax</td>
+            <td align="right" class="tableHeader" width="10%">Duty</td>
+            <td align="right" class="tableHeader" width="20%">Sub-Total</td>
+            <td class="tableHeader" width="30%">&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="6" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        
+        [% SET total = 0 %]
+    
+        [% FOREACH itemid = return_items.keys %]
+    
+            [% IF return_items.$itemid.selected == 1 %]
+
+                <input type="hidden" name="unit_price-[% itemid %]"value="[% return_items.$itemid.unit_price %]">
+                <input type="hidden" name="tax-[% itemid %]"value="[% return_items.$itemid.tax %]">
+                <input type="hidden" name="duty-[% itemid %]"value="[% return_items.$itemid.duty %]">
+
+                <tr>
+                    <td>&nbsp;&nbsp;&nbsp;[% shipment_items.$itemid.sku %]</td>
+                    <td align="right">[% return_items.$itemid.unit_price FILTER format('%02.2f') %]</td>
+                    <td align="right">[% return_items.$itemid.tax FILTER format('%02.2f') %]</td>
+                    <td align="right">[% return_items.$itemid.duty FILTER format('%02.2f') %]</td>
+                    <td align="right">[% (return_items.$itemid.unit_price + return_items.$itemid.tax + return_items.$itemid.duty) FILTER format('%02.2f') %]</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>                
+                [% total = total + return_items.$itemid.unit_price + return_items.$itemid.tax + return_items.$itemid.duty %]
+                
+            [% END %]
+        [% END %]
+
+        [% SET cur_invoice = 0 %]
+        [% FOREACH inv_id = return_invoices.keys %]
+            [% IF return_invoices.$inv_id.renumeration_status_id < 3 %]
+                [% cur_invoice = inv_id %]
+            [% END %]
+        [% END %]
+        
+        <input type="hidden" name="cur_invoice" value="[% cur_invoice %]">
+        
+        [% SET total_shipment_refund = total + previous_refund_total %]
+
+        [% IF cur_invoice > 0 %]
+            <tr>
+                <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+                <td class="blank" colspan="4" align="right"><b>Current Total:&nbsp;&nbsp;</b></td>
+                <td class="blank">[% return_invoices.$cur_invoice.total %]</td>
+            </tr>
+            <tr>
+                <td colspan="6" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        
+            [% total = total + return_invoices.$cur_invoice.total %]
+
+            <input type="hidden" name="total_shipment_refund" value="[% total_shipment_refund %]">
+                
+        [% END %]
+        
+        <tr>
+            <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+            <td class="blank" colspan="4" align="right"><b>Grand Total:&nbsp;&nbsp;</b></td>
+            <td class="blank">[% total %]</td>
+        </tr>
+        <tr>
+            <td colspan="6" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+            <td class="blank" colspan="4" align="right"><b>Credit/Debit Type:&nbsp;&nbsp;</b></td>
+            <td class="blank">
+                [% IF refund_type_id != "" %]
+                    [% refund_type %]
+                    <input type="hidden" name="refund_type_id" value="[% refund_type_id %]">
+                [% ELSIF cur_invoice > 0 %]
+                    [% IF (return_invoices.$cur_invoice.renumeration_type_id < 3 && total > 0) || (return_invoices.$cur_invoice.renumeration_type_id == 3 && total < 0) %]
+                        [% return_invoices.$cur_invoice.type %]
+                        <input type="hidden" name="refund_type_id" value="[% return_invoices.$cur_invoice.renumeration_type_id %]">
+                    [% ELSE %]
+                        [% IF total > 0 %]
+                            <input type="radio" name="refund_type_id" value="2" checked>&nbsp;Card Refund&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="refund_type_id" value="1">&nbsp;Store Credit</td>
+                        [% ELSE %]
+                            <input type="hidden" name="refund_type_id" value="3">
+                            Card Debit
+                        [% END %]
+                    [% END %]
+                [% ELSE %]
+                    [% IF total > 0 %]
+                        <input type="radio" name="refund_type_id" value="2" checked>&nbsp;Card Refund&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="refund_type_id" value="1">&nbsp;Store Credit</td>
+                    [% ELSIF total < 0 %]
+                        <input type="hidden" name="refund_type_id" value="3">
+                        Card Debit
+                    [% ELSE %]
+                        <input type="hidden" name="refund_type_id" value="0">
+                        None
+                    [% END %]
+                [% END %]
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    </table>
+
+    <br />
+    <br />
+
+    <span class="title title-[% channel_config.$sales_channel %]">Customer Email</span><br>
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <input type="hidden" name ="email_content_type" value="[% email_content_type %]" >
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr height="24">
+            <td width="149" align="right"><b>Send Email:</b>&nbsp;&nbsp;</td>
+            <td width="570"><input type="radio" name="send_email" value="yes" checked>&nbsp;&nbsp;Yes&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="send_email" value="no">&nbsp;&nbsp;No</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr height="30">
+            <td align="right"><b>To:</b>&nbsp;&nbsp;</td>
+            <td><input type="text" size="35" name="email_to" value="[% email_to %]"></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr height="30">
+            <td align="right"><b>From:</b>&nbsp;&nbsp;</td>
+            <td><input type="text" size="35" name="email_from" value="[% email_from %]"></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr height="30">
+            <td align="right"><b>Reply-To:</b>&nbsp;&nbsp;</td>
+            <td><input type="text" size="35" name="email_replyto" value="[% email_from %]"></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr height="30">
+            <td align="right"><b>Subject:</b>&nbsp;&nbsp;</td>
+            <td><input type="text" size="35" name="email_subject" value="[% email_subject %]"></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr>
+            <td colspan="2" height="10"></td>
+        </tr>
+        <tr valign="top">
+            <td align="right"><b>Email Text:&nbsp;&nbsp;</b></td> 
+            <td><textarea name="email_body" rows="22" cols="90">[% email_msg %]</textarea></td>
+        </tr>
+        <tr>
+            <td colspan="2" height="10"></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>	
+    </table>
+
+[% END %]
+
+<br />
+<br />
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <tr>
+        <td class="blank" colspan="8" align="right">
+            [% IF form_submitted %]
+                [% INCLUDE page_elements/forms/submit_button.tt submit='Add Items &raquo;' %]
+            [% ELSE %]
+                [% INCLUDE page_elements/forms/submit_button.tt submit='Continue &raquo;' %]
+            [% END %]
+        </td>
+    </tr>
+</table>
+
+</form>
+
+<script language="Javascript">
+
+    function enableFields( which ) {
+
+        var fields = ["typeReturn", "typeExchange", "exchangeSizes", "returnReason", "fullRefund"];
+
+        for (i=0;i<fields.length;i++) {
+            if (document.getElementById(fields[i]+"-"+which) != null){ 
+                if (document.getElementById(fields[i]+"-"+which).disabled == true) {
+                    document.getElementById(fields[i]+"-"+which).disabled = false;
+                }
+                else {
+                    document.getElementById(fields[i]+"-"+which).disabled = true;
+                }
+            } 
+        }
+    }
+        
+    function validateForm(){
+
+        frmLength = document.addItemForm.length;
+        isEmpty = false;
+        
+        for (i=0; i<frmLength;i++){
+            if(document.addItemForm[i].options) {
+                if (document.addItemForm[i].options[document.addItemForm[i].selectedIndex].value == 0){
+                    field_nm = document.addItemForm[i].name;
+                    arr = field_nm.split("-");
+
+                    if ( arr[0] == "reason_id") {                      
+                    
+                        field_nm2 = "selected-"+arr[1];
+                        
+                        if (document.addItemForm[field_nm2].checked ) {	
+                            isEmpty = true;  //one element is empty
+                        }
+                    }
+                }
+            }
+        }
+        
+        if(isEmpty){
+            alert("Please select the reason for return before submitting.");
+            return false;
+        }
+        else {
+            return double_submit();
+        }
+    
+    }
+
+
+</script>
+

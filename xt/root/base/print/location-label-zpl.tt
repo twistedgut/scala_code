@@ -1,0 +1,7 @@
+^XA
+^JMA
+^MUm^FO6,1^A0,N,18,0^FD[% readable_location %]^FS
+^MUm^FO26,18^B3N,N,22,N,N^FD[% location %]^FS
+[% IF unit %]^MUm^FO26,44^A0,N,8,0^FDUNIT [% unit %] FLOOR [% floor %]^FS[% END %]
+^PQ1^FS
+^XZ

@@ -1,0 +1,129 @@
+[% IF induct.can_scan;
+    SET can_scan_class = "can_scan";
+    SET can_scan_disabled = "";
+ELSE;
+    SET can_scan_class = "can_not_scan";
+    SET can_scan_disabled = " disabled";
+END %]
+[% IF induct.can_scan %]
+<h2>Please scan container for induction</h2>
+[% ELSIF induct.container_records.size == 0 %]
+<h2>There are currently no containers to induct</h2>
+[% ELSE %]
+<h2>There is currently no space at packing to induct containers</h2>
+[% END %]
+
+ <table class="layout-scan-container" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td>
+            <form name="scanContainer" action="/Fulfilment/Induction" method="POST"
+                onSubmit="return [% IF induct.can_scan %]double_submit()[% ELSE %]false[% END %]">
+                [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                <input type="hidden" name="view" value="[% view %]">
+
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+                    <tr>
+                        <td colspan="2" class="divider"></td>
+                    </tr>
+                    <tr height="26">
+                        <td nowrap style="width: 18%; text-align: right; font-weight: bold"><label for="is_container_in_cage">I am in the Cage &nbsp;</label></td>
+                        <td style="width: 82%"><input type="checkbox" name="is_container_in_cage" value="1"
+                            [%- IF induct.is_container_in_cage %] checked="checked"[% END; %]
+                        ></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="divider"></td>
+                    </tr>
+
+                    <tr height="36" class="[% can_scan_class %]">
+                        <td nowrap style="width: 18%; text-align: right; font-weight: bold">
+                            <label for="container_barcode">Container &nbsp;</label>
+                            [%# Don't disable the button or input field if red, we might need to scan on things that's already at Packing? %]
+                        </td>
+
+                        <td style="width: 82%">
+                            <input type="text" id="container_barcode" name="container_barcode" value=""[% can_scan_disabled %]>
+                            <script type="text/javascript">
+                                $(document).ready( function () { $('#container_barcode').focus() } )
+                            </script>
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2" class="divider"></td>
+                    </tr>
+
+                    <tr height="30">
+                        <td nowrap style="width: 18%;">
+                            &nbsp;
+                        </td>
+                        <td  style="width: 82%">
+                            [%# DCA-956: potentally don't show the button on a new line, to save vertical space %]
+                            [% PROCESS page_elements/forms/submit_button.tt %]
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2" class="divider"></td>
+                    </tr>
+
+                </table>
+
+            </form>
+        </td>
+    </tr>
+</table>
+[%# This bit of JS is just for the handhelds which don't support nice jquery focussing %]
+<script language="Javascript">
+<!--
+    document.scanContainer.container_barcode.focus();
+//-->
+</script>
+
+
+[% SET container_records = induct.container_records %]
+[% SET shipment_records = induct.shipment_records %]
+<h2>Containers ready for packing: [% container_records.size %] ([% shipment_records.size %] [% PL("shipment", shipment_records.size) %])</h2>
+<table id="containers_ready_for_packing" class="data wide-data divided-data">
+<thead>
+    <tr>
+        <th>Container</th>
+        <th>Shipments</th>
+        <th>SLA Timer</th>
+        <th>Has Cage Items?</th>
+    </tr>
+</thead>
+<tbody>
+[%
+# All of this is to display Containers with the same shipment together,
+# and without a border line separating the rows. So keep track of the next row
+# and don't display a border-bottom if it's the same Shipments as the current row
+%]
+[% SET i = 0 %]
+[% WHILE i <= container_records.max %]
+    [% SET container_record = container_records.$i %]
+
+    [% SET next_i = i + 1 %]
+    [% SET next_container_record = container_records.$next_i %]
+
+    [% SET grouping_class = "" %]
+    [% IF container_record.shipment_ids_key == next_container_record.shipment_ids_key %]
+    [%    SET grouping_class = "no-border-bottom" %]
+    [% END %]
+    <tr>
+        <td class="no-border-top [% grouping_class %]">[% container_record.id %]</td>
+        <td class="no-border-top [% grouping_class %]">[% container_record.shipments_summary %]</td>
+        [% IF container_record.cutoff_epoch.defined && container_record.cutoff_epoch < 0 %]
+            <td class="no-border-top [% grouping_class %] sla_cutoff urgent">-[% container_record.cutoff_diff FILTER remove('-') %]</td>
+        [% ELSE %]
+            <td class="no-border-top [% grouping_class %] sla_cutoff">[% container_record.cutoff_diff %]</td>
+        [% END %]
+        <td class="no-border-top [% grouping_class %]">[% container_record.has_cage_items && 'Yes' || 'No' %]</td>
+    </tr>
+    [% SET i = i + 1 %]
+[% END # WHILE container_record %]
+</tbody>
+</table>
+
+

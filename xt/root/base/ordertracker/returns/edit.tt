@@ -1,0 +1,235 @@
+
+<span class="title title-[% channel_config.$sales_channel %]">Return Details</span><br>
+
+<form action="[% short_url %]/Returns/Edit" method="post">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+<input type="hidden" name="return_id" value="[% return.id %]" />
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+	<tr>
+		<td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td align="right" width="15%"><b>RMA&nbsp;:&nbsp;</td>
+		<td>[% return.rma_number %]</td>
+		<td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+	</tr>
+	<tr>
+		<td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td align="right" class="blank"><b>Date Created&nbsp;:&nbsp;</td>
+		<td class="blank">[% return.creation_date.strftime('%d-%m-%Y %H:%M') %]</td>
+		<td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+	</tr>
+	<tr>
+		<td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td align="right" class="blank"><b>Expiry Date&nbsp;:&nbsp;</td>
+		<td class="blank">
+      <input id="expiry_date" 
+             name="expiry_date" 
+             class="show-cal-icon" 
+             value="[% expiry_date || return.expiry_date.ymd |html%]"
+             />
+    </td>
+		<td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+	</tr>
+	<tr>
+		<td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td align="right" class="blank"><b>Cancellation Date&nbsp;:&nbsp;</td>
+		<td class="blank">
+      <input id="cancellation_date" 
+             name="cancellation_date" 
+             class="show-cal-icon" 
+             value="[% cancellation_date || return.cancellation_date.ymd |html%]"
+             />
+    </td>
+		<td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+	</tr>
+	<tr>
+		<td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td align="right" class="blank"><b>Status&nbsp;:&nbsp;</td>
+		<td class="blank"><span class="highlight">[% return.return_status.status %]</span></td>
+		<td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+	</tr>
+	<tr>
+		<td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="3" class="blank"><img src="/images/blank.gif" width="1" height="15"></td>
+	</tr>
+	<tr>
+		<td colspan="3" align="right" class="blank">
+      <input class="button" type="submit" value="Submit &raquo;" name="submit"/>
+    </td>
+	</tr>
+</table>
+</form>
+
+<div id="calendar_cancellation_date"  class="nap_calendar"></div>
+<div id="calendar_expiry_date"  class="nap_calendar"></div>
+<script type="text/javascript">
+    var cancellation_cal = new YAHOO.widget.NapCalendar;
+    cancellation_cal.config.calDivId  = 'calendar_cancellation_date';
+    cancellation_cal.config.textField = 'cancellation_date';
+    cancellation_cal.init();
+
+    var expiry_cal = new YAHOO.widget.NapCalendar;
+    expiry_cal.config.calDivId  = 'calendar_expiry_date';
+    expiry_cal.config.textField = 'expiry_date';
+    expiry_cal.init();
+</script>
+
+[% notes_rs = return.return_notes_rs;
+   IF notes_rs.count > 0 %]
+
+	<span class="title title-[% channel_config.$sales_channel %]">Return Notes</span><br>
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">	
+		<tr>
+			<td colspan="6" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+		<tr>
+			<td class="tableHeader" width="17%">&nbsp;&nbsp;&nbsp;Date</td>
+			<td class="tableHeader" width="53%">Note</td>
+			<td class="tableHeader" width="10%">Type</td>
+			<td class="tableHeader">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			<td class="tableHeader" width="12%">Operator</td>
+			<td class="tableHeader" width="8%">Dept.</td>
+		</tr>
+		<tr>
+			<td colspan="6" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+	[% WHILE (note = notes_rs.next) %]	
+		<tr>
+			<td>&nbsp;&nbsp;&nbsp;[% note.date %]</td>
+			<td>[% note.note | html %]</td>
+			<td>[% note.note_type.description %]</td>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			<td>[% note.operator.name %]</td>
+			<td>[% note.operator.department.department %]</td>
+		</tr>
+		<tr>
+			<td colspan="6" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+	[% END %]
+		<tr>
+			<td colspan="3" class="blank"><img src="/images/blank.gif" width="1" height="20"></td>
+		</tr>
+	</table>
+[% END %]
+	
+<span class="title title-[% channel_config.$sales_channel %]">Return Items</span><br>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+	<tr>
+		<td colspan="7" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td class="tableHeader">&nbsp;</td>
+        <td class="tableHeader">Product</td>
+        <td class="tableHeader">Size</td>
+		<td class="tableHeader">Type</td>
+		<td class="tableHeader">Reason</td>
+		<td class="tableHeader">Status</td>
+		<td class="tableHeader">Date Received</td>
+	</tr>
+	<tr>
+		<td colspan="7" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+
+  [%  SET rs = return.return_items_rs;
+	    WHILE (ri = rs.next); 	
+        SET shipitemid = ri.shipment_item_id;
+        SET style = '';
+        IF ri.is_cancelled;
+            SET style = '<span class="lowlight">';
+        END %]
+        <tr>
+            <td align="center"><a href="[% return_items.$returnitemid.images.0 %]" title="View Product Image" target="new" class="imagezoom"><img src="/images/icons/image.png"></a></td>
+            <td>[% style %][% ri.variant.sku %]</td>
+            <td>[% style %][% IF shipment_items.$shipitemid.short_name %][% shipment_items.$shipitemid.short_name %] [% END %][% shipment_items.$shipitemid.designer_size %][% IF shipment_items.$shipitemid.designer_size != shipment_items.$shipitemid.size %] ([% shipment_items.$shipitemid.size %])[% END %]</td>
+            <td>[% style %][% ri.is_exchange ? 'Exchange' : 'Return' %]</td>
+            <td>[% style %][% ri.reason %]</td>
+            <td>[% style %][% ri.status_str %]</td>
+            <td>[% style %][% ri.date_received.strftime("%d-%m-%Y %H:%M") %]</td>
+        </tr>        
+        <tr>
+            <td>&nbsp;</td>
+            <td colspan="6" valign="top">[% style %]<i>[% shipment_items.$shipitemid.designer %] - [% shipment_items.$shipitemid.name %]</i></td>
+        </tr>
+        <tr>
+            <td colspan="7" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+	[% END %]
+</table>
+
+<br><br><br>
+
+<span class="title title-[% channel_config.$sales_channel %]">Return Log</span><br>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+	<tr>
+		<td colspan="3" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td class="tableHeader">&nbsp;&nbsp;&nbsp;Date</td>
+		<td class="tableHeader">&nbsp;&nbsp;&nbsp;Status</td>
+		<td class="tableHeader">&nbsp;&nbsp;&nbsp;Operator</td>
+	</tr>
+	<tr>
+		<td colspan="3" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+
+  [% FOREACH log IN return.logs.all %]
+	
+	<tr>
+		<td>&nbsp;&nbsp;&nbsp;[% log.date.strftime("%d-%m-%Y %H:%M") %]</td>
+		<td>&nbsp;&nbsp;&nbsp;[% log.status.status %]</td>
+		<td>&nbsp;&nbsp;&nbsp;[% log.operator.name %]</td>
+	</tr>
+	<tr>
+		<td colspan="3" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+
+
+	[% END %]
+</table>
+
+<br><br><br>
+
+<span class="title title-[% channel_config.$sales_channel %]">Return Items Log</span><br>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+	<tr>
+		<td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td class="tableHeader">&nbsp;&nbsp;&nbsp;Date</td>
+		<td class="tableHeader">&nbsp;&nbsp;&nbsp;SKU</td>
+		<td class="tableHeader">&nbsp;&nbsp;&nbsp;Status</td>
+		<td class="tableHeader">&nbsp;&nbsp;&nbsp;Operator</td>
+	</tr>
+	<tr>
+		<td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+
+  [% FOREACH log IN return.item_logs.all %]
+	
+		<tr>
+      <td>&nbsp;&nbsp;&nbsp;[% log.date.strftime("%d-%m-%Y %H:%M") %]</td>
+			<td>&nbsp;&nbsp;&nbsp;[% log.return_item.variant.sku %]</td>
+      <td>&nbsp;&nbsp;&nbsp;[% log.status.status %]</td>
+      <td>&nbsp;&nbsp;&nbsp;[% log.operator.name %]</td>
+		</tr>
+		<tr>
+			<td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+
+
+	[% END %]
+</table>
+

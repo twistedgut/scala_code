@@ -1,0 +1,42 @@
+<pre>
+
+h1. CANDO
+    * CANDO-2239: DC3XT_APAC: Update Customer Care Email Addresses
+    * CANDO-2266: update JC Invoice Templates for DC2
+    * CANDO-2209: OrderView crashes XTracker if invalid order_id is passed in
+    * CANDO-2062: Add 'customer language preference' to Credit-Check, Fulfilment Hold, DDU hold screens in XT
+    * CANDO-2268: Incorrect date in localised emails
+    * CANDO-2013: Show order location
+    * CANDO-2276: Missing product data where the PS returns an empty string of text
+    * CANDO-2024: Refactor NAP::Service::Product to XT::Service::Product
+    * CANDO-2211: Fix XT::Service::Product to return original if no translated data available
+    * CANDO-2199: Premier Routing: Add sales channel field to text files
+    * CANDO Fraud Rules or 'CONRAD'
+        * CANDO-2116: Pre requisite work back end work
+        * CANDO-2117: Create front end user interface
+        * CANDO-2119: Create a user interface to test orders against fraud rules
+        * CANDO-2120: Test rules against orders on the order view page in XT
+        * CANDO-2121: Switch on/off/parallel fraud rules
+        * CANDO-2122: Create rules engine
+        * CANDO-2123: Create back end to support user interface
+        * CANDO-2124: Implement test rule actions
+        * CANDO-2301: Fraud Rules Testing (and bug tracking)
+
+h1. DC2A
+    * DCA-737:  Consume ready_for_dispatch message (PRL only)
+    * DCA-1751: Default sku_update message values (PRL only)
+    * DCA-1649: Correct compartment_configuration in advice message (PRL only)
+    * DCA-1737: System parameters page: Change 'Wall of Totes' name & sort order
+    * DCA-1759: Display 'Cage items' column on packing exception and commissioner pages
+    * DCA-54 - Packing Exception for PRL (only for PRL_ROLLOUT_PHASE 1 (so not in Live))
+        * PRL tweaks to Packing Exception
+        * Commissioner page
+        * New Putaway Prep for stock coming from Packing Exception
+        * Tweaks to Putaway Problem Resolution page, and Putaway Admin page
+    * DCA-1397: New recodes printer for DC2 (PRL only)
+    * DCA-1965: Set has_print_docs correctly in allocate message (PRL only)
+
+h1. Product Management
+    * PM-1252: PO sent to XT Success Notification
+
+</pre>

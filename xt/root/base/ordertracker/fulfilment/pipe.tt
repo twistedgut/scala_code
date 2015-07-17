@@ -1,0 +1,143 @@
+[%
+    disablemenus = 1;
+    disablemenus_reason = "'send to packing exception' process";
+%]
+[% BLOCK keep_containers; FOR c IN source_containers %]<input type="hidden" name="source_containers" value="[% c %]">[% END; END %]
+[% BLOCK scanned_ph_items_block; FOR item IN scanned_ph_items %]<input type="hidden" name="scanned_ph_items" value="[% item %]" />[% END; END %]
+[% PROCESS 'ordertracker/fulfilment/packing_common.tt'; WRAPPER packing_wrapper %]
+ [% PROCESS warning_messages %]
+
+[% IF process != 'completed' %]
+<form name="pipe-item" action="/Fulfilment/Packing/PlaceInPEtote" method="post" onsubmit="return double_submit()">
+  [% PROCESS scanned_ph_items_block %]
+  [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+  <input type="hidden" name="shipment_id" value="[% shipment.id %]" />
+  [% PROCESS keep_containers %]
+  <div class="formrow divideabove dividebelow">
+    [% IF process == 'sku' %]
+    <label for="sku">Enter SKU</label>
+    <input type="text" name="sku" id="sku" value="">
+    [% ELSE %]
+    <span class="fakelabel">SKU</span>
+    <input type="hidden" name="sku" value="[% sku %]">
+    <p>[% sku %]</p>
+    [% END %]
+  </div>
+  [% IF process == 'pe_tote' %]
+  <div class="formrow dividebelow">
+    [% IF shipment_item.container.is_pigeonhole %]
+    <p class="display_message">Confirm item has been returned to pigeon hole [% shipment_item.container_id %]</p>
+    <input type="hidden" name="pe_tote" id="pe_tote" value="[% shipment_item.container_id %]">
+    [% ELSE %]
+    <label for="pe_tote">Enter Container/Tote id</label>
+    <input type="text" name="pe_tote" id="pe_tote" value="">
+    [% END %]
+  </div>
+  [% END %]
+
+  <div class="formrow dividebelow">
+    [% PROCESS page_elements/forms/submit_button.tt %]
+  </div>
+</form>
+
+<script type="text/javascript">
+  document.getElementById('[% process || 'sku' %]').focus();
+</script>
+<br><br>
+
+[% ELSE %]
+<p class="info">
+    [% IF shipment.is_pigeonhole_only %]
+    Please take shipment paperwork to the packing exception desk, then select the "Completed" button.
+    [% ELSE %]
+    Please send the tote(s) to the packing exception desk, then select the "Completed" button.
+    [% END %]
+</p>
+
+<form name="pipe-item" action="/Fulfilment/Packing/PlaceInPEtote" method="post" onsubmit="return double_submit()">
+  [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+  <input type="hidden" name="shipment_id" value="[% shipment.id %]" />
+  [% PROCESS keep_containers; PROCESS scanned_ph_items_block %]
+  <input type="hidden" name="completed" value="1" />
+  <div class="formrow divideabove dividebelow buttons aftertable">
+    [% PROCESS page_elements/forms/submit_button.tt
+       btn_name="completed_submit"
+       submit="Completed &raquo;"
+       extraclass="enormousbutton"
+    %]
+  </div>
+</form>
+[% END %]
+
+[% BLOCK item_row;
+  IF ( showing == 'source' && show_in_source(shipment_item, scanned_ph_items) )
+   || ( showing == 'destination' && show_in_destination(shipment_item, scanned_ph_items) );
+  variant = shipment_item.get_true_variant; product = variant.product
+  %]
+[%
+   IF product.get_product_channel_for_images.channel.name == 'MRPORTER.COM';
+        filename = product.id _ '_mrp';
+        image_size = 'l';
+    ELSE;
+        filename = product.id;
+        image_size = 'dl';
+    END %]
+<tr valign="middle" height="160" [% IF shipment_item.container.is_pigeonhole %] class="highlight2" [% END %]>
+  <td width="15%">
+   <a[% IF product.get_product_channel_for_images.live %] href="[% image_host_url %]/images/products/[% product.id %]/[% filename %]_in_[% image_size %].jpg" target="new" class="imagezoom" [% END %]><img src="[% product.get_three_images({ live => 1 }).0 %]" width="120" hspace="5" vspace="5"></a>
+    [% IF product.shipping_attribute.is_hazmat %]
+    <div class="divideabove bottom-half"><img class="center" src="/images/product_extras/hazmat.png" alt="Hazmat" title="Hazmat" width="50" /></div>
+    [% END %]
+  </td>
+  <td width="10%" align="center">[% variant.sku %]</td>
+  <td width="15%">[% product.designer.designer %]</td>
+  <td width="25%">[% product.name %]</td>
+  <td width="10%">[% product.product_attribute.size_scheme.short_name %] [% variant.designer_size.size %]</td>
+  <td width="10%" [% IF shipment_item.container.is_pigeonhole %] class="highlight2" [% END %]>[% shipment_item.container_id %]</td>
+  <td width="15%">
+    [% IF shipment_item.shipment_item_status_id == db_constant('SHIPMENT_ITEM_STATUS__PACKING_EXCEPTION') %]
+     Failure reason: &laquo;[% shipment_item.qc_failure_reason %]&raquo;
+     [% IF shipment_item.packing_exception_operator %]
+      <br/>Packer name: <cite class="packerName">[% shipment_item.packing_exception_operator.name %]</cite>
+     [% ELSE %]
+      <br/><cite class="packerMissing">Packer name unavailable</cite>
+     [% END %]
+    [% ELSE %]
+    Ok
+    [% END %]
+  </td>
+</tr>
+[% END ; END %]
+[% BLOCK items_table %]
+<table class="data wide-data divided-data" id="[% table_id %]">
+    <thead>
+        <tr>
+            <th></th>
+            <th align="center">SKU</th>
+            <th>Designer</th>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Container</th>
+            <th>QC</th>
+        </tr>
+    </thead>
+    <tbody>
+        [% FOREACH shipment_item = shipment.shipment_items;
+            INCLUDE item_row shipment_item=shipment_item;
+            END
+        %]
+    </tbody>
+</table>
+[% END %]
+
+<br /><br />
+
+<span class="title title-[% channel_config.$sales_channel %]">Items to be scanned out of packing</span><br>
+
+[% INCLUDE items_table showing='source' table_id='source-items' %]
+
+<span class="title title-[% channel_config.$sales_channel %]">Items already scanned out of packing or marked missing</span><br>
+
+[% INCLUDE items_table showing='destination' table_id='dest-items' %]
+
+[% END %]

@@ -1,0 +1,72 @@
+=====================================
+XT 2010.27.02 Deployment Instructions
+=====================================
+
+Release Date:       2011-01-20
+
+PACKAGES TO INSTALL:
+
+XTracker:
+
+* Package: xt
+* Version: 2010.27.02
+* Location: cfmaster.dave:/var/www/html/netaporter/dev_releases/x86_64/xt-2010.27.02-0.x86_64.rpm
+
+Perl-NAP:
+
+* Package: perl-nap
+* Version: 2010.26.00
+* Location: cfmaster.dave:/var/www/html/netaporter/dev_releases/x86_64/perl-nap-5.8.8-2010.26.00.x86_64.rpm
+
+jQuery:
+
+* Package: jquery-nap
+* Version: 1.4.2-4
+* Location: cfmaster.dave:/var/www/html/netaporter/dev_releases/noarch/jquery-nap-1.4.2-4.noarch.rpm
+
+
+These instructions assume the packages are in a repo the box can see.
+
+* sudo yum clean all
+* sudo yum update xt
+
+Installing the XT package _should_ apply the DB patches and restart 
+all the required services. 
+
+However, if this is on a new box, part of the install will fail due
+to log file permission errors. If this happens, remove and install
+the app again, and that should fix it.
+
+
+POST DEPLOYMENT:
+
+1. Mr Porter designer category data creation
+
+Please run
+    perl /opt/xt/deploy/xtracker/script/mrporter/mrporter_designer_root_nav.pl
+on xtdc1 and xtdc2.
+
+
+WARNING
+
+1. Make sure xt_activemq_dc_daemon.pl is running.  If not follow
+the following steps taking notes and reporting what happened to 
+richardc, asolomon and chisel
+- see whether /opt/xt/logs/order-importer.log is owned by root
+- delete /opt/xt/logs/order-importer.log
+- run /etc/init.d/xt_amq_consumer_ctl 
+- see whether /opt/xt/logs/order-importer.log is owned by nobody
+- check to see that xt_activemq_dc_daemon.pl is running
+
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+
+

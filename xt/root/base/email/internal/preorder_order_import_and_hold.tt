@@ -1,0 +1,23 @@
+Order Number: [% order.order_number %]
+PreOrder Number: [% order.preorder_number %]
+
+Customer Name: [% customer.first_name %] [% customer.last_name %]
+Customer Number: [% customer.is_customer_number %]
+Customer Email: [% customer.email %]
+
+[% FOREACH item IN shipment.shipment_items %]
+[% item.variant.sku %] : [% item.variant.product.wms_presentation_name %]
+[% END %]
+
+[% IF restrictions %]
+There are restrictions shipping some of the products:
+[% FOREACH product_id IN restrictions %]
+    [% product_id %]  : [% restrictions.$product_id.reasons.join(', ') %]
+[% END %]
+[% END %]
+
+Check and verify any notes and confirm any changes to the shipment address with the customer.
+
+Please take the order off HOLD once you have verified any changes.
+
+Thank You.

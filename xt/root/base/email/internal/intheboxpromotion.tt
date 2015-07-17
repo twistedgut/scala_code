@@ -1,0 +1,14 @@
+Dear [% operator.name %],
+
+There were a total of [% total_invalid %] invalid Customer Numbers.
+
+The following is a list of Customer Numbers that did not get attached to Segment [% customer_segment_name %].
+
+    [% FOREACH customer IN ignored_list %]
+        [% customer %]
+    [% END %]
+
+
+NB. We are only attaching a maximum of 1000 Customer Numbers in this email.
+
+Thank You.

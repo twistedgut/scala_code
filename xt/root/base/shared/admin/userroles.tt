@@ -1,0 +1,39 @@
+
+<form method="POST" name="userroles" id="userroles">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+<table id="update_roles">
+    <tr>
+        <th>Available Roles</th>
+        <th></th>
+        <th>Current Operator Roles</th>
+    </tr>
+    <tr>
+        <td id="available_roles">
+            <select id="availableroles" size="30" multiple="multiple">
+            [% FOREACH role IN available_roles.sort %]
+                <option value="[% role %]">[% role %]</option>
+            [% END %]
+            </select>
+        </td>
+        <td align="center" valign="middle">
+            <input id="add" type="button" value="Add to Current Roles --&gt;" /><br />
+            <br />
+            <input id="remove" type="button" value="&lt;-- Remove from Current Roles" />
+        </td>
+        <td id="new_roles">
+            <select id="newroles" name="newroles" size="30" multiple="multiple">
+                <option id="do_not_submit" value"ignore_this">Move roles to and from this side</option>
+            [% FOREACH role IN current_roles.sort %]
+                <option value="[% role %]" selected>[% role %]</option>
+            [% END %]
+            </select>
+        </td>
+    </tr>
+</table>
+
+<p>To add a new role that is not listed under Available Roles enter the role name (must start with "app_" ): <input type="text" id="newrole"></p>
+
+<input id="userrolessubmit" value="Update My Roles" type="submit">
+
+</form>
+

@@ -1,0 +1,111 @@
+[%- USE URLRoleFilter -%]
+[%-
+    SET restriction_hash = {
+        restrict_class = {
+            aclprotect_add_entry    = [ 'app_canModifyFraudHotlist' ],
+            aclprotect_delete_entry = [ 'app_canModifyFraudHotlist' ],
+        },
+    };
+-%]
+[%- FILTER $URLRoleFilter acl_obj restriction_hash -%]
+
+<form class="aclprotect_add_entry" name="add_form" id="fraud_hotlist__add" action="/Finance/FraudHotlist/Add" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <span class="title">Add New Entry</span><br>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data" id="fraud_hotlist_entry">
+        <tr>
+            <td colspan="8" class="divider"></td>
+        </tr>
+        <tr height="24">
+            <td width="8%" align="right"><b>Field:&nbsp;&nbsp;&nbsp;</td>
+            <td width="10%">
+                <select name="field_id">
+                    [% FOREACH field_id = fields.keys.nsort %]
+                        <option value="[% field_id %]">[% fields.$field_id %]</option>
+                    [% END %]
+                </select>		
+            </td>
+            <td width="8%" align="right"><b>Value:&nbsp;&nbsp;&nbsp;</td>
+            <td width="15%"><input type="text" name="value" value=""></td>
+            <td width="15%" align="right"><b>Sales Channel:&nbsp;&nbsp;&nbsp;</td>
+            <td width="15%">
+                <select name="channel_id">
+                    [% FOREACH channel_id = channels.keys.nsort %]
+                        <option value="[% channel_id %]">[% channels.$channel_id.name %]</option>
+                    [% END %]
+                </select>		
+            </td>
+            <td width="15%" align="right"><b>Order Number:&nbsp;&nbsp;&nbsp;</td>
+            <td width="12%"><input type="text" size="10" maxlength="30" name="order_nr" value=""></td>
+        </tr>
+        <tr>
+            <td colspan="8" class="divider"></td>
+        </tr>
+        <tr>
+            <td colspan="8" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+        </tr>
+        <tr>
+            <td colspan="8" class="blank" align="right">[% INCLUDE page_elements/forms/submit_button.tt submit='Add Entry &raquo;' %]</td>
+        </tr>
+    </table>
+    <br />
+    <br />
+    <br />
+</form>
+
+[% FOREACH field = list.keys.sort %]
+    [%-
+        SET field_id = field.lower.replace('[^\w]','');
+    -%]
+    <form name="delete_form_[% field_id %]" id="delete_form_[% field_id %]" action="/Finance/FraudHotlist/Delete" method="post">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <span class="title">Field Type:</span>&nbsp;&nbsp;<b>[% field %]</b><br />
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data" id="fraud_hotlist_list_[% field_id %]">
+        <tr>
+            <td colspan="4" class="dividerHeader"></td>
+        </tr>
+        <tr height="24">
+            <td width="40%" class="tableHeader">&nbsp;&nbsp;&nbsp;&nbsp;Value</td>
+            <td width="20%" class="tableHeader">Sales Channel</td>
+            <td width="20%" class="tableHeader">Order Number</td>
+            <td width="20%" class="tableHeader"><span class="aclprotect_delete_entry">Delete</span></td>
+        </tr>
+        <tr>
+            <td colspan="4" class="dividerHeader"></td>
+        </tr>
+        [% FOREACH id = list.$field.keys.nsort %]
+            [% SET sales_channel = list.$field.$id.sales_channel %]
+            <tr height="20">
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;[% list.$field.$id.value %]</td>
+                <td><span class="title-[% channel_config.$sales_channel %]">[% sales_channel %]</span></td>
+                <td>
+                    [% IF list.$field.$id.order_id %]
+                        <a href="/Finance/FraudHotlist/OrderView?order_id=[% list.$field.$id.order_id %]">[% list.$field.$id.order_nr || '-' %]</a>
+                    [% ELSE %]
+                        [% list.$field.$id.order_nr || '-' %]
+                    [% END %]
+                </td>
+                <td><input class="aclprotect_delete_entry" type="checkbox" name="delete-[% id %]" value="1"></td>
+            </tr>
+            <tr>
+                <td colspan="4" class="divider"></td>
+            </tr>
+        [% END %]
+
+        <tr class="aclprotect_delete_entry">
+            <td colspan="4" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+        </tr>
+        <tr class="aclprotect_delete_entry">
+            <td colspan="4" class="blank" align="right">[% INCLUDE page_elements/forms/submit_button.tt submit='Delete Entry &raquo;' %]</td>
+        </tr>
+    </table>
+    </form><br />
+    <br />
+[% END %]
+
+[%- END # FILTER -%]
+
+
+<br />
+<br />
+<br />

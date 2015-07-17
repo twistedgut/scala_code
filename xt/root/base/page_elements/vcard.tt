@@ -1,0 +1,29 @@
+<div class="vcard">
+  <dl class="table-display-fixed-height[% IF current %] current-addr[% END %]">
+    [% IF form %]
+      [% IF addr.addr_key %]
+        [% SET info_msg = 'Use address' %]
+      [% ELSE %]
+        [% SET info_msg = 'Create new' %]
+        [% SET addr.addr_key = 'new' %]
+      [% END %]
+      [% IF list %]
+        <dt>[% info_msg %]</dt><dd><input type="radio" name="address" value="[% addr.addr_key %]" [% IF checked > 0 %]checked = 1[% END %]></input>&nbsp;</dd>
+      [% ELSE %]
+        <dt>Seaview Address</dt><dd><input type="hidden" name="address" value="[% addr.addr_key %]"></input>&nbsp;</dd>
+      [% END %]
+    [% ELSE %]
+        <dt>Current Address</dt><dd></dd>
+    [% END %]
+    [% IF addr.address_type %]
+    <dt>Address Type</dt>                                 <dd class="fn">[% addr.address_type %]</dd>
+    [% END %]
+    <dt>Name</dt>                                         <dd class="fn">[% addr.first_name %] [% addr.last_name %]</dd>
+    <dt>Street Address</dt>                               <dd class="street-address">[% addr.address_line_1 %]</dd>
+    <dt>Street Address 2</dt>                             <dd class="locality">[% addr.address_line_2 %]</dd>
+    [% IF addr.towncity %]<dt>Town/City</dt>              <dd class="region">[% addr.towncity %]</dd>[% END %]
+    [% IF addr.postcode %]<dt>Postcode</dt>               <dd class="postal-code">[% addr.postcode %]</dd>[% END %]
+    [% IF addr.country %]<dt>Country</dt>                 <dd class="country-name">[% addr.country %]</dd>[% END %]
+    [% IF addr.county %]<dt>State/County</dt>             <dd class="county">[% addr.county %]</dd>[% END %]
+  </dl>
+</div>

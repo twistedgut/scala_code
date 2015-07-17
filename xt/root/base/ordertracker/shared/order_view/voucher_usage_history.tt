@@ -1,0 +1,60 @@
+[% USE URLRoleFilter %]
+[%-
+    SET restrict_voucher_history = {
+        restrict_class = {
+            aclprotect_voucher_history = [ 'app_canViewOrderPaymentDetails' ],
+        },
+    };
+-%]
+[% FILTER $URLRoleFilter acl_obj restrict_voucher_history %]
+
+        <img src="/images/icons/timeline_marker.png" alt="Show Voucher Usage History" class="inline link_cursor aclprotect_voucher_history" id="voucher_usage_[% itemid %]" name="voucher_usage" />
+        <div class="inline" style="position:relative" class="aclprotect_voucher_history">
+            <div id="voucher_usage_container_[% itemid %]" name="voucher_usage_container" class="floating_layer">
+                <h4>Voucher Usage History</h4>
+                <table class="wide-data data" style="width:650px;">
+                    <thead>
+                        <tr>
+                            <th>Order</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Order Value</th>
+                            <th>Order Currency</th>
+                            <th>Voucher Value Used</th>
+                            <th>Voucher Currency</th>
+                            <th>Fully Packed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    [%- UNLESS sitem.voucher_usage.size -%]
+                        <tr class="dividebelow"><td colspan=8>This voucher has not yet been redeemed against any order</td></tr>
+                    [%- ELSE -%]
+                        [%- FOREACH o IN sitem.voucher_usage %]
+                            [%- codeid = sitem.voucher_code_id %]
+                            [%- o_fulfilled = 0;
+                                o_shipment = o.get_standard_class_shipment;
+                                IF o_shipment;
+                                THEN;
+                                    IF o_shipment.is_shipment_completely_packed;
+                                    THEN;
+                                        o_fulfilled = 1;
+                                    END;
+                                END;
+                            -%]
+                        <tr class="dividebelow">
+                            <td [%class%]><a href="[% short_url _ '/OrderView?order_id=' _ o.id %]">[%o.order_nr %]</a></td>
+                            <td [%class%]>[%o.date.ymd('-')%] [%v.date.hms(':')%]</td>
+                            <td [%class%]>[%o.order_status.status%]</td>
+                            <td [%class%]>[%o.total_value%]</td>
+                            <td [%class%]>[%o.currency.currency %]</td>
+                            <td [%class%]>[%o.voucher_value_used(codeid)%]</td>
+                            <td [%class%]>[%o.get_vouchers_by_code_id(codeid).first.voucher_product.currency.currency%]</td>
+                            <td [%class%]>[%o_fulfilled ? '<img src="/images/icons/tick.png" alt="Yes" border="0" />' : '<img src="/images/icons/cross.png" alt="No" border="0" />' %]</td>
+                            </tr>
+                        [%- END %]
+                    [% END %]
+                    </tbody>
+                </table>
+            </div>
+        </div>
+[% END #Filter -%]

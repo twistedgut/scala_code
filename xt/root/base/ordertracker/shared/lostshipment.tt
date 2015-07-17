@@ -1,0 +1,119 @@
+
+[% IF shipments.size %]
+
+    <span class="title title-[% channel_config.$sales_channel %]">Select Shipment</span><br>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="9" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="24">
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Shipment Number</td>
+            <td class="tableHeader">Date</td>
+            <td class="tableHeader">Type</td>
+            <td class="tableHeader">Status</td>
+        </tr>
+        <tr>
+            <td colspan="9" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        
+        [% FOREACH id = shipments.keys %]
+        <tr>
+            [% IF shipments.$id.shipment_status_id == 4 %]
+                <td>&nbsp;&nbsp;&nbsp;<a href="[% short_url %]/LostShipment?order_id=[% order_id %]&shipment_id=[% id %]">[% id %]</a></td>
+                <td>[% shipments.$id.date %]</td>
+                <td>[% shipments.$id.class %]</td>
+                <td>[% shipments.$id.status %]</td>
+            [% ELSE %]
+                <td class="light">&nbsp;&nbsp;&nbsp;[% id %]</td>
+                <td class="light">[% shipments.$id.date %]</td>
+                <td class="light">[% shipments.$id.class %]</td>
+                <td class="light">[% shipments.$id.status %]</td>
+            [% END %]		
+        </tr>
+        <tr>
+            <td colspan="4" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        [% END %]
+    </table>
+
+[% ELSE %]
+
+    <span class="title title-[% channel_config.$sales_channel %]">Select Item(s)</span><br>
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <form name="cancelForm" action="[% short_url %]/SetLostShipment?order_id=[% order_id %]&shipment_id=[% shipment_id %]" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="select_item" value="1">
+        <tr>
+            <td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="24">
+            <td width="15%" class="tableHeader">&nbsp;&nbsp;&nbsp;PID</td>
+            <td width="45%" class="tableHeader">Name</td>
+            <td width="30%" class="tableHeader">Lost Item</td>
+        </tr>
+        <tr>
+            <td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+        [% FOREACH itemid = shipment_items.keys %]
+             [% IF shipment_items.$itemid.shipment_item_status_id == SHIPMENT_ITEM_STATUS__DISPATCHED %]
+                <tr height="24">
+                    <td>&nbsp;&nbsp;&nbsp;<a href="javascript://" onClick="window.open('[% shipment_items.$itemid.image.0 %]','viewimage','width=230,height=345,scrollbars=no');" class="noline">[% shipment_items.$itemid.product_id %]-[% shipment_items.$itemid.sku_size %]</a></td>
+                    <td>[% shipment_items.$itemid.designer %] - [% shipment_items.$itemid.name %]</td>
+                    <td><input type="checkbox" name="item-[% itemid %]" value="1"></td>
+                </tr>
+            [% ELSE %]
+                <tr>
+                    <td class="light">&nbsp;&nbsp;&nbsp;[% shipment_items.$itemid.product_id %]-[% shipment_items.$itemid.sku_size %]</a></td>
+                    <td class="light">[% shipment_items.$itemid.designer %] - [% shipment_items.$itemid.name %]</td>
+                    <td class="light">[% shipment_items.$itemid.status %]</td>
+                </tr>
+            [% END %]
+            <tr>
+                <td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        [% END %]
+        
+        
+        <tr>
+            <td class="blank" colspan="5"><img src="/images/blank.gif" width="1" height="30"></td>
+        </tr>
+        <tr>
+            <td class="blank" colspan="5">
+            <span class="title title-[% channel_config.$sales_channel %]">Customer Refund</span><br>
+                <!--table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">	
+                    <tr>
+                        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                    </tr>
+                    <tr>
+                        <td width="149" align="right"><b>Type:&nbsp;&nbsp;</td>
+                        <td width="570">&nbsp;<select name="refund_type_id">
+                                <option value="">Select...</option>
+                                <option value="">----------------------------</option>
+                                <option value="1">Store Credit</option>
+                                <option value="2">Card Refund</option>
+                            </select>		
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                    </tr>
+                </table-->
+            <p class="info">
+                This refund will be created for the customer according to how it was paid for. We refund to any credit card that may have been used in the purchase first, up to the value that was taken from it. Any remaining or other payment method used i.e. store credit and/or gift card credit, will be refunded as store credit.
+            </p>
+            </td>
+        </tr>        
+        <tr>
+            <td class="blank" colspan="5"><img src="/images/blank.gif" width="1" height="20"></td>
+        </tr>
+        <tr>
+            <td class="blank" colspan="5" align="right">[% INCLUDE page_elements/forms/submit_button.tt %]</td>
+        </tr>
+    </table>
+
+    </form>
+
+[% END %]
+

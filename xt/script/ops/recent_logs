@@ -1,0 +1,4 @@
+#!/bin/bash
+find /var/log/nap/xt -name 'amq_consumer-*.log' -mtime -5 | \
+xargs cat | \
+sort

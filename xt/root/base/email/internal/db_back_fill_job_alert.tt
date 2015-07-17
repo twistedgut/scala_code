@@ -1,0 +1,11 @@
+[%# Used to send updates about 'dbadmin.back_fill_job' records %]
+Back Fill Job Id  : [% back_fill_job_rec.id +%]
+Back Fill Job Name: [% back_fill_job_rec.name +%]
+
+Status: [% back_fill_job_rec.back_fill_job_status.status +%]
+
+Total Number for Records Updated: [% back_fill_job_rec.log_back_fill_job_runs_rs.with_no_errors_rs.total_rows_updated +%]
+Total Number of Job Runs Done   : [% back_fill_job_rec.log_back_fill_job_runs_rs.count +%]
+
+[% extra_information +%]
+

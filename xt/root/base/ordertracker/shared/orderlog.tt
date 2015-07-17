@@ -1,0 +1,384 @@
+<h3 class="title title-[% channel_config.$sales_channel %]">Order Log</h3>
+<table id="tbl_order_status_log" class="data wide-data divided-data">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Operator</th>
+            <th>Department</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>[% live_order_taken_date %]</td>
+            <td colspan='3'>Placed</td>
+        </tr>
+        <tr>
+            <td>[% order_created_in_xt_date %]</td>
+            <td colspan='3'>Imported</td>
+        </tr>
+[%- FOREACH id = order_log.keys.nsort %]
+        <tr>
+            <td>[% order_log.$id.date %]</td>
+            <td>[% order_log.$id.status; ' (Bulk Action)' IF order_log.$id.bulk_order_action_log_id %]</td>
+            <td>[% order_log.$id.name %]</td>
+            <td>[% order_log.$id.department %]</td>
+        </tr>
+[%- END %]
+    </tbody>
+</table>
+
+<br>
+<br>
+
+<h3 class="title title-[% channel_config.$sales_channel %]">Shipment Log</h3>
+
+[% FOREACH id = shipments.keys.nsort %]
+
+<table id="tbl_shipment_status_[% id %]" width="719" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr height="26">
+        <td width="130" align="right"><b>Shipment Number:&nbsp;&nbsp;</b></td>
+        <td width="170">&nbsp;[% id %]</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr height="26">
+        <td align="right"><b>Date:&nbsp;&nbsp;</b></td>
+        <td>&nbsp;[% shipments.$id.date %]</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr height="26">
+        <td align="right"><b>Shipment Type:&nbsp;&nbsp;</b></td>
+        <td>&nbsp;[% shipments.$id.class %]</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr height="26">
+        <td align="right"><b>Shipment Class:&nbsp;&nbsp;</b></td>
+        <td>[% shipments.$id.type %]</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        <td><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td height="26" align="right"><b>Status:&nbsp;&nbsp;</b></td>
+        <td>&nbsp;<span class="highlight">[% shipments.$id.status %]</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+</table>
+
+<br>
+<br>
+
+<h3 class="title title-[% channel_config.$sales_channel %]">Status Log</h3>
+<table id="tbl_shipment_status_log_[% id %]" class="data wide-data divided-data">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Operator</th>
+            <th>Department</th>
+        </tr>
+    </thead>
+    <tbody>
+[% FOREACH shiplogid = shipments.$id.shipment_log.keys.nsort %]
+        <tr>
+            <td>[% shipments.$id.shipment_log.$shiplogid.date %]</td>
+            <td>[% shipments.$id.shipment_log.$shiplogid.status %]</td>
+            <td>[% shipments.$id.shipment_log.$shiplogid.name %]</td>
+            <td>[% shipments.$id.shipment_log.$shiplogid.department %]</td>
+        </tr>
+[% END %]
+    </tbody>
+</table>
+
+<br>
+<br>
+
+[% IF shipments.$id.shipment_hold_log && shipments.$id.shipment_hold_log.size > 0 %]
+<h3 class="title title-[% channel_config.$sales_channel %]">Shipment Hold Log</h3>
+<table id="tbl_shipment_hold_log_[% id %]" class="data wide-data divided-data">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Reason</th>
+            <th>Comment</th>
+            <th>Operator</th>
+            <th>Department</th>
+        </tr>
+    </thead>
+    <tbody>
+[%- FOREACH hold_log = shipments.$id.shipment_hold_log %]
+        <tr>
+            <td>[% local_date(hold_log.date) %]</td>
+            <td>[% hold_log.shipment_hold_reason.reason %]</td>
+            <td>[% hold_log.comment %]</td>
+            <td>[% hold_log.operator.name %]</td>
+            <td>[% hold_log.operator.department.department %]</td>
+        </tr>
+[%- END %]
+    </tbody>
+</table>
+<br/><br/>
+[% END %]
+
+<h3 class="title title-[% channel_config.$sales_channel %]">Box Log</h3>
+<table id="tbl_shipment_box_log_[% id %]" class="data wide-data divided-data">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Shipment Box</th>
+            <th>Items</th>
+            <th>Action</th>
+            <th>Operator</th>
+            <th>Department</th>
+        </tr>
+    </thead>
+    <tbody>
+[%- FOREACH box = shipments.$id.shipment_box_log %]
+        <tr>
+            <td>[% local_date(box.timestamp) %]</td>
+            <td>[% box.shipment_box_id %]</td>
+            <td>[% box.skus.join(', ') %]</td>
+            <td>[% box.action %]</td>
+            <td>[% box.operator.name %]</td>
+            <td>[% box.operator.department.department %]</td>
+        </tr>
+[%- END %]
+    </tbody>
+</table>
+
+<br />
+<br />
+
+<h3 class="title title-[% channel_config.$sales_channel %]">Message Log</h3>
+<table id="tbl_shipment_message_log_[% id %]" class="data wide-data divided-data">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Message Type</th>
+            <th>Operator</th>
+            <th>Department</th>
+        </tr>
+    </thead>
+    <tbody>
+[% FOREACH message = shipments.$id.message_log %]
+        <tr>
+            <td>[% message.date.strftime('%d-%m-%y %R') %]</td>
+            <td>[% message.message_description %]</td>
+            <td>[% message.operator.name %]</td>
+            <td>[% message.operator.department.department %]</td>
+        </tr>
+[% END %]
+    </tbody>
+</table>
+
+<br>
+<br>
+
+<h3 class="title title-[% channel_config.$sales_channel %]">Shipment Item Log</h3>
+<table id="tbl_shipment_item_status_log_[% id %]" class="data wide-data divided-data">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Item</th>
+            <th>Status</th>
+            <th>Operator</th>
+            <th>Department</th>
+        </tr>
+    </thead>
+    <tbody>
+[% USE date; FOREACH item = shipments.$id.shipment_item_log %]
+        <tr>
+            <td>[% date.format(item.date, '%F %R') %]</td>
+            <td>[% item.sku %]</td>
+            <td>[% item.status %]</td>
+            <td>[% item.name %]</td>
+            <td>[% item.department %]</td>
+        </tr>
+[% END %]
+    </tbody>
+</table>
+<br>
+<br>
+[% IF shipments.$id.shipment_signature_log.size %]
+<h3 class="title title-[% channel_config.$sales_channel %]">Delivery Signature Required Change Log</h3>
+
+<br>
+<br>
+
+<table id="tbl_delivery_signature_log_[% id %]" class="wide-data data divided-data">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>New State</th>
+            <th>Operator</th>
+            <th>Department</th>
+        </tr>
+    </thead>
+    <tbody>
+[% FOREACH log = shipments.$id.shipment_signature_log %]
+        <tr>
+            <td>[% local_date(log.date) %]</td>
+            <td>[% log.new_state ? 'Yes' : 'No' %]</td>
+            <td>[% log.operator.name %]</td>
+            <td>[% log.operator.department.department %]</td>
+        </tr>
+[% END %]
+    </tbody>
+</table>
+
+<br>
+<br>
+
+[% END %]
+
+[%IF shipments.$id.allocation_item_log.size %]
+<h3 class="title title-[% channel_config.$sales_channel %]">Allocation Item Log</h3>
+<table id="tbl_allocation_item_log" class="data wide-data divided-data">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>PRL</th>
+            <th>SKU</th>
+            <th>Allocation ID</th>
+            <th>Status</th>
+            <th>Item ID</th>
+            <th>Item Status</th>
+            <th>Container</th>
+            <th>Operator</th>
+            <th>Department</th>
+        </tr>
+    </thead>
+    <tbody>
+[% FOREACH log_item = shipments.$id.allocation_item_log %]
+        <tr>
+            <td>[% local_date(log_item.date) %]</td>
+            <td>[% log_item.allocation_item.allocation.prl.name %]</td>
+            <td>[% log_item.allocation_item.shipment_item.variant.sku %]</td>
+            <td>[% log_item.allocation_item.allocation_id %]</td>
+            <td>[% log_item.allocation_status.status %]</td>
+            <td>[% log_item.allocation_item_id %]</td>
+            <td>[% log_item.allocation_item_status.status %]</td>
+            <td>[% log_item.allocation_item.picked_into %]</td>
+            [% IF log_item.allocation_item_status.id == ALLOCATION_ITEM_STATUS__PICKED %]
+                <td>[% log_item.allocation_item.picked_by %]</td>
+            [% ELSE %]
+                <td>[% log_item.operator.name %]</td>
+            [% END %]
+            <td>[% log_item.operator.department.department %]</td>
+        </tr>
+[% END %]
+    </tbody>
+</table>
+<br>
+[% END %]
+[% END %]
+
+[% IF order_address_log.size %]
+<br><br>
+<h3 class="title title-[% channel_config.$sales_channel %]">Invoice Address Change Log</h3>
+<table class="data wide-data divided-data">
+
+[% FOREACH addrid = order_address_log.keys.nsort %]
+    [% address = order_address_log.$addrid %]
+    <thead>
+        <tr>
+            <th>Date Changed</th>
+            <th>Changed by</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;[% address.date %]</td>
+            <td>[% address.name %]</td>
+        </tr>
+        <tr>
+            <td><br>&nbsp;&nbsp;&nbsp;<b>Changed from:</b><br>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.from_address.first_name %]&nbsp;[% address.from_address.last_name %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.from_address.address_line_1 %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.from_address.towncity %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.from_address.county %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.from_address.postcode %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.from_address.country %]<br>
+            <br>
+            </td>
+            <td><br>&nbsp;&nbsp;&nbsp;<b>Changed to:</b><br>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.to_address.first_name %]&nbsp;[% address.to_address.last_name %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.to_address.address_line_1 %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.to_address.towncity %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.to_address.county %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.to_address.postcode %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.to_address.country %]<br>
+            <br>
+            </td>
+        </tr>
+    </tbody>
+[% END %]
+</table>
+<br>
+<br>
+
+[% END %]
+
+[% FOREACH shipid = shipments.keys.nsort %]
+
+[% IF shipments.$shipid.shipment_address_log.size %]
+<br><br>
+<h3 class="title title-[% channel_config.$sales_channel %]">Shipment Address Change Log</h3>
+<table class="data wide-data divided-data">
+
+[% FOREACH addrid = shipments.$shipid.shipment_address_log.keys.nsort %]
+    [% address = shipments.$shipid.shipment_address_log.$addrid %]
+    <thead>
+        <tr>
+            <th>Date Changed</th>
+            <th>Changed by</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;[% address.date %]</td>
+            <td>[% address.name %] [% address.change_from %]</td>
+        </tr>
+        <tr>
+            <td><br>&nbsp;&nbsp;&nbsp;<b>Changed from:</b><br>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.from_address.first_name %]&nbsp;[% address.from_address.last_name %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.from_address.address_line_1 %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.from_address.towncity %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.from_address.county %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.from_address.postcode %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.from_address.country %]<br>
+            <br>
+            </td>
+            <td><br>&nbsp;&nbsp;&nbsp;<b>Changed to:</b><br>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.to_address.first_name %]&nbsp;[% address.to_address.last_name %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.to_address.address_line_1 %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.to_address.towncity %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.to_address.county %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.to_address.postcode %]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% address.to_address.country %]<br>
+            <br>
+            </td>
+        </tr>
+    </tbody>
+[% END %]
+</table>
+<br>
+<br>
+[% END %]
+[% END %]

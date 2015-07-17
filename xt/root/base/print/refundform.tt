@@ -1,0 +1,330 @@
+<html> 
+<head> 
+<!-- Template name: [% template.name %] -->
+<title></title>
+<style type="text/css">
+<!--
+body { margin-top: 1cm; margin-left: 0.5cm; }
+//-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" TEXT="#000000">
+
+<table border=0 cellspacing=0 cellpadding=0 width=570>
+	<tr>
+		<td align="center">
+			<font face="Arial,Helvetica" size=4 color="#000000">N E T - A - P O R T E R . C O M </font><br>
+			<img src="/images/blank.gif" width=570 height=50 border=0>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td>
+			<font face="Arial,Helvetica" size=3 color="#000000"><b>CUSTOMER CREDIT/DEBIT NOTE</b></font>
+		</td>
+	</tr>
+</table>
+<br>
+<br>
+
+<table border="0" cellspacing="0" cellpadding="0" width="570">
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td align="right"><font face="Arial,Helvetica" size=-1 color="#000000"><b>Date Printed&nbsp;</b></font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td><font face="Arial,Helvetica" size=-1 color="#000000">&nbsp;&nbsp;&nbsp;[% today %]</font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td align="right"><font face="Arial,Helvetica" size=-1 color="#000000"><b>Date Processed&nbsp;</b></font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td><font face="Arial,Helvetica" size=-1 color="#000000">&nbsp;&nbsp;&nbsp;</font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td align="right"><font face="Arial,Helvetica" size=-1 color="#000000"><b>Actioned by&nbsp;</b></font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td><font face="Arial,Helvetica" size=-1 color="#000000">&nbsp;&nbsp;&nbsp;</font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#ffffff"><img src="/images/blank.gif" width="1" height="60"></td>
+	</tr>
+
+[% IF invoice.class == "Return" %]
+
+	<tr height="24">
+		<td colspan="5"><font face="Arial,Helvetica" size=3 color="#000000"><b>Return/Exchange</td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#ffffff"><img src="/images/blank.gif" width="1" height="10"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#ffffff">
+		<font face="Arial,Helvetica" size=-1 color="#000000">
+		<b>Comment</b><br>
+		[% return_comment %]
+		</font>
+	</td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#ffffff"><img src="/images/blank.gif" width="1" height="30"></td>
+	</tr>
+[% END %]
+
+[% IF invoice.alt_customer_nr > 0 %]
+
+	<tr>
+		<td colspan="5"><font face="Arial,Helvetica" size=-1 color="#000000"><b>STORE CREDIT TO BE GIVEN TO ANOTHER CUSTOMER</b></font></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#ffffff"><img src="/images/blank.gif" width="1" height="15"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td width="30%" align="right"><font face="Arial,Helvetica" size=-1 color="#000000"><b>Customer Number&nbsp;</b></font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td width="70%"><font face="Arial,Helvetica" size=-1 color="#000000">&nbsp;&nbsp;&nbsp;[% invoice.alt_customer_nr %]</font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td width="30%" align="right"><font face="Arial,Helvetica" size=-1 color="#000000"><b>Name&nbsp;</b></font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td width="70%"><font face="Arial,Helvetica" size=-1 color="#000000">&nbsp;&nbsp;&nbsp;[% invoice.alt_customer.name %]</font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td width="30%" align="right"><font face="Arial,Helvetica" size=-1 color="#000000"><b>Email&nbsp;</b></font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td width="70%"><font face="Arial,Helvetica" size=-1 color="#000000">&nbsp;&nbsp;&nbsp;[% invoice.alt_customer.email %]</font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#ffffff"><img src="/images/blank.gif" width="1" height="50"></td>
+	</tr>
+[% END %]
+
+
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td width="30%" align="right"><font face="Arial,Helvetica" size=-1 color="#000000"><b>Order Number&nbsp;</b></font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td width="70%"><font face="Arial,Helvetica" size=-1 color="#000000">&nbsp;&nbsp;&nbsp;[% order.order_nr %]</font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td width="30%" align="right"><font face="Arial,Helvetica" size=-1 color="#000000"><b>Basket Number&nbsp;</b></font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td width="70%"><font face="Arial,Helvetica" size=-1 color="#000000">&nbsp;&nbsp;&nbsp;[% order.basket_nr %]</font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td width="30%" align="right"><font face="Arial,Helvetica" size=-1 color="#000000"><b>Customer Number&nbsp;</b></font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td width="70%"><font face="Arial,Helvetica" size=-1 color="#000000">&nbsp;&nbsp;&nbsp;[% order.customer_nr %]</font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td width="30%" align="right"><font face="Arial,Helvetica" size=-1 color="#000000"><b>Name&nbsp;</b></font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td width="70%"><font face="Arial,Helvetica" size=-1 color="#000000">&nbsp;&nbsp;&nbsp;[% order.first_name %] [% order.last_name %]</font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td width="30%" align="right"><font face="Arial,Helvetica" size=-1 color="#000000"><b>Email&nbsp;</b></font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td width="70%"><font face="Arial,Helvetica" size=-1 color="#000000">&nbsp;&nbsp;&nbsp;[% order.email %]</font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td width="30%" align="right"><font face="Arial,Helvetica" size=-1 color="#000000"><b>Order Total&nbsp;</b></font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td width="70%"><font face="Arial,Helvetica" size=-1 color="#000000">&nbsp;&nbsp;&nbsp;[% currency_symbol %] [% order.total_value %]</font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#ffffff"><img src="/images/blank.gif" width="1" height="40"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td align="right"><font face="Arial,Helvetica" size=-1 color="#000000"><b>Invoice Amount&nbsp;</b></font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td><font face="Arial,Helvetica" size=-1 color="#000000">&nbsp;&nbsp;&nbsp;[% currency_symbol %] [% invoice.total %]</font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td align="right"><font face="Arial,Helvetica" size=-1 color="#000000"><b>Type&nbsp;</b></font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td><font face="Arial,Helvetica" size=-1 color="#000000">&nbsp;&nbsp;&nbsp;<b>[% invoice.type %]</b></font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+
+[% IF invoice.type == "Store Credit" %]
+
+[% ELSE %]
+		<tr height="24">
+			<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+			<td align="right"><font face="Arial,Helvetica" size=-1 color="#000000"><b>Type of Card&nbsp;</b></font></td>
+			<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+			<td><font face="Arial,Helvetica" size=-1 color="#000000">&nbsp;&nbsp;&nbsp;</font></td>
+			<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+
+		<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+[% END %]
+
+
+	<tr>
+		<td colspan="5" bgcolor="#ffffff"><img src="/images/blank.gif" width="1" height="40"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#ffffff"><font face="Arial,Helvetica" size=-1 color="#000000"><b>Invoice Breakdown</b></font></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>	
+	<tr height="24">
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td align="right"><font face="Arial,Helvetica" size=-1 color="#000000"><b>Shipping&nbsp;</b></font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td><font face="Arial,Helvetica" size=-1 color="#000000">&nbsp;&nbsp;&nbsp;[% invoice.shipping %]</font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td align="right"><font face="Arial,Helvetica" size=-1 color="#000000"><b>Miscellaneous&nbsp;</b></font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td><font face="Arial,Helvetica" size=-1 color="#000000">&nbsp;&nbsp;&nbsp;[% invoice.misc_refund %]</font></td>
+		<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="5" bgcolor="#ffffff"><img src="/images/blank.gif" width="1" height="40"></td>
+	</tr>
+</table>
+
+
+<font face="Arial,Helvetica" size=-1 color="#000000"><b>Item Information</b></font><br>
+
+<table border=0 cellspacing=0 cellpadding=0 width=570>
+	<tr>
+		<td colspan="21" bgcolor="#ffffff"><img src="/images/blank.gif" width="1" height="10"></td>
+	</tr>
+	<tr>
+		<td colspan="21" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="24">
+		<td bgcolor="#000000" width="1"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td align="center" width="10%"><font face="Arial,Helvetica" size=-1 color="#000000"><b>SKU</b></font></td>
+		<td bgcolor="#000000" width="1"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td align="center" width="16%"><font face="Arial,Helvetica" size=-1 color="#000000"><b>DESIGNER</b></font></td>
+		<td bgcolor="#000000" width="1"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td align="center" width="26%"><font face="Arial,Helvetica" size=-1 color="#000000"><b>DESCRIPTION</b></font></td>
+		<td bgcolor="#000000" width="1"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td align="center" width="14%"><font face="Arial,Helvetica" size=-1 color="#000000"><b>UNIT PRICE</b></font></td>
+		<td bgcolor="#000000" width="1"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td align="center" width="14%"><font face="Arial,Helvetica" size=-1 color="#000000"><b>TAX</b></font></td>
+		<td bgcolor="#000000" width="1"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td align="center" width="14%"><font face="Arial,Helvetica" size=-1 color="#000000"><b>DUTIES</b></font></td>
+		<td bgcolor="#000000" width="1"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td align="center" width="14%"><font face="Arial,Helvetica" size=-1 color="#000000"><b>PRICE</b></font></td>
+		<td bgcolor="#000000" width="1"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td colspan="21" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+
+	[% FOREACH id = invoice_item.keys %]
+
+		<tr height="24">
+			<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+			<td align="center"><font face="Arial,Helvetica" size=-1 color="#000000">[% invoice_item.$id.legacy_sku %]</font></td>
+			<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+			<td align="center"><font face="Arial,Helvetica" size=-1 color="#000000">[% invoice_item.$id.designer %]</font></td>
+			<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+			<td align="center"><font face="Arial,Helvetica" size=-1 color="#000000">[% invoice_item.$id.name %]</font></td>
+			<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+			<td align="center"><font face="Arial,Helvetica" size=-1 color="#000000">[% invoice_item.$id.unit_price %]</font></td>
+			<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+			<td align="center"><font face="Arial,Helvetica" size=-1 color="#000000">[% invoice_item.$id.tax %]</font></td>
+			<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+			<td align="center"><font face="Arial,Helvetica" size=-1 color="#000000">[% invoice_item.$id.duty %]</font></td>
+			<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+			<td align="center"><font face="Arial,Helvetica" size=-1 color="#000000">[% invoice_item.$id.sub_total %]</font></td>
+			<td bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+		<tr>
+			<td colspan="21" bgcolor="#000000"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+	[% END %]
+</table>

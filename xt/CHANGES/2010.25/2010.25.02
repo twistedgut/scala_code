@@ -1,0 +1,13 @@
+<pre>
+
+h1. 2010.24
+
+ * merge in 2010.24 post-release changes
+
+h1. Fixes
+
+ * Remove psp error gunge                                             (5f6f561)
+ * really clean up tmpdirs on printing                                (3130fc8)
+ * data patch for "single aisle" in DC1                               (6dd47fe)
+
+</pre>

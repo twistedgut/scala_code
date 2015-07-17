@@ -1,0 +1,122 @@
+[% IF shipments.size %]
+
+    <span class="title title-[% channel_config.$sales_channel %]">Select Shipment</span><br/>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="9" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="24">
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Shipment Number</td>
+            <td class="tableHeader">Date</td>
+            <td class="tableHeader">Type</td>
+            <td class="tableHeader">Status</td>
+        </tr>
+        <tr>
+            <td colspan="9" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+    [% FOREACH id = shipments.keys %]
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;<a href="[% short_url %]/Note?parent_id=[% parent_id %]&note_category=Shipment&sub_id=[% id %]">[% id %]</a></td>
+            <td>[% shipments.$id.date %]</td>
+            <td>[% shipments.$id.class %]</td>
+            <td>[% shipments.$id.status %]</td>
+        </tr>
+        <tr>
+            <td colspan="4" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    [% END %]
+
+    </table>
+
+[% ELSE %]
+
+    <form name="noteForm" action="[% form_submit %]" method="post" onSubmit="return double_submit()">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="parent_id" value="[% parent_id %]">
+    [% IF came_from %]<input type="hidden" name="came_from" value="[% came_from | html %]">[% END %]
+    [% IF shipment_id %]<input type="hidden" name="shipment_id" value="[% shipment_id | html %]">[% END %]
+    [% IF search_string %]<input type="hidden" name="search_string" value="[% search_string | html %]">[% END %]
+    <span class="title title-[% channel_config.$sales_channel %]">[% IF note.note %]Edit[% ELSE %]Add[% END %] Note</span><br />
+    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        [% IF info.order_nr != "" %]
+        <tr>
+            <td width="130" align="right"><strong>Order Number:</strong>&nbsp;&nbsp;</td>
+            <td width="170">&nbsp;[% info.order_nr %]</td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        [% END %]
+        [% IF info.shipment_type_id != "" %]
+        <tr>
+            <td width="130" align="right"><strong>Shipment Number:</strong>&nbsp;&nbsp;</td>
+            <td width="170">&nbsp;[% info.id %]</td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        [% END %]
+        [% IF info.rma_number != "" %]
+        <tr>
+            <td width="130" align="right"><strong>RMA Number:</strong>&nbsp;&nbsp;</td>
+            <td width="170">&nbsp;[% info.rma_number %]</td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        [% END %]
+        <tr>
+            <td width="130" align="right"><strong>Type:</strong>&nbsp;&nbsp;</td>
+            <td width="170">
+                [%# This is added so we redirect to the page where added the note from. At the moment this only concerns 'Returns Faulty' %]
+                [% IF process_group_id %]
+                    <input type="hidden" name="process_group_id" value="[% process_group_id %]" />
+                [% END %]
+                [% IF default_note_type_id %]
+                    <input type="hidden" name="type_id" value="[% default_note_type_id %]" />
+                [% END %]
+                <select name="type_id"[% ' disabled' IF default_note_type_id %]>
+                    [% FOREACH id = note_types.keys %]
+                        <option value="[% id %]"[% ' selected' IF id == note.note_type_id || id == default_note_type_id %]>[% note_types.$id.description %]</option>
+                    [% END %]
+                </select>
+            </td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td colspan="3"><img src="/images/blank.gif" width="1" height="6"></td>
+        </tr>
+        <tr valign="top">
+            <td width="130" align="right"><strong>Note:</strong>&nbsp;&nbsp;</td>
+            <td width="170">
+                <textarea cols="70" rows="6" name="note_text">[% note.note %]</textarea>
+            </td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+        </tr>
+        <tr>
+            <td colspan="3"><img src="/images/blank.gif" width="1" height="6"></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="blank"><img src="/images/blank.gif" width="1" height="15"></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="blank" align="right">[% INCLUDE page_elements/forms/submit_button.tt %]</td>
+        </tr>
+    </table>
+    </form>
+
+[% END %]
+<br/><br/>

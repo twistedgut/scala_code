@@ -1,0 +1,58 @@
+#!/usr/bin/env perl
+use NAP::policy "tt";
+use Getopt::Long;
+use Pod::Usage;
+use FindBin::libs;
+use FindBin::libs qw( base=lib_dynamic );
+use XTracker::Database qw/get_database_handle/;
+use XTracker::Role::WithAMQMessageFactory;
+
+my ($shipment_id);
+
+{
+    my $p=Getopt::Long::Parser->new(
+        config => [qw(
+            no_auto_abbrev
+            no_getopt_compat
+            no_gnu_compat
+            no_permute
+            no_bundling
+            no_ignore_case
+            no_auto_version
+            no_auto_help
+                 )],
+    );
+    my $help;
+    $p->getoptions(
+        'shipment_id=i' => \$shipment_id,
+        'help|h' => \$help,
+    ) or pod2usage(2);
+
+    pod2usage(1) if $help;
+
+    pod2usage(2) unless $shipment_id;
+}
+
+my $schema = get_database_handle( {
+    name => 'xtracker_schema',
+} );
+
+my $shipment = $schema->resultset('Public::Shipment')->find($shipment_id);
+die "Shipment $shipment_id not found in DB" unless $shipment;
+
+my $factory = XTracker::Role::WithAMQMessageFactory->build_msg_factory;
+
+$factory->transform_and_send('XT::DC::Messaging::Producer::WMS::PickingCommenced', $shipment);
+
+__END__
+
+=head1 NAME
+
+send_picking_commenced - send the C<picking_commenced> message
+
+=head1 SYNOPSIS
+
+  send_picking_commenced --shipment_id 12345
+
+=cut
+

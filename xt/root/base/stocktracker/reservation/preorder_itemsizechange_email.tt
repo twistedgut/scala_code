@@ -1,0 +1,53 @@
+<h3 class="title title-[% channel_config.$sales_channel %]">Pre-Order Number: [% pre_order.pre_order_number %]</h3>
+[% PROCESS stocktracker/reservation/common/customerhead.tt %]
+<br>
+<div id="preorder_size_change__changes_made">
+    <h3 class="title title-[% channel_config.$sales_channel %]">Changed Item(s)</h3>
+    <table class="data wide-data" id="sizechange_pre_order_items">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>SKU</th>
+                <th>Product Name</th>
+                <th>Size</th>
+                <th>New SKU</th>
+                <th>New Size</th>
+            </tr>
+        </thead>
+        <tbody>
+        [% FOREACH item IN items_changed %]
+            [%-
+                SET old_item = item.old;
+                SET new_item = item.new;
+            -%]
+            <tr class="dividebelow">
+                <td>&nbsp;</td>
+                <td>[% old_item.sku %]</td>
+                <td>[% old_item.item_obj.name %]</td>
+                <td>[% old_item.size %] ([% old_item.designer_size %])</td>
+                <td>[% new_item.sku %]</td>
+                <td>[% new_item.size %] ([% new_item.designer_size %])</td>
+            </tr>
+        [% END %]
+        </tbody>
+    </table>
+</div>
+<div id="preorder_size_change__email_form">
+    <h3 class="title-[% channel_config.$sales_channel %]">Customer Email</h3>
+    <p class="highlight">The request to Change Sizes has been Processed and Completed, please now Send the Customer an Email.</p>
+    <form name="pre_order_size_change_email_form" id="pre_order_size_change_email_form" method="post" action="/StockControl/Reservation/PreOrder/SendPreOrderEmail">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+        <input type="hidden" name="pre_order_id" value="[% pre_order.id %]">
+        <input type="hidden" name="template_id" value="[% email.template_id %]">
+        <input type="hidden" name="redirect_url" value="/StockControl/Reservation/PreOrder/Summary?pre_order_id=[% pre_order.id %]">
+        <input type="hidden" name="on_fail_url" value="/StockControl/Reservation/PreOrder/Summary?pre_order_id=[% pre_order.id %]">
+        <div class="formrow divideabove">
+            <label for="send_email">Send Email:</label>
+            <input type="radio" name="send_email" value="1" checked="checked">Yes&nbsp;&nbsp;<input type="radio" name="send_email" value="0">No
+        </div>
+        [% PROCESS page_elements/forms/basic_email_form.tt %]
+        <div class="formrow divideabove buttons">
+            <input type="submit" class="button" id="cancel_preorder__send_email_button" name="send_email_button" value="Send email">
+        </div>
+    </form>
+</div>

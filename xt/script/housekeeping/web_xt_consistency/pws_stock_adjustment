@@ -1,0 +1,42 @@
+#!/opt/xt/xt-perl/bin/perl
+
+use strict;
+use warnings;
+
+=head1 NAME
+
+script/housekeeping/web_xt_consistency/pws_stock_adjustment
+
+=head1 DESCRIPTION
+
+This script will compare stock levels in XT and the websites and adjust the
+websites' stock levels if they have been out of sync for the same amount for
+more than two runs.
+
+It takes a -v for verbose output.
+
+=head1 SYNOPSIS
+
+    perl script/housekeeping/web_xt_consistency/pws_stock_adjustment -v
+
+=cut
+
+use FindBin::libs;
+use FindBin::libs qw( base=lib_dynamic );
+use Getopt::Long;
+
+use XTracker::Script::Consistency::PWSStockAdjustment;
+
+my %opt = (
+    help => 0,
+    verbose => 0,
+);
+
+my $result = GetOptions( \%opt,
+    'verbose|v',
+    'help|h|?',
+);
+
+pod2usage(1) if (!$result || $opt{help});
+
+XTracker::Script::Consistency::PWSStockAdjustment->new->invoke(%opt);

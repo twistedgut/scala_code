@@ -1,0 +1,95 @@
+#!/opt/xt/xt-perl/bin/perl
+use NAP::policy "tt";
+use Getopt::Long;
+use Pod::Usage;
+use FindBin::libs;
+use FindBin::libs qw( base=lib_dynamic );
+use XTracker::Database qw/schema_handle/;
+use XTracker::Role::WithAMQMessageFactory;
+
+my (@pgids,$pgid_file,$batch_size,$batch_delay);
+
+{
+my $p=Getopt::Long::Parser->new(
+    config => [qw(
+        no_auto_abbrev
+        no_getopt_compat
+        no_gnu_compat
+        no_permute
+        no_bundling
+        no_ignore_case
+        no_auto_version
+        no_auto_help
+             )],
+);
+my $help;
+$p->getoptions(
+    'file|f=s' => \$pgid_file,
+    'batch|b=i' => \$batch_size,
+    'delay|d=i' => \$batch_delay,
+    'help|h' => \$help,
+) or pod2usage(2);
+
+pod2usage(1) if $help;
+}
+
+@pgids = @ARGV;
+if ($pgid_file) {
+    open my $f,'<',$pgid_file;
+    while (my $s=<$f>) {
+        next unless $s =~ m{(\d+)};
+        push @pgids,$1;
+    }
+}
+if (!@pgids) {
+    warn "No PGIDs, exiting\n";
+    exit 1;
+}
+
+my $schema = schema_handle();
+
+my $factory = XTracker::Role::WithAMQMessageFactory->msg_factory;
+
+$batch_delay ||= 0;
+$batch_size ||= @pgids;my $to_send_before_delay=$batch_size;
+
+print "Sending $batch_size at a time, waiting $batch_delay between each\n";
+
+for my $pgid (@pgids) {
+    if ($to_send_before_delay <=0) {
+        $to_send_before_delay=$batch_size;
+        print "* sleeping $batch_delay seconds before next batch\n";
+        sleep $batch_delay;
+    }
+
+    my $sp_group_rs = $schema->resultset('Public::StockProcess')->search({
+        group_id => $pgid,
+    });
+
+    $factory->transform_and_send(
+        'XT::DC::Messaging::Producer::WMS::PreAdvice',
+        { sp_group_rs => $sp_group_rs },
+    );
+
+    print "PGID: $pgid\n";
+    --$to_send_before_delay;
+}
+
+__END__
+
+=head1 NAME
+
+resend_pre_advice - send a C<pre_advice> message to IWS for an existing PG
+
+=head1 SYNOPSIS
+
+  resend_pre_advice 1234566
+
+=head1 WARNING
+
+There are very few checks here. You may end up sending a C<pre_advice>
+for something thas is already completed in XT. This may result in IWS
+refusing the message, ignoring it, or doing something strange. Pay
+attention to the parameters you pass to this script.
+
+=cut

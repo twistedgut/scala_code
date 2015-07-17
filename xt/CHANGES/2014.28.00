@@ -1,0 +1,55 @@
+<pre>
+
+
+h1. CANDO - Customer & Orders
+
+* CANDO-8229 - DB Patch to Populate Excluded Countries & Excluded PostCodes
+* CANDO-8116 - Correct TON VIP categories and allow upper case VIP
+* CANDO-8226 - Fix 503 on attempt to change shipping country on JimmyChoo order
+
+
+h1. DC2A - DC2 Automation
+
+* DCA-3980 Make patcher go further back in time
+* DCA-3494 Add parameter for wait time in XT
+* DCA-3495 Prepare sent with wait time add to message
+* DCA-3974 Bug fix Pick Scheduler II: Incorrect Remaining Staging Capacity
+
+h1. DCOP - DC Operations
+
+*
+
+
+h1. SHIP - Expedited Shippping
+
+*
+
+
+h1. WHM - Warehouse
+
+* WHM-4597: wrong number of consumers on dave envs
+  Re-write the AMQ consumer application using Daemon::Control to avoid
+  leaving rogue consumer processes when XT is restarted.
+*
+
+
+
+h1. Other
+
+h2. BS - Build Support
+
+*
+
+h2. PM - Product Management
+
+*
+
+h2. SAS - Search & Aggregation
+
+*
+
+h2. Misc
+
+*
+
+</pre>

@@ -1,0 +1,12 @@
+[%-
+    SET is_reservation_editing_allowed = 0;
+    IF ( ( reservation_dept_id == db_constant('DEPARTMENT__PERSONAL_SHOPPING') || reservation_dept_id == db_constant('DEPARTMENT__FASHION_ADVISOR') ));
+        IF ( given_dept_id == db_constant('DEPARTMENT__PERSONAL_SHOPPING') || given_dept_id == db_constant('DEPARTMENT__FASHION_ADVISOR') );
+            is_reservation_editing_allowed = 1;
+        ELSE;
+            is_reservation_editing_allowed = 0;
+        END;
+    ELSE;
+        is_reservation_editing_allowed = 1;
+    END;
+-%]

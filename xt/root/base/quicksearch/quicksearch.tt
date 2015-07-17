@@ -1,0 +1,26 @@
+[% debug %]
+<br>
+<h1>Quick Search</h1>
+<hr>
+[% IF order_results.size
+        OR ( customer_results && customer_results.size >= 1 )
+        OR ( pre_order_results && pre_order_results.size >= 1 ) %]
+    [% INCLUDE quicksearch/preorderstable.tt
+       results = pre_order_results
+       title   = 'Outstanding Pre Orders'
+    %]
+    [% INCLUDE quicksearch/orderstable.tt
+       results = order_results
+       title   = 'Orders & Shipments'
+    %]
+    [% INCLUDE quicksearch/customerstable.tt
+       results = customer_results
+       title   = 'Customers'
+    %]
+[% ELSE %]
+    <span class="title">Search Results [% title %] by [% query_description %] - [% query | html %]</span>
+    <p><i>No results found</i></p>
+[% END %]
+<!--
+[% debug %]
+-->

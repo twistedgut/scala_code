@@ -1,0 +1,15 @@
+<pre>
+
+h1. Bug Fixes
+
+* Fix DC2CA test to use new city of DC2 'Mahwah'       (c9baa4bc)
+* Fix Packing Stations test after DC2 Move             (f45b58ea)
+* Include conf changes made to live systems by techops (66ed3a52)
+* Shipper Number fix (made for IT-23)                  (5f31bd36)
+* Fix order overview onclick card history              (881b360a)
+* Fixed use of non-exsitent 'xt_error' with 'xt_die'   (68da88ad)
+* Fixed Sales Channel color display                    (01ee5cb4)
+* Fix XT WMS consumer: process group lookup fail       (c5d9aed0)
+* EN-1641: Changed the UPS Shipper Numbers             (6ccbd2d9)
+
+</pre>

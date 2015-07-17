@@ -1,0 +1,92 @@
+#!/opt/xt/xt-perl/bin/perl
+# vim: ts=8 sts=4 et sw=4 sr sta
+
+use strict;
+use warnings;
+use Data::Dump qw(pp);
+use Getopt::Long;
+use Pod::Usage;
+use Time::HiRes qw/ gettimeofday /;
+
+use lib qw( /opt/xt/deploy/xtracker/lib );
+use FindBin::libs qw( base=lib_dynamic );
+use XT::Domain::Promotion;
+use XTracker::Handler qw/ get_database_handler /;
+use XTracker::Constants qw/ $APPLICATION_OPERATOR_ID /;
+local $|=1;
+
+my %cli = ();
+my %timing = ();
+
+sub process_options {
+    my $cli = \%cli;
+
+    if (not GetOptions(
+            \%cli,
+            'verbose',
+            'upload!',
+            'timing!',
+            'help|?',
+        )) {
+    }
+
+    pod2usage(1)
+       if ($cli->{help});
+
+    if (defined $cli{upload}) {
+        print " === INFO: will update websites ===\n";
+    } else {
+        print " === INFO: dummy run - won't upload ===\n";
+    }
+
+    return $cli;
+}
+
+sub main {
+
+    my $cli = process_options();
+    my $schema = XTracker::Handler::get_database_handle({
+        name => 'xtracker_schema',
+    });
+    my $domain = XT::Domain::Promotion->new({ schema => $schema });
+    
+    $domain->export_promo_products_to_pws(
+        1,
+        $cli->{upload} || undef,
+        $cli->{timing} || undef,
+        $APPLICATION_OPERATOR_ID,
+    );
+
+    return;
+}
+
+main;
+
+
+1;
+
+__END__
+
+=head1 NAME
+
+productpromo2PWS - commandline tool for bridging PWS/XT for promotions
+
+=head1 SYNOPSIS
+
+productpromo2PWS [options]
+
+ options:
+    --help           guide for the unaware
+    --upload         upload the products mapping for real
+    --timing         show timings for each promotion and entire process
+
+  Without any flags will run through XT and report the size of the potential
+  upload. You need the --upload to actually connect to the websites and
+  upload the necessary records.
+
+=head1 AUTHOR
+
+Jason Tang
+
+=cut
+

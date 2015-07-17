@@ -1,0 +1,10 @@
+[% IF shipments.$channel.$id.category_id == db_constant('CUSTOMER_CATEGORY__STAFF') %]
+        <td class='staff_sla'>Staff</td>
+[% ELSE %]
+    [% IF shipments.$channel.$id.cutoff_epoch.defined && shipments.$channel.$id.cutoff_epoch < 0 %]
+        <td class='expired_sla'>-[% shipments.$channel.$id.cutoff_time FILTER remove('-') %]</td>
+    [% ELSE %]
+        <td class='valid_sla'>[% shipments.$channel.$id.cutoff_time %]</td>
+    [% END %]
+[% END %]
+

@@ -1,0 +1,70 @@
+<div class='title'>
+<input type="radio" name="tab" value="standard_format" onClick="return toggle_tabs(this)" checked> Current Format
+[% IF show_new_location_format %]
+    <input type="radio" name="tab" value="long_format" onClick="return toggle_tabs(this)"> New Format
+[% END %]
+</div>
+<br />
+<div id="location_form">
+<form name="new_location" action="/StockControl/Location/PrintLocations" method="POST" onSubmit="copy_floor_values()">
+    <input type="hidden" id="location_format" name="location_format" value="">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <div id="standard_format">
+        [% PROCESS stocktracker/location/location_range_select.tt %]
+    </div>
+    <div id="long_format">
+        [% PROCESS stocktracker/location/location_range_select_long_format.tt %]
+    </div>
+    <br />
+    <br />
+    &nbsp;&nbsp;<b>Printer:</b>&nbsp;&nbsp;&nbsp;&nbsp;[% PROCESS stocktracker/location/printer_select.tt %]
+
+    [% INCLUDE page_elements/forms/submit.tt %]
+</form>
+
+[% IF message %]
+<br />
+<div id="message">
+    <div>[% message %]</div>
+</div>
+[% END %]
+
+</div>
+
+
+<script type="text/javascript">
+    // on initial load, show only old format
+    document.getElementById("long_format").style.visibility = "hidden";
+    document.getElementById("long_format").style.display    = "none";
+
+    // set the param value so that we know which section to process
+    document.getElementById("location_format").value = "";
+
+    var reverse_tabs = {};
+    reverse_tabs["standard_format"] = "long_format";
+    reverse_tabs["long_format"]     = "standard_format";
+
+    var location_format = {};
+    location_format["standard_format"] = "";
+    location_format["long_format"]     = "long_format";
+
+    function toggle_tabs(tab) {
+        document.getElementById(tab.value).style.visibility = "visible";
+        document.getElementById(tab.value).style.display    = "block";
+
+        document.getElementById(reverse_tabs[tab.value]).style.visibility = "hidden";
+        document.getElementById(reverse_tabs[tab.value]).style.display    = "none";
+
+        document.getElementById("location_format").value = location_format[tab.value];
+    }
+
+    function copy_floor_values() {
+        // swap for long_format so that we can use the same code
+        if (document.getElementById("location_format").value == "long_format") {
+            document.getElementById("start_floor").value = document.getElementById("start_floor_long_format").value;
+            document.getElementById("end_floor").value   = document.getElementById("end_floor_long_format").value;
+            document.getElementById("start_level").value = document.getElementById("start_level_long_format").value;
+            document.getElementById("end_level").value   = document.getElementById("end_level_long_format").value;
+        }
+    }
+</script>

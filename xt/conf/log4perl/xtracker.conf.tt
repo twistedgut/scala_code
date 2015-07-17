@@ -1,0 +1,169 @@
+log4perl.oneMessagePerAppender                                    = 1
+
+log4perl.logger                                                   = [% LOGLEVEL_XTRACKER %], XTrackerLogfile
+log4perl.logger.PickScheduling                                    = [% LOGLEVEL_XTRACKER %], PickScheduling
+
+log4perl.category.DataTransfer                                    = [% LOGLEVEL_XTRACKER %], DataTransferLogfile
+log4perl.category.ResponseLogfile                                 = [% LOGLEVEL_XTRACKER %], ResponseLogfile
+log4perl.category.UserLogin                                       = [% LOGLEVEL_XTRACKER %], UserLogin
+log4perl.category.UserProfile                                     = [% LOGLEVEL_XTRACKER %], UserProfile
+log4perl.category.UserAccess                                      = [% LOGLEVEL_XTRACKER %], UserAccess
+log4perl.category.XTracker_DBEncode                               = [% LOGLEVEL_XTRACKER %], XTracker_DBEncode
+log4perl.category.Plack                                           = [% LOGLEVEL_XTRACKER %], Plack
+log4perl.category.QueryLog                                        = [% LOGLEVEL_SQL %], QueryLog
+log4perl.category.Metrics                                         = [% LOGLEVEL_XTRACKER %], Metrics
+
+log4perl.category.XT.Domain.Product.Sizing                          = TRACE, EditPO
+log4perl.category.XT.DC.Controller.API.Product                      = TRACE, EditPO
+log4perl.category.XT.DC.Controller.API.PurchaseOrder                = TRACE, EditPO
+
+log4perl.appender.XTrackerLogfile                                 = Log::Dispatch::File::Stamped
+log4perl.appender.XTrackerLogfile.filename                        = [%XTDC_LOGS_DIR%]/xtracker.log
+log4perl.appender.XTrackerLogfile.stamp_fmt                       = %Y%m%d
+log4perl.appender.XTrackerLogfile.mode                            = append
+log4perl.appender.XTrackerLogfile.permissions                     = sub { 0664 }
+log4perl.appender.XTrackerLogfile.autoflush                       = 1
+log4perl.appender.XTrackerLogfile.syswrite                        = 1
+log4perl.appender.XTrackerLogfile.layout                          = Log::Log4perl::Layout::PatternLayout
+log4perl.appender.XTrackerLogfile.layout.ConversionPattern        = [% LOGGING_FORMAT %]
+log4perl.appender.XTrackerLogfile.utf8                            = 1
+log4perl.appender.XTrackerLogfile.binmode                         = :utf8
+
+log4perl.appender.DataTransferLogfile                             = Log::Dispatch::File::Stamped
+log4perl.appender.DataTransferLogfile.filename                    = [%XTDC_LOGS_DIR%]/data-transfer.log
+log4perl.appender.DataTransferLogfile.stamp_fmt                   = %Y%m%d
+log4perl.appender.DataTransferLogfile.mode                        = append
+log4perl.appender.DataTransferLogfile.permissions                 = sub { 0664 }
+log4perl.appender.DataTransferLogfile.syswrite                    = 1
+log4perl.appender.DataTransferLogfile.layout                      = Log::Log4perl::Layout::PatternLayout
+log4perl.appender.DataTransferLogfile.layout.ConversionPattern    = [% LOGGING_FORMAT %]
+log4perl.additivity.DataTransferLogfile                           = 0
+log4perl.appender.DataTransferLogfile.utf8                        = 1
+log4perl.appender.DataTransferLogfile.binmode                     = :utf8
+
+log4perl.appender.ResponseLogfile                                 = Log::Dispatch::File::Stamped
+log4perl.appender.ResponseLogfile.filename                        = [%XTDC_LOGS_DIR%]/response-times.log
+log4perl.appender.ResponseLogfile.stamp_fmt                       = %Y%m%d
+log4perl.appender.ResponseLogfile.mode                            = append
+log4perl.appender.ResponseLogfile.permissions                     = sub { 0664 }
+log4perl.appender.ResponseLogfile.syswrite                        = 1
+log4perl.appender.ResponseLogfile.layout                          = Log::Log4perl::Layout::PatternLayout
+log4perl.appender.ResponseLogfile.layout.ConversionPattern        = [% LOGGING_FORMAT %]
+log4perl.additivity.ResponseLogfile                               = 0
+log4perl.appender.ResponseLogfile.utf8                            = 1
+log4perl.appender.ResponseLogfile.binmode                         = :utf8
+
+log4perl.appender.UserLogin                                       = Log::Dispatch::File::Stamped
+log4perl.appender.UserLogin.filename                              = [%XTDC_LOGS_DIR%]/user_login.log
+log4perl.appender.UserLogin.stamp_fmt                             = %Y%m%d
+log4perl.appender.UserLogin.mode                                  = append
+log4perl.appender.UserLogin.permissions                           = sub { 0664 }
+log4perl.appender.UserLogin.autoflush                             = 1
+log4perl.appender.UserLogin.syswrite                              = 1
+log4perl.appender.UserLogin.layout                                = Log::Log4perl::Layout::PatternLayout
+log4perl.appender.UserLogin.layout.ConversionPattern              = [% '[%d{ISO8601} %-5p ]: <%M> %m%n'; # TT escape %]
+log4perl.additivity.UserLogin                                     = 0
+log4perl.appender.UserLogin.utf8                                  = 1
+log4perl.appender.UserLogin.binmode                               = :utf8
+
+log4perl.appender.PickScheduling                                       = Log::Dispatch::File::Stamped
+log4perl.appender.PickScheduling.filename                              = [%XTDC_LOGS_DIR%]/pick_scheduling.log
+log4perl.appender.PickScheduling.stamp_fmt                             = %Y%m%d
+log4perl.appender.PickScheduling.mode                                  = append
+log4perl.appender.PickScheduling.permissions                           = sub { 0664 }
+log4perl.appender.PickScheduling.autoflush                             = 1
+log4perl.appender.PickScheduling.syswrite                              = 1
+log4perl.appender.PickScheduling.layout                                = Log::Log4perl::Layout::PatternLayout
+log4perl.appender.PickScheduling.layout.ConversionPattern              = [% LOGGING_FORMAT %]
+log4perl.additivity.PickScheduling                                     = 0
+
+log4perl.appender.XTracker_DBEncode                               = Log::Dispatch::File::Stamped
+log4perl.appender.XTracker_DBEncode.filename                      = [%XTDC_LOGS_DIR%]/xtracker_dbencode.log
+log4perl.appender.XTracker_DBEncode.stamp_fmt                     = %Y%m%d
+log4perl.appender.XTracker_DBEncode.mode                          = append
+log4perl.appender.XTracker_DBEncode.permissions                   = sub { 0664 }
+log4perl.appender.XTracker_DBEncode.autoflush                     = 1
+log4perl.appender.XTracker_DBEncode.syswrite                      = 1
+log4perl.appender.XTracker_DBEncode.layout                        = Log::Log4perl::Layout::PatternLayout
+log4perl.appender.XTracker_DBEncode.layout.ConversionPattern      = [% LOGGING_FORMAT %]
+log4perl.additivity.XTracker_DBEncode                             = 0
+log4perl.appender.XTracker_DBEncode.utf8                          = 1
+log4perl.appender.XTracker_DBEncode.binmode                       = :utf8
+
+log4perl.appender.UserProfile                                       = Log::Dispatch::File::Stamped
+log4perl.appender.UserProfile.filename                              = [%XTDC_LOGS_DIR%]/user_profile.log
+log4perl.appender.UserProfile.stamp_fmt                             = %Y%m%d
+log4perl.appender.UserProfile.mode                                  = append
+log4perl.appender.UserProfile.permissions                           = sub { 0664 }
+log4perl.appender.UserProfile.autoflush                             = 1
+log4perl.appender.UserProfile.syswrite                              = 1
+log4perl.appender.UserProfile.layout                                = Log::Log4perl::Layout::PatternLayout
+log4perl.appender.UserProfile.layout.ConversionPattern              = [% '[%d{ISO8601} %-5p ]: <%M> %m%n'; # TT escape %]
+log4perl.additivity.UserProfile                                     = 0
+log4perl.appender.UserProfile.utf8                                  = 1
+log4perl.appender.UserProfile.binmode                               = :utf8
+
+log4perl.appender.UserAccess                                       = Log::Dispatch::File::Stamped
+log4perl.appender.UserAccess.filename                              = [%XTDC_LOGS_DIR%]/user_access.log
+log4perl.appender.UserAccess.stamp_fmt                             = %Y%m%d
+log4perl.appender.UserAccess.mode                                  = append
+log4perl.appender.UserAccess.permissions                           = sub { 0664 }
+log4perl.appender.UserAccess.autoflush                             = 1
+log4perl.appender.UserAccess.syswrite                              = 1
+log4perl.appender.UserAccess.layout                                = Log::Log4perl::Layout::PatternLayout
+log4perl.appender.UserAccess.layout.ConversionPattern              = [% '[%d{ISO8601} %-5p ]: <%M> %m%n'; # TT escape %]
+log4perl.additivity.UserAccess                                     = 0
+log4perl.appender.UserAccess.utf8                                  = 1
+log4perl.appender.UserAccess.binmode                               = :utf8
+
+
+log4perl.appender.EditPO                                       = Log::Dispatch::File::Stamped
+log4perl.appender.EditPO.filename                              = [%XTDC_LOGS_DIR%]/edit_po.log
+log4perl.appender.EditPO.stamp_fmt                             = %Y%m%d
+log4perl.appender.EditPO.mode                                  = append
+log4perl.appender.EditPO.permissions                           = sub { 0664 }
+log4perl.appender.EditPO.autoflush                             = 1
+log4perl.appender.EditPO.syswrite                              = 1
+log4perl.appender.EditPO.layout                                = Log::Log4perl::Layout::PatternLayout
+log4perl.appender.EditPO.layout.ConversionPattern              = [% '[%d{ISO8601} %-5p ]: <%M> %m%n'; # TT escape %]
+log4perl.additivity.EditPO                                     = 0
+log4perl.appender.EditPO.utf8                                  = 1
+log4perl.appender.EditPO.binmode                               = :utf8
+
+log4perl.appender.Plack                                            = Log::Dispatch::File::Stamped
+log4perl.appender.Plack.filename                                   = [%XTDC_LOGS_DIR%]/plack_requests.log
+log4perl.appender.Plack.stamp_fmt                                  = %Y%m%d
+log4perl.appender.Plack.mode                                       = append
+log4perl.appender.Plack.permissions                                = sub { 0664 }
+log4perl.appender.Plack.autoflush                                  = 1
+log4perl.appender.Plack.syswrite                                   = 1
+log4perl.appender.Plack.layout                                     = Log::Log4perl::Layout::PatternLayout
+log4perl.appender.Plack.layout.ConversionPattern                   = [% LOGGING_FORMAT %]
+log4perl.additivity.Plack                                          = 0
+log4perl.appender.Plack.utf8                                       = 1
+log4perl.appender.Plack.binmode                                    = :utf8
+
+log4perl.appender.QueryLog                             = Log::Dispatch::File::Stamped
+log4perl.appender.QueryLog.filename                    = [%XTDC_LOGS_DIR%]/sql.log
+log4perl.appender.QueryLog.stamp_fmt                   = %Y%m%d
+log4perl.appender.QueryLog.mode                        = append
+log4perl.appender.QueryLog.permissions                 = sub { 0664 }
+log4perl.appender.QueryLog.syswrite                    = 1
+log4perl.appender.QueryLog.layout                      = Log::Log4perl::Layout::PatternLayout
+log4perl.appender.QueryLog.layout.ConversionPattern    = [% LOGGING_FORMAT %]
+log4perl.additivity.QueryLog                           = 0
+log4perl.appender.QueryLog.utf8                        = 1
+log4perl.appender.QueryLog.binmode                     = :utf8
+
+log4perl.appender.Metrics                                            = Log::Dispatch::File::Stamped
+log4perl.appender.Metrics.filename                                   = [%XTDC_LOGS_DIR%]/metrics_not_sent_to_graphite.log
+log4perl.appender.Metrics.stamp_fmt                                  = %Y%m%d
+log4perl.appender.Metrics.mode                                       = append
+log4perl.appender.Metrics.permissions                                = sub { 0664 }
+log4perl.appender.Metrics.autoflush                                  = 1
+log4perl.appender.Metrics.syswrite                                   = 1
+log4perl.appender.Metrics.layout                                     = Log::Log4perl::Layout::PatternLayout
+log4perl.appender.Metrics.layout.ConversionPattern                   = [% LOGGING_FORMAT %]
+log4perl.additivity.Metrics                                          = 0
+log4perl.appender.Metrics.utf8                                       = 1
+log4perl.appender.Metrics.binmode                                    = :utf8

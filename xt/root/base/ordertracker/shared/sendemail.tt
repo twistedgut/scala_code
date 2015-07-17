@@ -1,0 +1,74 @@
+<span class="title title-[% channel_config.$sales_channel %]">Order Details</span><br>
+
+<form id="sendEmail" name="sendEmail" action="[% form_submit %]" method="post">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+<div class="formrow divideabove">
+    <span class="fakelabel">Order Number:</span>
+    <p>[% order.order_nr %]</p>
+</div>
+<div class="formrow dividebelow">
+    <span class="fakelabel">Customer:</span>
+    <p>[% invoice_address.first_name %] [% invoice_address.last_name %]</p>
+</div>
+
+
+<span class="title title-[% channel_config.$sales_channel %]">Email Template</span><br>
+
+[% IF email_sent %]
+
+	[% IF email_sent == 1 %]
+		<span id="sent_success_msg" class="highlight">Email successfully sent to customer.</span>
+	[% ELSE %]
+		<span id="sent_error_msg" class="warning">Error: [% email_sent %]</span>
+	[% END %]
+	<br><img src="/images/blank.gif" width="1" height="400">
+
+[% ELSIF email.template_id == 0 %]
+    <input type="hidden" name="action" value="preview_email">
+    <div class="formrow divideabove">
+        <label for="template_id">Template:</label>
+        <select id="template_id" name="template_id">
+            <option value="0">Please select...</option>
+            <option value="0">----------------------------</option>
+            [% FOREACH id = templates.keys.nsort %]
+                <option value="[% templates.$id.id %]">[% templates.$id.name %]</option>
+            [% END %]
+        </select>
+    </div>
+    <div class="formrow divideabove buttons">
+        [% INCLUDE page_elements/forms/submit_button.tt submit='Preview Email &raquo;' %]
+    </div>
+
+[% ELSE %]
+	<input type="hidden" name="template_id" value="[% email.template_id %]">
+    <input type="hidden" name="email_content_type" value="[% email_info.content_type %]">
+    <input type="hidden" name="action" value="send_email">
+    <div class="formrow divideabove">
+        <label for="email_to">To:</label>
+        <input type="text" id="email_to" name="email_to" value="[% order.email %]">
+    </div>
+    <div class="formrow">
+        <label for="email_from">From:</label>
+        <input type="text" id="email_from" name="email_from" value="[% email.from %]">
+    </div>
+    <div class="formrow">
+        <label for="email_replyto">Reply To:</label>
+        <input type="text" id="email_replyto" name="email_replyto" value="[% email.replyto %]">
+    </div>
+    <div class="formrow">
+        <label for="email_subject">Subject:</label>
+        <input type="text" id="email_subject" name="email_subject" value="[% email.subject %]">
+    </div>
+    <div class="formrow divideabove">
+        <label for="email_body">Email Text:</label>
+        <textarea id="email_body" name="email_body" cols="80" rows="15">[% email_info.content %]</textarea>
+    </div>
+
+    <div class="formrow divideabove buttons">
+		[% INCLUDE page_elements/forms/submit_button.tt submit='Send Email &raquo;' %]
+    </div>
+
+[% END %]
+
+</form>

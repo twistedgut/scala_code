@@ -1,0 +1,25 @@
+    <h3 class="title-[% channel_config.$channel %]">Sample Adjustment Log</h3>
+    <table class="wide-data divided-data data">
+        <thead>
+            <th>Date</th>
+            <th>Time</th>
+            <th>SKU</th>
+            <th>Location</th>
+            <th>Operator</th>
+            <th>Action</th>
+            <th>Notes</th>
+        </thead>
+        <tbody>
+        [%- FOREACH log = log_data.$channel %]
+            <tr>
+                <td>[% log.date %]</td>
+                <td>[% log.time %]</td>
+                <td>[% log.sku %]</td>
+                <td>[% log.location_name %]</td>
+                <td>[% log.operator_name %]</td>
+                <td>[% log.delta < 0 ? 'Lost' : ( log.delta > 0 ? 'Found' : '&nbsp;' ) %]</td>
+                <td>[% log.notes %]</td>
+            </tr>
+        [%- END %]
+        </tbody>
+    </table>

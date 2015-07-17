@@ -1,0 +1,494 @@
+<!-- TT BEGIN - stocktracker/rtv/dispatched_rtv.tt -->
+[% PROCESS page_elements/javascript/inventory.tt %]
+<script type="text/javascript" src="/javascript/showhide.js"></script>
+
+[% SET action_uri = '/RTV/DispatchedRTV' %]
+[% IF filter.defined('name'); action_uri = filter.uri; END %]
+
+[% IF tt_process_block; PROCESS $tt_process_block; END %]
+
+
+
+
+[% BLOCK rtv_shipment_list %]
+
+[% PROCESS rtv_shipment_select %]
+
+[%
+IF columnsort.asc_desc != 'desc';
+    asc_desc_arg = '&asc_desc=desc';
+    asc_desc_icon = '&nbsp;&darr;';
+ELSE;
+    asc_desc_icon = '&nbsp;&uarr;';
+END
+%]
+<!-- RTV Shipment List -->
+<h3>Shipments</h3>
+[% UNLESS rtv_shipment_list.size %]
+No results.
+[% ELSE %]
+<table class="wide-data divided-data data">
+    <thead>
+        <tr>
+            <th><a href="[% search_uri %]&order_by=rma_request_id[% asc_desc_arg IF columnsort.order_by == 'rma_request_id' %]">Request&nbsp;Ref.</a>[% asc_desc_icon IF columnsort.order_by == 'rma_request_id' %]</th>
+            <th><a href="[% search_uri %]&order_by=sales_channel[% asc_desc_arg IF columnsort.order_by == 'sales_channel' %]">Sales&nbsp;Channel</a>[% asc_desc_icon IF columnsort.order_by == 'sales_channel' %]</th>
+            <th><a href="[% search_uri %]&order_by=rma_number[% asc_desc_arg IF columnsort.order_by == 'rma_number' %]">RMA&nbsp;Number</a>[% asc_desc_icon IF columnsort.order_by == 'rma_number' %]</th>
+            <th><a href="[% search_uri %]&order_by=designer[% asc_desc_arg IF columnsort.order_by == 'designer' %]">Designer</a>[% asc_desc_icon IF columnsort.order_by == 'designer' %]</th>
+            <th><a href="[% search_uri %]&order_by=rtv_shipment_id[% asc_desc_arg IF columnsort.order_by == 'rtv_shipment_id' %]">Shipment</a>[% asc_desc_icon IF columnsort.order_by == 'rtv_shipment_id' %]</th>
+            <th><a href="[% search_uri %]&order_by=rtv_shipment_date[% asc_desc_arg IF columnsort.order_by == 'rtv_shipment_date' %]">Date</a>[% asc_desc_icon IF columnsort.order_by == 'rtv_shipment_date' %]</th>
+            <th><a href="[% search_uri %]&order_by=rtv_shipment_status[% asc_desc_arg IF columnsort.order_by == 'rtv_shipment_status' %]">Status</a>[% asc_desc_icon IF columnsort.order_by == 'rtv_shipment_status' %]</th>
+            <th><a href="[% search_uri %]&order_by=rtv_shipment_carrier[% asc_desc_arg IF columnsort.order_by == 'rtv_shipment_carrier' %]">Carrier</a>[% asc_desc_icon IF columnsort.order_by == 'rtv_shipment_carrier' %]</th>
+            <th><a href="[% search_uri %]&order_by=short_address[% asc_desc_arg IF columnsort.order_by == 'short_address' %]">Short Address</a>[% asc_desc_icon IF columnsort.order_by == 'short_address' %]</th>
+        </tr>
+    </thead>
+    <tbody>
+        [% FOREACH item = rtv_shipment_list %]
+        [% SET channel = item.sales_channel %]
+        <tr>
+            <td style="font-weight: bold;">[% item.rma_request_id FILTER format('%05d') %]</a></td>
+            <td><span class="title-[% channel_config.$channel %]">[% channel %]</span></td>
+            <td>[% item.rma_number %]</td>
+            <td>[% item.designer | html %]&nbsp;</td>
+            <td><a href="[% action_uri %]?rtv_shipment_id=[% item.rtv_shipment_id %]">[% item.rtv_shipment_id %]</a></td>
+            <td>[% item.txt_rtv_shipment_date %]</td>
+            <td>
+                [% item.rtv_shipment_status %]
+                [% IF item.airway_bill %]<br />(AWB:&nbsp;[% item.airway_bill %])[% END %]
+            </td>
+            <td>[% item.rtv_carrier_name | html %]</td>
+            [% SET short_address = [] %]
+            [% FOREACH address_field IN ['contact_name', 'address_line_1', 'address_line_2', 'town_city'] %]
+                [% IF item.$address_field.length > 0; short_address.push(item.$address_field); END %]
+            [% END %]
+            [% short_address = short_address.join('<br />') %]
+            <td>[% short_address %]&nbsp;</td>
+        </tr>
+    [% END ## (FOREACH item) %]
+    </tbody>
+</table>
+[% END %]
+[% END ## (BLOCK rtv_shipment_list) %]
+
+
+
+
+[% BLOCK rtv_shipment_select %]
+<h3>Filter Options</h3>
+
+<form name="frm_rtv_shipment_select" action="/RTV/DispatchedRTV">
+    <div class="formrow divideabove dividebelow">
+        <label for="select_designer_id">Designer</label>
+        <select id="select_designer_id" name="select_designer_id">
+            <option value=""></option>
+[% FOR designer IN rma_request_designers -%]
+            <option value="[% designer.designer_id %]"[% ' selected="selected"' IF search_params.select_designer_id == designer.designer_id %]>[% designer.designer %]</option>
+[% END -%]
+        </select>
+    </div>
+    <div class="formrow dividebelow">
+        <label for="select_season_id">Season</label>
+        <select id="select_season_id" name="select_season_id">
+            <option value=""></option>
+[% FOR season IN rma_request_seasons -%]
+            <option value="[% season.id %]"[% ' selected="selected"' IF search_params.select_season_id == season.id %]>[% season.season %]</option>
+[% END -%]
+        </select>
+    </div>
+    <div class="formrow dividebelow">
+        <label for="select_sku">SKU</label>
+        <input type="text" id="select_sku" name="select_sku"[% 'value=' _ search_params.select_sku IF search_params.select_sku %] />
+    </div>
+    <div class="formrow dividebelow">
+        <label for="select_airwaybill">Airwaybill</label>
+        <input type="text" id="select_airwaybill" name="select_airwaybill"[% 'value=' _ search_params.select_airwaybill IF search_params.select_airwaybill %] />
+    </div>
+    <div class="formrow dividebelow">
+        <label for="select_rtv_shipment_id">RTV Shipment</label>
+        <input type="text" id="select_rtv_shipment_id" name="select_rtv_shipment_id"[% 'value=' _ search_params.select_rtv_shipment_id IF search_params.select_rtv_shipment_id %] />
+    </div>
+    <div class="formrow dividebelow">
+        <label for="select_rma_number">RMA</label>
+        <input type="text" id="select_rma_number" name="select_rma_number"[% 'value=' _ search_params.select_rma_number IF search_params.select_rma_number %] />
+    </div>
+    <div class="formrow dividebelow">
+        <label for="select_channel_id">Channel</label>
+        <select id="select_channel_id" name="select_channel_id">
+            <option value=""></option>
+[% FOR channel IN channels -%]
+            <option value="[% channel.id %]"[% ' selected="selected"' IF search_params.select_channel_id == channel.id %]>[% channel.name %]</option>
+[% END -%]
+        </select>
+    </div>
+    <div class="formrow buttons aftertable">
+        <input type="submit" name="search_select" class="button" value="Select &raquo;" />
+    </div>
+</form>
+[% END ## (BLOCK rtv_shipment_select) %]
+
+
+
+
+[% BLOCK rtv_shipment %]
+        [% IF rtv_shipment_details.0.rtv_shipment_id.match('\A\d+\z') %]
+                [% PROCESS rtv_shipment_header %]
+                [% PROCESS rtv_shipment_details %]
+                [% PROCESS rma_request_notes %]
+        [% ELSE %]
+            <br />
+                <span style="font-weight: bold; color: red;">Invalid rtv_shipment_id specified!</span>
+        [% END %]
+[% END ## (BLOCK rtv_shipment) %]
+
+
+
+
+[% BLOCK rtv_shipment_header %]
+<!-- RTV Shipment Header -->
+<div id="rtv_shipment_header">
+    [% delivery_address = [] %]
+    [% FOREACH address_field IN ['address_line_1', 'address_line_2', 'address_line_3', 'town_city', 'region_county', 'postcode_zip', 'country'] %]
+        [% IF rtv_shipment_details.0.$address_field.length > 0; delivery_address.push(rtv_shipment_details.0.$address_field); END %]
+    [% END %]
+    [% delivery_address = delivery_address.join('<br />') %]
+
+    <span class="title title-[% channel_config.$sales_channel %]">Shipment Details</span><br />
+
+    <table style="width: 100%; background-color: lightgrey; border: solid 1px lightgrey;" cellpadding="4" cellspacing="1" border="0" class="data">
+        <tr>
+            <td class="tableHeader" style="width: 12%; border: none;">RMA Req. Ref:</td>
+            <td style="width: 15%; border: none;">
+                <a style="text-decoration: none;" href="/RTV/ListRMA?rma_request_id=[% rtv_shipment_details.0.rma_request_id %]">
+                    [% rtv_shipment_details.0.rma_request_id FILTER format('%05d') %]
+                </a>
+                &nbsp;([% rtv_shipment_details.0.rma_request_status %])
+            </td>
+            <td class="tableHeader" style="width: 10%; border: none;">Designer:</td>
+            <td style="width: 15%; border: none;">[% rtv_shipment_details.0.designer | html %]</td>
+            <td class="tableHeader" style="width: 10%; border: none;">RMA Number:</td>
+            <td style="width: 15%; border: none;">[% rtv_shipment_details.0.rma_number %]</td>
+        </tr>
+        <tr>
+            <td class="tableHeader" style="border: none;">Shipment ID:</td>
+            <td style="border: none;">[% rtv_shipment_details.0.rtv_shipment_id %]&nbsp;([% rtv_shipment_details.0.rtv_shipment_status %])</td>
+            <td class="tableHeader" style="border: none;">Created:</td>
+            <td style="border: none;">[% rtv_shipment_details.0.txt_rtv_shipment_date %]</td>
+            <td class="tableHeader" style="border: none;">Created By:</td>
+            <td style="height: 32px; border: none;">
+            [% IF rtv_shipment_details.0.operator_email.length %]
+                <a href="mailto:[% rtv_shipment_details.0.operator_email %]">[% rtv_shipment_details.0.operator_name %]</a>
+            [% ELSE %]
+                [% rtv_shipment_details.0.operator_name %]
+            [% END %]
+            </td>
+        </tr>
+        <tr>
+            <td class="tableHeader" style="border: none; vertical-align: top;">Carrier:</td>
+            <td style="border: none; vertical-align: top;">[% rtv_shipment_details.0.rtv_carrier_name %]&nbsp;([% rtv_shipment_details.0.carrier_account_ref %])</td>
+            <td class="tableHeader" style="border: none; vertical-align: top;">Delivery&nbsp;Address:</td>
+            <td colspan="3" style="border: none; vertical-align: top;">
+                [% rtv_shipment_details.0.contact_name %]&nbsp;&nbsp;<a class="zoom" style="color: grey;" href="" onclick="return expand('delivery_address')">[+]</a>
+                <div id="expand_delivery_address" style="display: none">
+                    <table style="width: 99%" cellpadding="0" cellspacing="0" border="0" class="data">
+                        <tr><td><br />[% delivery_address %]</td></tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="tableHeader" style="width: 12%; font-weight: bold;">Airwaybill:</td>
+            <td colspan="5">[% rtv_shipment_details.0.airway_bill %]</td>
+        </tr>
+    </table>
+    <br />
+</div>
+
+[% IF rtv_shipment_details.0.rtv_shipment_status_id == rtv_constants.RTV_SHIP_STAT_AWAITING_DISPATCH %]
+<script language="Javascript">
+<!--
+    document.forms.frm_rtv_shipment_header.txt_airwaybill.focus();
+//-->
+</script>
+[% END %]
+
+[% END ## (BLOCK rtv_shipment_header) %]
+
+
+
+
+[% BLOCK rtv_shipment_details %]
+
+<!-- Result Log details -->
+[% FOREACH item = rtv_shipment_details %]
+[% item_id = item.rtv_shipment_detail_id %]
+[% NEXT UNLESS rtv_shipment_result_details.$item_id.size %]
+<div id="result_log_[% item.rtv_shipment_detail_id %]" style="visibility:hidden; position:absolute; left:0px; top:0px; z-index:1000; padding-left:3px; padding-bottom:3px; background-color: #cccccc">
+        <div style="border:1px solid #666666; background-color: #fff; padding: 10px; z-index:1001">
+                <div style="width:400px">
+                <table style="width: 100%; border: 1px solid #cfcfcf;" cellspacing="1" cellpadding="4" class="data">
+                        <thead>
+                            <tr>
+                            <td class="tableHeader" style="width: 15%;">Action</td>
+                            <td class="tableHeader" style="width: 8%; text-align: right;">Qty.</td>
+                        <td class="tableHeader" style="width: 20%;">Ref.</td>
+                        <td class="tableHeader" style="width: 26%;">Operator</td>
+                        <td class="tableHeader" style="width: 31%;">Date</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        [% FOREACH row = rtv_shipment_result_details.$item_id %]
+                            <tr>
+                                <td style="text-align: left; border-top: 1px dotted #cfcfcf;">[% row.type %]</td>
+                                <td style="text-align: right; border-top: 1px dotted #cfcfcf;">[% row.quantity %]</td>
+                                <td style="text-align: left; border-top: 1px dotted #cfcfcf;">[% row.reference %]</td>
+                                <td style="text-align: left; border-top: 1px dotted #cfcfcf;">[% row.operator %]</td>
+                                <td style="text-align: left; border-top: 1px dotted #cfcfcf;">[% row.txt_date_time %]</td>
+                            </tr>
+                        [% END %]
+                        </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+[% END ## (FOREACH item) %]
+
+<!-- RTV Shipment Details -->
+<span class="title title-[% channel_config.$sales_channel %]">Shipment Items</span><br />
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <thead>
+        <tr>
+            <td colspan="11" class="divider"></td>
+        </tr>
+        <tr>
+            <td class="tableHeader" style="width: 11%; text-align: center;">SKU</td>
+            <td class="tableHeader" style="width: 20%;">Description&nbsp;/<br /><span style="font-style: italic;">Style Ref.</span></td>
+            <td class="tableHeader" style="width: 10%;">Type&nbsp;/<br />Colour</td>
+            <td class="tableHeader" style="width: 10%;">Delivery<br />Date</td>
+            <td class="tableHeader" style="width: 8%;">Status</td>
+            <td class="tableHeader" style="width: 15%;">Reason</td>
+            <td class="tableHeader" style="width: 15%;">Request</td>
+            <td class="tableHeader" style="width: 3%; text-align: right;">Qty.</td>
+            <td class="tableHeader" style="width: 1%;">&nbsp;</td>
+            <td class="tableHeader">&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="11" class="divider"></td>
+        </tr>
+    </thead>
+    <tbody>
+        [% IF rtv_shipment_details.size == 0 %]<tr><td colspan="10">None!</td></tr>[% END %]
+    [% FOREACH item = rtv_shipment_details %]
+        [%  item_name           = item.name | html %]
+        [%  item_name           = "$item_name&nbsp;<br />"
+            item_style_number   = item.style_number.defined ? item.style_number : '*None*'
+            item_id             = item.rtv_shipment_detail_id
+            item_image_name     = item.image_name.0
+        %]
+
+        [% item_total_quantity_outstanding
+            = item.rtv_shipment_detail_quantity
+            - (item.result_total_unknown + item.result_total_credited + item.result_total_repaired + item.result_total_replaced + item.result_total_dead + item.result_total_stock_swapped)
+        %]
+        <tr>
+            <td colspan="11" style="height:5px"></td>
+        </tr>
+        <tr>
+                <td style="vertical-align: top;">
+                [% IF item_image_name %]
+                <a href="../StockControl/Inventory/Overview?product_id=[% item.product_id %]">
+                    <img class="product" src="[% item_image_name %]" alt="[% item.sku %]" width="50" border="0" />
+                </a>
+            [% ELSE %]
+                <img class="product" src="/images/blank.gif" alt="[% item.sku %]" height="75" width="50">
+            [% END %]
+            <a href="../StockControl/Inventory/Overview?product_id=[% item.product_id %]">[% item.sku %]</a>
+                </td>
+                <td style="vertical-align: top; text-align: left;">
+                [% IF item.name %][% item_name %][% ELSE %]<span style="font-weight: bold;">[ Name Required ]</span><br />[% END %]
+                    <br /><br />
+                    <span style="font-style: italic;">Style Ref:&nbsp;[% item_style_number %]</span>
+                </td>
+                <td style="vertical-align: top;">[% item.product_type %]&nbsp;/<br />[% item.colour %]</td>
+                <td style="vertical-align: top;">[% item.txt_delivery_date %]</td>
+                <td style="vertical-align: top;">[% item.rtv_shipment_detail_status %]&nbsp;</td>
+                <td style="vertical-align: top;">
+                    [% item.fault_type %]
+                [% IF item.fault_description %]<br />([% item.fault_description | html %])[% END %]
+                </td>
+                <td style="vertical-align: top;">[% item.rma_request_detail_type_id == 0 ? '&nbsp;' : item.rma_request_detail_type %]</td>
+                <td style="text-align: right; vertical-align: top;">
+                    <strong>[% item.rtv_shipment_detail_quantity %]</strong>
+                    [% IF item_total_quantity_outstanding > 0 %]<br /><br />([% item_total_quantity_outstanding %])[% END %]
+                </td>
+                <td>&nbsp;</td>
+                <form name="frm_rtv_shipment_detail_result" id="frm_rtv_shipment_detail_result" action="[% action_uri %]" method="post">
+            [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                <td style="text-align: right; vertical-align: top;">
+                <table style="width: 99%;" cellpadding="2" cellspacing="0" border="0">
+                    <tr>
+                        <td style="height: 0.6em; border: none; border-bottom: 1px solid lightgrey; font-size: 0.6em;"></td>
+                        <td style="height: 0.6em; border: none; border-bottom: 1px solid lightgrey; font-size: 0.6em; text-align: right;">Qty.</td>
+                        [% IF item_total_quantity_outstanding %]
+                        <td style="height: 0.6em; border: none; border-bottom: 1px solid lightgrey; font-style: italic; font-size: 0.6em;">&nbsp;</td>
+                        <td style="height: 0.6em; border: none; border-bottom: 1px solid lightgrey; font-style: italic; font-size: 0.6em;">Reference</td>
+                        [% END %]
+                    </tr>
+                    <tr>
+                        <td style="border: none;"><label for="">Credited:&nbsp;</label></td>
+                        <td style="border: none; text-align: right;">[% item.result_total_credited %]&nbsp;</td>
+                        [% IF item_total_quantity_outstanding %]
+                        <td style="border: none;">
+                            <input type="hidden" id="edit_credited_qty_[% item_id %]" name="edit_credited_qty_[% item_id %]" value="on" />
+                            <input type="text" name="credited_qty_[% item_id %]" maxlength="3" style="width: 2em; border: 1px solid grey; text-align: right;" value="0" />
+                        </td>
+                        <td style="border: none;">
+                            <input type="hidden" id="edit_credited_ref_[% item_id %]" name="edit_credited_ref_[% item_id %]" value="on" />
+                            <input type="text" name="credited_ref_[% item_id %]" maxlength="30" style="width: 6em; border: 1px solid grey;" value="" />
+                        </td>
+                        [% END %]
+                    </tr>
+                    <tr>
+                        <td style="border: none;"><label for="">Repaired:&nbsp;</label></td>
+                        <td style="border: none; text-align: right;">[% item.result_total_repaired %]&nbsp;</td>
+                        [% IF item_total_quantity_outstanding %]
+                        <td style="border: none;">
+                            <input type="hidden" id="edit_repaired_qty_[% item_id %]" name="edit_repaired_qty_[% item_id %]" value="on" />
+                            <input type="text" name="repaired_qty_[% item_id %]" maxlength="3" style="width: 2em; border: 1px solid grey; text-align: right;" value="0" />
+                        </td>
+                        <td style="border: none;">
+                            <input type="hidden" id="edit_repaired_ref_[% item_id %]" name="edit_repaired_ref_[% item_id %]" value="on" />
+                            <input type="text" name="repaired_ref_[% item_id %]" maxlength="30" style="width: 6em; border: 1px solid grey;" value="" />
+                        </td>
+                        [% END %]
+                    </tr>
+                    <tr>
+                        <td style="border: none;"><label for="">Replaced:&nbsp;</label></td>
+                        <td style="border: none; text-align: right;">[% item.result_total_replaced %]&nbsp;</td>
+                        [% IF item_total_quantity_outstanding %]
+                        <td style="border: none;">
+                            <input type="hidden" id="edit_replaced_qty_[% item_id %]" name="edit_replaced_qty_[% item_id %]" value="on" />
+                            <input type="text" name="replaced_qty_[% item_id %]" maxlength="3" style="width: 2em; border: 1px solid grey; text-align: right;" value="0" />
+                        </td>
+                        <td style="border: none;">
+                            <input type="hidden" id="edit_replaced_ref_[% item_id %]" name="edit_replaced_ref_[% item_id %]" value="on" />
+                            <input type="text" name="replaced_ref_[% item_id %]" maxlength="30" style="width: 6em; border: 1px solid grey;" value="" />
+                        </td>
+                        [% END %]
+                    </tr>
+                    <tr>
+                        <td style="border: none; border-top: 1px solid lightgrey; border-bottom: 1px solid lightgrey;"><label for="">Swapped:&nbsp;</label></td>
+                        <td style="border: none; border-top: 1px solid lightgrey; border-bottom: 1px solid lightgrey; text-align: right;">[% item.result_total_stock_swapped %]&nbsp;</td>
+                        [% IF item_total_quantity_outstanding %]
+                        <td style="border: none; border-top: 1px solid lightgrey; border-bottom: 1px solid lightgrey;">
+                            <input type="hidden" id="edit_stock_swapped_qty_[% item_id %]" name="edit_stock_swapped_qty_[% item_id %]" value="on" />
+                            <input type="text" name="stock_swapped_qty_[% item_id %]" maxlength="3" style="width: 2em; border: 1px solid grey; text-align: right;" value="0" />
+                        </td>
+                        <td style="border: none; border-top: 1px solid lightgrey; border-bottom: 1px solid lightgrey;">
+                            <input type="hidden" id="edit_stock_swapped_ref_[% item_id %]" name="edit_stock_swapped_ref_[% item_id %]" value="on" />
+                            <input type="text" name="stock_swapped_ref_[% item_id %]" maxlength="30" style="width: 6em; border: 1px solid grey;" value="" />
+                        </td>
+                        [% END %]
+                    </tr>
+                    <tr>
+                        <td style="border: none; border-top: 1px solid lightgrey;"><label for="">Dead:&nbsp;</label></td>
+                        <td style="border: none; border-top: 1px solid lightgrey; text-align: right;">[% item.result_total_dead %]&nbsp;</td>
+                        [% IF item_total_quantity_outstanding %]
+                        <td style="border: none; border-top: 1px solid lightgrey;">
+                            <input type="hidden" id="edit_dead_qty_[% item_id %]" name="edit_dead_qty_[% item_id %]" value="on" />
+                            <input type="text" name="dead_qty_[% item_id %]" maxlength="3" style="width: 2em; border: 1px solid grey; text-align: right;" value="0" />
+                        </td>
+                        <td style="border: none; border-top: 1px solid lightgrey;">
+                            <input type="hidden" id="edit_dead_ref_[% item_id %]" name="edit_dead_ref_[% item_id %]" value="on" />
+                            <input type="text" name="dead_ref_[% item_id %]" maxlength="30" style="width: 6em; border: 1px solid grey;" value="" />
+                        </td>
+                        [% END %]
+                    </tr>
+                </table>
+                </td>
+        </tr>
+        <tr>
+            <td colspan="9" style="border: none;">&nbsp;</td>
+            <td style="border: none; text-align: right; vertical-align: top;">
+                [% IF rtv_shipment_result_details.$item_id.size %]<a href="javascript://" alt="View Result Log" onMouseOver="showLayer('result_log_[% item_id %]', -450, -20, event);" onMouseOut="hideLayer('result_log_[% item_id %]');"><img src="/images/icons/application_view_list.png" border="0"></a>[% END %]
+                [% IF item_total_quantity_outstanding %]
+                <input type="hidden" name="detail_id" value="[% item_id %]" />
+                <input type="hidden" name="rtv_shipment_id" value="[% rtv_shipment_id %]" />
+                <input type="submit" name="submit_rtv_shipment_detail_result" value="Submit&nbsp;&raquo;" class="button" />
+                [% END %]
+            </td>
+        </tr>
+        </form>
+        <tr>
+            <td colspan="11" class="divider"></td>
+        </tr>
+    [% END ## (FOREACH item) %]
+    </tbody>
+</table>
+[% END ## (BLOCK rtv_shipment_details) %]
+
+
+
+
+[% BLOCK rma_request_notes %]
+<!-- RMA Request Notes -->
+<div id="rma_request_notes">
+    <br />
+    <span class="title title-[% channel_config.$sales_channel %]">Correspondence Log - RMA Request [% rma_request_id FILTER format('%05d') %]</span><br />
+
+        <table width="100%" class="data" cellpadding="0" cellspacing="0" border="0">
+    <form name="frm_rma_request_notes" action="/RTV/DispatchedRTV" method="post">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr>
+                        <td style="width: 88%; vertical-align: top;">
+                                <textarea rows="2" name="txta_rma_request_note" style="width: 100%; border: 1px solid grey; text-align: justify"></textarea>
+                        </td>
+                        <td style="text-align: right; vertical-align: top;">
+                            <input type="hidden" name="rtv_shipment_id" value="[% rtv_shipment_id %]" />
+                            <input type="hidden" name="rma_request_id" value="[% rma_request_id %]" />
+                                <input type="submit" name="submit_add_note" class="button" value="Add Note" />
+                        </td>
+                </tr>
+                <tr>
+                        <td colspan="2">
+                                <table style="width: 100%;" cellpadding="0" cellspacing="0" border="0" class="data">
+                                    <thead>
+                        <tr>
+                            <td colspan="4" class="divider"></td>
+                        </tr>
+                                        <tr style="height: 24;">
+                                            <td class="tableHeader" style="width: 12%;">Date</td>
+                                            <td class="tableHeader" style="width: 50%;">Note</td>
+                                            <td class="tableHeader" style="width: 12%;">Operator</td>
+                                            <td class="tableHeader" style="width: 12%;">Department</td>
+                                        </tr>
+                        <tr>
+                            <td colspan="4" class="divider"></td>
+                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    [% IF rma_request_notes.size == 0 %]<tr><td colspan="4">None!</td></tr>[% END %]
+                                    [% FOREACH rma_request_note = rma_request_notes %]
+                                        <tr>
+                                                <td>[% rma_request_note.txt_date_time %]</td>
+                                                <td>
+                                                        <textarea rows="2" readonly="readonly" style="width: 95%; border: 1px solid grey; text-align: justify">[% rma_request_note.note | html %]</textarea>
+                                            </td>
+                                                <td>[% rma_request_note.operator_name %]</td>
+                                                <td>[% rma_request_note.department %]</td>
+                                        </tr>
+                        <tr>
+                            <td colspan="4" class="divider"></td>
+                        </tr>
+                                    [% END ## (FOREACH rma_request_note) %]
+                                    </tbody>
+                                </table>
+                        </td>
+                </tr>
+        </table>
+        </form>
+</div>
+[% END ## (BLOCK rma_request_notes) %]
+
+<!-- TT END - stocktracker/rtv/dispatched_rtv.tt -->

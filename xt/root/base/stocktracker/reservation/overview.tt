@@ -1,0 +1,117 @@
+<script type="text/javascript">
+function showhide(id){
+if (document.getElementById){
+obj = document.getElementById(id);
+if (obj.style.display == "none"){
+obj.style.display = "";
+} else {
+obj.style.display = "none";
+}
+}
+}
+function apply_filter_to_upload_pdf (xform) {
+    var original_action = xform.action;
+    xform.action = "/StockControl/Reservation/Overview/Upload/Filter";
+    xform.submit();
+    // Put it back how it was in-case Users hit the back button
+    xform.action = original_action;
+    return true;
+}
+</script>
+
+<div id="tabContainer" class="yui-navset">
+    [% PROCESS page_elements/channel_tabs.tt channel_list=reservations,no_size=1 %]
+    <div class="yui-content">
+
+        [% FOREACH channel = reservations.keys.sort %]
+
+            <div id="tab[% loop.count %]" class="tabWrapper-[% channel_config.$channel %]">
+            <div class="tabInsideWrapper">
+
+                [% IF view_type == "Upload" %]
+
+                    <form name="upload_date-[% channel %]" action="/StockControl/Reservation/Overview?view_type=Upload" method="post" id="upload_date_form-[% channel %]">
+                        <h3 class="title title-[% channel_config.$channel %]">Upload Selection</h3>
+                        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                        <table class="wide-data data divided-data" id="upload_selection-[% channel %]">
+                            <tr>
+                                <td width="20%" class="blank"><strong>Upload Date: </strong>[% upload_date.$channel %]</td>
+                                <td width="15%" id="upload_date_drop_down-[% channel %]" class="blank">
+                                    <select name="upload_date">
+                                        <option value="" disabled>Select an upload....</option>
+                                        [% FOREACH date = uploads.$channel %]
+                                            <option value="[% date %]">[% date %]</option>
+                                        [% END %]
+                                    </select>
+                                </td>
+                                <td width="45%" class="blank">
+                                    <input type="hidden" value="[% channel %]" name="channel_upload" > <input type="submit" class="button" value="Generate PDF &raquo;">
+                                    &nbsp;&nbsp;&nbsp;or&nbsp;&nbsp;&nbsp;
+                                    <input type="button" class="button" value="Apply Filter to PDF &raquo;" onclick="javascript:apply_filter_to_upload_pdf(this.form);">
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                [% END %]
+
+                <br>
+                <br>
+
+                [% FOREACH season = reservations.$channel.keys.sort %]
+
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td><span class="title title-[% channel_config.$channel %]"><a href="#" onclick="showhide('hideShow_[% channel %]_[% season %]'); return(false);">[% season %]</a></span></td>
+                        </tr>
+                    </table><br>
+
+                    <div style="display: none;" id="hideShow_[% channel %]_[% season %]">
+                        <br>
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+                            <tr class="dividebelow divideabove">
+                                <td width="10%" class="tableHeader">&nbsp;&nbsp;</td>
+                                <td width="10%" class="tableHeader">&nbsp;&nbsp;Product ID</td>
+                                <td width="20%" class="tableHeader">Designer</td>
+                                <td width="30%" class="tableHeader">Product Name</td>
+                                [% IF view_type == "Waiting" %]
+                                    <td width="15%" class="tableHeader">Upload Date</td>
+                                [% END %]
+                                [% IF view_type == "Waiting" || view_type == "Upload" %]
+                                    <td width="15%" class="tableHeader">Ordered</td>
+                                [% END %]
+                                <td width="15%" class="tableHeader">Reserved</td>
+                                [% IF view_type == "Upload" %]
+                                <td width="15%" class="tableHeader">Pre<br>Orderded</td>
+                                [% END %]
+                            </tr>
+                            [% FOREACH id = reservations.$channel.$season.keys.nsort %]
+                            <tr class="dividebelow">
+                                <td><img src="[% reservations.$channel.$season.$id.image.0 %]" width="50"></td>
+                                <td>&nbsp;&nbsp;<a href="/StockControl/Reservation/Product?product_id=[% reservations.$channel.$season.$id.id %]">[% reservations.$channel.$season.$id.id %]</a></td>
+                                <td>[% reservations.$channel.$season.$id.designer %]</td>
+                                <td>[% IF reservations.$channel.$season.$id.product_name != "" %][% reservations.$channel.$season.$id.product_name %][% ELSE %][% reservations.$channel.$season.$id.description %][% END %]</td>
+                                [% IF view_type == "Waiting" %]
+                                    <td>[% reservations.$channel.$season.$id.upload_date %]</td>
+                                [% END %]
+                                [% IF view_type == "Waiting" || view_type == "Upload" %]
+                                    <td>[% reservations.$channel.$season.$id.ordered %]</td>
+                                [% END %]
+                                <td>[% reservations.$channel.$season.$id.reserved %]</td>
+                                [% IF view_type == "Upload" %]
+                                <td>[% reservations.$channel.$season.$id.preordered || 0 %]</td>
+                                [% END %]
+                            </tr>
+                            [% END %]
+                        </table>
+                        <br><br>
+
+                    </div>
+
+                [% END %]
+            </div>
+            </div>
+        [% END %]
+    </div>
+</div>
+
+[% PROCESS page_elements/tab_script.tt %]

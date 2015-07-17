@@ -1,0 +1,86 @@
+<div id="header">
+    <div id="headerTop">
+        <div id="headerLogo">
+           <table>
+              <tr>
+                 <td valign="bottom"><img width="35px" height="35px" src="/images/flag_[% instance %].png"></td>
+                 <td>
+                    <img src="/images/logo_small.gif" alt="xTracker">
+                    <span>DISTRIBUTION</span><span class="dc">[% application.distribution_channel %]</span>
+                 </td>
+              </tr>
+           </table>
+        </div>
+
+        [% IF template.name != 'login.tt' %]
+
+        <div id="headerControls">
+            [% cc = mainnav.item('Customer Care'); quick_search_auth = 0 %]
+            [% FOREACH sec = cc.keys %]
+                [% IF cc.$sec.sub_section == 'Order Search' %]
+                    [% quick_search_auth = 1 %]
+                [% END %]
+            [% END %]
+            [% IF !handheld && quick_search_auth %]
+                <form class="quick_search" name="quick_search" action="/QuickSearch">
+
+                    <span class="helptooltip" title="<p>Type a key followed by an ID or number to search as follows:</p><br /><table><tr><th width='20%'>Key</th><th>Search Using</th></tr><tr><td>o</td><td>Order Number</td></tr><tr><td>c</td><td>Customer Number</td></tr><tr><td>s</td><td>Shipment Number</td></tr><tr><td>r</td><td>RMA Number</td></tr><tr><td></td><td>--------------------</td></tr><tr><td>p</td><td>Product ID / SKU</td><tr><td></td><td>--------------------</td></tr><tr><td>e</td><td>Customer Email</td></tr><tr><td>z</td><td>Postcode / Zip</td></tr></table><br /><p><b>Tip:</b> type 'Alt-/' to jump to the quick search box</p><p>Click on the blue ? for more help</p>">
+                        Quick Search:
+                    </span>
+
+                    <img id="quick_search_ext_help" src="/images/icons/help.png" />
+                    [% INCLUDE shared/layout/quicksearch_help %]
+
+                    [%# the text input field *must* be named 'quick_search', otherwise tests that use scan methods will break %]
+                    <input name="quick_search" type="text" value="[% query IF query %]" accesskey="/" [% 'disabled="disabled"' IF disablemenus %]/>
+                    <input type="submit" value="Search" [% 'disabled="disabled"' IF disablemenus %]/>
+
+                    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+                </form>
+            [% END %]
+
+                <span class="operator_name">Logged in as: [% operator_name || 'Anonymous' %]</span>
+
+                <a href="/My/Messages" class="messages">[%
+                    IF application.messages.unread
+                         %]<img src="/images/icons/email.png" width="16" height="16" alt="Unread Messages" title="Unread Messages">[%
+                    ELSE
+                         %]<img src="/images/icons/email_open.png" width="16" height="16" alt="Messages" title="No New Messages">[%
+                    END
+                %]</a>
+
+                <a href="/Logout">Logout</a>
+        </div>
+
+        [% END %]
+
+        <select onChange="location.href=this.options[this.selectedIndex].value">
+            <option value="">Go to...</option>
+            <optgroup label="Management">
+                <option value="http://fulcrum.net-a-porter.com/">Fulcrum</option>
+            </optgroup>
+            <optgroup label="Distribution">
+                <option value="http://xtracker.net-a-porter.com">DC1</option>
+                <option value="http://xt-us.net-a-porter.com">DC2</option>
+                <option value="http://xt-hk.net-a-porter.com">DC3</option>
+            </optgroup>
+            <optgroup label="Other">
+                <option value="http://xt-jchoo.net-a-porter.com">Jimmy Choo</option>
+            </optgroup>
+            [% IF prl_webapp_urls.size %]
+              <optgroup label="PRLs">
+                [% FOREACH url_data IN prl_webapp_urls %]
+                  <option value="[% url_data.url | url %]">[% url_data.caption | html %]</option>
+                [% END %]
+              </optgroup>
+            [% END %]
+        </select>
+    </div>
+
+    <div id="headerBottom">
+        <img src="/images/model_[% instance %].jpg" width="157" height="87" alt="">
+    </div>
+
+    [% INCLUDE shared/layout/nav1 %]
+</div>

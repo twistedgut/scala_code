@@ -1,0 +1,54 @@
+<pre>
+
+
+h1. CANDO - Customer & Orders
+
+* CANDO-8609 - Add new category and values on 'reason for cancellation' dropdown list
+* CANDO-8680 - Rebrand Fashion Advisor to Fashion Consultant
+* CANDO-8737 - Add role to XTracker to sent metrics to graphite
+* CANDO-8490 - Bug Fix for order search 
+* CANDO-1458 - BUG: Pre-Orders containing Cancelled Items do not have the Status fully updated
+* CANDO-8796 - Prevent attempts to refund to store credit for Jimmy Choo orders
+* CANDO-8714 - Send the right VAT value for Shipping to PSP
+* CANDO-8117 - Correct Pre-Order discount calculation
+
+h1. DC2A - DC2 Automation
+
+* DCA-4585: Keep shipments on finance hold after failed allocation
+*
+
+h1. DCOP - DC Operations
+
+*
+
+
+h1. SHIP - Expedited Shippping
+
+*
+
+
+h1. WHM - Warehouse
+
+*
+
+
+
+h1. Other
+
+h2. BS - Build Support
+
+*
+
+h2. PM - Product Management
+
+*
+
+h2. SAS - Search & Aggregation
+
+*
+
+h2. Misc
+
+*
+
+</pre>

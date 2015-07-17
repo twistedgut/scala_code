@@ -1,0 +1,12 @@
+<pre>
+
+h1. Fixes
+
+ * EN-1864: Fix to the Sizing Page, plus changed the sort order		(d63baa9)
+ * EN-1865 Always returns true for promo item fix			(a2821e3)
+ * EN-1870 - relax the regexp match to allow any number of digits       (93e9701)
+ * EN-1595 standardize DC1 small barcodes and resize for long skus      (470ea82)
+ * Clean-up RPM generation and processes                                (c5e216d)
+ * Shipment selection filter                                            (f6ada0d)
+
+</pre>

@@ -1,0 +1,86 @@
+#!/opt/xt/xt-perl/bin/perl
+# vim: ts=8 sts=4 et sw=4 sr sta
+use strict;
+use warnings;
+
+use lib qw( lib );
+use FindBin::libs qw( base=lib_dynamic );
+use Data::Dump qw/pp/;
+use IO::File;
+use Text::CSV;
+
+use XTracker::Handler qw{ get_database_handle};
+
+sub main {
+    my $dbh = XTracker::Handler::get_database_handle({
+        name => 'xtracker',
+        type => 'transaction',
+    });
+
+    my $sql = {
+        size_scheme => '
+    SELECT
+        id,name 
+    FROM
+        size_scheme
+    ORDER BY
+        name',
+
+        size_scheme_variant_size => '
+    SELECT
+        s.id,s.size
+    FROM
+        size_scheme_variant_size ss
+        JOIN size s
+            ON s.id = ss.size_id
+    WHERE
+        size_scheme_id = ?
+    ORDER BY
+        ss.position
+    '
+    };
+
+    my $sths = undef;
+    foreach my $key (keys %{$sql}) {
+        $sths->{$key} = $dbh->prepare($sql->{$key});
+    }
+
+    # generate it
+    $sths->{size_scheme}->execute();
+    while (my $scheme = $sths->{size_scheme}->fetchrow_hashref()) {
+        print "\"$scheme->{name}\"";
+
+        my $size_sth = $sths->{size_scheme_variant_size};
+        $size_sth->execute($scheme->{id});
+
+        while (my $size = $size_sth->fetchrow_hashref()) {
+            print ",\"$size->{size}\"";
+        }
+
+        print "\n";
+    }
+    print "\n";
+    $dbh->disconnect;
+}
+
+
+#SELECT
+#    ss.name,
+#    s.size,
+#    lookup.position
+#FROM
+#    size_scheme ss
+#    JOIN size_scheme_variant_size lookup
+#        ON lookup.size_scheme_id = ss.id
+#    JOIN size s
+#        ON s.id = lookup.size_id
+#ORDER BY
+#    ss.name, lookup.position
+#;
+
+
+
+
+
+main();
+

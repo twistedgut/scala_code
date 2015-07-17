@@ -1,0 +1,13 @@
+log4perl.logger                                               = [% LOGLEVEL_AMQ_PSP_CONSUMER %], AMQPSPConsumer
+
+log4perl.appender.AMQPSPConsumer                              = Log::Dispatch::File::Stamped
+log4perl.appender.AMQPSPConsumer.filename                     = [% XTDC_LOGS_DIR %]/amq_psp_consumer.log
+log4perl.appender.AMQPSPConsumer.stamp_fmt                    = %Y%m%d
+log4perl.appender.AMQPSPConsumer.mode                         = append
+log4perl.appender.AMQPSPConsumer.permissions                  = sub { 0664 }
+log4perl.appender.AMQPSPConsumer.autoflush                    = 1
+log4perl.appender.AMQPSPConsumer.syswrite                     = 1
+log4perl.appender.AMQPSPConsumer.layout                       = Log::Log4perl::Layout::PatternLayout
+log4perl.appender.AMQPSPConsumer.layout.ConversionPattern     = [% LOGGING_FORMAT %]
+log4perl.appender.AMQPSPConsumer.utf8                         = 1
+log4perl.appender.AMQPSPConsumer.binmode                      = :utf8

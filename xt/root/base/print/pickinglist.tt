@@ -1,0 +1,171 @@
+[% USE PrintDocs -%]
+<html>
+<head>
+<!-- Template name: [% template.name %] -->
+<title></title>
+[% INCLUDE shared/show_print_images.tt %]
+    <style type="text/css">
+body { margin-top: 1cm; margin-left: 1.0cm; }
+    </style>
+<meta http-equiv=content-type content="text/html; charset=utf8">
+</head>
+<body>
+<font face="arial">
+<table cellspacing="0" cellpadding="0" width="600" border="0">
+    <tbody>
+    <tr valign="top">
+        <td width="300">
+            <h1>Picking List</h1>
+            <h4>Printed: [% print_date %]</h4>
+            <br />
+            <br />
+            <h3><b>Shipment Number:&nbsp;&nbsp;[% shipment_id %]</b></h3>
+            <img src="file://[% PrintDocs.document_path('pickorder' _ shipment.id _ '.png') %]">
+        </td>
+        <td align="right">
+            <table width="300" border="3" cellpadding="5" cellspacing="0" bordercolor="#000000" style="border-style:solid">
+                <tr>
+                    <td align="center"><h1>[% sales_channel %]</h1></td>
+                </tr>
+                <tr>
+                    <td align="center"><h2>[% list_class %]<!-- shipment type - CUSTOMER ORDER, EIP ORDER, SALE ORDER, SAMPLE ORDER, STOCK TRANSFER --></h2></td>
+                </tr>
+                <tr>
+                    <td align="center"><h2>[% shipment.type %]</h2></td>
+                </tr>
+                [%- IF shipment.gift == 1 -%]
+                <tr>
+                    <td align="center"><br><h1>GIFT</h1></td>
+                </tr>
+                [%- END -%]
+                [% IF shipment.shipment_class_id == 3 %]
+                <tr>
+                    <td align="center"><br><h1>EXCHANGE</h1></td>
+                </tr>
+                [%- END -%]
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" align="left">
+            <br>
+            <table cellspacing="0" cellpadding="4" width="640" border="0">
+                <tr>
+                    <td width="120" align="right"><font size="2"><b>Shipment Date:</b></font></td>
+                    <td width="160"><font size="2">[% shipment.date %]</font></td>
+                    <td><font size="2">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+                    <td width="130" align="right"><font size="2"><b>Customer No:</b></font></td>
+                    <td width="200"><font size="2">[% customer.is_customer_number %]</font></td>
+                </tr>
+                <tr>
+                    <td align="right"><font size="2"><b>Release Date:</b></font></td>
+                    <td><font size="2">[% release_date %]</font></td>
+                    <td><font size="2">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+                    <td align="right"><font size="2"><b>Customer Name:</b></font></td>
+                    <td><font size="5"><b>[% shipment_address.first_name %] [% shipment_address.last_name %]</b></font></td>
+                </tr>
+                <tr>
+                    <td align="right"><font size="2"><b>SLA Cut-Off:</b></font></td>
+                    <td><font size="2"><b>[% shipment.sla_cutoff %]</b></font></td>
+                </tr>
+                [%- IF stock_transfer.type -%]
+                <tr>
+                    <td align="right"><font size="2"><b>Reason:</b></font></td>
+                    <td><font size="2">[% stock_transfer.type %]</font></td>
+                    [%- IF stock_transfer.info -%]
+                    <td><font size="2">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+                    <td align="right"><font size="2"><b>Additional Info:</b></font></td>
+                    <td><font size="2">[% stock_transfer.info %]</font></td>
+                    [%- ELSE -%]
+                    <td><font size="2">&nbsp;</font></td>
+                    <td align="right">&nbsp;</td>
+                    <td>&nbsp;</td>
+                    [%- END -%]
+                </tr>
+                [%- END -%]
+
+                [%- IF customer.no_signature_required -%]
+                <tr>
+                    <td colspan="3">&nbsp;</td>
+                    <td colspan="2"><font size="3">No signature required</font></td>
+                </tr>
+                [%- END -%]
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<br>
+
+<table width="640" border="2" cellpadding="10" cellspacing="0" bordercolor="#000000" style="border-style:solid">
+    <tbody>
+    <tr valign="top">
+        <td width="15%" class=tableheader><b>&nbsp;Notes</b></td>
+        <td width="85%">[% shipment.packing_instruction %]<br>
+            [%- FOREACH noteid = shipment_notes.keys.nsort -%]
+                [%- IF shipment_notes.$noteid.description == 'Fulfillment' || shipment_notes.$noteid.description == 'Shipping' -%]
+                    [% shipment_notes.$noteid.date %] - [% shipment_notes.$noteid.note %]<br>
+                [%- END -%]
+            [% END %]
+        </td>
+    </tr>
+</table>
+ <br><br><br>
+
+<table cellspacing="0" cellpadding="0" width="700" bgcolor="#f2f2f2" border="0">
+    <tbody>
+    <tr height="24" bgcolor="#c5c5c5">
+        <td><b>&nbsp;&nbsp;Location&nbsp;&nbsp;</b></td>
+        <td><b>&nbsp;&nbsp;SKU&nbsp;&nbsp;</b></td>
+        <td>&nbsp;&nbsp;</td>
+        <td><b>&nbsp;Name&nbsp;&nbsp;</b></td>
+        <td>&nbsp;&nbsp;</td>
+        <td><b>&nbsp;&nbsp;Designer&nbsp;&nbsp;</b></td>
+        <td><b>&nbsp;&nbsp;Size&nbsp;&nbsp;</b></td>
+        <td><b>&nbsp;&nbsp;Colour&nbsp;&nbsp;</b></td>
+    </tr>
+
+    [%- FOREACH floor = ordered_locations.keys.nsort.reverse -%]
+    [%- FOREACH zone = ordered_locations.$floor.keys.sort.reverse -%]
+    [%- FOREACH bay = ordered_locations.$floor.$zone.keys.nsort.reverse -%]
+    [%- FOREACH shelf = ordered_locations.$floor.$zone.$bay.keys.sort -%]
+    [%- FOREACH itemid = ordered_locations.$floor.$zone.$bay.$shelf.keys -%]
+
+        [%- IF shipment_items.$itemid.shipment_item_status_id == SHIPMENT_ITEM_STATUS__NEW
+                   || shipment_items.$itemid.shipment_item_status_id == SHIPMENT_ITEM_STATUS__SELECTED -%]
+
+            <tr>
+                <td bgcolor="#f2f2f2" colspan=8 height=10></td>
+            </tr>
+            <tr>
+                <td>&nbsp;&nbsp;<font size="2">[% locations.$itemid.primary.location %]&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+                <td><font size="3">&nbsp;&nbsp;[% shipment_items.$itemid.product_id %]-[% shipment_items.$itemid.sku_size %]</font></td>
+                <td>&nbsp;&nbsp;</td>
+                <td><font size="2">[% shipment_items.$itemid.name %]</font></td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td><font size="2">[% shipment_items.$itemid.designer %]</font></td>
+                <td>&nbsp;&nbsp;<font size="2">
+                    [%- IF shipment_items.$itemid.designer_size == 999 -%]
+                        No Size
+                    [%- ELSE -%]
+                        [%- ( shipment_items.$itemid.short_name _ ' ' ) IF shipment_items.$itemid.short_name != "" -%][% shipment_items.$itemid.designer_size %]
+                    [%- END -%]
+                </font></td>
+                <td>&nbsp;&nbsp;<font size="2">[% shipment_items.$itemid.colour %]</font></td>
+            </tr>
+            <tr>
+                <td bgcolor="#f2f2f2" colspan=8 height=10></td>
+            </tr>
+            <tr>
+                <td colspan=8 bgcolor="#c2c2c2" height=1></td>
+            </tr>
+        [%- END -%]
+    [%- END -%]
+    [%- END -%]
+    [%- END -%]
+    [%- END -%]
+    [%- END -%]
+    </tbody>
+</table>
+</body>
+</html>

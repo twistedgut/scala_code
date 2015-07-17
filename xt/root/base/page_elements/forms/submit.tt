@@ -1,0 +1,8 @@
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tbody>
+        <tr height="24">
+            <td align="right"><input type="submit" name="submit" class="button" value="[% IF submit %][% submit %][% ELSE %]Submit &raquo;[% END %]"></td>
+        </tr>
+    </tbody>
+</table>
+

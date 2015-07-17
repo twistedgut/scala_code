@@ -1,0 +1,80 @@
+[% NAP_CONFIG_HEADER %]
+
+# This file should contain any config that is required
+# only during the lifetime of the XT Access Controls
+# project and then at end of it can be removed. This
+# is where any feature switches should be put or
+# exceptions to any ACL protection should be put that
+# at the end of the project won't be relevant anymore.
+
+# Any config that is permanent should be put in one of
+# the regular config files in the normal way.
+
+
+# list Handler Class names or Request URLs that should have
+# their sidenav protected. The format should be:
+#   name    Class::Name     - used for non-Catalyst Handlers
+#       or
+#   url     /Some/Url       - used for Catalyst Handlers
+#
+# RegExs can be used in either the 'name' or 'url' settings
+# BUT BE CAREFUL that they ONLY match what you intend them to.
+<ACL_Protected_Sidenav>
+    name    XTracker::Order::Finance::CreditCheck
+    name    XTracker::Order::Finance::CreditHold
+    name    XTracker::Order::Finance::CreditHold::ViewBulkActionLog
+    name    XTracker::Order::Functions::Order::OrderView
+    name    XTracker::Stock::Reservation::.*
+    url     /StockControl/Reservation/BulkReassign
+</ACL_Protected_Sidenav>
+
+# when changing URLs from being Dynamic such as those that use
+# '/CustomerCare/OrderSearch/ChangeOrderStatus' to being Authorative
+# there might be some need to rewrite requests using the old URLs
+# to use the new ones for legacy reasons. These should be specified
+# in the section below. The format is:
+#   <rewrite>
+#       # the pattern to match against the url path, if there
+#       # isn't a 'url_regex' entry then the rule will be skipped
+#       url_regex       /Some/Url/Pattern.*
+#
+#       # pattern to match against the query string, if there
+#       # isn't 'qry_str_regex' entry then '.*' will be assumed
+#       qry_str_regex   .*query=string.*pattern.*
+#
+#       # the New URL Path that will be redirected to if
+#       # BOTH the 'url_regex' & 'qry_str_regex' match
+#       redirect_url    /New/URL/Pattern
+#
+#       # the HTTP Status code constant from the 'HTTP::Status'
+#       # module that Plack will Return with the rewritten URL
+#       status_code     HTTP_TEMPORARY_REDIRECT
+#   </rewrite>
+#
+# This section is used in 'xt.psgi' by the 'Plack::Middleware::Rewrite'
+# class that handles the Re-Writting, currently this section is processed
+# in a private function called '_rewrite_acl_legacy_url' in 'xt.psgi'.
+#
+# PLEASE NOTE: This file is passed through TT so please check the resulting
+#              '.conf' file to make sure that all the patterns are what
+#              you expect them to be.
+<ACL_Rewrite_Legacy_URL>
+    <rewrite>
+        url_regex       ^\/.*\/.*\/ChangeOrderStatus\$
+        qry_str_regex   .*action=Hold.*
+        redirect_url    /Finance/Order/CreditHold
+        status_code     HTTP_TEMPORARY_REDIRECT
+    </rewrite>
+    <rewrite>
+        url_regex       ^\/.*\/.*\/ChangeOrderStatus\$
+        qry_str_regex   .*action=Check.*
+        redirect_url    /Finance/Order/CreditCheck
+        status_code     HTTP_TEMPORARY_REDIRECT
+    </rewrite>
+    <rewrite>
+        url_regex       ^\/.*\/.*\/ChangeOrderStatus\$
+        qry_str_regex   .*action=Accept.*
+        redirect_url    /Finance/Order/Accept
+        status_code     HTTP_TEMPORARY_REDIRECT
+    </rewrite>
+</ACL_Rewrite_Legacy_URL>

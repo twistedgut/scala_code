@@ -1,0 +1,15 @@
+/*
+    Overwrite JQuery UI - Horrible Hack for Demo
+*/
+.ui-datepicker {
+    font-size: 0.7em !important;
+    margin: 20px 0 !important;
+}
+
+.datepicker {
+    width: 100px !important;
+}
+
+.bulk_expiry_date__div {
+    width: 550px;
+}

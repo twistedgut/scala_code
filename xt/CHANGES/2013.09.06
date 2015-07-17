@@ -1,0 +1,8 @@
+<pre>
+
+h1. DC2A
+    * DCA-2554: Include channel and shipment class on matchup sheet for DC2 shipping
+    * DCA-2555: Add storage_type to stock sheet
+    * DCA-2583: Add operator who picked items on allocation item log page
+
+</pre>

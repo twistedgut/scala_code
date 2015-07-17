@@ -1,0 +1,11 @@
+#designer_list {
+    display: none;
+}
+
+#product_id_entry {
+    display: none;
+}
+#product_id_entry textarea {
+    width: 300px;
+    height: 150px;
+}

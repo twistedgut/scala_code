@@ -1,0 +1,98 @@
+<!-- Results Pager : Start -->
+[% IF pager && pager.last_page > 1 %]
+[%-
+	IF pager_use_count;
+		pager_use_count	= pager_use_count + 1;
+	ELSE;
+		SET pager_use_count	= 1;
+	END;
+-%]
+[%-
+	IF !thepage_param;
+		SET thepage_param= 'page';
+	END;
+	IF !record_label;
+		SET record_label= 'records';
+	END;
+	IF url_path;
+		SET frm_url_path= url_path;
+		IF url_path.search('\?');
+			url_path	= url_path _ '&';
+		ELSE;
+			url_path	= url_path _ '?';
+		END;
+	ELSE;
+		SET url_path	= '?';
+		SET frm_url_path= '';
+	END;
+	SET url_extra_args	= '';
+	SET frm_hidden		= '';
+	IF url_suffix_params;
+		FOREACH param = url_suffix_params.keys;
+			url_extra_args	= url_extra_args _ '&' _ param _ '=' _ url_suffix_params.$param;
+			frm_hidden		= frm_hidden _ '<input type="hidden" name="' _ param _ '" value="' _ url_suffix_params.$param _ '" />';
+		END;
+	END;
+-%]
+<div style="padding: 5px 0px;">
+    <form id="hyperjump_[% pager_use_count %]" action="[% frm_url_path %]" style="padding: 0px; margin: 0px;" method="post">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+		[% frm_hidden %]
+
+    <strong>Page</strong> [% pager.current_page %] of [% pager.last_page %].
+
+    [% IF pager.last_page > 1 %]
+    [
+
+        [% UNLESS pager.current_page == pager.first_page %]
+        <a href="[% url_path %][% thepage_param %]=[% pager.first_page %][% url_extra_args %]">First</a>
+        [% ELSE %]
+        <em>First</em>
+        [% END %]
+
+        |
+
+        [% IF pager.previous_page %]
+        <a href="[% url_path %][% thepage_param %]=[% pager.previous_page %][% url_extra_args %]">Previous</a>
+        [% ELSE %]
+        <em>Previous</em>
+        [% END %]
+
+        |
+
+        [% IF pager.next_page %]
+        <a href="[% url_path %][% thepage_param %]=[% pager.next_page %][% url_extra_args %]">Next</a>
+        [% ELSE %]
+        <em>Next</em>
+        [% END %]
+
+        |
+
+        [% UNLESS pager.current_page == pager.last_page %]
+        <a href="[% url_path %][% thepage_param %]=[% pager.last_page %][% url_extra_args %]">Last</a>
+        [% ELSE %]
+        <em>Last</em>
+        [% END %]
+
+    ].
+    [% END %]
+
+    <!-- Showing [% pager.entries_on_this_page %] of [% pager.total_entries %] results. -->
+    <strong>Showing [% record_label %]:</strong> [% pager.first %] to [% pager.last %] of [% pager.total_entries %]. ([% pager.entries_on_this_page %] results)
+    
+    &nbsp;&nbsp;Hyperjump&nbsp;
+    
+    <select name="[% thepage_param %]" onchange="javascript:document.getElementById('hyperjump_[% pager_use_count %]').submit();">
+    
+    [% FOREACH p = [ 1..pager.last_page ] %]
+        <option [% IF p == pager.current_page %]selected="selected"[% END %]>[% p %]</option>
+    [% END %]
+
+    </select>
+    
+[% IF pager_use_count == 1 %]
+    </form>
+[% END %]
+</div>
+[% END %]
+<!-- Results Pager : End -->

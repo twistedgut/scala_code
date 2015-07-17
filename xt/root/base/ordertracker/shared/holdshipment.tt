@@ -1,0 +1,240 @@
+[% current_year = info.release_year %]
+
+[% IF no_edit %]
+    <p class="error_msg">Sorry, hold status of Shipment cannot be manually changed due to the current hold reason.</p>
+[% ELSIF shipments.size && shipments.size > 0 %]
+
+    <span class="title title-[% channel_config.$sales_channel %]">Select Shipment</span><br />
+    <table width="100%" id="select_shipment_table" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="9" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="24">
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Shipment Number</td>
+            <td class="tableHeader">Date</td>
+            <td class="tableHeader">Type</td>
+            <td class="tableHeader">Status</td>
+        </tr>
+        <tr>
+            <td colspan="9" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+        [% FOREACH id = shipments.keys %]
+            <tr>
+                [% IF (shipments.$id.shipment_status_id == db_constant('SHIPMENT_STATUS__PROCESSING') && !shipments.$id.has_packing_started ) || shipments.$id.shipment_status_id == 3 %]
+                    <td>&nbsp;&nbsp;&nbsp;<a href="[% short_url %]/HoldShipment?order_id=[% order_id %]&shipment_id=[% id %]">[% id %]</a></td>
+                    <td>[% shipments.$id.date %]</td>
+                    <td>[% shipments.$id.class %]</td>
+                    <td>[% shipments.$id.status %]</td>
+                [% ELSE %]
+                    <td class="light">&nbsp;&nbsp;&nbsp;[% id %]
+                         [% IF (shipments.$id.shipment_status_id == db_constant('SHIPMENT_STATUS__PROCESSING')
+                                     && shipments.$id.has_packing_started) %]
+                            <br>&nbsp;&nbsp;&nbsp;Packing has already started.
+                         [% END %]
+                    </td>
+                    <td class="light">[% shipments.$id.date %]</td>
+                    <td class="light">[% shipments.$id.class %]</td>
+                    <td class="light">[% shipments.$id.status %]</td>
+                [% END %]
+            </tr>
+            <tr>
+                <td colspan="4" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        [% END %]
+
+    </table>
+
+[% ELSE %]
+
+[% IF shipment.outward_airway_bill != "none" %]
+    Sorry, this shipment has already been assigned Airwaybill Numbers.<br/>
+    <br/>
+    Please contact the Shipping Department to confirm that the shipment can be held before continuing.
+[% ELSIF (shipment.shipment_status_id ==  db_constant('SHIPMENT_STATUS__PROCESSING')  && shipment.has_packing_started)  %]
+   <div id="shipment_on_hold_error_id" >
+    Sorry, it is too late to hold the shipment as packing has already started.<br/>
+   </div>
+[% ELSE %]
+
+	<form name="holdForm" action="[% short_url %]/ChangeShipmentStatus?action=Hold&order_id=[% order_id %]&shipment_id=[% shipment_id %]" method="post" onSubmit="javascript:return checkForm();">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <span class="title title-[% channel_config.$sales_channel %]">Hold Details</span><br />
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" id="shipment_hold_details">
+		<tr>
+			<td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+		<tr>
+			<td align="right" width="100"><strong>Reason:&nbsp;&nbsp;</strong></td>
+			<td>
+                [% IF !info.hold_reason_rec || info.hold_reason_rec.manually_releasable %]
+                    <select name="reason">
+                        <option value="0">Please select...</option>
+                        <option value="0">----------------------------</option>
+                        [% FOREACH id = reasons.keys %]
+                            [%- NEXT IF !reasons.$id.manually_releasable %]
+                            <option value="[% id %]"
+                            [% IF id == info.shipment_hold_reason_id %]
+                                selected="selected"
+                            [% END %]
+                            >[% reasons.$id.reason %]</option>
+                        [% END %]
+                    </select>
+                [% ELSE %]
+                    [% info.hold_reason_rec.reason %]
+                    <input type="hidden" name="reason" value="[% info.hold_reason_rec.id %]" />
+                [% END %]
+			</td>
+			<td><img src="/images/blank.gif" width="1" height="30"></td>
+		</tr>
+		<tr>
+			<td colspan="3" class="divider"></td>
+		</tr>
+        [% IF info.hold_reason_rec && info.hold_reason_rec.information %]
+            <tr height="22" valign="top">
+                <td align="right" width="100"><strong>Information:&nbsp;&nbsp;</strong></td>
+                <td colspan="2"><div class="spaced standout" style="width: 70%;">[% info.hold_reason_rec.information %]</div></td>
+            </tr>
+	[% IF info.hold_reason_rec.id == db_constant('SHIPMENT_HOLD_REASON__CREDIT_HOLD__DASH__SUBJECT_TO_EXTERNAL_PAYMENT_REVIEW') %]
+	    <tr>
+		<td></td>
+		<td>
+			<input type="hidden" name="ajax_operator_id" value="[% operator_id %]" id="operator-id"/>
+			<input type="hidden" name="ajax_shipment_id" value="[% shipment.id %]" id="shipment-id"/>
+			<div class="spaced standout" style="color: black;display: inline-block;"><input type="button" name="status" value="Payment Status Refresh" id="payment-refresh-button"/><div style="padding-left: 5px;display: inline-block;">Click this button to refresh the third party payment status</div></div>
+        </td>
+	    </tr>
+	[% END %]
+            <tr>
+                <td colspan="3" class="divider"></td>
+            </tr>
+        [% END %]
+		<tr>
+			<td colspan="3"><img src="/images/blank.gif" width="1" height="10"></td>
+		</tr>
+		<tr height="22" valign="top">
+			<td align="right" width="100"><strong>Comments:&nbsp;&nbsp;</strong></td>
+			<td colspan="2"><textarea name="comment" rows="5" cols="45">[% info.comment %]</textarea></td>
+		</tr>
+		<tr>
+			<td colspan="3"><img src="/images/blank.gif" width="1" height="10"></td>
+		</tr>
+		<tr>
+			<td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+		<tr>
+			<td align="right" width="100"><strong>Release Date:&nbsp;&nbsp;</strong></td>
+			<td><input type="checkbox" name="norelease" value="1" [% IF info.release_date == "" %]checked="checked"[% END %]>&nbsp;None
+
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>or</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Select Date :&nbsp;
+				<select name="releaseDay" class="date" onClick="document.holdForm.norelease.checked = 0">
+					[% i = 1 %]
+					[% WHILE i < 32 %]
+						[% IF i < 10 %]
+							[% i = "0$i" %]
+						[% END %]
+
+						<option value="[% i %]"
+						[% IF i == info.release_day %]selected="selected"[% END %]
+						>[% i %]</option>
+
+						[% i = i + 1 %]
+					[%END %]
+
+					<option value="">----</option>
+				</select>&nbsp;-&nbsp;
+
+				<select name="releaseMonth" class="date">
+					[% m = 1 %]
+					[% WHILE m < 13 %]
+						[% IF m < 10 %]
+							[% m = "0$m" %]
+						[% END %]
+
+						<option value="[% m %]"
+						[% IF m == info.release_month %]selected="selected"[% END %]
+						>[% m %]</option>
+
+						[% m = m + 1 %]
+					[%END %]
+					<option value="">----</option>
+				</select>&nbsp;-&nbsp;
+
+				<select name="releaseYear" class="date">
+					[% y = 2000 %]
+					[% WHILE y <= ( current_year + 1 ) %]
+						<option value="[% y %]"
+						[% IF y == info.release_year %]selected="selected"[% END %]
+						>[% y %]</option>
+
+						[% y = y + 1 %]
+					[%END %]
+				</select>
+
+                &nbsp;&nbsp;&nbsp;&nbsp;
+
+                <select name="releaseHour" class="date">
+					[% m = 0 %]
+					[% WHILE m < 24 %]
+						[% IF m < 10 %]
+							[% m = "0$m" %]
+						[% END %]
+
+						<option value="[% m %]"
+						[% IF m == info.release_hour %]selected="selected"[% END %]
+						>[% m %]</option>
+
+						[% m = m + 1 %]
+					[%END %]
+					<option value="">----</option>
+				</select>&nbsp;:&nbsp;
+
+                <select name="releaseMinute" class="date">
+					[% m = 0 %]
+					[% WHILE m < 60 %]
+						[% IF m < 10 %]
+							[% m = "0$m" %]
+						[% END %]
+
+						<option value="[% m %]"
+						[% IF m == info.release_minute %]selected="selected"[% END %]
+						>[% m %]</option>
+
+						[% m = m + 1 %]
+					[%END %]
+					<option value="">----</option>
+				</select>
+
+			</td>
+			<td><img src="/images/blank.gif" width="1" height="30"></td>
+		</tr>
+		<tr>
+			<td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+		<tr>
+			<td height="45" colspan="3" align="right">[% INCLUDE page_elements/forms/submit_button.tt %]</td>
+		</tr>
+	</table>
+    </form>
+
+	<script type="text/javascript" language="Javascript">
+
+	function checkForm() {
+		if (document.holdForm.reason.options[document.holdForm.reason.selectedIndex].value == 0){
+			alert("Please select a reason form the list");
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+
+	</script>
+[% END %]
+[% END %]
+
+<br />
+<br />
+<br />
+<br />
+

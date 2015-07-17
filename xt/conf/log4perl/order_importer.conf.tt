@@ -1,0 +1,26 @@
+log4perl.logger                                               = [% LOGLEVEL_XTRACKER %], OrderImporter
+log4perl.logger.Benchmark                                     = INFO, Benchmark
+
+log4perl.appender.OrderImporter                               = Log::Dispatch::File::Stamped
+log4perl.appender.OrderImporter.filename                      = [%XTDC_LOGS_DIR%]/order_importer.log
+log4perl.appender.OrderImporter.stamp_fmt                     = %Y%m%d
+log4perl.appender.OrderImporter.mode                          = append
+log4perl.appender.OrderImporter.permissions                   = sub { 0664 }
+log4perl.appender.OrderImporter.autoflush                     = 1
+log4perl.appender.OrderImporter.syswrite                      = 1
+log4perl.appender.OrderImporter.layout                        = Log::Log4perl::Layout::PatternLayout
+log4perl.appender.OrderImporter.layout.ConversionPattern      = [% LOGGING_FORMAT %]
+log4perl.appender.OrderImporter.utf8                          = 1
+log4perl.appender.OrderImporter.binmode                       = :utf8
+
+log4perl.appender.Benchmark                                   = Log::Dispatch::File::Stamped
+log4perl.appender.Benchmark.filename                          = [%XTDC_LOGS_DIR%]/benchmark.log
+log4perl.appender.Benchmark.stamp_fmt                         = %Y%m%d
+log4perl.appender.Benchmark.mode                              = append
+log4perl.appender.Benchmark.permissions                       = sub { 0664 }
+log4perl.appender.Benchmark.autoflush                         = 1
+log4perl.appender.Benchmark.syswrite                          = 1
+log4perl.appender.Benchmark.layout                            = Log::Log4perl::Layout::PatternLayout
+log4perl.appender.Benchmark.layout.ConversionPattern          = [% LOGGING_FORMAT %]
+log4perl.additivity.Benchmark                                 = 0
+log4perl.appender.Benchmark.binmode                           = :utf8

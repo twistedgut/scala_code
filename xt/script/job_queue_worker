@@ -1,0 +1,56 @@
+#!/opt/xt/xt-perl/bin/perl
+use strict;
+use warnings;
+
+use FindBin::libs;
+use FindBin::libs qw( base=lib_dynamic );
+use Log::Log4perl;
+
+# we need the 'new' JQ code with worker-groups
+# 0.1.14 is available in *at least* 2011.13.00
+#  http://gitosis/cgit/DAVE/log/src/CPAN_MODULES_ORIGIN/XT-Common-JQ-v0.1.14.tar.gz?h=2011.13
+use XT::Common::JQ 'v0.1.14';
+use XTracker::Config::Local qw( config_var );
+
+BEGIN { $ENV{XT_LOGCONF} = 'jobqueue.conf'; }
+use XTracker::Logfile qw( xt_logger );
+
+# we ought to handle CLI options nicely
+use Getopt::Long;
+
+# default option(s)
+my %cliopt = (
+    daemon => 1,
+    sleep => 15
+);
+
+GetOptions(
+    \%cliopt,
+    'help!',
+    'daemon!',
+    'sleep=i',
+    'worker-group=s',
+);
+
+# start them all
+if ( $cliopt{'worker-group'} eq 'ALL' ) {
+    my $groups = config_var('job_queue', 'worker-group');
+    foreach my $group (keys %{$groups}) {
+
+        my $script = "$ENV{XTDC_BASE_DIR}/script/job_queue_daemon";
+
+        $cliopt{'worker-group'} = $group;
+
+        my @args = ("$script", "--worker-group=$group", "@ARGV", '--no-daemon', '--userset');
+        system(@args) == 0 or warn "failed to start daemon with @args :", $? >> 8;
+    }
+}
+# start a single worker
+else {
+    require XT::Common::JQ::Daemon;
+    XT::Common::JQ::Daemon->run("XT::JQ::DC::Queue", \%cliopt, @ARGV);
+}
+
+# required by XT/Common/JQ/Daemon.pm
+sub logger{ return xt_logger('JobQueue'); }
+sub reinit_logger{}

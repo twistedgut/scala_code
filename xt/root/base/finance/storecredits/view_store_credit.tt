@@ -1,0 +1,40 @@
+<span class="title title-[% config_section %]">Credit Details</span>
+
+<form method="POST" action="[% c.req.uri %][% IF !c.req.uri.match('ConvertToRefund') %]/ConvertToRefund[% END %]" onsubmit="javascript:return confirm('Are You Sure?');">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    [%- PROCESS finance/storecredits/balance_summary.inc -%]
+
+    <div class="formrow buttons formend aftertable">
+        <input type="submit" value="Convert to Refund &raquo;" class="button">
+    </div>
+</form>
+
+<span class="title title-[% config_section %]">Change Log</span>
+[% IF credit.logs.list.size %]
+<table class="wide-data data customer_credit_log">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Operator</th>
+            <th>Action</th>
+            <th>Change</th>
+            <th>Balance</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+[% FOR log IN credit.logs %]
+        <tr class="dividebelow">
+            <td>[% log.date.strftime('%Y-%m-%d %H:%M') | html %]</td>
+            <td>[% log.created_by.name || log.created_by | html %]</td>
+            <td>[% log.notes || log.type | html %]</td>
+            <td>[% log.delta | format('%.3f') | html %]</td>
+            <td>[% log.balance | format('%.3f') | html %]</td>
+            <td>[% IF log.order %]<a href="[% c.uri_for_order(log.order) %]">View Order</a>[% ELSE; '&nbsp;'; END; %]</td>
+        </tr>
+[% END %]
+    </tbody>
+</table>
+[% ELSE %]
+<p>No credit logs</p>
+[% END %]

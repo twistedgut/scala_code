@@ -1,0 +1,23 @@
+[%#DCA-956: skip heading, too large for handheld %]
+<h2>Container [% induct.container_row.id %]</h2>
+<form name="canConveyQuestion" action="/Fulfilment/Induction" method="POST">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="view" value="[% view %]">
+    <input type="hidden" name="container_id" value="[% induct.container_row.id %]">
+    <input type="hidden" name="is_container_in_cage" value="[% induct.is_container_in_cage %]">
+    <input type="hidden" name="return_to_url" value="[% induct.return_to_url | html %]">
+    <input type="hidden" name="is_force" value="[% induct.is_force %]">
+
+    <h3>Can the tote be conveyed?</h3>
+    <ul class="question_answers" id="can_be_conveyed_answers">
+    [% FOREACH answer = induct.question.answers %]
+        <li><input type="radio" name="can_be_conveyed"
+            [% IF answer.is_default %] checked="checked"[% END %] value="[% answer.value %]"
+            />[% answer.text %]</li>
+        [% END; # FOREACH answer %]
+    </ul>
+    <div class="formrow formend" style='background:[% colour %];'>
+        [% PROCESS page_elements/forms/submit_button.tt %]
+    </div>
+</form>
+

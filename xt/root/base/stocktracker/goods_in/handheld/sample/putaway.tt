@@ -1,0 +1,10 @@
+
+<span class='title'>[% scan.heading %]</span>
+
+<br />
+<br />
+
+[% INCLUDE page_elements/forms/barcode_entry.tt %]
+
+
+

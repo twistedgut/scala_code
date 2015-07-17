@@ -1,0 +1,18 @@
+<br />
+<br />
+<form name="set_stock_count_settings" action="/StockControl/PerpetualInventory/Settings" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <div class="formrow divideabove dividebelow">
+        <label>Picking Stock Counting</label>
+        <input type="radio" name="picking" value="1"[% IF picking %] checked[% END %] />On
+        <input type="radio" name="picking" value="0"[% UNLESS picking %] checked[% END %] />Off
+    </div>
+    <div class="formrow dividebelow">
+        <label>Returns Stock Counting</label>
+        <input type="radio" name="returns" value="1"[% IF returns %] checked[% END %] />On
+        <input type="radio" name="returns" value="0"[% UNLESS returns %] checked[% END %] />Off
+    </div>
+    <div class="formrow dividebelow buttons formend">
+        [% PROCESS page_elements/forms/submit_button.tt %]
+    </div>
+</form>

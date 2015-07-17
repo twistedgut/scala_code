@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ORDERS>
+  <ORDER O_ID="[% order.id #742372 %]" ORDER_DATE="[% order.date || '2009-09-15 12:42' %]" CHANNEL="NAP-AM" CUST_ID="[% customer.customer_nr %]" CUST_IP="10.3.3.239" LOGGED_IN_USERNAME="[% customer.email || 'michael.martins@net-a-porter.com' %]" USED_STORED_CREDIT_CARD="T">
+    <TENDER_LINE TL_ID="757100" TYPE="Store Credit" RANK="1">
+      <VALUE CURRENCY="[% customer.currency || 'USD' %]">1605.00</VALUE>
+    </TENDER_LINE>
+    <BILLING_DETAILS>
+      <NAME>
+        <TITLE>[% customer.title || 'Ms' %]</TITLE>
+        <FIRST_NAME>[% customer.first_name || 'Bob' %]</FIRST_NAME>
+        <LAST_NAME>[% customer.last_name || 'Smith' %]</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>111 Some Street</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2 />
+        <ADDRESS_LINE_3></ADDRESS_LINE_3>
+        <TOWNCITY>TUCSON</TOWNCITY>
+        <COUNTY />
+        <STATE>AZ</STATE>
+        <POSTCODE>85705</POSTCODE>
+        <COUNTRY>[% customer.country || 'US' %]</COUNTRY>
+      </ADDRESS>
+      <CONTACT_DETAILS>
+        <TELEPHONE TYPE="HOME" />
+        <TELEPHONE TYPE="MOBILE">[% customer.mobile_phone || '' %]</TELEPHONE>
+        <TELEPHONE TYPE="OFFICE">[% customer.work_phone || '111' %]</TELEPHONE>
+        <EMAIL>[% customer.email || 'michael.martins@net-a-porter.com' %]</EMAIL>
+      </CONTACT_DETAILS>
+    </BILLING_DETAILS>
+    [% SET total = 0 %]
+    [% IF !order.virtual_delivery_only %]
+    <DELIVERY_DETAILS>
+      <NAME>
+        <TITLE>Ms</TITLE>
+        <FIRST_NAME>Bob</FIRST_NAME>
+        <LAST_NAME>Smith</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>111 Some Street</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2 />
+        <ADDRESS_LINE_3></ADDRESS_LINE_3>
+        <TOWNCITY>TUCSON</TOWNCITY>
+        <COUNTY></COUNTY>
+        <STATE>AZ</STATE>
+        <POSTCODE>85705</POSTCODE>
+        <COUNTRY>[% customer.country || 'US' %]</COUNTRY>
+      </ADDRESS>
+      <ORDER_LINE OL_ID="1156005" DESCRIPTION="Signature Packaging" SKU="904000-001" QUANTITY="1" OL_SEQ="1">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="USD">25.00</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="USD">1.75</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="USD">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      <ORDER_LINE OL_ID="3106359" DESCRIPTION="UPS Ground" SKU="[% order.shipping_sku || '904000-001' %]" QUANTITY="1" OL_SEQ="2">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="[% customer.currency || 'USD' %]">[% order.shipping_price || '10' %]</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="[% customer.currency || 'USD' %]">[% order.shipping_tax || '1.50' %]</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="[% customer.currency || 'USD' %]">[% order.shipping_duties || '0.00' %]</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      [% total = 10.00 + 1.50; # Shipping costs
+         FOREACH li IN order.items;
+           total = total + li.unit_price + li.tax + li.duty; %]
+      <ORDER_LINE OL_ID="[% li.ol_id || (2995401 + loop.index) %]" DESCRIPTION="[% li.description || 'Suede thigh-high boots' %]" SKU="[% li.sku %]" QUANTITY="[% li.quantity || 1 %]" OL_SEQ="[% 2 + loop.index %]">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="[% customer.currency || 'USD' %]">[% li.unit_price %]</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="[% customer.currency || 'USD' %]">[% li.tax %]</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="[% customer.currency || 'USD' %]">[% li.duty %]</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      [% END %]
+      [% FOREACH vli IN order.voucher_items;
+           total = total + vli.unit_price + vli.tax + vli.duty; %]
+      <ORDER_LINE_PHYSICAL_VOUCHER OL_ID="[% vli.ol_id %]" DESCRIPTION="[% vli.description || 'Test Voucher' %]" SKU="[% vli.sku %]" QUANTITY="[% vli.quantity || 1 %]" OL_SEQ="[% loop.index %]">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="[% customer.currency || 'USD' %]">[% vli.unit_price %]</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="[% customer.currency || 'USD' %]">[% vli.tax %]</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="[% customer.currency || 'USD' %]">[% vli.duty %]</VALUE>
+        </DUTIES>
+        <TO>[% vli.to %]</TO>
+        <FROM>[% vli.from %]</FROM>
+        <GIFT_MESSAGE>[% vli.message %]</GIFT_MESSAGE>
+      </ORDER_LINE_PHYSICAL_VOUCHER>
+      [% END %]
+      <GIFT_MESSAGE>[% order.gift_message %]</GIFT_MESSAGE>
+    </DELIVERY_DETAILS>
+    [% END %]
+    [% FOREACH vd IN order.virtual_deliveries %]
+    <VIRTUAL_DELIVERY_DETAILS>
+        <EMAIL>[% vd.email || loop.index _ '_currenty.ignore@this.com' %]</EMAIL>
+        [% FOREACH vli IN vd.voucher_items;
+            total = total + vli.unit_price + vli.tax + vli.duty; %]
+        <ORDER_LINE_VIRTUAL_VOUCHER OL_ID="[% vli.ol_id %]" DESCRIPTION="[% vli.description || 'Test Voucher' %]" SKU="[% vli.sku %]" QUANTITY="[% vli.quantity || 1 %]" OL_SEQ="[% loop.index %]">
+            <UNIT_NET_PRICE>
+              <VALUE CURRENCY="[% customer.currency || 'USD' %]">[% vli.unit_price %]</VALUE>
+            </UNIT_NET_PRICE>
+            <TAX>
+              <VALUE CURRENCY="[% customer.currency || 'USD' %]">[% vli.tax %]</VALUE>
+            </TAX>
+            <DUTIES>
+              <VALUE CURRENCY="[% customer.currency || 'USD' %]">[% vli.duty %]</VALUE>
+            </DUTIES>
+            <TO>[% vli.to %]</TO>
+            <FROM>[% vli.from %]</FROM>
+            <GIFT_MESSAGE>[% vli.message %]</GIFT_MESSAGE>
+        </ORDER_LINE_VIRTUAL_VOUCHER>
+        [% END %]
+    </VIRTUAL_DELIVERY_DETAILS>
+    [% END %]
+    <GROSS_TOTAL>
+      <VALUE CURRENCY="[% customer.currency || 'USD' %]">[% total %]</VALUE>
+    </GROSS_TOTAL>
+    <POSTAGE>
+      <VALUE CURRENCY="[% customer.currency || 'USD' %]">0.00</VALUE>
+    </POSTAGE>
+  </ORDER>
+</ORDERS>
+

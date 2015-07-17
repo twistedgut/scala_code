@@ -1,0 +1,147 @@
+[%# get the current year %]
+[% USE date(format = '%Y') %]
+[% current_year = date.format %]
+
+
+<h3>Free Search</h3>
+
+<form name="searchForm" action="/CustomerCare/OrderSearch/Results">
+<table class="wide-data divided-data data">
+    <tr>
+        <td width="15%" align="right"><strong><label for="search_term">Search Term:</label>&nbsp;&nbsp;&nbsp;</strong></td>
+        <td width="15%"><input type="text" name="search_term" id="search_term" value=""></td>
+        <td width="15%" align="right"><strong><label for="search_type">Search Type:</label>&nbsp;&nbsp;&nbsp;</strong></td>
+        <td width="15%">
+            <select name="search_type" id="search_type">
+                <option value="0">Select...</option>
+                <option value="0">--------------------------</option>
+                <option value="airwaybill">Airwaybill</option>
+                [%- IF prl_rollout_phase %]
+                <option value="allocation_id">Allocation ID</option>
+                [%- END %]
+                <option value="billing_address">Billing Address</option>
+                <option value="box_id">Box ID</option>
+                <option value="customer_number">Customer Number</option>
+                <option value="email">Email Address</option>
+                <option value="invoice_number">Invoice Number</option>
+                <option value="order_number" selected>Order Number</option>
+                <option value="psp_ref">PSP Reference</option>
+                <option value="postcode">Postcode/Zipcode</option>
+                <option value="pre_order_number">Pre-Order Number</option>
+                <option value="product_id">Product ID</option>
+                <option value="rpg_number">Return Process Group</option>
+                <option value="rma_number">RMA Number</option>
+                <option value="shipment_id">Shipment Number</option>
+                <option value="shipping_address">Shipping Address</option>
+                <option value="sku">SKU</option>
+                <option value="telephone_number">Telephone Number</option>
+                <option value="0">--------------------------</option>
+            </select>
+        </td>
+        <td width="15%" align="right"><strong><label for="sales_channel_free_search">Sales Channel:</label>&nbsp;&nbsp;&nbsp;</strong></td>
+        <td width="15%">
+            <select name="sales_channel" id="sales_channel_free_search">
+                <option value="">All</option>
+                <option value="">-------------------</option>
+                [% FOREACH channel = channels.all %]
+                <option value="[% channel.name %]">[% channel.name %]</option>
+                [% END %]
+                <option value="">-------------------</option>
+            </select>
+        </td>
+    </tr>
+</table>
+<div class="formrow buttons aftertable">[% INCLUDE page_elements/forms/submit_button.tt %]</div>
+</form>
+<script type="text/javascript">
+<!--
+    document.searchForm.search_term.focus();
+//-->
+</script>
+<br />
+<br />
+
+<h3>Customer Search</h3>
+<form name="searchForm" action="/CustomerCare/OrderSearch/Results">
+<input type="hidden" name="search_type" value="customer_name">
+<table class="wide-data divided-data data">
+    <tr>
+        <td width="15%" align="right"><strong><label for="firstname">First Name:</label>&nbsp;&nbsp;&nbsp;</strong></td>
+        <td width="15%"><input type="text" name="firstname" id="firstname" value=""></td>
+        <td width="15%" align="right"><strong><label for="surname">Surname:</label>&nbsp;&nbsp;&nbsp;</strong></td>
+        <td width="15%"><input type="text" name="surname" id="surname" value=""></td>
+        <td width="15%" align="right"><strong><label for="sales_channel_customer_search">Sales Channel:</label>&nbsp;&nbsp;&nbsp;</strong></td>
+        <td width="15%">
+            <select name="sales_channel" id="sales_channel_customer_search">
+                <option value="">All</option>
+                <option value="">-------------------</option>
+                 [% FOREACH channel = channels.all %]
+                <option value="[% channel.name %]">[% channel.name %]</option>
+                [% END %]
+                <option value="">-------------------</option>
+            </select>
+        </td>
+    </tr>
+</table>
+<div class="formrow buttons aftertable">[% INCLUDE page_elements/forms/submit_button.tt %]</div>
+</form>
+
+<br />
+<br />
+
+
+<h3>Date Search</h3>
+<form name="searchForm" action="/CustomerCare/OrderSearch/Results">
+<input type="hidden" name="search_type" value="by_date">
+<table class="wide-data divided-data data">
+    <tr>
+        <td align="right"><strong><label for="day">Day:</label>&nbsp;&nbsp;&nbsp;</strong></td>
+        <td>
+        [% days = 1 %]
+            <select name="day" id="day">
+                [% WHILE days < 32 %]
+                    <option value="[% days %]"[% IF days == day %] selected="selected"[% END %]>[% days %]</option>
+                    [% days = days + 1 %]
+                [% END %]
+            </select>
+        </td>
+        <td align="right"><strong><label for="month">Month:</label>&nbsp;&nbsp;&nbsp;</strong></td>
+        <td>
+            [% months = 1 %]
+            <select name="month" id="month">
+                [% WHILE months < 13 %]
+                    <option value="[% months %]"[% IF months == month %] selected="selected"[% END %]>[% months %]</option>
+                    [% months = months + 1 %]
+                [% END %]
+            </select>
+        </td>
+        <td align="right"><strong><label for="year">Year:</label>&nbsp;&nbsp;&nbsp;</strong></td>
+        <td>
+            <select name="year" id="year">
+                [% years = 2003 %]
+                [% WHILE years <= current_year %]
+                    <option value="[% years %]"[% IF years == year %] selected="selected"[% END %]>[% years %]</option>
+                    [% years = years + 1 %]
+                [% END %]
+            </select>
+        </td>
+        <td>&nbsp;</td>
+        <td>
+            <input type="radio" id="date_type_order" name="date_type" value="order" checked>&nbsp;<label for="date_type_order">Received</label>&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="date_type_dispatch" name="date_type" value="dispatch">&nbsp;<label for="date_type_dispatch">Dispatched</label>
+        </td>
+        <td align="right"><strong><label for="sales_channel_date_search">Sales Channel:</label>&nbsp;&nbsp;&nbsp;</strong></td>
+        <td>
+            <select name="sales_channel" id="sales_channel_date_search">
+                <option value="">All</option>
+                <option value="">-------------------</option>
+                [% FOREACH channel = channels.all %]
+                <option value="[% channel.name %]" [% IF search_sales_channel == channel.name %] selected[% END %]>[% channel.name %]</option>
+                [% END %]
+                <option value="">-------------------</option>
+            </select>
+        </td>
+    </tr>
+</table>
+<div class="formrow buttons aftertable">[% INCLUDE page_elements/forms/submit_button.tt %]</div>
+</form>

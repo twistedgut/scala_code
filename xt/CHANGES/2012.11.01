@@ -1,0 +1,22 @@
+<pre>
+
+h1. FLEX
+    * FLEX-793 - Manifest Changes
+      * FLEX-849 - Deal with whitespace in "mandatory" fields
+
+h1. DC2A
+
+* DCA-45/DCA-566 - Putaway prep page (main stock only, switched off in config)
+
+h1. CANDO
+    * CANDO-838: Prohibit orders placed on hold at Packing
+    * CANDO-443: What's new upload PDF - Remove Unnecessary Sales Channel Tabs
+    * CANDO-1261: Whats new upload : Filter by Designer and PIDS
+    * CANDO-1262: Whats new upload : Upload branding
+    * CANDO-1318: Parallelize the XML Order Importer -- part one-and-a-half
+    * CANDO-1319: Preorder customer search gives Internal Server Error when the customer ID is not found
+
+h1. Product Management
+    * PM-985: Send storage_type to Fulcrum (by JQ) for upload checklist
+
+</pre>

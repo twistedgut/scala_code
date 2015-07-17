@@ -1,0 +1,24 @@
+DIV.log_title_wrapper {
+    width: 100%;
+    border-bottom: 1px solid #333;
+    margin-bottom: 10px;
+}
+DIV.log_title_wrapper DIV.log_title {
+    display: inline;
+    float: left;
+}
+DIV.log_title_wrapper DIV.log_title_toggle {
+    display: inline;
+    float: right;
+    padding-top: 7px;
+}
+DIV.log_title_wrapper DIV.log_title_toggle .log_toggle_more {
+    display: none;
+}
+DIV.log_title_wrapper DIV.log_title_toggle .log_toggle_less {
+    display: block;
+}
+
+#template_log {
+    display: none;
+}

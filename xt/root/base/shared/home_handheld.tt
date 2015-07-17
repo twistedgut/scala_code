@@ -1,0 +1,58 @@
+<ul class="homemenu">
+    <li>Distribution
+        <ul>
+            <li><a href="/Fulfilment/Picking?view=HandHeld">Picking</a></li>
+            [% IF prl_rollout_phase %]
+            <li><a href="/Fulfilment/Induction?view=HandHeld">Induction</a></li>
+            [% END %]
+            <li><a href="/Fulfilment/Dispatch?view=HandHeld">Dispatch</a></li>
+            <li><a href="/GoodsIn/Putaway?view=HandHeld">Put Away</a></li>
+            <li><a href="/GoodsIn/ReturnsArrival/Delivery?view=HandHeld">Returns Arrivals</a></li>
+        </ul>
+    </li>
+    <li>Stock Control
+        <ul>
+            <li><a href="/StockControl/StockCheck/Location?view=HandHeld">Location Stock Check</a></li>
+            <li><a href="/StockControl/StockCheck/Product?view=HandHeld">Product Stock Check</a></li>
+            <li><a href="/StockControl/Inventory/MoveAddStock?view=HandHeld">Move Stock</a></li>
+            <li><a href="/StockControl/StockRelocation?view=HandHeld">Stock Relocation</a></li>
+            <li><a href="/StockControl/PerpetualInventory/CountVariant?view=HandHeld">Auto Stock Count</a></li>
+            <li><a href="/StockControl/PerpetualInventory/CountVariant?view=HandHeld&process_type=manual">Manual Stock Count</a></li>
+            [% IF mainnav_section_subsection_sub("Stock Control", "Cancellations") %]
+            <li><a href="/StockControl/Cancellations?view=HandHeld">Cancellation Put Away</a></li>
+            [% END %]
+        </ul>
+    </li>
+    <li>Sales Channel Transfer
+        <ul>
+            <li><a href="/StockControl/ChannelTransfer?list_type=Picking&view=HandHeld">Picking</a></li>
+            <li><a href="/StockControl/ChannelTransfer?list_type=Putaway&view=HandHeld">Putaway</a></li>
+        </ul>
+    </li>
+
+[% IF dc_name == 'DC1' %]
+    <li>Jimmy Choo
+        <ul>
+        	<li><a href="http://xt-jchoo.net-a-porter.com/GoodsIn/Putaway/HandHeld">JC Goods In Put Away</a></li>
+	        <li><a href="http://xt-jchoo.net-a-porter.com/GoodsIn/ReturnsPutaway">JC Returns Put Away</a></li>
+    	</ul>
+    </li>
+    <li>Premier
+        <ul>
+        	<li><a href="/Fulfilment/PremierDispatch?view=HandHeld">Premier Dispatch</a></li>
+    	</ul>
+    </li>
+[% END %]
+
+[% IF prl_webapp_urls.size %]
+    <li>PRLs
+        <ul>
+        [% FOREACH url_data IN prl_webapp_urls %]
+            <li><a href="[% url_data.url | url %]">[% url_data.caption | html %]</a></li>
+        [% END %]
+        </ul>
+    </li>
+[% END %]
+
+    <li class="isaction"><em>[% operator_name || 'Unknown User' %]</em> (<a href="/Logout?view=HandHeld">Logout</a>)</li>
+</ul>

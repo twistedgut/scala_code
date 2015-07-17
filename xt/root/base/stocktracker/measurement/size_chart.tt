@@ -1,0 +1,30 @@
+<table width="100%" cellspacing="0" class="sizetable" style="margin-left:10px, margin-right:10px">
+    <tr height="21" valign='top'>
+        <td align='center'><b>Size</b></td>
+        [%~ FOREACH shown_measurement IN shown_measurements ~%]
+            [%~ measurement = shown_measurement.measurement_id ~%]
+            [%~ IF non_zero.$measurement ~%]
+                <td align='center'><b>[%~ shown_measurement.measurement.measurement | replace('_', ' ') ~%]</b></td>
+            [%~ END ~%]
+        [%~ END ~%]
+    </tr>
+    [%~ FOREACH variant IN variants ~%]
+        <tr height="14"[%~ IF NOT ((loop.count+1) % 2) ~%] bgcolor="#EBEBEB"[%~ END ~%]>
+            <td align='center'><b>
+                [%~ designer_size = variant.designer_size.size ~%]
+                [%~ IF size_conversion.defined(designer_size) ~%]
+                    [%~ size_conversion.$designer_size ~%]
+                [%~ ELSE ~%]
+                    [%~ designer_size ~%]
+                [%~ END ~%]
+            </b></td>
+            [%~ FOREACH shown_measurement IN shown_measurements ~%]
+                [%~ measurement_id = shown_measurement.measurement_id ~%]
+                [%~ variant_id = variant.id ~%]
+                [%~ IF non_zero.$measurement_id ~%]
+                    <td align="center">[%~ measurements.$measurement_id.$variant_id ~%]</td>
+                [%~ END ~%]
+            [%~ END ~%]
+        </tr>
+    [%~ END ~%]
+</table>

@@ -1,0 +1,34 @@
+[%
+    SET error_message = {
+        # messages for missing fields
+        missing => {
+            applicability_website          => 'You must select at least one applicable website',
+            discount_type                  => 'You must select an offer type for the event',
+            event_name                     => 'You must provide an event title for the event',
+            event_start                    => 'You must provide a start-date for the event',
+            percentage_discount_amount     => 'You must provide the discount percentage amount',
+            subtitle                       => 'You must provide the payment page title',
+            title                          => 'You must provide the payment page subtitle',
+        },
+
+        # messages for invalid fields (failed constraints)
+        invalid => {
+            end_in_future                  => 'the event end-date must be in the future', 
+            invalid_pid                    => 'one or more individual PIDs are invalid',
+            invalid_ymd                    => 'the submitted value is not in a yyyy-mm-dd format',
+            max_length                     => 'the submitted value exceeds the maximum permitted length',
+            not_5_to_90                    => 'the value must be from 5 to 90 inclusive',
+            not_divisible_by_5             => 'the value must be divisible by 5',
+            start_after_end                => 'the end-date must be after the start-date',
+            internal_title_not_unique      => 'there is already an event with that (internal) title',
+            value_too_large                => 'the value entered is too large',
+        },
+
+        # mappings from field names to something we'd like to show the user
+        name => {
+            event_title                    => 'Event Title',
+            percentage_discount_amount     => '% Discount',
+        }
+    }
+%]
+

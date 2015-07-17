@@ -1,0 +1,5 @@
+[% IF status == 'Printed' %]
+    Manual 
+[% ELSE %]
+    [% status %]
+[% END %]

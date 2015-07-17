@@ -1,0 +1,18 @@
+<pre>
+
+h1. DC2A
+
+    * DCA-3291: Add allocation statuses for GOH
+    * DCA-3530: Add System Config to support next Pick Scheduler implementation
+
+h1. CANDO
+    * CANDO-7872 - BUG: Fix Issue where and Empty Shipping Window on a Stock Order record crashes the Reservation Product page for certain PIDs
+    * CANDO-3352 - the "PORTER" magazine only Orders - Welcome Packs exclusion
+    * CANDO-2742 - CMS/TRANSLATIONS: CC Emails - Normal and Special Order notifications
+    * CANDO-3312 - Fix lack of html filtering on gift message display
+    * CANDO-7833 - Add language to JC order importer
+
+h1. Product Management
+    * PM-2068 - Better API error handling when RTV or measurement logs exist when editing sizing data
+
+</pre>

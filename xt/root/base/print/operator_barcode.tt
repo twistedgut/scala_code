@@ -1,0 +1,29 @@
+[% USE PrintDocs -%]
+<html>
+<head>
+<!-- Template name: [% template.name %] -->
+<title></title>
+<style type="text/css">
+<!--
+body { margin-top: 1cm; margin-left: 0.5cm; }
+td{font-size:7pt;font-family:arial}
+//-->
+</style>
+<script language="JavaScript">
+<!--
+
+//-->
+</script>
+[% INCLUDE shared/show_print_images.tt %]
+</head>
+<font face="Arial" size=+1>Operator Barcode Login</font>
+<br>
+<br>
+Operator:&nbsp;[% name %]
+<br>
+<br>
+<br>
+<img src="file://[% PrintDocs.document_path('login-' _ user_id _ '.png') %]">
+
+</body>
+</html>

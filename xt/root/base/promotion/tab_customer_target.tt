@@ -1,0 +1,88 @@
+<h2>Which customers can use this promotion?</h2>
+
+<p style="text-align:right;"><strong>NOTE:</strong> If nothing is selected there are
+<em>no restrictions by customer</em></p>
+
+<!-- once again, really sorrot for using a table! -->
+<table width="100%" border="0" class="increasefont topalign">
+    <tbody>
+        <tr>
+            <td width="50%">
+                <h3>Include the following customer groups:</h3>
+            </td>
+            <td width="50%">
+                <h3>Exclude the following customer groups:</h3>
+            </td>
+        </tr>
+
+        <tr>
+            <td width="50%">
+                <div style="border:1px solid #666; overflow: auto; height:150px;">
+                    [% dummy_result = groups.reset %]
+                    [% WHILE (group = groups.next) %]
+                    <input type="checkbox" id="group_cg_[%group.id%]" name="group_include_checkboxes" value="[%group.id%]" [%disabled%]>[% group.name %]<br />
+                    [% END %]
+                </div>
+                <div style="text-align:right;">
+                    [% IF promotion.customergroup_included_id_list.size == 1 %]
+                    [% thingy="group" %]
+                    [% ELSE %]
+                    [% thingy="groups" %]
+                    [% END %]
+                    [% promotion.customergroup_included_id_list.size || 'No' %]
+                    customer [%thingy%] included
+                </div>
+            </td>
+            <td width="50%">
+                <div style="border:1px solid #666; overflow: auto; height:150px;">
+                    [% dummy_result = groups.reset %]
+                    [% WHILE (group = groups.next) %]
+                    <input type="checkbox" id="group_cg_[%group.id%]" name="group_exclude_checkboxes" value="[%group.id%]" [%disabled%]>[% group.name %]<br />
+                    [% END %]
+                </div>
+                <div style="text-align:right;">
+                    [% IF promotion.customergroup_excluded_id_list.size == 1 %]
+                    [% thingy="group" %]
+                    [% ELSE %]
+                    [% thingy="groups" %]
+                    [% END %]
+                    [% promotion.customergroup_excluded_id_list.size || 'No' %]
+                    customer [%thingy%] excluded
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%" style="text-align:right;padding-right:30px;">
+               [% dummy_result = customer_group_joins.reset %]
+               [% WHILE (group_join = customer_group_joins.next) %]
+               <input value="[%group_join.id%]" name="include_join_type" type="radio" [%disabled%]> [%group_join.type%]
+               [% END %]
+            </td>
+            <td width="50%" style="text-align:right;padding-right:30px;">
+               [% dummy_result = customer_group_joins.reset %]
+               [% WHILE (group_join = customer_group_joins.next) %]
+               <input value="[%group_join.id%]" name="exclude_join_type" type="radio" [%disabled%]> [%group_join.type%]
+               [% END %]
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2">
+                <strong>Query Description:</strong>
+                <div style="border:1px solid #666; overflow: auto; height:50px;">
+                    One day a summary of the query will be shown here
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2">
+                [% IF is_readonly %]
+                &nbsp;
+                [% ELSE %]
+                <input type="submit" name="action" value="Save Promotion" class="button" style="float:right;" />
+                [% END %]
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,543 @@
+=====================================
+XT 2015.16.00 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               :
+Cherwell           :
+Release Manager    : Kaushal Patel
+Build Manager      : Rich Moore
+TechOps            :
+Backend Developer  :
+Frontend Developer :
+QA                 :
+PCI Authorised by  :
+
+2 - CHANGELOG
+-------------
+http://stash.vm.wtf.nap/projects/BAK/repos/xt/browse/CHANGES/2015.16.00?at=refs/heads/release/2015.16
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2015.16/xt-2015.16.00-0.noarch.rpm
+
+Unless otherwise stated, do the following for DC1, DC2 and DC3.
+
+4 - NEW PROPERTIES:
+-------------------
+Confirm the following properties have been added to super secret puppet.
+
+5 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+No action needs to be performed before the deployment
+
+6 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+
+SHIP-951 Update /etc/cups/printers.conf on all DCs. Make sure you do this on
+*both* web servers. Also, before updating the files make sure you stop cups, you
+can do this by running the following command:
+
+sudo service cups stop
+
+Once you've made the changes, make sure you restart cups, which you can do by
+executing
+
+sudo service cups start
+
+DC1
+---
+
+Remove the following printer definitions:
+
+rtv
+jc_rtv
+jc_recodes
+goodsin-dc1
+
+Copy/paste the following printers into /etc/cups/printers.conf on *BOTH* web
+servers:
+
+<Printer rtv>
+    Info rtv
+    Location DC1
+    XTLocation RTV Workstation
+    XTSection rtv_workstation
+    XTType document
+    DeviceURI lpd://rtv/auto
+    State Idle
+    StateTime 1323811391
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer jc_rtv>
+    Info jc_rtv
+    Location DC1
+    XTLocation JC RTV Workstation
+    XTSection rtv_workstation
+    XTType document
+    DeviceURI lpd://jc_rtv/queue
+    State Idle
+    StateTime 1323764549
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer rad-giqc1-doc-quarantine>
+    Info jc_rtv
+    Location DC1
+    XTLocation RAD Quality Control Station 01
+    XTSection rtv_workstation
+    XTType document
+    DeviceURI lpd://rad-giqc1-doc/queue
+    State Idle
+    StateTime 1323764549
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer rad-giqc2-doc-quarantine>
+    Info jc_rtv
+    Location DC1
+    XTLocation RAD Quality Control Station 02
+    XTSection rtv_workstation
+    XTType document
+    DeviceURI lpd://rad-giqc2-doc/queue
+    State Idle
+    StateTime 1323764549
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer rad-giqc3-doc-quarantine>
+    Info jc_rtv
+    Location DC1
+    XTLocation RAD Quality Control Station 03
+    XTSection rtv_workstation
+    XTType document
+    DeviceURI lpd://rad-giqc3-doc/queue
+    State Idle
+    StateTime 1323764549
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer rad-giqc4-doc-quarantine>
+    Info jc_rtv
+    Location DC1
+    XTLocation RAD Quality Control Station 04
+    XTSection rtv_workstation
+    XTType document
+    DeviceURI lpd://rad-giqc4-doc/queue
+    State Idle
+    StateTime 1323764549
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer radqapac1-doc-quarantine>
+    Info jc_rtv
+    Location DC1
+    XTLocation RAD Packing QA
+    XTSection rtv_workstation
+    XTType document
+    DeviceURI lpd://radqapac1-doc/queue
+    State Idle
+    StateTime 1323764549
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer goodsin-dc1-recode-doc>
+    Info goodsin-dc1-recode-doc
+    XTLocation Recode Doc Station 01
+    XTSection recode
+    XTType document
+    Location dc1
+    DeviceURI lpd://goodsin-dc1/auto
+    State Idle
+    StateTime 1323804754
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer jc_recodes>
+    Info jc_recodes
+    XTLocation JC Recode Station
+    XTSection recode
+    XTType document
+    Location DC1
+    DeviceURI lpd://jc_recodes/queue
+    State Idle
+    StateTime 1323764549
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer goodsin-dc1>
+    Info goodsin-dc1
+    XTLocation Recode Station 01
+    XTSection recode
+    XTType document
+    Location dc1
+    DeviceURI lpd://goodsin-dc1/auto
+    State Idle
+    StateTime 1323804754
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+DC2
+---
+
+Remove the following printer definitions:
+
+rtv
+recode-dc2
+
+Copy/paste the following printers into /etc/cups/printers.conf on *BOTH* web
+servers:
+
+<Printer rtv>
+    Info RTV
+    Location DC2
+    DeviceURI lpd://rtv/auto
+    XTLocation RTV Workstation
+    XTSection rtv_workstation
+    XTType document
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer recode-dc2>
+    Info recode-dc2
+    XTLocation Recode Station 01
+    XTSection recode
+    XTType document
+    Location DC2
+    DeviceURI lpd://recode-dc2/auto
+    State Idle
+    StateTime 1299517236
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+DC3
+---
+
+Remove the following printer definitions:
+
+rtv
+
+Copy/paste the following printers into /etc/cups/printers.conf on *BOTH* web
+servers:
+
+<Printer rtv>
+    Info rtv
+    Location DC3
+    DeviceURI lpd://rtv/auto
+    XTLocation RTV Workstation
+    XTSection rtv_workstation
+    XTType document
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+
+SHIP-976 Update /etc/cups/printers.conf on all DCs. Make sure you do this on
+*both* web servers. Also, before updating the files make sure you stop cups, you
+can do this by running the following command:
+
+sudo service cups stop
+
+Once you've made the changes, make sure you restart cups, which you can do by
+executing
+
+sudo service cups start
+
+DC1
+---
+
+Remove the following printer definitions from /etc/cups/printers.conf on
+*BOTH* web servers:
+
+jc_surplus_goods_in
+
+Copy/paste the following printers into /etc/cups/printers.conf on *BOTH* web
+servers:
+
+<Printer surplus-goodsin-dc1>
+    Info goodsin-dc1
+    XTLocation Surplus 01
+    XTSection surplus
+    XTType document
+    Location dc1
+    DeviceURI lpd://goodsin-dc1/auto
+    State Idle
+    StateTime 1323804754
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer jc_surplus_goods_in>
+    Info jc_surplus_goods_in
+    XTLocation JC Surplus 01
+    XTSection surplus
+    XTType document
+    Location DC1
+    DeviceURI lpd://jc_surplus_goods_in/queue
+    State Idle
+    StateTime 1323764549
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer rad-giqc1-doc-surplus>
+    Info rad-giqc1-doc-surplus
+    XTLocation RAD Quality Control Station 01
+    XTSection surplus
+    XTType document
+    Location DC1
+    DeviceURI lpd://rad-giqc1-doc/queue
+    State Idle
+    StateTime 1323764549
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer rad-giqc2-doc-surplus>
+    Info rad-giqc2-doc-surplus
+    XTLocation RAD Quality Control Station 02
+    XTSection surplus
+    XTType document
+    Location DC1
+    DeviceURI lpd://rad-giqc2-doc/queue
+    State Idle
+    StateTime 1323764549
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer rad-giqc3-doc-surplus>
+    Info rad-giqc3-doc-surplus
+    XTLocation RAD Quality Control Station 03
+    XTSection surplus
+    XTType document
+    Location DC1
+    DeviceURI lpd://rad-giqc3-doc/queue
+    State Idle
+    StateTime 1323764549
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer rad-giqc4-doc-surplus>
+    Info rad-giqc4-doc-surplus
+    XTLocation RAD Quality Control Station 04
+    XTSection surplus
+    XTType document
+    Location DC1
+    DeviceURI lpd://rad-giqc4-doc/queue
+    State Idle
+    StateTime 1323764549
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+DC2
+---
+
+Copy/paste the following printers into /etc/cups/printers.conf on *BOTH* web
+servers:
+
+<Printer surplus-goodsin-dc2>
+    Info goodsin-dc2
+    XTLocation Surplus 01
+    XTSection surplus
+    XTType document
+    Location DC2
+    DeviceURI lpd://goodsin-dc2/auto
+    State Idle
+    StateTime 1299517236
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+DC3
+---
+
+Copy/paste the following printers into /etc/cups/printers.conf on *BOTH* web
+servers:
+
+<Printer surplus-goodsin-dc3>
+    Info goodsin-dc3
+    XTLocation Surplus 01
+    XTSection surplus
+    XTType document
+    Location DC3
+    DeviceURI lpd://goodsin-dc3/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+sudo yum install xt
+
+7 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+
+
+8 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

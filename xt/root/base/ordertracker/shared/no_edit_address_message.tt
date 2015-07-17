@@ -1,0 +1,30 @@
+[%#-
+    general helper to show a message to the Operator that they can't
+    edit an Address (Billing or Shipping)
+-%]
+[%-
+    SET no_edit_address_message = "Sorry, it is too late to change the " _ address_type _ " address.";
+
+    IF ( address_type == 'Billing' );
+    THEN;
+        IF ( order_obj && order_obj.payment_method_insists_billing_and_shipping_address_always_the_same );
+        THEN;
+            SET payment_method_name = order_obj.payments.first.payment_method.payment_method;
+            no_edit_address_message = "This Order's Payment Method (" _ payment_method_name _ ") requires " _
+                                      "the Billing and Shipping Address to be the same. Please use the " _
+                                      "'Edit Shipping Address' option on the Order View page to make the Address change.";
+        END;
+    END;
+
+    IF ( address_type == 'Shipping' );
+    THEN;
+        IF ( order_obj && !order_obj.payment_method_allow_editing_of_shipping_address_post_settlement );
+        THEN;
+            no_edit_address_message = "This Order's Payment Method Does not allow change of Shipping Address "_
+                                      "once Order Payment has been Settled.";
+        END;
+    END;
+
+
+-%]
+<p class="error_msg">[% no_edit_address_message %]</p>

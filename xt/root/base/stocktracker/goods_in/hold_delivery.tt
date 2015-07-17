@@ -1,0 +1,85 @@
+<script type="text/javascript">
+    
+    function validate_form() {
+        if (document.getElementById("description").value == "" ) {
+            alert("You have to enter a description");
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+</script>
+<form name='add_note' action='/GoodsIn/DeliveryHold/DeliveryHold' method='post' onSubmit="return validate_form()">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+    <input type=hidden id='delivery_id' name='delivery_id' value='[% delivery.id %]'>
+    <input type=hidden id='operator_id' name='operator_id' value='[% operator.id %]'>
+    <input type=hidden id='delivery_note_id' name='delivery_note_id' value='[% delivery_note.id %]'>
+
+    [% IF delivery_note %]
+        [% delivery = delivery_note.delivery %]
+    [% END %]
+
+    <span class="title">Delivery Details</span><br />
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr height="25">
+            <td width="20%" align="right"><b>Delivery ID:&nbsp;&nbsp;</b></td>
+            <td width="80%">[% delivery.id %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr height="25">
+            <td align="right"><b>Operator:&nbsp;&nbsp;</b></td>
+            <td>[% operator.name %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr height="25">
+            <td align="right"><b>Department:&nbsp;&nbsp;</b></td>
+            <td>[% operator.department.department %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr height="25">
+            <td align="right"><b>PID:&nbsp;&nbsp;</b></td>
+            <td>[% delivery.link_delivery__stock_order.stock_order.product_id %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr height="25">
+            <td align="right"><b>Designer:&nbsp;&nbsp;</b></td>
+            <td>[% delivery.link_delivery__stock_order.stock_order.product.designer.designer %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr height="25">
+            <td align="right"><b>Note:&nbsp;&nbsp;</b></td>
+            <td>
+                <textarea id='description' name='description' rows='3' cols='50'>[% IF delivery_note %][% delivery_note.description %][% END %]</textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr>
+            <td colspan="2"><img src="/images/blank.gif" width="1" height="10"></td>
+        </tr>
+        <tr>
+            <td colspan="2" align="right">
+                <input type="submit" name="submit" value="Submit &raquo;" class="button">
+            </td>
+        </tr>
+    </table>
+
+</form>

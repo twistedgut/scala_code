@@ -1,0 +1,50 @@
+<!-- TT BEGIN - stocktracker/sample/returnstockrma.tt -->
+
+[% IF action == 'print' %]
+
+<h1><span class="title-[% channel_config.$channel_name %]">[% channel_name %]</span></h1><br /><br />
+<h1>Sample Stock - RMA [% rma_details.rma_number %]</h1><br /><br />
+<h3>Returned: [% rma_details.date %]</h3><br /><br />
+<h3>Printed by: [% operator %] ( [% username %] ) - [% printed_date %]</h3><br /><br />
+<img src="/print_docs/[% barcode_file %]" alt="RMA [% rma_details.rma_number %]" /><br /><br />
+<h2>[% rma_details.name %]</h2><br /><br />
+<h3>SKU [% sku %]</h3><br /><br />
+<table>
+
+[% FOREACH image = images  %]
+	<tr><td><img src="[% image %]" alt="[% product.name %]" height="150" /></td></tr>
+[% END %]
+
+<tr><td><u>Designer</u></td><td><b>[% rma_details.designer %]</b></td></tr>
+<tr><td><u>Description</u></td><td><b>[% rma_details.description %]</b></td></tr>
+<tr><td><u>Product Type</u></td><td><b>[% rma_details.product_type %]</b></td></tr>
+
+</table>
+<br /><br />
+
+[% ELSE %]
+
+<h1><span class="title-[% channel_config.$channel_name %]">[% channel_name %]</span></h1><br /><br />
+<h1>Sample Stock - RMA [% rma %]</h1><br /><br />
+<h3>[% operator %] ( [% username %] )</h3>
+<h3>[% curr_date %]</h3><br /><br />
+<img src="/print_docs/[% barcode_file %]" alt="RMA [% rma %]" /><br /><br />
+<h2>[% product.name %]</h2><br /><br />
+<h3>SKU [% sku %]</h3><br /><br />
+<table>
+
+[% FOREACH image = images  %]
+	<tr><td colspan="2"><img src="[% image %]" alt="[% product.name %]" height="150" /></td></tr>
+[% END %]
+
+<tr><td><u>Designer</u></td><td><b>[% product.designer %]</b></td></tr>
+<tr><td><u>Description</u></td><td><b>[% product.description %]</b></td></tr>
+<tr><td><u>Product Type</u></td><td><b>[% product.product_type %]</b></td></tr>
+
+</table>
+<br /><br />
+<a href="/StockControl/Inventory/Overview?[% id_args.type %]=[% id_args.id %]" alt="Back to Overview">BACK TO OVERVIEW</a>
+
+[% END %]
+
+<!-- TT END - stocktracker/sample/returnstockrma.tt -->

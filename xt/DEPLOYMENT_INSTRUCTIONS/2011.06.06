@@ -1,0 +1,66 @@
+=====================================
+XT 2011.06.06 Deployment Instructions
+=====================================
+
+
+1 - RELEASE DETAILS
+-------------------
+Date               : 2011-06-07
+Cherwell           : 
+Release Manager    : 
+Build Manager      : Shabe Razvi
+TechOps            : 
+Backend Developer  : Mark Knoop
+Frontend Developer : 
+QA                 : 
+PCI Authorised by  : 
+
+
+2 - CHANGELOG
+-------------
+http://gitosis.net-a-porter.com/cgit/xt/tree/CHANGES/2011.06.06?h=release/2011.06
+
+
+3 - PACKAGES TO INSTALL:
+------------------------
+
+XTracker:
+
+* Package: xt
+* Version: 2011.06.06
+* Location: cfmaster.dave:/var/www/html/netaporter/dev_releases/x86_64/xt-2011.06.06-0.x86_64.rpm
+
+
+4 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+No action needs to be performed before the deployment
+
+5 - DEPLOYMENT RECIPE:
+----------------------
+
+sudo yum clean all
+sudo yum remove xt
+sudo yum install xt
+
+Do this both for DC1 and DC2.
+
+*NOTE*: because of the ad-hoc way CANDO-88 was deployed, it may be the
+case that the following error message appears during installation of xt:
+
+  ERROR:  duplicate key value violates unique constraint "customer_category_category_key"
+
+This is harmless, and can be ignored.
+
+
+6 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+No action needs to be performed after the deployment
+
+7 - ROLLBACK PLAN:
+------------------
+sudo yum install xt-2011.06.06-0.x86_64.rpm
+
+
+=====================================
+End of Deployment Instructions
+=====================================

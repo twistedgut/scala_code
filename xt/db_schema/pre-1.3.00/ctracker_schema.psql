@@ -1,0 +1,335 @@
+--
+-- PostgreSQL database dump
+--
+
+SET client_encoding = 'UTF8';
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON SCHEMA public IS 'Standard public schema';
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: address; Type: TABLE; Schema: public; Owner: www; Tablespace: 
+--
+
+CREATE TABLE address (
+    id serial NOT NULL,
+    address character varying(255)
+);
+
+ALTER TABLE public.address OWNER TO www;
+
+--
+-- Name: addressing; Type: TABLE; Schema: public; Owner: www; Tablespace: 
+--
+
+CREATE TABLE addressing (
+    id serial NOT NULL,
+    mail character varying(255),
+    "role" character varying(20),
+    entity bigint,
+    name bigint,
+    address bigint,
+    confidence bigint
+);
+
+ALTER TABLE public.addressing OWNER TO www;
+
+--
+-- Name: attachment; Type: TABLE; Schema: public; Owner: www; Tablespace: 
+--
+
+CREATE TABLE attachment (
+    id serial NOT NULL,
+    mail character varying(255),
+    payload text,
+    filename character varying(255),
+    content_type character varying(255)
+);
+
+ALTER TABLE public.attachment OWNER TO www;
+
+--
+-- Name: entity; Type: TABLE; Schema: public; Owner: www; Tablespace: 
+--
+
+CREATE TABLE entity (
+    id serial NOT NULL,
+    notes text
+);
+
+ALTER TABLE public.entity OWNER TO www;
+
+--
+-- Name: header; Type: TABLE; Schema: public; Owner: www; Tablespace: 
+--
+
+CREATE TABLE "header" (
+    id serial NOT NULL,
+    mail character varying(255) NOT NULL,
+    "header" character varying(1000) NOT NULL,
+    value character varying(1000) NOT NULL
+);
+
+ALTER TABLE public."header" OWNER TO www;
+
+--
+-- Name: list; Type: TABLE; Schema: public; Owner: www; Tablespace: 
+--
+
+CREATE TABLE list (
+    id serial NOT NULL,
+    name character varying(255),
+    posting_address character varying(255)
+);
+
+ALTER TABLE public.list OWNER TO www;
+
+--
+-- Name: list_post; Type: TABLE; Schema: public; Owner: www; Tablespace: 
+--
+
+CREATE TABLE list_post (
+    id serial NOT NULL,
+    list bigint,
+    mail character varying(255)
+);
+
+ALTER TABLE public.list_post OWNER TO www;
+
+--
+-- Name: mail; Type: TABLE; Schema: public; Owner: www; Tablespace: 
+--
+
+CREATE TABLE mail (
+    message_id character varying(255) NOT NULL,
+    message text
+);
+
+ALTER TABLE public.mail OWNER TO www;
+
+--
+-- Name: mail_date; Type: TABLE; Schema: public; Owner: www; Tablespace: 
+--
+
+CREATE TABLE mail_date (
+    mail character varying(255) NOT NULL,
+    date bigint,
+    "year" bigint,
+    "month" bigint,
+    "day" bigint
+);
+
+ALTER TABLE public.mail_date OWNER TO www;
+
+--
+-- Name: name; Type: TABLE; Schema: public; Owner: www; Tablespace: 
+--
+
+CREATE TABLE name (
+    id serial NOT NULL,
+    name character varying(255)
+);
+
+ALTER TABLE public.name OWNER TO www;
+
+--
+-- Name: summary; Type: TABLE; Schema: public; Owner: www; Tablespace: 
+--
+
+CREATE TABLE summary (
+    mail character varying(255) NOT NULL,
+    subject character varying(255),
+    original text
+);
+
+ALTER TABLE public.summary OWNER TO www;
+
+--
+-- Name: address_pkey; Type: CONSTRAINT; Schema: public; Owner: www; Tablespace: 
+--
+
+ALTER TABLE ONLY address
+    ADD CONSTRAINT address_pkey PRIMARY KEY (id);
+
+--
+-- Name: addressing_pkey; Type: CONSTRAINT; Schema: public; Owner: www; Tablespace: 
+--
+
+ALTER TABLE ONLY addressing
+    ADD CONSTRAINT addressing_pkey PRIMARY KEY (id);
+
+--
+-- Name: attachment_pkey; Type: CONSTRAINT; Schema: public; Owner: www; Tablespace: 
+--
+
+ALTER TABLE ONLY attachment
+    ADD CONSTRAINT attachment_pkey PRIMARY KEY (id);
+
+--
+-- Name: entity_pkey; Type: CONSTRAINT; Schema: public; Owner: www; Tablespace: 
+--
+
+ALTER TABLE ONLY entity
+    ADD CONSTRAINT entity_pkey PRIMARY KEY (id);
+
+--
+-- Name: header_pkey; Type: CONSTRAINT; Schema: public; Owner: www; Tablespace: 
+--
+
+ALTER TABLE ONLY "header"
+    ADD CONSTRAINT header_pkey PRIMARY KEY (id);
+
+--
+-- Name: list_pkey; Type: CONSTRAINT; Schema: public; Owner: www; Tablespace: 
+--
+
+ALTER TABLE ONLY list
+    ADD CONSTRAINT list_pkey PRIMARY KEY (id);
+
+--
+-- Name: list_post_pkey; Type: CONSTRAINT; Schema: public; Owner: www; Tablespace: 
+--
+
+ALTER TABLE ONLY list_post
+    ADD CONSTRAINT list_post_pkey PRIMARY KEY (id);
+
+--
+-- Name: mail_date_pkey; Type: CONSTRAINT; Schema: public; Owner: www; Tablespace: 
+--
+
+ALTER TABLE ONLY mail_date
+    ADD CONSTRAINT mail_date_pkey PRIMARY KEY (mail);
+
+--
+-- Name: mail_pkey; Type: CONSTRAINT; Schema: public; Owner: www; Tablespace: 
+--
+
+ALTER TABLE ONLY mail
+    ADD CONSTRAINT mail_pkey PRIMARY KEY (message_id);
+
+--
+-- Name: name_pkey; Type: CONSTRAINT; Schema: public; Owner: www; Tablespace: 
+--
+
+ALTER TABLE ONLY name
+    ADD CONSTRAINT name_pkey PRIMARY KEY (id);
+
+--
+-- Name: summary_pkey; Type: CONSTRAINT; Schema: public; Owner: www; Tablespace: 
+--
+
+ALTER TABLE ONLY summary
+    ADD CONSTRAINT summary_pkey PRIMARY KEY (mail);
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+--
+-- Name: address; Type: ACL; Schema: public; Owner: www
+--
+
+REVOKE ALL ON TABLE address FROM PUBLIC;
+REVOKE ALL ON TABLE address FROM www;
+GRANT ALL ON TABLE address TO www;
+
+--
+-- Name: addressing; Type: ACL; Schema: public; Owner: www
+--
+
+REVOKE ALL ON TABLE addressing FROM PUBLIC;
+REVOKE ALL ON TABLE addressing FROM www;
+GRANT ALL ON TABLE addressing TO www;
+
+--
+-- Name: attachment; Type: ACL; Schema: public; Owner: www
+--
+
+REVOKE ALL ON TABLE attachment FROM PUBLIC;
+REVOKE ALL ON TABLE attachment FROM www;
+GRANT ALL ON TABLE attachment TO www;
+
+--
+-- Name: entity; Type: ACL; Schema: public; Owner: www
+--
+
+REVOKE ALL ON TABLE entity FROM PUBLIC;
+REVOKE ALL ON TABLE entity FROM www;
+GRANT ALL ON TABLE entity TO www;
+
+--
+-- Name: header; Type: ACL; Schema: public; Owner: www
+--
+
+REVOKE ALL ON TABLE "header" FROM PUBLIC;
+REVOKE ALL ON TABLE "header" FROM www;
+GRANT ALL ON TABLE "header" TO www;
+
+--
+-- Name: list; Type: ACL; Schema: public; Owner: www
+--
+
+REVOKE ALL ON TABLE list FROM PUBLIC;
+REVOKE ALL ON TABLE list FROM www;
+GRANT ALL ON TABLE list TO www;
+
+--
+-- Name: list_post; Type: ACL; Schema: public; Owner: www
+--
+
+REVOKE ALL ON TABLE list_post FROM PUBLIC;
+REVOKE ALL ON TABLE list_post FROM www;
+GRANT ALL ON TABLE list_post TO www;
+
+--
+-- Name: mail; Type: ACL; Schema: public; Owner: www
+--
+
+REVOKE ALL ON TABLE mail FROM PUBLIC;
+REVOKE ALL ON TABLE mail FROM www;
+GRANT ALL ON TABLE mail TO www;
+
+--
+-- Name: mail_date; Type: ACL; Schema: public; Owner: www
+--
+
+REVOKE ALL ON TABLE mail_date FROM PUBLIC;
+REVOKE ALL ON TABLE mail_date FROM www;
+GRANT ALL ON TABLE mail_date TO www;
+
+--
+-- Name: name; Type: ACL; Schema: public; Owner: www
+--
+
+REVOKE ALL ON TABLE name FROM PUBLIC;
+REVOKE ALL ON TABLE name FROM www;
+GRANT ALL ON TABLE name TO www;
+
+--
+-- Name: summary; Type: ACL; Schema: public; Owner: www
+--
+
+REVOKE ALL ON TABLE summary FROM PUBLIC;
+REVOKE ALL ON TABLE summary FROM www;
+GRANT ALL ON TABLE summary TO www;
+
+--
+-- PostgreSQL database dump complete
+--
+

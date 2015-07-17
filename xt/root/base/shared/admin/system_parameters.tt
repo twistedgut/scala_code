@@ -1,0 +1,68 @@
+<form name="edit_system_parameters" id="edit_system_parameters" method="post">
+[%# System Parameter Groups -%]
+[% FOR sys_param_group_name = sys_params.keys.sort; sys_param_group = sys_params.$sys_param_group_name -%]
+<!-- pick scheduler version: [% pick_scheduler_version %] -->
+[% NEXT IF sys_param_group_name == 'prl' && pick_scheduler_version == 2 -%]
+[% NEXT IF sys_param_group_name == 'prl_pick_scheduler_v2' AND pick_scheduler_version == 1 -%]
+[%  NEXT UNLESS sys_param_group.visible AND sys_param_group.parameters.size -%]
+    <span class="title">[% sys_param_group.description | html %]</span>
+[%#  System Parameters -%]
+[%   sys_param_divideabove = "divideabove ";
+     FOR sys_param = sys_param_group.parameters -%]
+    <div class="formrow [% sys_param_divideabove %]dividebelow input_[% sys_param.type %]">
+[%     input_name = "setting__" _ sys_param_group_name _ "__" _ sys_param.name -%]
+        <label for="[% input_name %]">[% sys_param.description | html %]</label>
+[%     IF sys_param.type == 'boolean' -%]
+        <input type="radio" name="[% input_name %]"[% ' checked' IF sys_param.value %] value="1" id="[% input_name %]-yes"/>
+        <label class="for-radio" for="[% input_name %]-yes">Yes</label>
+        <input type="radio" name="[% input_name %]"[% ' checked' IF NOT sys_param.value %] value="0" id="[% input_name %]-no"/>
+        <label class="for-radio" for="[% input_name %]-no">No</label>
+[%     ELSIF sys_param.type == 'integer-set' %]
+        <input type="text" name="[% input_name %]" value="[% sys_param.value.join(',') | html %]"/>
+[%     ELSIF sys_param.type == 'nullable_datetime_with_timezone' %]
+        [% IF sys_param.value %]
+          <input type="text" name="[% input_name %]" value="[% sys_param.value.strftime('%F %R %z') | html %]"/>
+        [% ELSE %]
+          <input type="text" name="[% input_name %]" value=""/>
+        [% END %]
+[%     ELSE -%]
+        <input type="text" name="[% input_name %]" value="[% sys_param.value | html %]"/>
+[%     END -%]
+    </div>
+[%     SET sys_param_divideabove = "";
+     END;
+   END -%]
+[%# Dispatch Lane Configuration -%]
+[% number_of_lanes = dispatch_lanes.size -%]
+    <span class="title">Dispatch Lanes</span>
+        <table id="dispatch_lanes_table" width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+            <thead>
+                <tr><td class="dividerHeader" colspan="[% number_of_lanes + 1 %]" /></tr>
+                <tr>
+                    <td class="tableHeader">&nbsp;</td>
+[%   FOR lane_number IN dispatch_lanes.sort -%]
+                    <td class="tableHeader" style="text-align: center">Lane [% lane_number %]</td>
+[%   END -%]
+                </tr>
+                <tr><td class="dividerHeader" colspan="[% number_of_lanes + 1 %]" /></tr>
+            </thead>
+            <tbody>
+[%   FOR shipment_type_id IN shipment_types.keys.sort -%]
+            <tr>
+                <td>[% shipment_types.$shipment_type_id.type | replace(' ', '&nbsp;') %]</td>
+[%     FOR lane_number IN dispatch_lanes.sort -%]
+[%       lane_selected = dispatch_lane_config.$shipment_type_id.dispatch_lanes.$lane_number -%]
+                <td style="text-align: center; width: auto"><input type="checkbox" name="dispatch_lane_[% shipment_type_id %]_[% lane_number %]"[% IF lane_selected %] checked[% END %] /></td>
+[%     END -%]
+            </tr>
+            <tr><td class="divider" colspan="[% number_of_lanes + 1 %]" /></tr>
+[%   END -%]
+            </tbody>
+        </table>
+[%# Common form elements -%]
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <div class="formrow buttons aftertable">
+        <input type="submit" name="submit" value="Submit &raquo;" class="button"/>
+    </div>
+</form>
+

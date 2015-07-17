@@ -1,0 +1,127 @@
+<span class="title">[% page_title %]</span><br>
+
+<form name="createReservation" action="[% IF customer || pws_customer %]/StockControl/Reservation/CreateReservation[% ELSE %]/StockControl/Reservation/Create[% END %]" method="post">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+<input type="hidden" name="variant_id" value="[% variant_id %]">
+<input type="hidden" name="channel" value="[% sales_channel %]">
+<input type="hidden" name="redirect_url" value="/StockControl/Reservation/Product?product_id=[% product.id %]">
+<div class="formrow divideabove dividebelow">
+    <span class="fakelabel">Sales Channel</span>
+    <p>[% sales_channel %]</p>
+</div>
+<div class="formrow dividebelow">
+    <span class="fakelabel">SKU</span>
+    <p>[% variant.sku %]</p>
+</div>
+<div class="formrow dividebelow">
+    <span class="fakelabel">Designer</span>
+    <p>[% product.designer %]</p>
+</div>
+<div class="formrow dividebelow">
+    <span class="fakelabel">Name</span>
+    <p>[% product.name %]</p>
+</div>
+<div class="formrow dividebelow">
+    <span class="fakelabel">NAP Size</span>
+    <p>[% variant.nap_size %]</p>
+</div>
+<div class="formrow dividebelow">
+    <span class="fakelabel">Designer Size</span>
+    <p>[% variant.designer_size %]</p>
+</div>
+[% UNLESS customer || pws_customer%]
+    [% IF can_reserve.$sales_channel %]
+        <div class="formrow dividebelow">
+            <span class="fakelabel">Source</span>
+            <select name="reservation_source" id="reservation_source">
+                <option value="0">-------------------</option>
+                [% FOREACH option = reservation_source_list %]
+                    <option value="[% option.id %]" [% IF option.id == reservation_source %]selected="selected"[% END %]>[% option.source | html %]</option>
+                [% END %]
+            </select>
+        </div>
+        <div class="formrow dividebelow">
+            <span class="fakelabel">Type</span>
+            <select name="reservation_type" id="reservation_type">
+                <option value="0">-------------------</option>
+                [% FOREACH option = reservation_type_list %]
+                    <option value="[% option.id %]" [% IF option.id == reservation_type %]selected="selected"[% END %]>[% option.type | html %]</option>
+                [% END %]
+            </select>
+        </div>
+        <div class="formrow dividebelow">
+            <label for="is_customer_number">Customer Number</label>
+            <input type="text" name="is_customer_number" id="is_customer_number" value="[% input_is_customer_number %]">
+            or
+        </div>
+        <div class="formrow dividebelow">
+            <label for="email">Email</label>
+            <input type="text" name="email" id="email" value="[% input_email %]">
+        </div>
+    [% END %]
+[% ELSE %]
+    [% IF customer;
+        is_customer_number = customer.is_customer_number;
+        first_name = customer.first_name;
+        last_name = customer.last_name;
+        email = customer.email;
+    ELSE;
+        is_customer_number = pws_customer.id;
+        first_name = pws_customer.first_name;
+        last_name = pws_customer.last_name;
+        email = pws_customer.email;
+        account_urn = pws_customer.global_id;
+    END %]
+    <input type="hidden" name="reservation_source_id" value="[% reservation_source_obj.id %]" />
+    <div class="formrow dividebelow">
+        <span class="fakelabel">Source</span>
+        <p>[% reservation_source_obj.source | html %]</p>
+    </div>
+    <input type="hidden" name="reservation_type_id" value="[% reservation_type_obj.id %]" />
+    <div class="formrow dividebelow">
+        <span class="fakelabel">Type</span>
+        <p>[% reservation_type_obj.type | html %]</p>
+    </div>
+
+    <input type="hidden" name="is_customer_number" value="[% is_customer_number %]" />
+    <div class="formrow dividebelow">
+        <span class="fakelabel">Customer Number</span>
+        <p>[% is_customer_number %]</p>
+    </div>
+    [% IF customer %]
+        <input type="hidden" name="customer_id" value="[% customer.id %]">
+    [% END %]
+    <input type="hidden" name="first_name" value="[% first_name %]" />
+    <input type="hidden" name="last_name" value="[% last_name %]" />
+    <input type="hidden" name="email" value="[% email %]" />
+    [% IF account_urn %]
+    <input type="hidden" name="account_urn" value="[% account_urn %]" />
+    [% END %]
+    <div class="formrow dividebelow">
+        <span class="fakelabel">Customer</span>
+        <p>[% first_name %] [% last_name %]</p>
+    </div>
+    <div class="formrow dividebelow">
+        <span class="fakelabel">Email</span>
+        <p>[% email %]</p>
+    </div>
+[% END %]
+<div class="formrow buttons aftertable">
+    [% IF customer || pws_customer %]
+        [% INCLUDE page_elements/forms/submit_button.tt submit='Create Reservation &raquo;' IF can_reserve.$sales_channel %]
+    [% ELSE %]
+        [% INCLUDE page_elements/forms/submit_button.tt submit='Continue &raquo;' IF can_reserve.$sales_channel %]
+    [% END %]
+</form>
+
+<script type="text/javascript">
+$(function() {
+    $("form[name='createReservation']").submit(function() {
+        var $search_field = $("input[name='search_field']");
+        if ( $search_field.length && $.trim( $search_field.val() ) == '' ) {
+            alert("Please enter a customer number or email.");
+            return false;
+        }
+    });
+});
+</script>

@@ -1,0 +1,316 @@
+[% IF (transit_list && (transit_list.size > 0)) %]
+
+    [% PROCESS page_elements/printer_station_name.tt %]
+    <div id="tabContainer" class="yui-navset">
+		[% PROCESS page_elements/channel_tabs.tt channel_list = transit_list %]
+        <div class="yui-content">
+
+            [% SET channel_count = 1 %]
+
+            [% FOREACH channel = transit_list.keys.sort %]
+
+                <div id="tab[% channel_count %]" class="tabWrapper-[% channel_config.$channel %]">
+				<div class="tabInsideWrapper">
+          <form action='/StockControl/Recode' method='POST' name='recode' onSubmit="updateNotes(); return validateRecodeForm()">
+            [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+            <input type="hidden" name="action" value="choose" />
+
+                    <span class="title title-[% channel_config.$channel %]">Products in Transit</span><br />
+                    <table class="data wide-data divided-data" id="transit_items">
+                        <thead>
+                            <tr height="24">
+                                <th width="15%" class="tableHeader">SKU</th>
+                                <th width="25%" class="tableHeader">Designer</th>
+                                <th width="25%" class="tableHeader">Description</th>
+                                <th width="10%" class="tableHeader">Size</th>
+                                <th width="10%" class="tableHeader">Quantity</th>
+                                <th width="10%" class="tableHeader">Select</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          [% FOREACH id = transit_list.$channel.keys.nsort %]
+                          [% SET sku = transit_list.$channel.$id.product_id _ '-' _ transit_list.$channel.$id.sku_size %]
+                          <tr height="20">
+                            <td><a href='/StockControl/Inventory/Overview?variant_id=[% transit_list.$channel.$id.variant_id %]'>[% sku %]</a></td>
+                            <td>[% transit_list.$channel.$id.designer %]</td>
+                            <td>[% transit_list.$channel.$id.name %]</td>
+                            <td>[% transit_list.$channel.$id.size %]</td>
+                            <td>[% transit_list.$channel.$id.quantity %]</td>
+                            <td><input type="checkbox" name="[% sku %]"></td>
+                          </tr>
+                        [% END %]
+                        </tbody>
+                    </table>
+
+                    <div class="formrow dividebelow" align="right">
+                      <input type="submit" value="Submit »" class="button" name="submit" id="submit" >
+                      </div>
+          </form>
+
+				</div>
+                </div>
+
+            [% END %]
+        </div>
+    </div>
+
+	[% PROCESS page_elements/tab_script.tt %]
+
+[% ELSIF (list && (list.size > 0)) %]
+    [% PROCESS page_elements/printer_station_name.tt %]
+          <form action='/StockControl/Recode' method='POST' name='recode' onSubmit="return validateRecodeForm()">
+            [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+            <input type="hidden" name="action" value="recode" />
+            [% SET sales_channel = list.0.sales_channel %]
+            <input type="hidden" name="sales_channel" value="[% sales_channel %]" />
+            <input type="hidden" name="channel_id" value="[% list.0.channel_id %]" />
+                    <span class="title title-[% channel_config.$sales_channel %]">Products to recode</span><br />
+                    <table class="data wide-data divided-data" id="transit_items">
+                        <thead>
+                            <tr height="24">
+                                <th width="15%" class="tableHeader">SKU</th>
+                                <th width="25%" class="tableHeader">Designer</th>
+                                <th width="25%" class="tableHeader">Description</th>
+                                <th width="10%" class="tableHeader">Size</th>
+                                <th width="10%" class="tableHeader">Quantity</th>
+                                <th width="10%" class="tableHeader">Destroy Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          [% FOREACH item = list %]
+                          [% SET sku = item.product_id _ '-' _ item.sku_size %]
+                          <tr height="20" class="recode_item">
+                            <td class="sku"><a href='/StockControl/Inventory/Overview?variant_id=[% item.variant_id %]'>[% sku %]</a></td>
+                            <td>[% item.designer %]</td>
+                            <td>[% item.name %]</td>
+                            <td>[% item.size %]</td>
+                            <td class="total_quantity">[% item.quantity %]</td>
+                            <td class="quantity"><input class="recode_data" data-type="qty" value="0" size="2" name="destroyquantity-[% sku %]" type="text"></td>
+                          </tr>
+                        [% END %]
+                        </tbody>
+                    </table>
+                    <br /><br />
+                    <span class="title title-[% channel_config.$sales_channel %]">Recoding Results Wanted</span><br />
+                    <table class="data wide-data divided-data recode_table" id="recode">
+                        <thead>
+                            <tr height="24">
+                                <th width="10%" class="tableHeader">New SKU</th>
+                                <th width="10%" class="tableHeader">Quantity to create</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          <tr class="clonable_row recode_item">
+                            <td class="sku"><input class="recode_data" data-type="sku" name="newsku_1" type="text"></td>
+                            <td class="quantity"><input class="recode_data" data-type="qty" value="0" size="2" name="newquantity_1" type="text"></td>
+                          </tr>
+                          <tr class="add_row">
+                            <td class="blank" colspan="5" align="right" style="padding-top:3px">
+
+                              <div style="width:90px">
+
+                                <a href="#" style="text-decoration: none" class="add_row_button">
+                                  <img src="/images/icons/add.png" style="float:left; margin-right:3px">Add another row
+                                </a>
+
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                    </table>
+                    <br /><br />
+                    <span class="title title-[% channel_config.$sales_channel %]">Notes</span><br />
+                    <table class="data wide-data divided-data recode_table" id="recode_notes">
+                        <thead>
+                            <tr>
+                                <td>Basic</td>
+                                <td>Extra</textarea></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><textarea cols="40" name="notes" id="notes" readonly></textarea></td>
+                                <td><textarea cols="40" name="user_notes" id="user_notes"></textarea></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br /><br />
+
+                    <div class="formrow dividebelow" align="right">
+                      <input type="submit" value="Submit »" class="button" name="submit" id="submit" >
+                      </div>
+          </form>
+
+
+<script>
+
+
+var field_types = {
+'sku' : { 'validator' : function(input) {
+        return( input.match(/\d+-\d+/) || input == '' || false )
+        },
+        'default' : ''
+        },
+'qty' : { 'validator' : function(i) {
+        return( i>=0 )
+        },
+        'default' : 0
+        }
+}
+
+
+$(document).ready(function() {
+    $(".add_row_button").click(function(e) {
+        var the_table=$(e.target).closest('table.recode_table');
+        var the_button_row=$(e.target).closest('.add_row');
+        // Clone the row
+        the_table.find('.clonable_row:first').clone().insertBefore(the_button_row);
+
+        the_table.find('tr[class="clonable_row recode_item"]').each( function (i,o) {
+            $(o).find('input').each( function (ii,oo) {
+                $(oo).blur(function(e) {
+                    updateNotes();
+                });
+                $(oo).attr( 'name', $(oo).attr('name').replace(/\d+$/,'') + ( i + 1 ) );
+            });
+        });
+
+        the_table.find('tr[class="clonable_row"]:last input').each( function (i,o) {
+          var dtype = $(o).attr('data-type');
+          $(o).val( field_types[ dtype ]['default'] )
+        });
+
+        updateNotes();
+    });
+
+    $(".recode_data").blur(function(e) {
+        updateNotes();
+    });
+});
+
+
+// function to perform the Recode form validation
+function validateRecodeForm() {
+
+    var errors = 0;
+    var exceed_max_quantity_errors = 0;
+    $('#transit_items tr[class="recode_item"] input').each(function() {
+        var $this = $(this);
+        // Get input data type
+        var dtype = $this.attr('data-type');
+
+        // Use specific data type validator against the input field
+        var vresult = field_types[ dtype ]['validator']( $this.attr('value') );
+
+        if (!vresult) {
+            $this.addClass('error');
+            errors++;
+            return;
+        }
+        else {
+            $this.removeClass('error');
+        }
+
+        var destroy_quantity = $this.attr('value');
+        var total_quantity = $this.closest('tr').children('.total_quantity').text();
+        if ( parseInt(destroy_quantity) > parseInt(total_quantity) ) {
+            $this.addClass('error');
+            exceed_max_quantity_errors++;
+        }
+        else {
+            $this.removeClass('error');
+        }
+    });
+    $('#recode tr[class="clonable_row recode_item"] input').each( function (i,o) {
+        // Get input data type
+        var dtype = $(o).attr('data-type');
+
+        // Use specific data type validator against the input field
+        vresult = field_types[ dtype ]['validator']( $(o).attr('value') );
+
+        if (!vresult) {
+            $(o).addClass('error');
+            errors++;
+        }
+        else {
+            $(o).removeClass('error');
+        }
+     });
+
+    if (errors > 0) {
+        alert('Check the values in the highlighted fields');
+        return false;
+    }
+
+     if ( exceed_max_quantity_errors > 0 ) {
+         alert('The values in the highlighted fields are attempting to destroy more stock than is available');
+         return false;
+     }
+
+    var fromCount = 0;
+    $('table#transit_items').find('tr[class="recode_item"]').each(function(i,o) {
+        var quantity = $(o).find('td[class="quantity"] input').val();
+        if (quantity > 0) {
+            fromCount++;
+        }
+    });
+    var toCount = 0;
+    $('table#recode').find('tr[class="clonable_row recode_item"]').each(function(i,o) {
+        var quantity = $(o).find('td[class="quantity"] input').val();
+        if (quantity > 0) {
+            toCount++;
+        }
+    });
+
+    if (toCount == 0) {
+        alert('Please choose at least one sku with a non-zero quantity to recode to');
+        return false;
+    }
+    if (fromCount == 0) {
+        alert('Please choose at least one sku with a non-zero quantity to recode from');
+        return false;
+    }
+    if (fromCount > 1 && toCount > 1) {
+        return confirm('You are about to re-code multiple old skus to multiple new skus. Ensure all skus are correct and that sufficient comments are included for auditing purposes.');
+    }
+
+    return double_submit();
+}
+
+function updateNotes() {
+    var notes = "Recode: ";
+    var fromItems = [];
+    $('table#transit_items').find('tr[class="recode_item"]').each(function(i,o) {
+        var sku = $(o).find('td[class="sku"]').text();
+        var quantity = $(o).find('td[class="quantity"] input').val();
+        if (quantity > 0) {
+            fromItems.push(sku + '(' + quantity + ')');
+        }
+    });
+    //alert(notes);
+    if (fromItems.length > 0) {
+        notes = notes + "from " + fromItems.join(', ') + " ";
+    }
+    var toItems = [];
+    $('table#recode').find('tr[class="clonable_row recode_item"]').each(function(i,o) {
+        var sku = $(o).find('td[class="sku"] input').val();
+        var quantity = $(o).find('td[class="quantity"] input').val();
+        if (quantity > 0) {
+            toItems.push(sku + '(' + quantity + ')');
+        }
+    });
+    //alert(notes);
+    if (toItems.length > 0) {
+        notes = notes + "to " + toItems.join(', ') + ". ";
+    }
+    $('#notes').val(notes);
+}
+
+</script>
+
+[% ELSE %]
+
+    No items to display.<br />
+    <img src="/images/blank.gif" width="1" height="350">
+
+[% END %]

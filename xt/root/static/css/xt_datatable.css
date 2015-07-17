@@ -1,0 +1,20 @@
+
+.yui-skin-sam tr.yui-dt-odd{background-color:#FAF0E6;}
+.yui-skin-sam tr.yui-dt-even td.yui-dt-asc,.yui-skin-sam tr.yui-dt-even td.yui-dt-desc{background-color:#FAF0E6;}
+.yui-skin-sam tr.yui-dt-odd td.yui-dt-asc,.yui-skin-sam tr.yui-dt-odd td.yui-dt-desc{background-color:#F5E0CC;}
+.yui-skin-sam .yui-dt-list tr.yui-dt-even td.yui-dt-asc,.yui-skin-sam .yui-dt-list tr.yui-dt-even td.yui-dt-desc{background-color:#FAF0E6;}
+.yui-skin-sam .yui-dt-list tr.yui-dt-odd td.yui-dt-asc,.yui-skin-sam .yui-dt-list tr.yui-dt-odd td.yui-dt-desc{background-color:#FAF0E6;}
+
+.yui-skin-sam .yui-dt-table th {
+        font: bold 11px Arial;
+        color: #333;
+		text-align:left;
+}
+
+.yui-skin-sam .yui-dt-table th a {
+        font: bold 11px Arial;
+        color: #333;
+}
+
+.yui-skin-sam a.yui-dt-page{text-decoration:none; border:1px solid #666;padding:2px 6px; text-decoration:none;}
+.yui-dt-selected{ border:1px solid #CC6600; font-weight:bold; color:#CC6600}

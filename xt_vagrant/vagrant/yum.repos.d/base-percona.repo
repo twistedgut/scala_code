@@ -1,0 +1,9 @@
+[base-percona]
+name=base-percona
+enabled=1
+gpgcheck=0
+
+baseurl=http://pulp.wtf.nap/pulp/repos/base/percona
+
+keepcache=0
+metadata_expire=1

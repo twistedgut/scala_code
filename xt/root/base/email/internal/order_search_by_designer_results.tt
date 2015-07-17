@@ -1,0 +1,15 @@
+Dear [% operator.name %],
+
+The Order Search by Designer that you requested for:
+
+Designer: [% designer.designer +%]
+Channel: [% ( channel ? channel.name : 'ANY' ) +%]
+
+has Completed and found [% number_of_records %] records.
+
+Please follow this link to see the results:
+[% link_to_results +%]
+
+Regards
+xTracker [% dc +%]
+

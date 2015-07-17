@@ -1,0 +1,76 @@
+[% IF !handheld %]
+    <h3>Enter Details</h3>
+[% END %]
+<form name="cancel" action="[% hh_uri('/GoodsIn/ReturnsArrival/Arrival/' _ return_arrival.id) %]" method="post">
+    <input type="hidden" name="action" value="remove_package" />
+    <table class="data wide-data">
+        <tr>
+            <td class="blank" align="right">
+                <input type="submit" name="submit" class="button" value="Cancel" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+<form name="enter_details" action="[% hh_uri('/GoodsIn/ReturnsArrival/Arrival/' _ return_arrival.id) %]" method="post">
+    <input type="hidden" name="action" value="enter_details" />
+    <table class="data wide-data divided-data">
+        <tr class="no-border-top no-border-bottom">
+            <td colspan="2" class="blank" align="right">
+                <input type="submit" name="submit" value="Submit Details >" class="button">
+            </td>
+        </tr>
+        <tr>
+            <th>AWB:</th>
+            <td>[% return_arrival.return_airway_bill %]</td>
+        </tr>
+        <tr>
+            <th>Customer Category:</th>
+            <td>
+                [%
+                    BLOCK category_wrapper;
+                        IF content == 'None' || content == 'Not Found';
+                            content;
+                        ELSE;
+                            '<strong>' _ content _ '</strong';
+                        END;
+                    END;
+                    shipment = return_arrival.shipment;
+                    (shipment ? shipment.order.customer.category.category : 'Not Found') WRAPPER category_wrapper;
+                %]
+            </td>
+        </tr>
+        <tr>
+            <th>DHL Tape:</th>
+            <td>
+                <input type="checkbox" name="dhl_tape"[% ' checked="1"' IF return_arrival.dhl_tape_on_box %] />
+            </td>
+        </tr>
+        <tr>
+            <th>Damaged:</th>
+            <td>
+                <input type="checkbox" name="damaged" [% ' checked="1"' IF return_arrival.box_damaged %] />
+            </td>
+        </tr>
+            [% IF handheld %]
+                <tr>
+                    <td colspan="2">
+                        <strong>Notes:</strong><br/>
+                        <textarea name="damage_description" rows="4">[% return_arrival.damage_description %]</textarea>
+                    </td>
+                </tr>
+            [% ELSE %]
+                <tr>
+                    <th>Notes:</th>
+                    <td>
+                        <textarea name="damage_description" rows="4" cols="[% handheld ? 25 : 50 %]">[% return_arrival.damage_description %]</textarea>
+                    </td>
+                </tr>
+            [% END %]
+    </table>
+</form>
+[% IF handheld %]
+<script type="text/javascript" language="javascript">
+	document.forms['enter_details'].elements['submit'].focus();
+</script>
+[% END %]

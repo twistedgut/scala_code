@@ -1,0 +1,17 @@
+[%-
+    # Introduced for: CANDO-576
+
+    # used to send to the Premier Routing team to let them know that an
+    # Alert sent to the Customer has possibly failed to reach them.
+    # Currently used for SMS Notifications.
+-%]
+[% subject %]
+
+Failure Reason: [% failure_code %]
+
+Order Number: [% order_nr %]
+Customer    : [% first_name %] [% last_name %]
+
+Telephone Used: [% mobile_number %]
+Message Sent:
+[% message %]

@@ -1,0 +1,18 @@
+<pre>
+
+h1. CANDO - Customer & Order Management
+    * CANDO-431: Communication Method Opt In/Out for Correspondence Subject Methods (CSM)
+    * CANDO-62: Reservations - Source field
+    * CANDO-491: Credit Check Rules - Add a new credit exception rule for NAP and OUT only
+
+h1. WHM - Warehouse Management
+    * WHM-526 SLA's for exchanges should be set from the point that the exchange is released instead of when the RMA is created
+    * WHM-524 Staff orders should be 7 day SLA and moved to priority 2
+    * WHM-502 "Shipping Account" needs to be displayed at the end of packing
+    * WHM-584 Update Returns QC small label printers such that each of the 8 workstations has it's own uniquely configurable lp_name.
+    * WHM-588 Narrow conditions when reapplying SLAs
+    * WHM-442 Goods In > Quality Control > Process Item > Delivery Id: 656670 > Error message = You entered bad data: The value is too complex
+    * WHM-575 Stock Consistency Report > Adjust = errors "can't call method business on undefined value...ThirdParty.pm"
+    * WHM-580 RTV/NAP picklist error
+
+</pre>

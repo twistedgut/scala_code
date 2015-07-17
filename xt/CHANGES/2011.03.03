@@ -1,0 +1,8 @@
+<pre>
+
+h1. RED/AppSupport
+
+ * [APS-106] via Handheld > Stock Control > Location Stock Check > scan any > redirects to desktop not handheld view 
+ * Limit Stock Inventory Search Results to 5000
+ * [REL-2331] MRP > Product Feed > AM feed sending to INTL agency
+</pre>

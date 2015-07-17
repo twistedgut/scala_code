@@ -1,0 +1,237 @@
+<div id="tabContainer" class="yui-navset">
+	[% PROCESS page_elements/channel_tabs.tt channel_list=orders %]
+    <div class="yui-content">
+
+        [% SET channel_count = 1 %]
+        [% SET colspan = 13 %]
+
+        [% FOREACH channel = orders.keys.sort %]
+
+            <div id="tab[% channel_count %]" class="tabWrapper-[% channel_config.$channel %]">
+			<div class="tabInsideWrapper">
+
+                <span class="title title-[% channel_config.$channel %]">Orders on Credit Check</span><br />
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data tablesorter">
+                    <thead>
+                    <tr height="24">
+                        <th width="50" class="tableHeader sortable" nowrap>&nbsp;&nbsp;Order&nbsp;&nbsp;</th>
+                        <th width="0"  class="followingValueColumn">&nbsp;&nbsp;Order</th>
+                        <th width="40" class="tableHeader" align="center">&nbsp;&nbsp;Cat.&nbsp;&nbsp;</th>
+                        <th width="70" class="tableHeader">Customer</th>
+                        <th width="70" class="tableHeader sortable" nowrap>Shipping<br/>Country</th>
+                        <th width="0" class="followingValueColumn">Shipping<br/>Country</th>
+                        <th width="55" class="tableHeader sortable">Age</th>
+                        <th width="0" class="followingValueColumn">Age</th>
+                        <th width="65" class="tableHeader sortable">Nom.<br>Dispatch</th>
+                        <th width="0"  class="followingValueColumn">Nom.<br>Dispatch</th>
+                        <th width="65" class="tableHeader sortable">Value</th>
+                        <th width="0" class="followingValueColumn">Value</th>
+                        <th width="35" class="tableHeader" align="center">Name<br/>Chk</th>
+                        <th width="35" class="tableHeader" align="center">Addr<br/>Chk</th>
+                        <th width="55" class="tableHeader" align="center">Possible<br/>Fraud</th>
+                        <th width="100" class="tableHeader">Warnings</th>
+                        <th width="0" class="tableHeader"><span title="Customer's Preferred Language">CPL</span>&nbsp;</th>
+                        <th class="tableHeader">CV2/AVS</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    [% FOREACH order = orders.$channel.keys.nsort.reverse %]
+
+                        [% SET row_styles = [] %]
+                        [% PROCESS page_elements/finance_high_priority.tt financepriority=orders.$channel.$order.priority %]
+                        [% SET row_style = 'class="' _ row_styles.join(' ') _ '"'; %]
+                        [%
+                        SET row_styles_dispatch_in = row_styles;
+                        IF orders.$channel.$order.nominated_credit_check_urgency == 1;
+                            row_styles_dispatch_in.push('red-bold');
+                        END;
+                        SET row_style_dispatch_in = 'class="' _ row_styles_dispatch_in.join(' ') _ '"';
+                        %]
+
+                        [% IF orders.$channel.$order.pre_order != 1 %]
+                            <tr height="20">
+                                <td [% row_style %]>&nbsp;&nbsp;<a href="/Finance/CreditCheck/OrderView?order_id=[% order %]">[% orders.$channel.$order.number %]</a></td>
+                                <td class="followingValueColumn">[% orders.$channel.$order.number %]</td>
+                                <td [% row_style %] align="center">[% PROCESS page_elements/show_customer_category.tt row=orders.$channel.$order %]</td>
+                                <td [% row_style %]>[% orders.$channel.$order.name %]</td>
+                                <td [% row_style %]>[% orders.$channel.$order.shipment_country %]&nbsp;&nbsp;</td>
+                                <td class="followingValueColumn">[% orders.$channel.$order.shipment_country %]</td>
+                                <td [% row_style %]>[% orders.$channel.$order.age %]</td>
+                                [%-# make the Date Sortable by turning 'DD-MM-YYYY  HH:MM' into 'YYYYMMDDHHMM' %]
+                                <td class="followingValueColumn">[% orders.$channel.$order.date.replace('(\d\d)-(\d\d)-(\d{4})  (\d\d):(\d\d)','$3$2$1$4$5') %]</td>
+                                <td [% row_style_dispatch_in %]>[% orders.$channel.$order.nominated_dispatch_in || '&nbsp;' %]</td>
+                                <td class="followingValueColumn">[% orders.$channel.$order.nominated_dispatch_time.epoch %]</td>
+                                <td [% row_style %]>[% currency_glyph.${orders.$channel.$order.currency} %]&nbsp;[% orders.$channel.$order.value %]</td>
+                                <td class="followingValueColumn">[% orders.$channel.$order.value %]</td>
+                                <td [% row_style %]>[% orders.$channel.$order.namecheck %]</td>
+                                <td [% row_style %]>[% orders.$channel.$order.addrcheck %]</td>
+                                <td [% row_style %]>[% orders.$channel.$order.possiblefraud %]</td>
+                                <td [% row_style %]>
+                                    <table width="100%%" cellpadding="3" cellspacing="0" border="0" class="data">
+                                        <tr>
+                                            <td [% row_style %]>
+                                                [% FOREACH warning = orders.$channel.$order.warningFlags %]
+                                                    [% warning %]
+                                                [% END %]
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td [% row_style %]>
+                                    <span title="[% orders.$channel.$order.cpl.description %]">[% orders.$channel.$order.cpl.code FILTER upper %]</span>
+                                </td>
+                                <td [% row_style %]><small>[% orders.$channel.$order.cv2_avs || 'NOT CHECKED' %]</small></td>
+                            </tr>
+                        [% END %]
+                    [% END %]
+                </table>
+
+
+                <br><br>
+                <br>
+                <span class="title title-[% channel_config.$channel %]">Pre-Orders on Credit Hold</span><br />
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+                    <thead>
+                    <tr>
+                        <td colspan="[% colspan %]" class="dividerHeader"></td>
+                    </tr>
+                    <tr height="24">
+                        <td width="12%" class="tableHeader">&nbsp;&nbsp;Order No.</td>
+                        <td width="11%" class="tableHeader" align="center">Category</td>
+                        <td width="18%" class="tableHeader">Customer</td>
+                        <td class="tableHeader">Shipping&nbsp;&nbsp;<br/>Country</td>
+                        <td width="14%" class="tableHeader">Age</td>
+                        <td width="14%" class="tableHeader">Value</td>
+                        <td width="6%" class="tableHeader" align="center">Name<br/>Check</td>
+                        <td width="12%" class="tableHeader" align="center">Addr<br/>Check</td>
+                        <td width="12%" class="tableHeader" align="center">Possible<br/>Fraud</td>
+                        <td width="10%" class="tableHeader">Warnings</td>
+                        <td width="16%" class="tableHeader">CV2/AVS</td>
+                    </tr>
+                    <tr>
+                        <td colspan="[% colspan %]" class="dividerHeader"></td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    [% FOREACH order = orders.$channel.keys.nsort.reverse %]
+
+
+                        [% SET row_styles = [] %]
+                        [% PROCESS page_elements/finance_high_priority.tt financepriority=orders.$channel.$order.priority %]
+                        [% SET row_style = 'class="' _ row_styles.join(' ') _ '"'; %]
+
+                        [% IF orders.$channel.$order.pre_order == 1 %]
+                            <tr height="20">
+                                <td [% row_style %]>&nbsp;&nbsp;<a href="/Finance/CreditCheck/OrderView?order_id=[% order %]">[% orders.$channel.$order.number %]</a></td>
+                                <td [% row_style %] align="center">[% PROCESS page_elements/show_customer_category.tt row=orders.$channel.$order %]</td>
+                                <td [% row_style %]>[% orders.$channel.$order.name %]</td>
+                                <td [% row_style %]>[% orders.$channel.$order.shipment_country %]&nbsp;&nbsp;</td>
+                                <td [% row_style %]>[% orders.$channel.$order.age %]</td>
+                                <td [% row_style %]>[% currency_glyph.${orders.$channel.$order.currency} %]&nbsp;[% orders.$channel.$order.value %]</td>
+                                <td [% row_style %] align="center">[% orders.$channel.$order.namecheck %]</td>
+                                <td [% row_style %] align="center">[% orders.$channel.$order.addrcheck %]</td>
+                                <td [% row_style %] align="center">[% orders.$channel.$order.possiblefraud %]</td>
+                                <td [% row_style %]>
+                                    <table width="100%%" cellpadding="3" cellspacing="0" border="0" class="data">
+                                        <tr>
+                                            <td [% row_style %]>
+                                                [% FOREACH warning = orders.$channel.$order.warningFlags %]
+                                                    [% warning %]
+                                                [% END %]
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td [% row_style %]>[% orders.$channel.$order.cv2_avs || 'NOT CHECKED' %]</td>
+                            </tr>
+                            <tr>
+                                <td colspan="[% colspan %]" class="divider"></td>
+                            </tr>
+                        [% END %]
+                    [% END %]
+                </table>
+
+			</div>
+            </div>
+
+
+            [% SET channel_count = channel_count + 1 %]
+        [% END %]
+    </div>
+</div>
+
+[% PROCESS page_elements/tab_script.tt %]
+
+<script language="javascript">
+
+// Change the extractor to always get the value from the (in this case
+// hidden) following column. This is required because the human
+// readable "3 days" and "2 hours" don't sort well together.
+
+// This is somewhat crazy, but you can't change the extractor for
+// individual columns.
+
+function followingColumn(node) {
+    // console.log('NODE');
+    // console.log(node.innerHTML);
+
+    // Find the next node that isn't whitespace
+    var n = node;
+    do { n = n.nextSibling } while (n && n.nodeType != 1);
+    var followingColumn = n;
+
+    if( ! followingColumn ) {
+        return "";
+    }
+    // console.log(followingColumn);
+    // console.log(followingColumn.innerHTML);
+
+    return followingColumn.innerHTML;
+}
+
+// http://tablesorter.com/docs/example-parsers.html
+// Put empty values last by assigning a very large epoch
+$.tablesorter.addParser({
+    id: 'emptyGoesLast',
+    is: function(s) { return false },
+    format: function(s) {
+        if(s == "") {
+            return 9999999999;
+        }
+        return s;
+    },
+    type: 'numeric'
+});
+
+
+$(document).ready( function() {
+    $(".tablesorter").tablesorter({
+        sortList: [[6,0]], // Initial sort on Age, asc
+        textExtraction: followingColumn,
+        headers: {
+          // 0: { sorter: true  },           // Order No.             : default sorter
+             1: { sorter: false },           // Order No.             : hidden value column
+             2: { sorter: false },           // Category              : no sorting
+             3: { sorter: false },           // Customer              : no sorting
+          // 4: { sorter: true  },           // Country               : Sorting
+             5: { sorter: false },           // Country               : hidden value column
+          // 6: { sorter: true  },           // Age                   : sorting
+             7: { sorter: false },           // Age                   : hidden value column
+             8: { sorter: 'emptyGoesLast' }, // Nominated Dispatch In : no sorting
+             9: { sorter: false },           // Nominated Dispatch In : Hidden value column
+         // 10: { sorter: true  },           // Value                 : Sorting
+            11: { sorter: false },           // Value                 : hidden value column
+            12: { sorter: false },           // Name Check            : no sorting
+            13: { sorter: false },           // Addr Check            : no sorting
+            14: { sorter: false },           // Possible Fraud        : no sorting
+            15: { sorter: false },           // Warnings              : no sorting
+            16: { sorter: false },           // CV2/AVS               : no sorting
+            17: { sorter: false }            // CV2/AVS               : no sorting
+        }
+    });
+} );
+
+</script>
+
+<br><br>
+

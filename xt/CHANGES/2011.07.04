@@ -1,0 +1,27 @@
+<pre>
+
+h1. Jimmy Choo - Database prep
+ * DB patch to populate for the new Jimmy Choo channel:
+ ** shipping_charges, box sizes, credit_hold_threshold, Welcome_Pack,
+    personalized_stickers and dispatch_slas
+
+h1. Places that accept tote IDs now only accept real tote IDs (DCEA-LIVE-94)
+ * You can no longer scan totes like MXTEST0123
+
+h1. Items cancelled between Packing and Packing Exception (DCEA-LIVE-67)
+ * Before you could only put these away as good stock. Now you can
+   do anything you might want with them - quarantine, putaway, mark missing
+
+h2. Scan good items preferentially at PIPE page (DCEA-LIVE-98)
+
+h1. APS
+ * APS-338: Update to set_instance_status() - make sure we update existing journal pages to ARCHIVED when pushing to staging (7e6d5dd)
+ * APS-38 Fix duplicate PIDs in search results (edc4d63)
+ * APS-69 Force return label to be the correct dimensions (5b9834f)
+ * REL-469 : CMS multiple published rows on live (caused by staging fix aps-338) (8c824da)
+ * APS-403: RTV Goods Inspection failed due to long URL (80993ef)
+
+h1. Config
+ * definition of IWS_RECONCILIATION_REPORT_EMAIL_DC1 moved to nap.properties
+ 
+</pre>

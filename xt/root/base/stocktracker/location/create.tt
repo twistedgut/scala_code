@@ -1,0 +1,39 @@
+<div id="location_form">
+<form name="new_location" action="/StockControl/Location/CreateLocations" method="POST">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    [% PROCESS stocktracker/location/location_range_select.tt %]
+	<br/>
+	<table width="719">
+	<tr>
+		<td width="15%" align="right"><strong>Sales Channel:&nbsp;&nbsp;&nbsp;&nbsp;</strong></td>
+		<td width="85%">
+			<select name="frm_sales_channel" id="frm_sales_channel">
+			[% FOREACH schannel = sales_channels.keys.nsort %]
+				<option value="[% schannel %]">[% sales_channels.$schannel.name %]</option>
+			[% END %]
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td align="right"><strong>Location Type:&nbsp;&nbsp;&nbsp;&nbsp;</strong></td>
+		<td>
+			<select name="location_type" id="location_type">
+			[% FOREACH ltype = location_types.keys.nsort %]
+				[% IF ltype == 0 %][% NEXT %][% END %]
+				<option value="[% ltype %]">[% location_types.$ltype.type %]</option>
+			[% END %]
+			</select>
+		</td>
+	</tr>
+	</table>
+    [% INCLUDE page_elements/forms/submit.tt %]
+</form>
+
+[% IF message %]
+<br/>
+<div id="message">
+    <div>[% message %]</div>
+</div>
+[% END %]
+
+</div>

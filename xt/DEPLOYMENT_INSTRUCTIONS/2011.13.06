@@ -1,0 +1,51 @@
+=====================================
+XT 2011.13.06 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               : 
+Cherwell           : 
+Release Manager    : 
+Build Manager      : 
+TechOps            : 
+Backend Developer  : 
+Frontend Developer : 
+QA                 : 
+PCI Authorised by  : 
+
+2 - CHANGELOG
+-------------
+
+http://gitosis.net-a-porter.com/cgit/xt/tree/CHANGES/2011.13.06?h=release/2011.13
+
+3 - PACKAGES TO INSTALL:
+------------------------
+
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2011.13/xt-2011.13.06-0.noarch.rpm
+
+
+4 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+No pre-deployment steps required.
+
+5 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+sudo yum install xt
+
+6 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+No post-deployment steps required.
+
+
+7 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================

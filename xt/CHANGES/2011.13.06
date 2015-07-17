@@ -1,0 +1,10 @@
+<pre>
+
+h1. Application Support (APS)
+
+  * APS-726: stop order importer selecting sample variants and db patch to fix data
+
+h1. CANDO
+
+  * CANDO-488: Change JCHOO phone number to be correct for DC2.
+</pre>

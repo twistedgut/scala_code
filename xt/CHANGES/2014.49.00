@@ -1,0 +1,47 @@
+<pre>
+
+
+h1. CANDO - Customer & Orders
+
+* CANDO-8507 BUG - Error displaying Date on Designer Order Search
+* CANDO-8500 BUG - Shipment Hold Bug
+* CANDO-8371 - Adding New Reservation Source/Type
+
+h1. DC2A - DC2 Automation
+
+
+
+h1. DCOP - DC Operations
+
+*
+
+
+h1. SHIP - Expedited Shippping
+
+*
+
+
+h1. WHM - Warehouse
+
+* DCA-4288: Avoid sending DCD pick too early for mixed shipments
+
+
+h1. Other
+
+h2. BS - Build Support
+
+*
+
+h2. PM - Product Management
+
+*
+
+h2. SAS - Search & Aggregation
+
+*
+
+h2. Misc
+
+*
+
+</pre>

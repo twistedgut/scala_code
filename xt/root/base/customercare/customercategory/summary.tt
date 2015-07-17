@@ -1,0 +1,74 @@
+<!-- BEGIN root/base/customercare/customercategory/summary.tt -->
+<div id="successful" class="results">
+    <h3>The following customers are currently processing with job number [% job_number %]</h3>
+    <h3>You will be sent an email when the updates are complete</h3>
+
+    <div id="success_count" class="total">
+        Total processing customer numbers: [% success_count %]
+    </div>
+
+    [% IF success_count > 0 %]
+
+    <button class="back button">Back</button>
+
+    <div id="success_table">
+        <table id="tbl_category_success" class="data wide-data divided-data">
+        <tr>
+            <td class="customerid tableHeader">Customer Number</th>
+            <td class="customerid tableHeader">Name</th>
+            <td class="customerid tableHeader">Email Address</th>
+        </tr>
+        [%- FOREACH customer IN successes %]
+        <tr>
+            <td class="customerid dividebelow">[% customer.is_customer_number %]</td>
+            <td class="customerid dividebelow">[% customer.display_name %]</td>
+            <td class="customerid dividebelow">[% customer.email %]</td>
+        </tr>
+        [%- END %]
+        </table>
+    </div>
+    [%- END %]
+    <br>
+    <button class="button back">Back</button>
+</div>
+
+
+<div id="unsuccessful" class="feedback">
+    <h3>Failed category updates</h3>
+    </br>
+    </br>
+
+    <div id="invalid_count" class="total">
+        Total failed customer numbers: [% invalid_count %]
+    </div>
+
+    [% IF invalid_customer_list.size > 0 %]
+
+        <form  name="retry_form" id="data_form"  method="post" action="[% c.uri_for( c.controller('CustomerCare::CustomerCategory').action_for('bulk_category') ) %]">
+            <input type="hidden" id="failed_customer_ids" name="failed_customer_ids" value="[% invalid_customer_list.join(', ') %]"/>
+            <input type="submit" name="retry" id="retry" class="button" value="Retry"/>
+        </form>
+
+    <div id="failure_table">
+        <table id="tbl_category_failure" class="data wide-data divided-data">
+
+            <tr>
+                <td class="customerid tableHeader">Failed Numbers</td>
+            </tr>
+
+            [% FOREACH customer IN invalid_customer_list %]
+            <tr>
+                <td class="customerid dividebelow">[% customer %]</td>
+            </tr>
+            [%- END %]
+        </table>
+
+        <form  name="retry_form" id="data_form"  method="post" action="[% c.uri_for( c.controller('CustomerCare::CustomerCategory').action_for('bulk_category') ) %]">
+            <input type="hidden" id="failed_customer_ids" name="failed_customer_ids" value="[% invalid_customer_list.join(', ') %]"/>
+            <input type="submit" name="retry" id="retry" class="button" value="Retry"/>
+        </form>
+    </div>
+    [%- END %]
+</div>
+
+<!-- END root/base/customercare/customercategory/summary.tt -->

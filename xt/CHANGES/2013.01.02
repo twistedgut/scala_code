@@ -1,0 +1,23 @@
+<pre>
+
+h1. CANDO
+    * CANDO-853 - Invalid Payments - allow payment variations less than 10%
+    * CANDO-858 - Add product image to reservation waiting list page
+    * CANDO-1335 - Exchange to refund
+    * CANDO-1662 - NAPAC: Cannot add 'Sample Cart Users'
+    * CANDO-1733 - NAPAC: Reservations > Cannot edit a Reservation
+    * CANDO-1661 - NAPAC: Update XT DC3 fraud hotlist with DC1 attributes
+    * CANDO-1667 - Add date and time column to Invalid Payments – Signed off and approved for merge
+    * CANDO-1672 - Add 'Size' column to refund value table. – signed off and approved for merge
+
+h1. WHM
+
+    * WHM-639: Reorganise printed document storage
+
+h1. DC2A
+
+    * DCA-1143: Don.t print picksheets if PRLs are on
+    * DCA-1139, DCA-1140, DCA-1141: Consumers for item_picked, container_ready, pick_complete
+    * DCA-46: Putaway problem resolution
+
+</pre>

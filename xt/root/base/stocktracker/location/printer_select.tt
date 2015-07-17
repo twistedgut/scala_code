@@ -1,0 +1,7 @@
+[% SET default_printer = 'Goods In Barcode - Large' %]
+    
+    <select name="printer_name">
+      [% FOREACH printer = printers %]
+      <option value="[% printer %]" [% IF printer == default_printer %]selected[% END %]>[% printer %]</option>
+      [% END %]
+    </select>

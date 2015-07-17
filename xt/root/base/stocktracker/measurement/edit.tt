@@ -1,0 +1,93 @@
+
+[% SET sales_channel = active_channel.channel_name %]
+
+[% PROCESS page_elements/display_product.tt %]
+
+    <script type="text/javascript">
+        function display_args( show_field, mId ) {
+            try {
+                var hidden_element = "#on_website_" + mId;
+                if( show_field.checked ) {
+                    $(hidden_element).val("show_" + mId);
+                }
+                else {
+                    $(hidden_element).val("hide_" + mId);
+                }
+            }
+            catch(e) { alert(e.message); }
+        }
+    </script>
+
+<br />
+[% IF !read_only %]
+<form name="editChart" action="[% uri %]/SetMeasurement" method="post">
+[% END %]
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="prodid" value="[% product_id %]" />
+    <input type="hidden" name="channel" value="[% sales_channel %]" />
+
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td width="20%"><span class="title title-[% channel_config.$sales_channel %]">Edit Measurements</span></td>
+                <td width="80%">[% IF measurement_log %]<a href="javascript://" alt="View Change Log" onMouseOver="showLayer('log_measurements', 20, -40, event);" onMouseOut="hideLayer('log_measurements');"><img src="/images/icons/application_view_list.png" border="0"></a>[% END %]</td>
+            </tr>
+        </table>
+
+        [% INCLUDE stocktracker/measurement/measurement_table.tt %]
+
+[% IF !read_only %]
+</form>
+[% END %]
+
+
+<div id="log_measurements" style="visibility:hidden; position:absolute; left:0px; top:0px; z-index:1000; padding-left:3px; padding-bottom:3px; background-color: #cccccc">
+
+    <div style="border:1px solid #666666; background-color: #fff; padding: 10px; z-index:1001">
+
+        <div style="width:300px; margin-bottom:5px"><b>Change Log:</b></div>
+        <div style="width:430px">
+        <table width="100%" class="data">
+        <thead>
+            <tr>
+            <td colspan="6" class="divider"></td>
+            </tr>
+            <td width="15%" class="tableHeader">&nbsp;Operator</td>
+            <td width="10%" class="tableHeader">&nbsp;Date</td>
+            <td width="10%" class="tableHeader">&nbsp;Time</td>
+        </tr>
+            <tr>
+            <td colspan="6" class="divider"></td>
+            </tr>
+        </thead>
+        <tbody>
+
+        [% FOREACH log_item = measurement_log %]
+            <tr height="24">
+                <td>&nbsp;[% log_item.name %]</td>
+                <td>&nbsp;[% log_item.date %]</td>
+                <td>&nbsp;[% log_item.time %]</td>
+
+            </tr>
+            <tr>
+                <td colspan="6" class="divider"></td>
+            </tr>
+        [% END %]
+        </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+
+
+
+<br />
+<span class="title title-[% channel_config.$sales_channel %]">Size Chart Preview</span><br>
+<table width="400" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td>[% size_chart %]</td>
+    </tr>
+</table>
+<br />
+<br />
+
+

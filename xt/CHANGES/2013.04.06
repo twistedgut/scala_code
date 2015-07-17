@@ -1,0 +1,8 @@
+<pre>
+
+h1. CANDO
+    * CANDO-2266: Updates the Company Address for Jimmy Choo in the Config files
+    * CANDO-2276: Only use data from Product Service if it evaluates
+    * CANDO-2268: Incorrect date in localised emails fix
+
+</pre>

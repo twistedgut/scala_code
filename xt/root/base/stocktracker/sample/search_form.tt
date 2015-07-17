@@ -1,0 +1,97 @@
+
+<div id='product_search_form'>
+
+    <form action="/StockControl/Sample/SearchForm" method="get">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <thead>
+            <tr>
+                <td width="10%" class="dividerHeader"></td>
+                <td width="20%" class="dividerHeader"></td>
+                <td withd="70%" class="dividerHeader"></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr height="24"> 
+                <td></td><td>Designer</td><td>[% INCLUDE page_elements/forms/select_basic.tt options = designers, current = classify.designer %]</td>
+            </tr>
+            <tr>
+                <td colspan="3" class="dividerHeader"></td>
+            </tr>
+            <tr height="24"> 
+                <td></td><td>Season</td><td>[% INCLUDE page_elements/forms/select_basic.tt options = seasons, current = classify.season %]</td>
+            </tr>
+            <tr>
+                <td colspan="3" class="dividerHeader"></td>
+            </tr>
+            <tr height="24"> 
+                <td></td><td>Product Type</td><td>[% INCLUDE page_elements/forms/select_basic.tt options = product_types, current = classify.product_type  %]</td>
+            </tr>
+            <tr>
+                <td colspan="3" class="dividerHeader"></td>
+            </tr>
+            <tr height="24"> 
+                <td></td><td> Style Ref </td><td><input type="text" name="style_ref" size="15"> </td>
+            </tr>
+            <tr>
+                <td colspan="3" class="dividerHeader"></td>
+            </tr>
+            <tr height="24"> 
+                <td></td><td> Sku </td><td><input type="text" name="sku" size="15"> </td>
+            </tr>
+            <tr>
+                <td colspan="3" class="dividerHeader"></td>
+            </tr>
+            <tr height="24"> 
+                <td></td><td> Product Id </td><td><input type="text" name="product_id" size="15"> </td>
+            </tr>
+            <tr>
+                <td colspan="3" class="dividerHeader"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <input type="hidden" name="type" value="sample">
+    [% INCLUDE page_elements/forms/submit.tt %]
+
+    </form>
+</div>
+
+[% IF products.size > 0 %]
+
+<span class="title">Search Results</span><br>
+<br>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+	<tr>
+		<td colspan="6" class="dividerHeader"></td>
+	</tr>
+	<tr> 
+		<td width="15%" class="tableHeader"></td>
+		<td width="15%" class="tableHeader">&nbsp;&nbsp;&nbsp;SKU</td>
+		<td width="25%" class="tableHeader">Designer</td>
+		<td width="30%" class="tableHeader">Product Name</td>
+		<td width="15%" class="tableHeader">Season</td>
+		<td width="15%" class="tableHeader">Location</td>
+	</tr>
+	<tr>
+		<td colspan="6" class="dividerHeader"></td>
+	</tr>
+
+	[% FOREACH varid = products.keys.nsort %]
+		<tr>
+			<td><img src="/images/product/[% products.$varid.product_id %]/[% products.$varid.image.0 %].jpg" width="75"></td>
+			<td>&nbsp;&nbsp;&nbsp;<a href="/StockControl/Sample/Product/[% varid %]">[% products.$varid.legacy_sku %]</a></td>
+			<td>[% products.$varid.designer %]</td>
+			<td>[% products.$varid.name %]</td>
+			<td>[% products.$varid.season %]</td>
+			<td>[% products.$varid.location %]</td>
+		</tr>
+		<tr>
+			<td colspan="6" class="divider"></td>
+		</tr>
+	[% END %]
+		
+</table>
+
+[% END %]

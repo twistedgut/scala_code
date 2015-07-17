@@ -1,0 +1,3 @@
+BEGIN;
+UPDATE sessions SET expires=EXTRACT (EPOCH FROM NOW()) WHERE expires IS NULL;
+COMMIT;

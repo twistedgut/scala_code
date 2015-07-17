@@ -1,0 +1,164 @@
+[% USE Utilities('subkeysrt') %]
+
+<script type="text/javascript" language="javascript">
+
+<!--
+
+function clear_home_page () {
+	var def_home_page	= document.forms['userpref'].default_home_page;
+
+	for (var n=0; n<def_home_page.length; n++) {
+		if (def_home_page[n].checked) {
+			def_home_page[n].checked	= false;
+			document.getElementById('clear_home_page').checked	= true;
+			break;
+		}
+	}
+}
+
+//-->
+
+</script>
+
+<script>
+    $(function() {
+        $( "#tabs" ).tabs()
+            .removeClass('ui-widget');
+    });
+</script>
+
+<p class="info">
+    This section allows you to make a few customisations to xTracker to aid you
+    in its use, all can be undone if you don't like them.
+</p>
+
+
+<form name="userpref" action="/My/UserPref" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <div id="tabs">
+        <ul>
+            <li><a href="#tabs-1">Account Details</a></li>
+            <li><a href="#tabs-2">Sales Channel</a></li>
+            <li><a href="#tabs-3">Default Home Page</a></li>
+        </ul>
+        <div id="tabs-1">
+            <p>[% PROCESS account_details %]</p>
+        </div>
+        <div id="tabs-2">
+            <p>[% PROCESS sales_channel %]</p>
+        </div>
+        <div id="tabs-3">
+            <p>[% PROCESS default_home_page %]</p>
+        </div>
+    </div>
+</form>
+
+[% BLOCK account_details %]
+	<table width="100%" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td colspan="2" class="divider" class="white"></td>
+		</tr>
+		<tr height="25"> 
+			<td class="white" width="20%" align="right"><strong>Name:&nbsp;&nbsp;</strong></td>
+			<td class="white" width="80%">[% user_info.operator.name %]</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider" class="white"></td>
+		</tr>
+		<tr height="25"> 
+			<td class="white" align="right"><strong>Username:&nbsp;&nbsp;</strong></td>
+			<td class="white">[% user_info.operator.username %]</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+		<tr height="25"> 
+			<td class="white" align="right"><strong>Department:&nbsp;&nbsp;</strong></td>
+			<td class="white">[% user_info.department.department %]</td>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider" class="white"></td>
+		</tr>
+	</table>
+[% END %]
+
+[% BLOCK sales_channel %]
+	<p class="info">
+	Selecting a preferred sales channel will have the effect of automatically choosing that channel's tab when data is available on a page. It does not prevent you from selecting another channel's tab and when your preferred channel is not shown the first available channel will be shown instead. Selecting a preferred sales channel will also show that channel's summary information on the Home page by default.
+	</p>
+	<table width="100%" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td colspan="2" class="divider" class="white"></td>
+		</tr>
+		<tr>
+			<td height="36" class="white" align="right" width="40%"><strong>Preferred Sales Channel:&nbsp;&nbsp;</strong></td>
+			<td class="white" width="80%">
+				<select name="pref_channel_id">
+					<option value="0">No Preferred Channel</option>
+					[% FOREACH channel_id = channels.subkeysrt('name') %]
+						<option value="[% channel_id %]"[% IF user_pref.pref_channel_id == channel_id %] selected="selected"[% END %]>[% channels.$channel_id.name %]</option>
+					[% END %]
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider" class="white"></td>
+		</tr>
+	</table>
+	<br/>
+	[% PROCESS page_elements/forms/submit.tt %]
+[% END %]
+
+[% BLOCK default_home_page %]
+	<p class="info">
+	Choosing a default home page will take you automatically to that section of xTracker when you first log-in, after that clicking on the Home main menu option will take you to the normal home page where you can see the normal summary stats. If you reguarly use the same option every day this allows you to get started quickly. Clicking on 'clear home page' below will clear your default home page setting and take you to the standard Home page again each time you log-in thereafter.
+	</p>
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+		<thead>
+			<tr>
+				<td colspan="3" class="dividerHeader"></td>
+			</tr>
+			<tr height="24"> 
+				<td class="tableHeader" width="150">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Section</td>
+				<td class="tableHeader">Sub Section</td>
+				<td class="tableHeader" align="center">Default Home Page</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="dividerHeader"></td>
+			</tr>
+		</thead>
+		<tbody>
+		[% FOREACH sec = user_auth %]
+			<tr height="20">
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>[% sec.key %]</strong></td>
+				[% IF loop.count != 1 %]
+					<td colspan="2">&nbsp;</td>
+				[% ELSE %]
+					<td>&nbsp;</td>
+					<td align="center">[ <a href="javascript:clear_home_page();">clear home page</a> ]</td>
+				[% END %]
+			</tr>
+			<tr>
+				<td colspan="3" class="divider"></td>
+			</tr>
+			[% FOREACH subsec = sec.value %]
+				<tr height="20">
+					<td></td>
+					<td>[% subsec.key %]</td>
+					<td align="center">
+						<input type="radio" id="def_home_pge_[% subsec.value %]" name="default_home_page" value="[% subsec.value %]"[% IF user_pref.default_home_page == subsec.value %] checked="checked"[% END %] />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3" class="divider"></td>
+				</tr>
+			[% END %]
+		[% END %]
+		</tbody>
+	</table>
+	<br/>
+	[% PROCESS page_elements/forms/submit.tt %]
+
+	<input id="clear_home_page" type="radio" name="default_home_page" value="0" style="display: none;" />
+[% END %]

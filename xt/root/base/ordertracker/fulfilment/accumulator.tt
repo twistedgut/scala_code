@@ -1,0 +1,54 @@
+[% IF accumulator %]
+
+<form action="/Fulfilment/Packing/CheckShipment" method="get">
+
+<p class="info">Shipment [% accumulator.shipment_row.id | html %] spread across several totes
+or pigeonholes, all of which must be scanned.<br>
+[% accumulator.shipment_row.packing_summary | html %].
+</p>
+
+<!-- Container to be scanned -->
+
+<h3 class="title title-[% channel_config.$sales_channel %]">Additional Totes or Pigeonholes Required</h3>
+[% FOREACH container = accumulator.outstanding %]
+<div class="formrow divideabove accumulator-outstanding">
+    <span class="fakelabel">[% container.type | html %]:</span>
+    <p>[% container.id | html %]</p>
+</div>
+[% END %]
+
+<!-- Container scanning form -->
+
+<div class="formrow divideabove">
+    <label for="other_containers_new">Scan one of these:</label>
+    <input id="other_containers_new" name="scanned_barcode" type="text">
+</div>
+<div class="formrow dividebelow buttons formend">
+    <input class="button" type="submit" value="Submit »" name="submit">
+</div>
+
+<!-- List of containers we already have -->
+
+<h3 class="title title-[% channel_config.$sales_channel %]">Totes or Pigeonholes Already Scanned</h3>
+<div class="formrow divideabove dividebelow accumulator-scanned">
+    <span class="fakelabel">[% accumulator.primary.type | html %]:</span>
+    <p><span id="accumulator-primary">[% accumulator.primary.id %]</span> (<i>Primary</i>)</p>
+    <input type="hidden" name="shipment_id" value="[% accumulator.container_id | html %]">
+</div>
+[% FOREACH container = accumulator.scanned %]
+<div class="formrow dividebelow accumulator-scanned">
+    <span class="fakelabel">[% container.type | html %]:</span>
+    <p>[% container.id | html %]</p>
+    <input type="hidden" name="scanned_id" value="[% container.id | html %]">
+</div>
+[% END %]
+
+</form>
+
+<script type="text/javascript">
+$(document).ready( function () { $('#other_containers_new').focus() } )
+</script>
+
+[% ELSE %]
+You have reached this page in error. Please click the Back link and try again.
+[% END %]

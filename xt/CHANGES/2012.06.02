@@ -1,0 +1,21 @@
+<pre>
+
+h1. DC2.5 move back to DC2 (DCA-258)
+
+  * Remove channel location restrictions for main/dead stock
+  * Separate fast track and samples picksheet printers for OUT
+
+h1. CANDO - Customer and Order Management
+  * CANDO-506: Send 'failure to upload' errors from Order Importer to JCHOO
+  * CANDO-816: BUG: Automated refunds don't cope well with 'Card Debit' records
+  * CANDO-791: Premier - Exclude dispatch return from Premier Export File
+  * CANDO-790: Enable create RMA for Distribution Mangement department
+
+h1. Order Transfer
+  * process MRP orders via ActiveMQ (ORT-17)
+  * refactor JC and XML parsers to work with refactored roles (ORT-17)
+
+h1. Edit PO config swithc
+  * PM-815 - Adding Ability to switch on or off the editing of purchase orders in XT
+
+</pre>

@@ -1,0 +1,345 @@
+=====================================
+XT 2011.17.04 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               : 
+Cherwell           : 
+Release Manager    : 
+Build Manager      : 
+TechOps            : 
+Backend Developer  : 
+Frontend Developer : 
+QA                 : 
+PCI Authorised by  : 
+
+2 - CHANGELOG
+-------------
+http://gitosis.net-a-porter.com/cgit/xt/tree/CHANGES/2011.17.04?h=release/2011.17
+
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2011.17/xt-2011.17.04-0.noarch.rpm
+
+Do this both for DC1 and DC2.
+
+4 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+
+Action for TECH-OPS - 
+   The JOB_QUEUE_FAILED_EMAIL property needs to be set to - xtdcalerts@animal.net-a-porter.com .. for XTDC1 and XTDC2
+   RE: APS-763
+
+Action for TECH-OPS - 
+   The original cron jobs for the PWS Sort Order Update (opt/xt/deploy/xtracker/script/data_transfer/web_site/transfer_pws_sort_order.pl) should be reinserted on DC1 and DC2.
+   The BAU for http://jira4.nap/browse/APS-979 ... the cron/at jobs setup for this should now be disabled
+
+5 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+sudo yum install xt
+
+6 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+
+* Printer updates for DC2.5:
+
+- For tidiness, remove the following mappings from /etc/hosts on xtdc2 machine
+
+10.7.7.59   rtv
+10.7.7.55   samples-dc2
+10.7.7.149  returns_qc_large_01 returns-bc-large-dc2
+10.7.7.142  returns_qc_large_02
+10.7.7.143  returns_qc_large_03
+10.7.7.144  returns_qc_large_04
+10.7.7.145  returns_qc_large_05
+10.7.7.146  returns_qc_large_06
+10.7.7.147  returns_qc_large_07
+10.7.7.148  returns_qc_large_08
+10.7.7.141  returns_qc_small_01 returns-bc-small-dc2
+
+- On the xtdc2 machine, add the following mappings to /etc/hosts:
+
+10.7.7.60   picking-dc024
+10.7.7.59   rtv-024
+10.7.7.62   samples_021
+10.7.7.51   samples_and_fasttrack_022
+10.7.7.171  dc2_021_label_small
+10.7.7.172  dc2_021_label_large
+10.7.7.173  channeltransfer-dc2
+10.7.7.60   returns_dc2_2
+
+10.7.7.142  returns-bc-large-dc2 returns_qc_large_05
+10.7.7.143  returns-bc-small-dc2 returns_qc_small_05
+10.7.7.144  returns_qc_large_02 returns_qc_large_06
+10.7.7.145  returns_qc_small_02 returns_qc_small_06
+10.7.7.146  returns_qc_large_03 returns_qc_large_07
+10.7.7.147  returns_qc_small_03 returns_qc_small_07
+10.7.7.148  returns_qc_large_04 returns_qc_large_08
+10.7.7.149  returns_qc_small_04 returns_qc_small_08
+
+- On xtdc2 again, add the following to /etc/cups/printers.conf:
+
+<Printer picking-dc024>
+Info Picking - RTV Inspect
+Location DC2
+DeviceURI lpd://picking-dc024/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer rtv-024>
+Info RTV
+Location DC2
+DeviceURI lpd://rtv-024/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer samples_021>
+Info Samples DC2
+Location DC2
+DeviceURI lpd://samples_021/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer samples_and_fasttrack_022>
+Info Fast Track Sheet
+Location DC2
+DeviceURI lpd://samples_and_fasttrack_022/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer dc2_021_label_small>
+Info Goods In 021 - Barcode - Small
+Location DC2
+DeviceURI lpd://dc2_021_label_small/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer dc2_021_label_large>
+Info Goods In 021 - Barcode - Large
+Location DC2
+DeviceURI lpd://dc2_021_label_large/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer channeltransfer-dc2>
+Info channeltransfer-dc2
+Location DC2
+DeviceURI lpd://channeltransfer-dc2/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer returns_dc2_2>
+Info returns_dc2_2
+Location DC2
+DeviceURI lpd://returns_dc2_2/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer returns_qc_small_02>
+Info Returns QC small 02
+Location DC2
+DeviceURI lpd://returns_qc_small_02/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer returns_qc_small_03>
+Info Returns QC small 03
+Location DC2
+DeviceURI lpd://returns_qc_small_03/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer returns_qc_small_04>
+Info Returns QC small 04
+Location DC2
+DeviceURI lpd://returns_qc_small_04/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer returns_qc_small_05>
+Info Returns QC small 05
+Location DC2
+DeviceURI lpd://returns_qc_small_05/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer returns_qc_small_06>
+Info Returns QC small 06
+Location DC2
+DeviceURI lpd://returns_qc_small_06/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer returns_qc_small_07>
+Info Returns QC small 07
+Location DC2
+DeviceURI lpd://returns_qc_small_07/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer returns_qc_small_08>
+Info Returns QC small 08
+Location DC2
+DeviceURI lpd://returns_qc_small_08/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+
+- For tidiness, on xtdc2 again, remove the following printers from /etc/cups/printers.conf
+
+rtv
+samples-dc2
+returns_qc_small_01
+
+- Restart cups on xtdc2.
+
+=======
+
+The AMQ queues ``vmsync-update-dc1`` and ``vmsync-update-dc2`` are no longer used.
+
+The topic ``vmsync-update`` is now used instead, and it should have 1 consumer per DC (i.e. 2 total)
+
+7 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

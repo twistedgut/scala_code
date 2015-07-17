@@ -1,0 +1,344 @@
+=====================================
+XT 2012.06.02 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               : 2012.05.10
+Cherwell           : 
+Release Manager    : Sham
+Build Manager      : Tom
+TechOps            : Luis
+Backend Developer  : Chisel
+Frontend Developer : 
+QA                 : 
+PCI Authorised by  : 
+
+2 - CHANGELOG
+-------------
+http://gitosis.net-a-porter.com/cgit/xt/tree/CHANGES/2012.06.02?h=release/2012.06
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2012.06/xt-2012.06.02-0.noarch.rpm
+
+Do this both for DC1 and DC2.
+
+4 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+
+* DC2A - DCA-258 - New printer for DC2
+
+- Add the following line to /etc/hosts (by updating puppet?)
+on the xtdc2 machine:
+
+samples_022    172.16.224.80
+
+- Add the following section to /etc/cups/printers.conf on the
+xtdc2 machine:
+
+<Printer samples_022>
+Info samples_022
+Location DC2
+DeviceURI lpd://samples_022/auto
+State Idle
+StateTime 1284703661
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+
+* CANDO-506: Send 'failure to upload' errors from Order Importer to JCHOO
+    On All DC's:
+    - Change ownership of the folllowing file to be 'nobody:napapp':
+        /var/data/order_digest_failed.err
+
+Please make sure Fulcrum is deployed before XTrackers to ensure colour patches have been applied. (APS-1457)
+
+* PM-815: Ability to switch on or off the editing of purchase orders in XT
+
+Prior to deployment please add the following to the Live Properties file:
+
+# Ability to edit purchase orders in XT is enabled
+ENABLE_EDIT_PURCHASE_ORDER     1
+
+* WHM-690 : New printers for Quality Control DC1 and DC2
+
+-Add this lines to /etc/hosts
+
+on xtdc1 machine:
+
+    quality_control_printer_01      10.3.17.205
+    quality_control_printer_02      10.3.3.197
+    spare_01                        10.3.17.205
+    spare_02                        10.3.17.205
+    spare_03                        10.3.17.205
+
+on xtdc2 machine :
+
+    quality_control_printer_01      10.7.7.56 
+    quality_control_printer_02      10.7.7.194
+    quality_control_printer_03      10.7.7.195
+    quality_control_printer_04      10.7.7.196
+    spare_01                        10.7.7.56
+    spare_02                        10.7.7.56
+    spare_03                        10.7.7.56
+
+
+-Add this to /etc/cups/printers.conf
+
+on xtdc1 machine:
+
+<Printer quality_control_printer_01>
+Info quality_control_printer_01
+Location dc1
+DeviceURI lpd://quality_control_printer_01/auto
+State Idle
+StateTime 1304952817
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer quality_control_printer_02>
+Info quality_control_printer_02
+Location dc1
+DeviceURI lpd://quality_control_printer_02/auto
+State Idle
+StateTime 1304952817
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+
+<Printer spare_01>
+Info spare_01
+Location dc1
+DeviceURI lpd://spare_01/auto
+State Idle
+StateTime 1304952817
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+
+<Printer spare_02>
+Info spare_02
+Location dc1
+DeviceURI lpd://spare_02/auto
+State Idle
+StateTime 1304952817
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+
+<Printer spare_03>
+Info spare_03
+Location dc1
+DeviceURI lpd://spare_03/auto
+State Idle
+StateTime 1304952817
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+
+
+on xtdc2 machine:
+
+<Printer quality_control_printer_01>
+Info quality_control_printer_01
+Location DC2
+DeviceURI lpd://quality_control_printer_01/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer quality_control_printer_02>
+Info quality_control_printer_02
+Location DC2
+DeviceURI lpd://quality_control_printer_02/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+
+<Printer quality_control_printer_03>
+Info quality_control_printer_03
+Location DC2
+DeviceURI lpd://quality_control_printer_03/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer quality_control_printer_04>
+Info quality_control_printer_04
+Location DC2
+DeviceURI lpd://quality_control_printer_04/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+
+<Printer spare_01>
+Info spare_01
+Location DC2
+DeviceURI lpd://spare_01/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+
+<Printer spare_02>
+Info spare_02
+Location DC2
+DeviceURI lpd://spare_02/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+
+<Printer spare_03>
+Info spare_03
+Location DC2
+DeviceURI lpd://spare_03/auto
+State Idle
+StateTime 1288789155
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+
+
+5 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+sudo yum install xt
+
+6 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+Needs to be run on both XTDC1 and XTDC2 - script will update all colours of outnet items in web db's
+sudo /opt/xt/xt-perl/bin/perl -I/opt/xt/deploy/xtracker/lib /opt/xt/deploy/xtracker/scripts/BAU/update_outnet_colour.pl
+
+* CANDO-506: Send 'failure to upload' errors from Order Importer to JCHOO
+    On All DC's:
+    - Check ownership of the folllowing file is still 'nobody:napapp':
+        /var/data/order_digest_failed.err
+    No reason why it shouldn't but just to make sure!
+
+7 - NEW AMQ QUEUES:
+-------------------
+
+The work on the order importer introduces the following new queues:
+
+Intl:
+  * dc1/mrp/order
+  * intl/mrp/order-status
+  * DLQ.dc1/mrp/order
+
+AM:
+  * dc2/mrp/order
+  * am/mrp/order-status
+  * DLQ.dc2/mrp/order
+
+The DLQs will only appear if there are errors processing orders.
+
+8 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |o
+                ||     || o
+                           o 
+                          
+

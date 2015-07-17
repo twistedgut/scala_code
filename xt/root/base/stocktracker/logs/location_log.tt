@@ -1,0 +1,24 @@
+<span class="title title-[% channel_config.$channel %]">[% log_title %]</span>
+
+<table class="data wide-data divided-data">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Sku</th>
+            <th>Location</th>
+            <th>Operator</th>
+        </tr>
+    </thead>
+    <tbody>
+        [% FOREACH log = log_data.$channel -%]
+            <tr>
+                <td>[% log.date %]</td>
+                <td>[% log.time %]</td>
+                <td>[% product.id %]-[% log.size_id %]</td>
+                <td><a href="/StockControl/StockCheck/Location?location=[% log.location %]">[% log.location %]</a></td>
+                <td>[% log.operator || '&nbsp;&nbsp;---' %]</td>
+            </tr>
+        [% END -%]
+    </tbody>
+</table>

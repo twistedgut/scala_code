@@ -1,0 +1,18 @@
+<pre>
+
+h1. Flexble Shipping - Nominated Day
+    FLEX-696 - Fulfilment Cap
+    FLEX-697 - Manage available/restricted dates
+    FLEX-504 - DHL Label & Manifest Changes for Saturday Delivery
+    FLEX-703 - Highlight non-Premier Nominated Day orders on Credit Check
+    FLEX-794 - Amend nominated day breach email
+    FLEX-798 - Remove workaround for "Order Importer Hack 1 - Nominated days with DHL shipping option"
+    FLEX-736 - Edit Address, missing button
+    FLEX-813 - Restrict weekends for MRP - DHL Express
+
+h1. CANDO - Customer and Order Management
+    CANDO-969: Pre order: Add new table heading 'Available stock' within the reservation & pre order tab on the product summary page
+    CANDO-949: Pre Order: Failed refunds queue page
+    CANDO-1157: Parallelized Order Importer (installed alongside serial order importer)
+
+</pre>

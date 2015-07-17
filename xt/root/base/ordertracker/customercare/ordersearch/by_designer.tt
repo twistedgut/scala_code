@@ -1,0 +1,74 @@
+<h1 class="title">Search</h1>
+<form id="search_by_designer" name="search_by_designer" method="POST">
+    <div class="formrow divideabove dividebelow">
+        <label for="channel">Sales Channel:</label>
+        [% INCLUDE page_elements/forms/select_drop_down.tt
+            name='channel_id',
+            options=channel_list,
+            option_value_key='id',
+            option_entry_key='name',
+            first_entry='All'
+        %]
+    </div>
+    <div class="formrow dividebelow">
+        <label for="designer">Designer:</label>
+        [% INCLUDE page_elements/forms/select_drop_down.tt
+            name='designer_id',
+            options=designer_list,
+            option_value_key='id',
+            option_entry_key='designer'
+        %]
+    </div>
+    <div class="formrow buttons aftertable">
+        [% PROCESS page_elements/forms/submit_button.tt submit="Search" %]
+    </div>
+</form>
+
+<p class="info">
+    Pick the Designer you wish to search against and optionally a Sales Channel and then a request will be placed on the Job Queue and the Search will be performed in the background. Previous Searches are shown below, these Searches will remain in the list for a few weeks and then they will be removed.
+</p><br/>
+
+<h1 class="title">Search Results</h1>
+<div id="search_by_designer_results_wrapper">
+<table class="wide-data data" id="search_by_designer_results">
+<thead>
+    <tr>
+        <th>Operator</th>
+        <th>Designer</th>
+        <th>Sales Channel</th>
+        <th>Status</th>
+        <th>Records</th>
+        <th>Search Date</th>
+        <th>&nbsp;</th>
+    </tr>
+</thead>
+<tbody>
+[% FOREACH row IN results_list %]
+    <tr class="dividebelow">
+        <td>[% row.operator.name %]</td>
+        <td>[% row.designer.designer %]</td>
+        <td>
+            [%- IF row.channel.defined -%]
+                <span class="title-[% row.channel.business.config_section %]">
+                    [% row.channel.name %]
+                </span>
+            [%- ELSE -%]
+                All
+            [%- END -%]
+        </td>
+        <td>[% row.state_description %]</td>
+        <td>[% row.number_of_records %]</td>
+        <td>[% row.date_string %]
+        <td>
+            [% IF row.state == 'completed' && row.number_of_records > 0 %]
+                <a href="/CustomerCare/OrderSearchbyDesigner/Results/[% row.file_name.remove('\..*') %]/summary" title="View Results">
+                    <img src="/images/icons/page_go.png" />
+                </a>
+            [% END %]
+        </td>
+    </tr>
+[% END %]
+</tbody>
+</table>
+</div>
+

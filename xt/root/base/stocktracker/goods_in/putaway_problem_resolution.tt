@@ -1,0 +1,138 @@
+<!-- TT BEGIN : root/base/stocktracker/goods_in/putaway_problem_resolution.tt -->
+
+[% UNLESS container %]
+
+<div id="barcode_scan">
+    <form name="putaway_problem_resolution" method="post" action="/GoodsIn/PutawayProblemResolution">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+        [%# This is the input field for the barcode scanner: %]
+        <div class="formrow">
+            <label for="scan_value">Container ID</label>
+            <input class="scanable" type="text" name="container_id" value="" />
+            [%# duplicate "scan" with hidden input, because IE does not send "submit" parameter %]
+            <input type="hidden" name="scan" value="1">
+            <input type="submit" name="scan" value="Go!" />
+        </div>
+
+    </form>
+</div>
+
+[% ELSE %]
+
+<div id="container_info">
+    <input type="hidden" name="container_id" id="container_id" value="[% container.container_id %]" />
+
+    [% IF container_fault %]
+        <h2 class="section-title with-2-line-above">
+            Failure for container ID [% container.container_id %]:
+        </h2>
+
+        <p id="failure_description" class="info with-1-line-above">
+            [% container_fault.description %]
+        </p>
+
+        [% IF advice_response_date %]
+            <p class="putaway-problem-resolution-error-date">
+                Error received on [% local_date(advice_response_date) %]
+            </p>
+        [% END %]
+
+        <h2 class="section-title with-2-line-above">
+            Please try the following to resolve the issues:
+        </h2>
+
+        <div class="with-1-line-above putaway-problem-resolution-re-putaway-block">
+            <h2 class="section-title">Resolution[% IF container_fault.resolutions.size > 1 %]s[% END %]</h2>
+        [% FOREACH resolution IN container_fault.resolutions %]
+            [% UNLESS resolution.control %]
+                <div class="putaway-problem-resolution-resolution with-1-line-above">[% resolution.text %]</div>
+            [% ELSIF resolution.control == 'START_PUTAWAY_PREP' %]
+                [% PROCESS stocktracker/goods_in/putaway_problem_resolution/re_putaway.tt %]
+            [% END %]
+
+            [%#
+                Make sure users are aware that resolutions are options
+                rather than sequence of actions
+            %]
+            [% IF loop.size > 1 AND NOT loop.last %]
+                <div class="with-1-line-above">or</div>
+            [% END %]
+        [% END %]
+        </div>
+
+    [% END %]
+
+    <h2 class="section-title with-2-line-above">Content of faulty container</h2>
+    <div class="with-1-line-above">
+        [% INCLUDE page_elements/putaway_prep_container_content.tt
+            content = container_content
+            table_id = 'container_content'
+        %]
+    </div>
+
+
+    [%# User is able to mark faulty container only in case if new putaway prep is not in process %]
+    [% UNLESS new_container_id %]
+        <form
+            name="putaway_problem_resolution_container_is_empty"
+            method="post"
+            action="/GoodsIn/PutawayProblemResolution"
+        >
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+        <div class="formrow buttons aftertable">
+            <input
+                id="putaway_problem_resolution_faulty_container_empty"
+                type="submit"
+                name="empty_faulty_container"
+                value="Container empty"
+            >
+            <input type="hidden" name="container_id" value="[% container.container_id %]">
+        </div>
+    </form>
+    [% END %]
+
+    <h2 class="section-title with-1-line-above">Group Information</h2>
+
+    <table id="related_groups" class="data wide-data divided-data with-1-line-above"><tbody>
+        <tr>
+            <td class="tableHeader">Group</td>
+            <td class="tableHeader">Type</td>
+            <td class="tableHeader">PRL</td>
+            <td class="tableHeader">Delivery</td>
+            <td class="tableHeader">PID</td>
+            <td class="tableHeader">Designer</td>
+            <td class="tableHeader">RMA</td>
+            <td class="tableHeader">Qty Expected</td>
+            <td class="tableHeader">Qty Scanned</td>
+            <td class="tableHeader">Last Action</td>
+        </tr>
+    [% FOREACH group IN groups %]
+        <tr>
+            <td>[% group.pgid | html %]</td>
+            <td>[% group.stock_process_type | html %]</td>
+            <td>[% group.prl | html %]</td>
+            <td>[% group.delivery | html %]</td>
+            <td>[% group.pid | html %]</td>
+            <td>[% group.designer | html %]</td>
+            <td>[% IF group.rma_number %][% group.rma_number | html %][% ELSE %]-[% END %]</td>
+            <td>[% group.quantity_expected | html %]</td>
+            <td>[% group.quantity_scanned | html %]</td>
+            <td>[% local_date(group.last_action) || '-' | html %]</td>
+        </tr>
+    [% END %]
+    </tbody></table>
+
+</div>
+
+<script>
+    $(document).ready( function() {
+        $('#putaway_problem_resolution_faulty_container_empty').bind('click', function(event){
+            return window.confirm('Please confirm faulty container is empty')
+        });
+    });
+</script>
+
+[% END %]
+
+<!-- TT END : root/base/stocktracker/goods_in/putaway_problem_resolution.tt -->

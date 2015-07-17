@@ -1,0 +1,7 @@
+[
+[% FOREACH operator = operators %]
+
+    ["[%operator.name%]", "[%operator.id%]"][% IF NOT loop.last %],[% END %]
+
+[% END %]
+]

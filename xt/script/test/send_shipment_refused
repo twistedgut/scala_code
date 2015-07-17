@@ -1,0 +1,60 @@
+#!/usr/bin/env perl
+use NAP::policy "tt";
+use Getopt::Long;
+use Pod::Usage;
+use FindBin::libs;
+use FindBin::libs qw( base=lib_dynamic );
+use XTracker::Role::WithAMQMessageFactory;
+
+my ($shipment_id,%sku2quantity,$help);
+
+{
+my $p=Getopt::Long::Parser->new(
+    config => [qw(
+        no_auto_abbrev
+        no_getopt_compat
+        no_gnu_compat
+        no_permute
+        no_bundling
+        no_ignore_case
+        no_auto_version
+        no_auto_help
+             )],
+);
+my $help;
+$p->getoptions(
+    'shipment|s=i' => \$shipment_id,
+    'sku-quantity=f' => \%sku2quantity,
+    'help|h' => \$help,
+) or pod2usage(2);
+
+pod2usage(1) if $help;
+
+pod2usage(2) unless (grep { /^\d+-\d+$/ } keys(%sku2quantity))
+                 && (grep { /^\d+$/ }     values(%sku2quantity));
+}
+
+my $payload = {
+    shipment_id => "s-" . $shipment_id,
+    unavailable_items => [
+        map {{sku => $_, quantity => $sku2quantity{$_}}} keys(%sku2quantity)
+    ],
+};
+
+my $factory = XTracker::Role::WithAMQMessageFactory->build_msg_factory;
+
+$factory->transform_and_send('XT::DC::Messaging::Producer::WMS::ShipmentRefused',$payload);
+
+__END__
+
+=head1 NAME
+
+send_shipment_refused - send the C<shipment_refused> message
+
+=head1 SYNOPSIS
+
+  send_shipment_refused --shipment 987654 --sku-quantity 12345-012=1
+
+  send_shipment_refused --shipment 987654 --sku-quantity 12345-012=1 --sku-quantity 12345-013=2
+
+=cut

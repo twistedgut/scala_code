@@ -1,0 +1,7 @@
+BEGIN;
+
+ALTER TABLE shipping_charge ADD COLUMN
+    is_enabled BOOLEAN DEFAULT TRUE NOT NULL;
+
+
+COMMIT;

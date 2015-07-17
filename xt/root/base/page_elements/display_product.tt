@@ -1,0 +1,289 @@
+<script type="text/javascript" src="/javascript/common.js"></script>
+<script language="Javascript">
+
+function showhide(id) {
+    if (document.getElementById) {
+        obj = document.getElementById(id);
+
+        if (obj.style.display == "none") {
+            obj.style.display = "";
+        }
+        else {
+            obj.style.display = "none";
+        }
+    }
+}
+</script>
+
+<span class="title">Product Summary</span><br />
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <thead>
+        <tr class="divideabove dividebelow">
+            <td colspan="7" class="tableheader">
+                &nbsp;&nbsp;&nbsp;<a href="/StockControl/Inventory/Overview?product_id=[% product.id %]">[% product.id %]</a>&nbsp;&nbsp;:&nbsp;&nbsp;[% product.designer %] - [% IF product.name %][% product.name %][% ELSE %][ <em>Name Required</em> ][% IF product.description %]&nbsp;&nbsp;&nbsp;<i>[% product.description %]</i>[% END %][% END %]
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr height="10">
+            <td class="blank" colspan="7">&nbsp;</td>
+        </tr>
+        <tr height="100" valign="top">
+            <td class="blank">
+                [% m_width = 120;
+                   xs_width = 56;
+                IF active_channel.channel_name == 'MRPORTER.COM';
+                   filename = product.id _ '_mrp';
+                   image_size = 'l';
+                ELSE;
+                   filename = product.id;
+                   image_size = 'dl';
+                END %]
+
+                [% IF active_channel.channel_name == 'JIMMYCHOO.COM' %]
+                        <a href="[% images.0 %]" target="new" class="imagezoom"><img class="product" width="[% m_width %]" src="[% images.0 %]"></a>
+                    </td>
+                    <td class="blank"><img src="/images/blank.gif" width="10" height="1"></td>
+                    <td class="blank">
+                        <a href="[% images.1 %]" target="new" class="imagezoom"><img class="product" width="[% xs_width %]" src="[% images.1 %]"></a>
+                        <br clear="all">
+                        <a href="[% images.2 %]" target="new" class="imagezoom"><img class="product" width="[% xs_width %]" src="[% images.2 %]" style="margin-top:10px"></a>
+                    </td>
+                [% ELSE %]
+                        <a[% IF active_channel.live %] href="[% image_host_url %]/images/products/[% product.id %]/[% filename %]_in_[% image_size %].jpg" target="new" class="imagezoom" [% END %]><img class="product" width="[% m_width %]" src="[% images.0 %]"></a>
+                    </td>
+                    <td class="blank"><img src="/images/blank.gif" width="10" height="1"></td>
+                    <td class="blank">
+                        <a[% IF active_channel.live %] href="[% image_host_url %]/images/products/[% product.id %]/[% filename %]_bk_[% image_size %].jpg" target="new" class="imagezoom"[% END %]><img class="product" width="[% xs_width %]" src="[% images.1 %]"></a>
+                        <br clear="all">
+                        <a[% IF active_channel.live %] href="[% image_host_url %]/images/products/[% product.id %]/[% filename %]_cu_[% image_size %].jpg" target="new" class="imagezoom"[% END %]><img class="product" width="[% xs_width %]" src="[% images.2 %]" style="margin-top:10px"></a>
+                    </td>
+                [% END %]
+            <td class="blank"><img src="/images/blank.gif" width="25" height="1"></td>
+            <td class="blank" colspan="3">
+
+                <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:17px">
+                    <tr>
+                        <td width="47%" class="blank">
+                            <table class="data wide-data divided-data">
+                                <tr>
+                                    <td align="right"><b>Style Number:</b>&nbsp;</td>
+                                    <td>[% product.style_number %]</td>
+                                </tr>
+                                <tr>
+                                    <td align="right"><b>Season:</b>&nbsp;</td>
+                                    <td>[% IF product.act == 'Pre-Collection' %]P[% END %][% product.season %]</td>
+                                </tr>
+                                <tr>
+                                    <td align="right"><b>Colour:</b>&nbsp;</td>
+                                    <td>
+                                        [% IF product.colour && product.colour != 'Unknown'  %]
+                                            [% product.colour %]
+                                        [% ELSIF product.designer_colour %]
+                                            <i>[% product.designer_colour %]</i>
+                                        [% ELSE %]
+                                            Unknown
+                                        [% END %]
+                                        &nbsp;
+                                        [% IF product.colour_filter && product.colour_filter != 'Unknown' %]
+                                            ([% product.colour_filter %])
+                                        [% END %]
+
+                                        [% IF product.designer_colour_code %]
+                                            &nbsp;&nbsp;Code: [% product.designer_colour_code %]
+                                        [% END %]
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td width="6%" class="blank"></td>
+                        <td width="47%" class="blank">
+                            <table class="data wide-data divided-data">
+                                <tr>
+                                    <td align="right"><b>Size Scheme:</b>&nbsp;</td>
+                                    <td>[% product.size_scheme_name %]</td>
+                                </tr>
+                                <tr>
+                                    <td align="right"><b>Classification:</b>&nbsp;</td>
+                                    <td>[% product.classification || '-' %] / [% product.product_type || '-' %] / [% product.sub_type || '-' %]</td>
+                                </tr>
+                                <tr>
+                                    <td align="right"><b>Purchase Order:</b>&nbsp;</td>
+                                    <td>
+                                        [% count = 0 %]
+                                        [% FOREACH po_id = purchase_orders.keys.nsort %]
+                                            <a href="/StockControl/PurchaseOrder/Overview?po_id=[% po_id %]">[% purchase_orders.$po_id.purchase_order_number %]</a> &nbsp; &nbsp; <br />
+                                            [% IF count == 2 %]
+                                                &#8230;
+                                                [% LAST %]
+                                            [% END %]
+                                            [% count = count + 1 %]
+                                        [% END %]
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <br />
+
+                <table class="data wide-data divided-data">
+                    <thead>
+                        <tr>
+                            <th>Sales Channel</th>
+                            <th>Status</th>
+                            <th>Arrival Date</th>
+                            <th>Upload Date</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    [% FOREACH channel = channel_info.keys.sort %]
+                        <tr>
+                            <td><span class="title title-[% channel_config.$channel %]" style="line-height: 1em;">[% channel %]</span></td>
+                            <td>
+                                [% IF channel_info.$channel.cancelled %]
+                                    <span class="highlight">Cancelled</span>
+                                [% ELSIF channel_info.$channel.live %]
+                                    <a href='http://[% channel_info.$channel.web_url %]/product/[% product.id %]' target='livewindow'>Live</a> [% IF channel_info.$channel.visible %]: Visible[% ELSE %]: Invisible[% END %]
+                                [% ELSE %]
+                                    <span class="lowlight">Non-Live</span>
+                                    [% IF channel_info.$channel.is_preorderable %] <span title="preorderable">(P)</span>[% END %]
+                                [% END %]
+
+                                [% IF channel_info.$channel.transfer_status != 'None' %]
+                                    &nbsp;&nbsp;&nbsp;&nbsp;<i>
+                                    [% IF channel_info.$channel.transfer_status == 'Transferred' && channel_info.$channel.transfer_date %]
+                                        (Transferred [% channel_info.$channel.transfer_date %] )
+                                    [% ELSIF channel_info.$channel.transfer_status == 'Transferred' %]
+                                        (Transferred)
+                                    [% ELSE %]
+                                        (Transfer [% channel_info.$channel.transfer_status %])
+                                    [% END %]
+                                    </i>
+                                [% END %]
+                            </td>
+                            <td>[% channel_info.$channel.arrival_date || '-' %]</td>
+                            <td>[% channel_info.$channel.upload_date || '-' %]</td>
+                            <td>[% IF channel_info.$channel.channel_name == active_channel.channel_name %]<img src="/images/icons/bullet_green.png" title="Active" alt="Active">[% ELSE %]<img src="/images/icons/bullet_red.png" title="Inactive" alt="Inactive">[% END %]</td>
+                        </tr>
+                    [% END %]
+                    </tbody>
+                </table>
+
+             </td>
+        </tr>
+        <tr height="10">
+            <td class="blank" colspan="3" align="center">
+                [% IF active_channel.live %]<span class="lowlight">Click on images to enlarge</span>[% END %]
+            </td>
+            <td class="blank" colspan="4" align="right" style="padding-top:3px">
+
+<div style="width:90px">
+[% IF (department_id == 6 || department_id == 7 || department_id == 11 || department_id == 2 || department_id == 12 || department_id == 16 )
+    AND product.designer != 'Gift Voucher'
+%]
+        <a href="#" style="text-decoration: none" onclick="showhide('hideShow_new_comment'); return(false);">
+            <img src="/images/icons/add.png" style="float:left; margin-right:3px">Add Comment
+        </a>
+[% END %]
+</div></td>
+        </tr>
+    </tbody>
+</table>
+
+<br /><br />
+
+<div style="display:none; margin-top:5px;" id="hideShow_new_comment">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <form method="post" action="[% path.match('(^\/.*\/.*)\b').0 %]/SetProductComments">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="product_id" value="[% product.id %]" />
+        <thead>
+            <tr>
+                <td colspan="5" class="divider"></td>
+            </tr>
+            <tr height="24">
+                <td width="15%" class="tableheader">&nbsp;&nbsp;Operator</td>
+                <td width="20%" class="tableheader">Department</td>
+                <td width="20%" class="tableheader">Date</td>
+                <td width="40%" class="tableheader">Comment</td>
+                <td width="5%" class="tableheader"></td>
+            </tr>
+            <tr>
+                <td colspan="5" class="divider"></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr height="24">
+                <td width="15%">&nbsp;&nbsp;<input type="text" name="op" value="[% operator_name %]" size="12" readonly="readonly" /></td>
+                <td width="20%"><input type="text" name="dep" value="[% department %]" size="20" readonly="readonly" /></td>
+                <td width="20%"><input type="text" name="dat" value="[% USE date %][% date.format(mytime, '%d-%m-%Y %H:%M') %]" size="17" readonly="readonly" /></td>
+                <td width="40%"><input type="text" name="comment" value="" size="50" /></a></td>
+                <td width="5%"></td>
+            </tr>
+            <tr>
+                <td colspan="5" class="divider"></td>
+            </tr>
+            <tr>
+                <td colspan="5" class="blank"><img src="/images/blank.gif" width="1" height="7"></td>
+            </tr>
+            <tr>
+                <td colspan="5" class="blank" align="right"><input class="button" type="submit" name="submit" value="Submit &raquo;" /></td>
+            </tr>
+
+        </tbody>
+    </form>
+    </table>
+    <br /><br />
+</div>
+
+<div id="productComments" style="margin-bottom:15px; [% IF !comments || comments.size == 0 %]display:none[% END %]">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td class="blank"><span class="title">Product Comments ([% IF comments.defined && comments.size > 0 %][% comments.size %][% ELSE %]0[% END %])</span></td>
+            <td class="blank" align="right">[% IF comments.defined && comments.size > 0 %]<a href="#" onclick="showhide('hideShow_comments'); return(false);">Show/Hide Comments</a>[% END %]</td>
+        </tr>
+        <tr>
+            <td colspan="5" class="divider"></td>
+        </tr>
+    </table>
+
+    <div style="display: none;" id="hideShow_comments">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+            <thead>
+            <tr height="24">
+                <td width="15%" class="tableheader">&nbsp;&nbsp;Operator</td>
+                <td width="20%" class="tableheader">Department</td>
+                <td width="20%" class="tableheader">Date</td>
+                <td width="40%" class="tableheader">Comment</td>
+                <td width="5%" class="tableheader"></td>
+            </tr>
+            <tr>
+                <td colspan="5" class="divider"></td>
+            </tr>
+            </thead>
+            <tbody>
+                [% FOREACH comment = comments.keys.nsort.reverse %]
+                    <tr height="24">
+                        <td width="15%">&nbsp;&nbsp;[% comments.$comment.name %]</td>
+                        <td width="20%">[% comments.$comment.department %]</td>
+                        <td width="20%">[% comments.$comment.timestamp %]</td>
+                        <td width="40%">[% comments.$comment.comment %]</td>
+                        <td width="5%">
+                            [% IF comments.$comment.operator_id == operator_id %]
+                                <a href="/[% section.remove('\W+') %]/[% subsection.replace('&','And').remove('\W+') %]/DeleteProductComment?product_id=[% product.id %]&amp;comment_id=[% comments.$comment.id %]"><img src="/images/icons/cross.png" alt="delete comment" title="Delete Comment" /></a>
+                            [% ELSE %]
+                                &nbsp;
+                            [% END %]
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="divider"></td>
+                    </tr>
+                [% END %]
+            </tbody>
+        </table>
+    </div>
+    <br /><br />
+</div>

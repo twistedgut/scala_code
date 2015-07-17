@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ORDERS>
+  <ORDER O_ID="[% order.id %]" ORDER_DATE="[% order.date || '2010-06-29 12:10' %]" CHANNEL="NAP-INTL" CUST_ID="[% customer.id || 900961 %]" CUST_IP="10.5.0.159" LOGGED_IN_USERNAME="[% customer.email || 'rel177@spainspanish2.com' %]" USED_STORED_CREDIT_CARD="F">
+    <TENDER_LINE TL_ID="1044771" TYPE="Card" RANK="1">
+      <VALUE CURRENCY="GBP">1184.10</VALUE>
+      <PAYMENT_DETAILS>
+        <PRE_AUTH_CODE>[% customer.pre_auth_code || 20000348 %]</PRE_AUTH_CODE>
+      </PAYMENT_DETAILS>
+    </TENDER_LINE>
+    <BILLING_DETAILS>
+      <NAME>
+        <TITLE>Ms</TITLE>
+        <FIRST_NAME>Loga</FIRST_NAME>
+        <LAST_NAME>jegede</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>1 Fullerton Square</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2 />
+        <ADDRESS_LINE_3>1 Fullerton Square</ADDRESS_LINE_3>
+        <TOWNCITY>SKANDERBORG</TOWNCITY>
+        <COUNTY />
+        <STATE />
+        <POSTCODE>DK-8660</POSTCODE>
+        <COUNTRY>DK</COUNTRY>
+      </ADDRESS>
+      <CONTACT_DETAILS>
+        <TELEPHONE TYPE="HOME" />
+        <TELEPHONE TYPE="MOBILE" />
+        <TELEPHONE TYPE="OFFICE">1</TELEPHONE>
+        <EMAIL>[% customer.email || 'rel177@spainspanish2.com' %]</EMAIL>
+      </CONTACT_DETAILS>
+    </BILLING_DETAILS>
+    <DELIVERY_DETAILS>
+      <NAME>
+        <TITLE>Miss</TITLE>
+        <FIRST_NAME>Loga</FIRST_NAME>
+        <LAST_NAME>jegede</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>1 Fullerton Square</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2 />
+        <ADDRESS_LINE_3>1 Fullerton Square</ADDRESS_LINE_3>
+        <TOWNCITY>SKANDERBORG</TOWNCITY>
+        <COUNTY />
+        <STATE />
+        <POSTCODE>DK-8660</POSTCODE>
+        <COUNTRY>DK</COUNTRY>
+      </ADDRESS>
+      <ORDER_LINE OL_ID="4304919" DESCRIPTION="Signature Packaging" SKU="900006-001" QUANTITY="1" OL_SEQ="1">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="EUR">0.00</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="EUR">0.00</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="EUR">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      <ORDER_LINE OL_ID="4304918" DESCRIPTION="Sunbeam snakeskin pumps" SKU="[% order.items.0.sku || '60661-095' %]" QUANTITY="1" OL_SEQ="2">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="EUR">991.38</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="EUR">158.62</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="EUR">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      <ORDER_LINE OL_ID="4304920" DESCRIPTION="Mainland Europe" SKU="900008-001" QUANTITY="1" OL_SEQ="3">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="EUR">29.40</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="EUR">4.70</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="EUR">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+    </DELIVERY_DETAILS>
+    <GROSS_TOTAL>
+      <VALUE CURRENCY="EUR">1184.10</VALUE>
+    </GROSS_TOTAL>
+    <POSTAGE>
+      <VALUE CURRENCY="EUR">0.00</VALUE>
+    </POSTAGE>
+  </ORDER>
+</ORDERS>
+

@@ -1,0 +1,12 @@
+<pre>
+
+h1. DC2A
+    * DCA-3381: Display better information for containers at multi-tote pack lanes
+
+* DCA-3384: Don't show staged containers on packing page
+
+h1. Product Management
+
+    * PM-2080 - Log further information for an upload error, if a product fails to be uploaded.
+
+</pre>

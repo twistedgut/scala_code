@@ -1,0 +1,11 @@
+[%#-
+    usage: PROCESS page_elements/show_hide_toggle_heading.tt heading_to_show="Heading",id_to_toggle="element id"
+
+    This is used to go on top of a Div or Table that you wish to Show/Hide. It sets the 'class' of the image you
+    click on to 'toggle_show_hide_element' which can be used in jQuery.
+-%]
+<div style="border-bottom: 1px solid #aaaaaa; position: relative; width: 100%;">
+    <div style="float: left;"><h3 class="title-[% channel_config.$sales_channel %]">[% heading_to_show %]</h3></div>
+    <div style="float: right; padding-top: 5px;"><img class="toggle_show_hide_element" id="[% id_to_toggle %]_toggle" src="/images/icons/zoom_in.png" alt="Show/Hide" title="Show/Hide" border="0"></div>
+    <br clear="all">
+</div>

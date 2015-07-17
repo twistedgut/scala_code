@@ -1,0 +1,70 @@
+[% USE PrintDocs -%]
+<html>
+<head>
+<!-- Template name: [% template.name %] -->
+<title></title>
+[% INCLUDE shared/show_print_images.tt %]
+<style type="text/css">
+<!--
+body { margin-top: 1cm; margin-left: 0.5cm; }
+//-->
+</style>
+<meta http-equiv=content-type content="text/html; charset=utf8">
+</head>
+<body>
+<font face="arial">
+<table cellspacing="0" cellpadding="0" width="600" border="0">
+    <tbody>
+    <tr>
+        <td><h1>Sales Channel Transfer Picking List</h1></td>
+    </tr>
+    <tr>
+        <td>
+            <br />
+            <h3><b>Transfer Number:&nbsp;&nbsp;[% transfer.id %]</b></h3>
+            <img src="file://[% PrintDocs.document_path('channeltransfer' _ transfer.id _ '.png') %]"><br />
+            <br />
+            <h4><b>PID:</b>&nbsp;&nbsp;[% transfer.product_id %]<br />
+            <h4><b>FROM:</b>&nbsp;&nbsp;[% transfer.from_channel %]<br />
+            <h4><b>TO:</b>&nbsp;&nbsp;[% transfer.to_channel %]<br />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <br />
+            <br />
+            <h3><b>Items to Pick</b></h3>
+            <table width="100%" cellpadding="5" cellspacing="0" bgcolor="#f2f2f2">
+                <tr bgcolor="#c5c5c5">
+                    <td><b>SKU</b></td>
+                    <td><b>LOCATION</b></td>
+                    <td><b>EXPECTED QUANTITY</b></td>
+                </tr>
+                <tr>
+                    <td colspan="3" height="1" bgcolor="#ccc"></td>
+                </tr>
+                [% SET sales_channel = transfer.from_channel %]
+                [% FOREACH variant_id = stock.$sales_channel.keys.nsort %]
+                    [% FOREACH location_id = stock.$sales_channel.$variant_id.keys.nsort %]
+                        <tr>
+                            <td colspan="3" height="5"></td>
+                        </tr>
+                        <tr>
+                            <td>[% variants.$variant_id.product_id %]-[% variants.$variant_id.size_id %]</td>
+                            <td>[% stock.$sales_channel.$variant_id.$location_id.$main_status_id.location %]</td>
+                            <td>[% stock.$sales_channel.$variant_id.$location_id.$main_status_id.quantity %]</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" height="5"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" height="1" bgcolor="#ccc"></td>
+                        </tr>
+                    [% END %]
+                [% END %]
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

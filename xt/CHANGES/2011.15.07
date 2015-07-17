@@ -1,0 +1,23 @@
+<pre>
+
+h1. CANDO - Customer & Order Management
+    * CANDO-65 : Active Invoices UI Changes
+    * CANDO-115: Visibility of cancelled order items in Return Proforma (36f3430)
+    * CANDO-132: Invalidating payment if beyond threshold (4ae1fa0)
+    * CANDO-132: DBIC and Schema changes + unit test for invalid payments (c067318)
+    * CANDO-132: Config changes + unit test for invalid payments (b929a12)
+    * CANDO-132: Channelising + higlighting + Unit test + client test for invalid payments (466963e)
+    * CANDO-132: Unit test + minor fix (a7fa2c1)
+    * CANDO-132: Bug Fix found during testing (7cbddaf)
+    * CANDO-133: XT Emails Housekeeping
+    * CANDO-361: Staff Orders - Incorrect Shipping Information - BUG
+    * CANDO-368: Add credit amount checking for bulk reimbursements (1d531cb)
+    * CANDO-373: Premier Delivery/Collection Information available within XT
+    * CANDO-430: UPS Express - default return service to 2nd day air - (DC2 Only)
+    * CANDO-436: ARMA Email Updates
+    * CANDO-461: Revised correspondence templates and default message. (675a6b7)
+    * CANDO-488: JCHOO phone number correct for DC2
+    * CANDO-502: Change JCHOO-INTL returns e-mail address (0bfe63a)
+
+
+</pre>

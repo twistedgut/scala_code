@@ -1,0 +1,10 @@
+A new set of CONRAD Fraud Rules have been pushed to live in [% dc %].
+
+Date and time: [% timestamp %]
+
+Change made by [% operator_name %] (Username: [% operator_login %] - Operator ID: [% operator_id %] )
+
+The change log message for the change to the live rules is:
+
+[% change_log_msg %]
+

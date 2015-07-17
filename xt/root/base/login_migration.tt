@@ -1,0 +1,22 @@
+<form name="loginForm" action="/[% IF handheld == 1 %]HandHeld[% ELSE %]Login[% END %]Migration" method="post" class="narrowlabels">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+<div class="formrow">
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username">
+</div>
+<div class="formrow">
+    <label for="password">Password</label>
+    <input type="password" id="password" name="pass">
+</div>
+<div class="formrow buttons">
+    <input type="hidden" name="get" value="[% get %]">
+    <input type="hidden" name="uri" value="[% uri %]">
+    [% PROCESS page_elements/forms/submit_button.tt submit="Login &raquo;" %]
+</div>
+
+</form>
+
+<script type="text/javascript">
+	document.loginForm.username.focus();
+</script>

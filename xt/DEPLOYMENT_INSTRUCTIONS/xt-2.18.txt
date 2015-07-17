@@ -1,0 +1,63 @@
+===============================
+XT 2.18 Deployment Instructions
+===============================
+
+Release Date:       2010/06/29
+
+
+These instructions are meant to be used in conjuction with those detailed in confluence:
+    http://confluence.net-a-porter.com/display/DEV/XT+Deployment#XTDeployment-XTApplicationdeployment
+
+
+1. *** NEW AMQ CONSUMER SERVER *** (same script as before but using new code)
+  BEFORE DEPLOY
+    A) Make sure the existing conusmer server is stopped.
+  AFTER DEPLOY
+    B) Start up the new consumer server in the same way as the old:
+          /opt/xt/deploy/xtracker/script/xt_activemq_dc_daemon.pl start
+          (making sure you use the correct perl: '/opt/xt/xt-perl/bin/perl')
+    C) Check the consumer server is running:
+          /opt/xt/deploy/xtracker/script/xt_activemq_dc_daemon.pl status
+    D) If you need to stop the new server then use:
+          /opt/xt/deploy/xtracker/script/xt_activemq_dc_daemon.pl stop
+    E) Change the cronjob that runs every hour to stop and start the consumer server
+       to use the new parameters to stop and then start it.
+
+2. Cron job for checking slas
+    AFTER DEPLOY
+        A job will need to be added to run at 7pm daily running /opt/xt/deploy/xtracker/script/check_slas.pl
+
+3. Re-run gift voucher patch
+    On QA *only* (DC1 *and* DC2) execute the following comand:
+
+        psql -d <xtracker(''|_dc2)> -u postgres -f db_schema/2.18/Common/19_event_code_constraint.sql
+
+    This only needs to be executed for the deployment of 2.18.03 as the patch
+    has changed since 2.18.02.
+
+*** IMPORTANT ***
+
+Please remember to apply DB patches for both DCs
+
+X. Lastly
+---------
+
+Paste any console output from the steps above as a
+
+  {noformat}
+    [replace with console output]
+  {noformat}
+
+comment to the JIRA ticket for this release.
+
+
+ _____________________________________
+/ You did remember to pull the latest \
+\ xt_deploy.sh, right?                /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

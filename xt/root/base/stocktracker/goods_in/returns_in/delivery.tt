@@ -1,0 +1,52 @@
+[% USE PrintDocs -%]
+[% IF return_delivery.confirmed;
+    PROCESS stocktracker/goods_in/returns_in/arrivals_confirm_delivery.tt UNLESS handheld;
+ELSE;
+    INCLUDE stocktracker/goods_in/returns_in/arrivals_enter_awb.tt;
+    PROCESS delivery_details;
+    IF handheld;
+        PROCESS handheld_submit;
+    ELSE;
+        PROCESS stocktracker/goods_in/returns_in/arrivals_confirm_delivery.tt;
+    END;
+END %]
+
+[% BLOCK handheld_submit %]
+<form name="confirm_delivery" action="[% hh_uri('/GoodsIn/ReturnsArrival/Delivery/' _ return_delivery.id) %]" method="post">
+    <input type="hidden" name="action" value="confirm_delivery" />
+    <table class="wide-data">
+        <tr>
+            <td align="right"><input type="submit" name="submit" class="button" value="Submit Delivery" /></td>
+        </tr>
+    </table>
+</form>
+[% END %]
+
+[% BLOCK delivery_details %]
+<h3>Delivery Details</h3>
+<table class="data wide-data divided-data" id="delivery_details">
+    <tr>
+        <th>ID</th>
+        <td>[% return_delivery.id %]</td>
+    </tr>
+    <tr>
+        <th>Created Date</th>
+        <td>[% return_delivery.date_created.strftime('%F %R') %]</td>
+    </tr>
+    <tr>
+        <th>Created By</th>
+        <td>[% return_delivery.created_by.name %]</td>
+    </tr>
+</table>
+[% END %]
+
+[% IF manifest AND manifest.return_delivery %]
+<script type="text/javascript">
+    var onload_function	= window.onload;
+    function open_manifest() {
+        window.open("[% PrintDocs.relative_document_path('return_delivery-' _ manifest.return_delivery.id) %]");
+        onload_function();
+    }
+    window.onload=open_manifest;
+</script>
+[% END %]

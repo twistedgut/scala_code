@@ -1,0 +1,142 @@
+[% INCLUDE stocktracker/reservation/common/customerhead.tt %]
+[% IF pre_order %]
+<div id="payment__page_grid">
+
+    <div class="payment__page_column">
+        <h3 class="title-[% channel_config.$sales_channel %]">Previously Used Cards</h3>
+       [% IF savedcards.size > 0 %]
+        <table id="payment__save_cards_list">
+            [% FOREACH card IN savedcards %]
+            <tr class="payment__saved_card">
+                <td class="payment__saved_card_radiobutton">
+                    <input selected type="radio" name="savedCard" value="[% card.last4Digits | format('%04d') %]" cardtype="[% card.cardType %]" class="payment__saved_card_option payment__payment_form_field">
+                </td>
+                <td class="payment__saved_card_details">
+                    <span class="payment__saved_card_type">[% card.cardType %] xxxx-xxxx-xxxx-[% card.last4Digits | format('%04d') %]</span>
+                    <br>
+                    <span class="payment__saved_card_dates">[% card.startDate %] [% card.expiryDate %]</span>
+                    <br>
+                    <span class="payment__saved_card_name">[% card.cardHolderName %]</span>
+                </td>
+            </tr>
+            [% END %]
+        </table>
+        [% ELSE %]
+            <span id="payment__no_saved_cards">No saved cards available</span>
+        [% END %]
+    </div>
+    <div class="payment__page_column">
+        <div class="payment__page_cell">
+            <h3 class="title-[% channel_config.$sales_channel %]">Credit/Debit Card</h3>
+            <table id="payment__newcard_option"><tr>
+                [% IF savedcards.size > 0 %]
+                <td class="payment__saved_card_radiobutton">
+                    <input type="radio" name="savedCard" value="-1" class="payment__saved_card_option payment__payment_form_field">
+                </td>
+                [% END %]
+                <td id="payment__new_card">
+                    <div class="payment__newcard_row">
+                        <span class="payment__newcard_field">Card Type:</span>
+                        <span class="payment__newcard_input">
+                            <select name="cardType" class="payment__new_card_value payment__payment_form_field" id="payment_card__card_type">
+                            [% FOREACH card_type IN payment_card_types %]
+                                <option value="[% card_type.upper %]">[% card_type %]</option>
+                            [% END %]
+                            </select>
+                        </span>
+                    </div>
+                    <div class="payment__newcard_row">
+                        <span class="payment__newcard_field">Card Number:</span>
+                        <span class="payment__newcard_input"><input name="cardNumber" type="text" size="35" class="payment__new_card_value payment__payment_form_field" id="payment_card__number" value=""></span>
+                    </div>
+                    <div class="payment__newcard_row">
+                        <span class="payment__newcard_field">Cardholders Name:</span>
+                        <span class="payment__newcard_input"><input name="cardHoldersName" type="text" size="35" class="payment__new_card_value payment__payment_form_field" id="payment_card__name" value=""></span>
+                    </div>
+                    <div class="payment__newcard_row">
+                        <span class="payment__newcard_field">Start Date:</span>
+                        <span class="payment__newcard_input">
+                            <select name="startMonth" class="payment__new_card_value payment__payment_form_field" id="payment_card__start_month">
+                                [% FOREACH month = start_date_months %]
+                                <option value="[% month.value %]" [% IF params.expiry_month == month.value %]selected[% END %]>[% month.name %]</option>
+                                [% END %]
+                            </select>
+                            <select name="startYear" class="payment__new_card_value payment__payment_form_field" id="payment_card__start_year">
+                                [% FOREACH year = start_date_years %]
+                                <option value="[% year.value %]" [% IF params.start_year == year.value %]selected[% END %]>[% year.name %]</option>
+                                [% END %]
+                            </select>
+                        </span>
+                    </div>
+                    <div class="payment__newcard_row">
+                        <span class="payment__newcard_field">End Date:</span>
+                        <span class="payment__newcard_input">
+                            <select name="expiryMonth" class="payment__new_card_value payment__payment_form_field" name="payment_card__end_month" id="payment_card__end_month">
+                                [% FOREACH month = expiry_date_months %]
+                                <option value="[% month.value %]" [% IF params.expiry_month == month.value %]selected[% END %]>[% month.name %]</option>
+                                [% END %]
+                            </select>
+                            <select name="expiryYear" class="payment__new_card_value payment__payment_form_field" id="payment_card__end_year">
+                                [% FOREACH year = expiry_date_years %]
+                                <option value="[% year.value %]" [% IF params.expiry_year == year.value %]selected[% END %]>[% year.name %]</option>
+                                [% END %]
+                            </select>
+                        </span>
+                    </div>
+                    <div class="payment__newcard_row">
+                        <span class="payment__newcard_field">Issue Number:&nbsp;&nbsp;</span>
+                        <span class="payment__newcard_input"><input name="issueNumber" class="payment__new_card_value payment__payment_form_field" type="text" size="5" id="payment_card__issue_number" value=""></span>
+                    </div>
+                    <div class="payment__newcard_row">
+                        <span class="payment__newcard_field">Save Card:&nbsp;&nbsp;</span>
+                        <span class="payment__newcard_input">
+                            <select name="keepCard" class="payment__new_card_value payment__payment_form_field" id="payment_card__save_card">
+                                <option value="true">Yes</option>
+                                <option value="false" selected="selected">No</option>
+                            </select>
+                        </span>
+                    </div>
+                    <div class="payment__newcard_row">
+                        <span class="payment__newcard_field">Security Number:&nbsp;&nbsp;</span>
+                        <span class="payment__newcard_input" id="payment__security_input"><input name="cVSNumber" class="payment__new_card_value payment__payment_form_field" type="text" size="5" id="payment_card__security_number" value=""></span>
+                    </div>
+                </td>
+            </tr></table>
+        </div>
+        <br>
+
+        <div class="payment__page_cell">
+            <h3 class="title-[% channel_config.$sales_channel %]">Payment Due</h3>
+            <span id="payment__total_due">[% payment_due %] [% pre_order.currency.currency %]</span>
+            [% IF discount_on %]
+                [% IF pre_order.applied_discount_percent > 0 %]
+                    <span id="payment__total_due__discount"> includes a [% pre_order.applied_discount_percent %]% discount</span>
+                [% ELSE %]
+                    <br><span id="payment__total_due__zero_discount">no discount was applied</span>
+                [% END %]
+            [% END %]
+        </div>
+        <br>
+
+        <div id="payment__payment_buttons" class="payment__page_cell">
+            <span>
+                <button class="button" id="payment__cancel_button">Return to Basket</button>
+            </span>
+            <span>
+                <button class="button" id="payment__pay_with_card_button">Process Payment</button>
+            </span>
+        </div>
+
+    </div>
+
+    <form id="payment__cancel_button_form" action="Basket" method="post">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+        <input type="hidden" id="payment__pre_order_id" name="pre_order_id" value="[% pre_order.id %]">
+    </form>
+
+    [% payment_form.header('payment__payment_form') %]
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    [% payment_form.footer %]
+
+</div>
+[% END %]

@@ -1,0 +1,1926 @@
+[% USE Department %]
+[%-
+    # sets up whether or not the Google Maps Link is
+    # shown on the Invoice & Shipping Addresses
+    SET cando_addrmap = 0;
+    IF department_id == db_constant('DEPARTMENT__FINANCE')
+        || department_id == db_constant('DEPARTMENT__CUSTOMER_CARE')
+        || department_id == db_constant('DEPARTMENT__CUSTOMER_CARE_MANAGER')
+        || department_id == db_constant('DEPARTMENT__SHIPPING')
+        || department_id == db_constant('DEPARTMENT__SHIPPING_MANAGER');
+    THEN;
+        cando_addrmap   = 1;
+    END;
+-%]
+[%-
+    # sets whether or not a user can edit
+    # the Delivery Signature Required field
+    SET can_edit_deliv_signature = 0;
+    IF ( department_id == db_constant('DEPARTMENT__FINANCE')
+          || department_id == db_constant('DEPARTMENT__SHIPPING')
+          || department_id == db_constant('DEPARTMENT__SHIPPING_MANAGER')
+          || Department.in_department_group( 'Customer Care', department_id ) );
+    THEN;
+        can_edit_deliv_signature = 1;
+    END;
+-%]
+[%-
+    # find out if the user can edit the 'Order Contact Options'
+    SET can_edit_order_contact  = 0;
+    IF (
+            department_id == db_constant('DEPARTMENT__SHIPPING')
+            || department_id == db_constant('DEPARTMENT__SHIPPING_MANAGER')
+            || Department.in_department_group( 'Customer Care', department_id )
+       );
+    THEN;
+        can_edit_order_contact  = 1;
+    END;
+-%]
+[%-
+    # set whether a or not a user can 'Release an Exchange Shipment'
+    SET can_release_exchange_shipment   = 0;
+    IF (
+            department_id == db_constant('DEPARTMENT__DISTRIBUTION_MANAGEMENT')
+            || department_id == db_constant('DEPARTMENT__CUSTOMER_CARE_MANAGER')
+        );
+    THEN;
+        can_release_exchange_shipment   = 1;
+    END;
+-%]
+
+
+<script type="text/javascript">
+    var can_edit_messages = [% can_edit_messages ? '1' : '0' %];
+    var can_edit_recipient_email = [% can_edit_recipient_email ? '1' : '0' %];
+
+
+$(document).ready(function() {
+
+    $('#edit_sticker').click(function() {
+        $('#sticker_input').show();
+        $('#sticker_text').hide();
+        hide_feedback();
+    });
+
+    initialise_sticker_field();
+
+    $('#submit_sticker').click(function() {
+        var order_id        = [% orders.id %];
+        var sticker_text    = $('#sticker_input_value').val();
+        $.ajax({
+            url:        '/CustomerCare/Order/UpdateSticker',
+            cache:      false,
+            data:       {action: 'update', order_id: order_id, sticker_text: sticker_text},
+            async:      false,
+            dataType:   'json',
+            success:    function(json) {
+                if (json.status == 'OK') {
+                    $('#ajax_feedback').removeClass('error_msg');
+                    $('#ajax_feedback').addClass('display_msg');
+                    initialise_sticker_field();
+                }
+                else {
+                    $('#ajax_feedback').removeClass('display_msg');
+                    $('#ajax_feedback').addClass('error_msg');
+                }
+                $('.sticker_value').html(sticker_text);
+                show_feedback(json.message);
+            }
+        });
+    });
+
+
+    $('#reprint_sticker').click(function() {
+        $('#sticker_select').show();
+        $('#sticker_text').hide();
+        alert("Select the correct printer then press the printer again to print");
+    });
+
+
+    $('#print_sticker').click(function(){
+        toggle_print_spinner(true);
+        setTimeout("print_sticker()",1000);
+    });
+
+    $('img[name=edit_signature_icon]').click( function() {
+        var id  = this.id.match(/_(\d+)$/);
+        $('#signature_value_' + id[1]).hide();
+        $('#signature_edit_' + id[1]).css('display','inline');
+    } );
+
+    $('img[name=abort_signature_icon]').click( function() {
+        var id  = this.id.match(/_(\d+)$/);
+        $('#signature_edit_' + id[1]).hide();
+        $('#signature_value_' + id[1]).show();
+    } );
+
+    $('img[name=submit_signature_icon]').click( function() {
+        var id  = this.id.match(/_(\d+)$/);
+        if ( confirm( "Are You Sure you want to Change the Deilvery Signature Flag" ) )
+            $('#edit_signature_form_' + id[1]).submit();
+        else {
+            $('#signature_edit_' + id[1]).hide();
+            $('#signature_value_' + id[1]).show();
+        }
+    } );
+
+});
+    // THIS NEEDS TO BE OUTSIDE DOCUMENT>READY
+    function show_feedback(feedback){
+        $('#ajax_feedback').html(feedback);
+        $('#ajax_feedback').show();
+    }
+
+    function initialise_sticker_field(){
+        $('#sticker_select').hide();
+        $('#sticker_input').hide();
+        $('#sticker_text').show();
+        hide_feedback();
+    }
+
+    function hide_feedback(){
+        $('#ajax_feedback').html('');
+        $('#ajax_feedback').hide();
+    }
+
+    function toggle_print_spinner(truth){
+        if(truth==true){
+            $('#print_sticker').attr("src","/images/ajax-loader.gif");
+        }else{
+            $('#print_sticker').attr("src","/images/icons/printer.png");
+        }
+    }
+
+    function print_sticker(){
+        var order_id        = [% orders.id %];
+        var packing_printer_value = $('#packing_printer').val();
+        if(packing_printer_value.match(/^\w+/)){
+            $.ajax({
+                url:        '/CustomerCare/Order/ReprintSticker',
+                cache:      false,
+                data:       {order_id: order_id, packing_printer: packing_printer_value },
+                async:      false,
+                dataType:   'json',
+                success:    function(json) {
+                    if (json.status == 'SUCCESS') {
+                        $('#ajax_feedback').removeClass('error_msg');
+                        $('#ajax_feedback').addClass('display_msg');
+                        initialise_sticker_field();
+                    }
+                    else {
+                        $('#ajax_feedback').removeClass('display_msg');
+                        $('#ajax_feedback').addClass('error_msg');
+                    }
+                    show_feedback(json.message);
+                },
+                complete:  function(){
+                    toggle_print_spinner(false);
+                }
+            });
+        }else{
+            toggle_print_spinner(false);
+            alert("Please select a valid printer");
+        }
+    };
+</script>
+<script type="text/javascript" src="/javascript/order_view.js"></script>
+
+<span id="ajax_feedback" style="display:none;"></span><br><br>
+
+[% IF notice_message != "" %]
+    <span class="warning">WARNING: [% notice_message %]</span><br><br>
+[% END %]
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" id="order_details__invoice_address">
+    <tr>
+        <td colspan="2" class="dividebelow"><h3 class="title-[% channel_config.$sales_channel %]">Order Details</h3></td>
+        <td><img src="/images/blank.gif" width="1" height="1"></td>
+        <td colspan="2" class="dividebelow">[% IF cando_addrmap %]<a href="[% short_url %]/AddressMap?order_id=[% orders.id %]" border="0" target="_gmaps"><img class="gmaps" src="/images/google_pushpin_blank.png" title="Show Address in a Map" alt="Show Address in a Map" /></a>[% END %]<h3 style="display: inline !important;" class="title-[% channel_config.$sales_channel %]">Invoice Address</h3></td>
+    </tr>
+    <tr>
+        <td width="18%" align="right" class="dividebelow"><b>Order Number:</b>&nbsp;&nbsp;</td>
+        <td width="27%" class="dividebelow">&nbsp;[% orders.order_nr %]</td>
+        <td width="10%"><img src="/images/blank.gif" width="1" height="24"></td>
+        <td width="18%" align="right" class="dividebelow"><b>Name:</b>&nbsp;&nbsp;</td>
+        <td width="27%" class="dividebelow">&nbsp;[% inv_address.first_name %]&nbsp;[% inv_address.last_name %]</td>
+    </tr>
+    <tr>
+        <td align="right" class="dividebelow"><b>Customer:</b>&nbsp;&nbsp;</td>
+        <td class="dividebelow">&nbsp;[% customer.first_name %]&nbsp;[% customer.last_name %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right" class="dividebelow"><b>Street Address:</b>&nbsp;&nbsp;</td>
+        <td class="dividebelow">&nbsp;[% inv_address.address_line_1 %][% IF inv_address.address_line_2 %]<br>&nbsp;[% inv_address.address_line_2 %][% END %]</td>
+    </tr>
+    <tr>
+        <td align="right" class="dividebelow"><b>Customer Number:</b>&nbsp;&nbsp;</td>
+        <td class="dividebelow">&nbsp;<a href="[% short_url %]/CustomerView?customer_id=[% orders.customer_id %]">[% customer.is_customer_number %]</a></td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right" class="dividebelow"><b>Town/City:</b>&nbsp;&nbsp;</td>
+        <td class="dividebelow">&nbsp;[% inv_address.towncity %]</td>
+    </tr>
+    <tr>
+        <td align="right" class="dividebelow"><b>Language Preference:</b>&nbsp;&nbsp;</td>
+        <td class="dividebelow">[% order.customer.get_language_preference.language.description %] [% IF order.customer.get_language_preference.is_default %](default)[% END %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right" class="dividebelow"><b>County/State:</b>&nbsp;&nbsp;</td>
+        <td class="dividebelow">&nbsp;[% inv_address.county %]</td>
+    </tr>
+    <tr>
+        <td align="right" class="dividebelow"><b>Customer Category:</b>&nbsp;&nbsp;</td>
+        <td class="dividebelow"><span class="highlight">
+            [% IF customer.category != "None" %]
+                [% customer.category %]
+            [% ELSE %]
+                -
+            [% END %]
+            </span>
+        </td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right" class="dividebelow"><b>Postcode:</b>&nbsp;&nbsp;</td>
+        <td class="dividebelow">&nbsp;[% inv_address.postcode %]</td>
+    </tr>
+    <tr>
+        <td align="right" class="dividebelow"><b>Order Status:</b>&nbsp;&nbsp;</td>
+        <td class="dividebelow"><span class="highlight">&nbsp;[% orders.status %]</span></td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right" class="dividebelow"><b>Country:</b>&nbsp;&nbsp;</td>
+        <td class="dividebelow">&nbsp;[% inv_address.country %]</td>
+    </tr>
+    <tr>
+        <td align="right" class="dividebelow"><b>Email:</b>&nbsp;&nbsp;</td>
+        <td class="dividebelow">&nbsp;[% orders.email %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right" class="dividebelow"><b>Telephone:</b>&nbsp;&nbsp;</td>
+        <td class="dividebelow">&nbsp;[% orders.telephone %]</td>
+    </tr>
+    <tr>
+        <td align="right" class="dividebelow"><b>Placed By:</b>&nbsp;&nbsp;</td>
+        <td class="dividebelow">&nbsp;[% IF orders.placed_by && orders.placed_by != orders.email %]<span class="highlight">[% orders.placed_by %]</span>[% ELSE %]Customer[% END %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right" class="dividebelow"><b>Mobile Telephone:</b>&nbsp;&nbsp;</td>
+        <td class="dividebelow">&nbsp;[% orders.mobile_telephone %]</td>
+    </tr>
+    <tr>
+        <td align="right" class="dividebelow"><b>Porter Subscriber:</b>&nbsp;&nbsp;</td>
+        <td class="dividebelow">[% customer.porter_subscriber ? 'Yes' : 'No' %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right" class="dividebelow">&nbsp;</td>
+        <td class="dividebelow">&nbsp;</td>
+    </tr>
+    <tr>
+        <td align="right" class="dividebelow"><b>App Source:</b>&nbsp;&nbsp;</td>
+        <td class="dividebelow">[% IF orders.app_name %][% orders.app_name %] [% IF orders.app_version %][% orders.app_version %][% END %][% END %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right" class="dividebelow">&nbsp;</td>
+        <td class="dividebelow">&nbsp;</td>
+    </tr>
+    <tr>
+        [% IF order.has_preorder %]
+        <td align="right" class="dividebelow"><b>Pre-Order Number:</b>&nbsp;&nbsp;</td>
+        <td class="dividebelow">&nbsp;
+            <a href="/StockControl/Reservation/PreOrder/Summary?pre_order_id=[% pre_order.id %]">[% pre_order.pre_order_number %]</a>
+            [% IF pre_order.has_discount %]
+                <span id="order_view__pre_order_discount">with [% pre_order.applied_discount_percent %]% discount</span>
+            [% END %]
+        </td>
+        [% ELSE %]
+        <td class="dividebelow">&nbsp;</td>
+        <td class="dividebelow">&nbsp;</td>
+        [% END %]
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right" class="dividebelow">&nbsp;</td>
+        <td class="dividebelow">&nbsp;</td>
+    </tr>
+    [% IF display_sticker  %]
+    <tr>
+        <td align="right"  class="dividebelow"><b>Personalized Sticker:</b>&nbsp;&nbsp;</td>
+        <td class="dividebelow">
+          <div id="sticker_select" style="float:left; width:95%; padding-left:5px;">
+            <select id="packing_printer" name="packing_printer" style="float:left;">
+                <option value="">--------------------</option>
+                [% FOREACH printer = mrp_sticker_printers.all -%]
+                    [%-# A small bug here where we're not matching against picking printers... %]
+                    [% IF printer.value == packing_printer -%]
+                <option value="[% printer.value %]" selected="selected">Current: [% printer.setting %]</option>
+                    [% ELSE %]
+                <option value="[% printer.value %]">[% printer.setting %]</option>
+                    [% END -%]
+                [% END -%]
+            </select>
+            <img id="print_sticker" class="link_cursor" style="float:right;" src="/images/icons/printer.png" width="16" height="16" alt="Reprint Sticker"/>
+          </div>
+          <div id="sticker_text" style="float:left; width:95%; padding-left:5px;">
+            <span class="sticker_value" style="float:left;">[% orders.sticker %]</span>
+            <img id="edit_sticker" class="link_cursor" src="/images/icons/note_edit.png" width="16" height="16" style="float:right;"  alt="Edit Text"/>
+            <span id="sticker_seperator" style="width:3px;float:right;">&nbsp;</span>
+            <img id="reprint_sticker" class="link_cursor" src="/images/icons/printer.png" width="16" height="16" style="float:right;" alt="Reprint Sticker"/>
+          </div>
+          <div id="sticker_input" style="float:left; width:95%; display:none; padding-left:5px;">
+            <input type="text" id="sticker_input_value" value="[% orders.sticker %]" style="float:left;" />
+            <img id="submit_sticker" class="link_cursor" src="/images/icons/note_add.png" width="16" height="16" style="float:right;" />
+          </div>
+        </td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right" class="dividebelow">&nbsp;</td>
+        <td class="dividebelow">&nbsp;</td>
+    </tr>
+    [% END %]
+    [% IF dc_country == 'United States' %]
+    <tr>
+        <td align="right"><b>External Tax Rate Used:</b>&nbsp;&nbsp;</td>
+        <td>[% IF orders.use_external_tax_rate %]<span class="highlight">Yes</span>[% ELSE %]No[% END %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right" class="dividebelow">&nbsp;</td>
+        <td class="dividebelow">&nbsp;</td>
+    </tr>
+    [% END %]
+</table>
+[% INCLUDE third_party_payment_message div_id='third_party_payment_message' %]
+[% PROCESS shared/order_view/send_order_status_message_button.tt %]
+<br ><br >
+
+[% IF contact_subjects.size %]
+[%-
+    SET zoom_icon   = 'zoom_in.png';
+    SET display_type= 'none';
+    SET alt_prefix  = 'View';
+    IF auto_show.OrderContactOptionsDiv;
+    THEN;
+        zoom_icon   = 'zoom_out.png';
+        display_type= 'block';
+        alt_prefix  = 'Hide';
+    END;
+-%]
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <tr class="dividebelow">
+        <td class="blank"><h3 class="title-[% channel_config.$sales_channel %]">Order Contact Options</h3></td>
+        <td class="blank" align="right" style="padding-right:15px"><a href="javascript:toggle_view('OrderContactOptionsDiv', 'Order Contact Options');"><span id="lnkOrderContactOptionsDiv"><img src="/images/icons/[% zoom_icon %]" alt="[% alt_prefix %] Order Contact Options" /></span></a></td>
+    </tr>
+</table>
+<div id="OrderContactOptionsDiv" style="display:[% display_type %]">
+    <form name="OrderContactOptions" action="[% url %]" method="post">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+        <table class="wide-data data" id="order_contact_options">
+            [% PROCESS page_elements/contact_options.tt csm_contact_subjects=contact_subjects,can_edit_csm=can_edit_order_contact,no_divide_above=1 %]
+            [% IF can_edit_order_contact %]
+            <tr>
+                <td colspan="2" class="blank">
+                    <span style="font-weight:bold;">Any changes to the above will ONLY apply to this Order, go to the <a href="[% short_url %]/CustomerView?customer_id=[% orders.customer_id %]">Customer View</a> page to make changes globally</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="blank" colspan="2" align="right">[% INCLUDE page_elements/forms/submit_button.tt btn_name="update_order_contact_options" %]</td>
+            </tr>
+            [% END %]
+        </table>
+    </form>
+</div>
+<br /><br />
+[% END %]
+
+
+[% IF promotions.size > 0 %]
+    <h3 class="title-[% channel_config.$sales_channel %]">Promotions</h3>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Name</td>
+            <td class="tableHeader">Type</td>
+            <td class="tableHeader">Code</td>
+            <td class="tableHeader">Value</td>
+        </tr>
+        <tr>
+            <td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        [% FOREACH promoid = promotions.keys %]
+
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;[% promotions.$promoid.name %]</td>
+            <td>[% promotions.$promoid.class %]</td>
+            <td>[% promotions.$promoid.code || 'n/a' %]</td>
+            <td>[% IF promotions.$promoid.class == "Money Off" %][% orders.currency %] [% promotions.$promoid.value %][% ELSE %]n/a[% END %]</td>
+        </tr>
+        <tr>
+            <td colspan="4" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+        [% END %]
+    </table>
+    <br><br>
+[% END %]
+
+
+[% IF marketing_promotions.defined && marketing_promotions.size > 0 %]
+    <h3 class="title-[% channel_config.$sales_channel %]">Marketing Promotions - In the Box</h3>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data" id="marketing_promotion">
+        <tr>
+            <td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Promotion Title</td>
+            <td class="tableHeader">Start Date</td>
+            <td class="tableHeader">End Date</td>
+        </tr>
+        <tr>
+            <td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        [% FOREACH promo IN marketing_promotions %]
+
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;[% promo.title %]</td>
+            <td>[% promo.start_date.dmy %]</td>
+            <td>[% promo.end_date.dmy %]</td>
+        </tr>
+        <tr>
+            <td colspan="4" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+        [% END %]
+    </table>
+    <br><br>
+
+[% END %]
+
+[% IF department_id == 1 %]
+
+    <h3 class="title-[% channel_config.$sales_channel %]">Customer Warnings</h3>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td width="20%" align="right"><b>Customer Watch:</b>&nbsp;&nbsp;</td>
+            <td width="80%">
+                <span class="highlight">
+                [% IF orders.watchFlags.FinanceWatch %]FINANCE&nbsp;&nbsp;&nbsp;&nbsp;[% END %]
+                [% IF orders.watchFlags.CustomerWatch %]CUSTOMER CARE[% END %]
+                </span>
+                [% IF !orders.watchFlags.FinanceWatch && !orders.watchFlags.CustomerWatch %] - [% END %]
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td align="right"><b>Warning Flags:</b>&nbsp;&nbsp;</td>
+            <td>
+
+                [% FOREACH warning = orders.warningFlags %]
+                    [% warning %]
+                [% END %]
+
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td align="right"><b>CV2/AVS Check:</b>&nbsp;&nbsp;</td>
+            <td>[% orders.cv2_avs %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+        [% IF orders.status != "Credit Hold" %]
+            <form name="creditCheckFlags" action="[% url %]" method="post">
+            [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+            <input type="hidden" name="ccheck_flags" value="1">
+            <tr>
+                <td align="right"><b>Name Check:</b>&nbsp;&nbsp;</td>
+                <td><input type="radio" name="checkname" value="yes" [% orders.nameok %]>&nbsp;OK&nbsp;&nbsp;&nbsp;<input type="radio" name="checkname" value="no" [% orders.namewrong %]>&nbsp;Incorrect</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td align="right"><b>Address Check:</b>&nbsp;&nbsp;</td>
+                <td><input type="radio" name="checkaddr" value="yes" [% orders.addrok %]>&nbsp;OK&nbsp;&nbsp;&nbsp;<input type="radio" name="checkaddr" value="no" [% orders.addrwrong %]>&nbsp;Incorrect</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td align="right"><b>Possible Fraud:</b>&nbsp;&nbsp;</td>
+                <td><input type="checkbox" name="possible_fraud" value="yes" [% orders.possiblefraud %]></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="5"></td>
+            </tr>
+            <tr>
+                <td class="blank" colspan="2" align="right"><input class="button" type="submit" name="" value="Save Changes &raquo;"></td>
+            </tr>
+            </form>
+
+        [% END %]
+    </table>
+    <br><br>
+
+[% ELSIF orders.watchFlags.FinanceWatch || orders.watchFlags.CustomerWatch || customer.no_signature_required %]
+    <h3 class="title-[% channel_config.$sales_channel %]">Customer Information</h3>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data" id="customer_information">
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td width="20%" align="right"><b>Customer Watch:</b>&nbsp;&nbsp;</td>
+            <td width="80%">
+                <span class="highlight">
+                    [% IF orders.watchFlags.FinanceWatch %]FINANCE&nbsp;&nbsp;&nbsp;&nbsp;[% END %]
+                    [% IF orders.watchFlags.CustomerWatch %]CUSTOMER CARE[% END %]
+                </span>
+                [% IF !orders.watchFlags.FinanceWatch && !orders.watchFlags.CustomerWatch %] - [% END %]
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    </table>
+    <br><br>
+[% END %]
+
+<!-- Payment Section -->
+[% PROCESS shared/order_view/payment_section.tt %]
+
+[% IF department_id == 3 || department_id == 17 %]
+    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <form name="premierNotesForm" action="[% url %]" method="post">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+        <tr>
+            <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="blank"><img src="/images/blank.gif" width="1" height="5"></td>
+        </tr>
+        <tr>
+            <td width="150" align="right" valign="top" nowrap><b>Premier Customer Notes:</b></td>
+            <td width="10"><img src="/images/blank.gif" width="10" height="24"></td>
+            <td width="90%"><textarea name="premier_notes" rows="3" cols="85">[% customer.legacy_comment %]</textarea></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="blank"><img src="/images/blank.gif" width="1" height="5"></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td height="30" colspan="3" align="right"><input class="button" type="submit" name="" value="Save Changes &raquo;"></td>
+        </tr>
+        </form>
+    </table>
+    <br><br>
+[% END %]
+
+[% IF customer.notes.size > 0 %]
+    <h3 class="title-[% channel_config.$sales_channel %]">Customer Notes</h3>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="8" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td class="tableHeader" width="17%">&nbsp;&nbsp;&nbsp;Date</td>
+            <td class="tableHeader" width="33%">Note</td>
+            <td class="tableHeader" width="9%">Type</td>
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="tableHeader" width="18%">Operator</td>
+            <td class="tableHeader" width="7%"></td>
+            <td class="tableHeader" width="7%"></td>
+        </tr>
+        <tr>
+            <td colspan="7" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        [% FOREACH custnote = customer.notes.keys.nsort %]
+            <tr>
+                <td>&nbsp;&nbsp;&nbsp;[% customer.notes.$custnote.date %]</td>
+                <td>[% customer.notes.$custnote.note %]</td>
+                <td>[% customer.notes.$custnote.description %]</td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>[% customer.notes.$custnote.name %]<br /><span class="lowlight">[% customer.notes.$custnote.department %]</span></td>
+                <td>[% IF customer.notes.$custnote.operator_id == operator_id %]<a href="[% short_url %]/Note?parent_id=[% orders.customer_id %]&note_category=Customer&sub_id=[% orders.customer_id %]&note_id=[% custnote %]"><img src="/images/icons/page_edit.png" alt="Edit Note"></a>[% END %]</td>
+                <td>[% IF customer.notes.$custnote.operator_id == operator_id %]<a href="[% short_url %]/EditNote?note_category=Customer&action=Delete&parent_id=[% orders.customer_id %]&note_id=[% custnote %]"><img src="/images/icons/cross.png" alt="Delete Note"></a>[% END %]</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        [% END %]
+    </table>
+    <br><br>
+[% END %]
+
+[% IF pre_order && pre_order_notes.size %]
+    <h3 class="title-[% channel_config.$sales_channel %]">Pre-Order Notes</h3>
+    <table id="preorder_notes" width="100%" id="preorder_notes" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="10" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+         <tr>
+            <td class="tableHeader" width="12%">&nbsp;&nbsp;&nbsp;Date</td>
+            <td class="tableHeader" width="36%">Note</td>
+            <td class="tableHeader" width="8%">Type</td>
+            <td class="tableHeader" width="2%">&nbsp;</td>
+            <td class="tableHeader" width="10%">Operator</td>
+        </tr>
+        <tr>
+            <td colspan="10" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+    [% FOREACH po_note IN pre_order_notes %]
+        <tr>
+            <td colspan="10" style="height: 5px"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        [% IF po_note.note_type_id ==  db_constant('PRE_ORDER_NOTE_TYPE__SHIPMENT_ADDRESS_CHANGE') %]
+            <tr class="dividebelow highlight">
+        [% ELSE %]
+            <tr class="dividebelow">
+        [% END %]
+                <td>&nbsp;&nbsp;&nbsp;[% po_note.date.dmy %] [% po_note.date.hms %]</td>
+                <td>[% po_note.note %]</td>
+                <td>[% po_note.note_type.description %]</td>
+                <td>&nbsp;</td>
+                <td>[% po_note.operator.name %]<br /><span class="lowlight">[% po_note.operator.department.department %]</span></td>
+            </tr>
+    [% END %]
+</table>
+<br><br>
+[% END %]
+
+[% IF notes.size %]
+    <h3 class="title-[% channel_config.$sales_channel %]">Notes</h3>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data" id="order_notes">
+        <tr>
+            <td colspan="10" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td class="tableHeader" width="12%">&nbsp;&nbsp;&nbsp;Date</td>
+            <td class="tableHeader" width="7%">Class</td>
+            <td class="tableHeader" width="10%">Relating To</td>
+            <td class="tableHeader" width="36%">Note</td>
+            <td class="tableHeader" width="2%"></td>
+            <td class="tableHeader" width="8%">Type</td>
+            <td class="tableHeader" width="2%">&nbsp;</td>
+            <td class="tableHeader" width="10%">Operator</td>
+            <td class="tableHeader" width="1%"></td>
+            <td class="tableHeader" width="1%"></td>
+        </tr>
+        <tr>
+            <td colspan="10" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    [% FOREACH order_note = notes.nsort('date_sort') %]
+        <tr>
+            <td colspan="10" style="height: 5px"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr valign="top">
+            <td>&nbsp;&nbsp;&nbsp;[% order_note.date %]</td>
+            <td>[% order_note.class %]</td>
+            <td>[% order_note.value %]</td>
+            <td>[% order_note.note |html |html_line_break %]</td>
+            <td>&nbsp;</td>
+            <td>[% order_note.description %]</td>
+            <td>&nbsp;</td>
+            <td>[% order_note.name %]<br /><span class="lowlight">[% order_note.department %]</span></td>
+            [% IF order_note.operator_id == operator_id %]
+
+                [% SET edit_url = '' %]
+                [% SET delete_url = '' %]
+
+                [% IF order_note.class == 'Order' %]
+                    [% edit_url = short_url _ '/Note?parent_id=' _ orders_id _ '&note_category=Order&sub_id=' _ orders_id _ '&note_id=' _ order_note.id _ '' %]
+                    [% delete_url = short_url _ '/EditNote?note_category=Order&action=Delete&parent_id=' _ orders_id _ '&note_id=' _ order_note.id _ '' %]
+                [% ELSIF order_note.description == 'Quality Control' %]
+                    [% edit_url = short_url _ '/Note?parent_id=' _ orders_id _ '&note_category=Quality+Control&sub_id=' _ order_note.value _ '&note_id=' _ order_note.id _ '' %]
+                    [% delete_url = short_url _ '/EditNote?note_category=Quality+Control&action=Delete&parent_id=' _ orders_id _ '&note_id=' _ order_note.id _ '' %]
+                [% ELSIF order_note.class == 'Shipment' %]
+                    [% edit_url = short_url _ '/Note?parent_id=' _ orders_id _ '&note_category=Shipment&sub_id=' _ order_note.value _ '&note_id=' _ order_note.id _ '' %]
+                    [% delete_url = short_url _ '/EditNote?note_category=Shipment&action=Delete&parent_id=' _ orders_id _ '&note_id=' _ order_note.id _ '' %]
+                [% ELSIF order_note.class == 'Return' %]
+                    [% edit_url = short_url _ '/Note?parent_id=' _ orders_id _ '&note_category=Return&sub_id=' _ order_note.return_id _ '&note_id=' _ order_note.id _ '' %]
+                    [% delete_url = short_url _ '/EditNote?note_category=Return&action=Delete&parent_id=' _ orders_id _ '&note_id=' _ order_note.id _ '' %]
+                [% ELSE %]
+
+                [% END %]
+
+                [% IF edit_url %]
+                    <td align="right" style="padding-right:15px; padding-right:15px"><a href="[% edit_url %]"><img src="/images/icons/page_edit.png" alt="Edit Note"></a></td>
+                [% END %]
+
+                [% IF delete_url %]
+                    <td align="right" style="padding-right:5px"><a href="[% delete_url %]"><img src="/images/icons/cross.png" alt="Delete Note"></a></td>
+                [% END %]
+
+            [% ELSE %]
+                <td></td>
+                <td></td>
+            [% END %]
+        </tr>
+        <tr>
+            <td colspan="10" style="height: 5px"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td colspan="10" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    [% END %]
+    </table>
+    <br><br>
+[% END %]
+
+[% IF emails.size %]
+    <h3 class="title-[% channel_config.$sales_channel %]">Order Email Log</h3>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Type</td>
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Date Sent</td>
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Sent By</td>
+        </tr>
+        <tr>
+            <td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        [% FOREACH emailid = emails.keys.nsort %]
+
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;[% emails.$emailid.template %]</td>
+            <td>&nbsp;&nbsp;&nbsp;[% emails.$emailid.date %]</td>
+            <td>&nbsp;&nbsp;&nbsp;[% emails.$emailid.operator %]</td>
+        </tr>
+        <tr>
+            <td colspan="4" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+        [% END %]
+    </table>
+    <br><br>
+[% END %]
+
+<br>
+
+
+[% FOREACH id = shipments.keys.nsort %]
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" id="shipment_details__shipment_address_[% loop.count %]">
+        <tr>
+            <td colspan="2"><h3 class="title-[% channel_config.$sales_channel %]">Shipment Details</h3></td>
+            <td><img src="/images/blank.gif" width="1" height="1"></td>
+            <td colspan="2">[% IF cando_addrmap %]<a href="[% short_url %]/AddressMap?shipment_id=[% id %]" border="0" target="_gmaps"><img class="gmaps" src="/images/google_pushpin_blank.png" title="Show Address in a Map" alt="Show Address in a Map" /></a>[% END %]<h3 style="display: inline !important;" class="title-[% channel_config.$sales_channel %]">Shipment Address</h3></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            <td><img src="/images/blank.gif" width="1" height="1"></td>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td width="18%" align="right"><b>Shipment Number:</b>&nbsp;&nbsp;</td>
+            <td width="27%">&nbsp;[% id %]</td>
+            <td width="10%"><img src="/images/blank.gif" width="1" height="24"></td>
+            <td width="18%" align="right"><b>Name:</b>&nbsp;&nbsp;</td>
+            <td width="27%">&nbsp;[% shipments.$id.ship_address.first_name %] [% shipments.$id.ship_address.last_name %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            <td><img src="/images/blank.gif" width="1" height="1"></td>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="22">
+            <td align="right"><b>Date:</b>&nbsp;&nbsp;</td>
+            <td>&nbsp;[% shipments.$id.date %]</td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+            <td align="right"><b>Street Address:</b>&nbsp;&nbsp;</td>
+            <td>&nbsp;[% shipments.$id.ship_address.address_line_1 %][% IF shipments.$id.ship_address.address_line_2 %]<br>&nbsp;[% shipments.$id.ship_address.address_line_2 %][% END %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            <td><img src="/images/blank.gif" width="1" height="1"></td>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="22">
+            <td align="right"><b>Shipment Type:</b>&nbsp;&nbsp;</td>
+            <td>&nbsp;[% shipments.$id.class %]</td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+            <td align="right"><b>Town/City:</b>&nbsp;&nbsp;</td>
+            <td>&nbsp;[% shipments.$id.ship_address.towncity %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            <td><img src="/images/blank.gif" width="1" height="1"></td>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="22">
+            <td align="right"><b>Shipment Class:</b>&nbsp;&nbsp;</td>
+            <td>
+                [% shipments.$id.type %]
+
+                [% IF shipments.$id.type == "Domestic" && shipments.$id.ship_address.country == "United States" %]
+                    [% IF shipments.$id.shipping_class == "Ground" %]
+                        &nbsp;Ground
+                    [% ELSIF shipments.$id.shipping_class == "Air" %]
+                        &nbsp;Express
+                    [% END %]
+                [% END %]
+            </td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+            <td align="right"><b>County/State:</b>&nbsp;&nbsp;</td>
+            <td>&nbsp;[% shipments.$id.ship_address.county %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            <td><img src="/images/blank.gif" width="1" height="1"></td>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td align="right"><b>Shipping Option:</b>&nbsp;&nbsp;</td>
+            <td>&nbsp;[% shipments.$id.shipping_option_description || "" %]</td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+            <td align="right"><b>Postcode:</b>&nbsp;&nbsp;</td>
+            <td>&nbsp;[% shipments.$id.ship_address.postcode %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            <td><img src="/images/blank.gif" width="1" height="1"></td>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td align="right"><b>Packing Instruction:</b>&nbsp;&nbsp;</td>
+            <td>&nbsp;[% shipments.$id.packing_instruction %]</td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+            <td align="right"><b>Country:</b>&nbsp;&nbsp;</td>
+            <td>&nbsp;[% shipments.$id.ship_address.country %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            <td><img src="/images/blank.gif" width="1" height="1"></td>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td align="right"><b>Nominated Delivery Date:</b>&nbsp;&nbsp;</td>
+            <td>&nbsp;[% shipments.$id.nominated_delivery_date_str || "" %]</td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+            <td align="right"><b>Telephone:</b>&nbsp;&nbsp;</td>
+            <td>&nbsp;[% shipments.$id.telephone %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            <td><img src="/images/blank.gif" width="1" height="1"></td>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td align="right"><b>SLA Cut-off:</b>&nbsp;&nbsp;</td>
+            <td>&nbsp;[% shipments.$id.sla_cutoff_str || "" %]</td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+            <td align="right"><b>Mobile Telephone:</b>&nbsp;&nbsp;</td>
+            <td>&nbsp;[% shipments.$id.mobile_telephone %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            <td><img src="/images/blank.gif" width="1" height="1"></td>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td align="right"><b>Status:</b>&nbsp;&nbsp;</td>
+            <td>&nbsp;<span class="highlight">[% shipments.$id.status %]</span></td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+            <td align="right">&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            <td><img src="/images/blank.gif" width="1" height="1"></td>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td align="right"><b>Email:</b>&nbsp;&nbsp;</td>
+            <td>&nbsp;[% shipments.$id.email %]</td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+            <td align="right">&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            <td><img src="/images/blank.gif" width="1" height="1"></td>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            [% IF shipments.$id.type == 'Premier' %]
+                <td align="right"><b>Delivery Option:</b>&nbsp;</td>
+                <td>&nbsp;[% shipments.$id.premier_routing.description %]</td>
+            [% ELSE %]
+            <td align="right"><b>Destination Code:</b>&nbsp;</td>
+                <td>&nbsp;[% shipments.$id.destination_code %]</td>
+            [% END %]
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+            <td align="right">&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            <td><img src="/images/blank.gif" width="1" height="1"></td>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td align="right"><b>Shipping Account:</b>&nbsp;</td>
+            <td>&nbsp;[% IF shipments.$id.carrier != 'Unknown' %][% shipments.$id.carrier %] - [% END %][% IF shipments.$id.shipping_account_name != 'Unknown' %][% shipments.$id.shipping_account_name %][% ELSE %]None[% END %]</td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+            <td align="right">&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            <td><img src="/images/blank.gif" width="1" height="1"></td>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        [% IF has_delivery_signature_optout %]
+        <tr>
+            <td align="right"><strong>Signature upon Delivery&nbsp;&nbsp;<br/>Required:&nbsp;</strong></td>
+            <td valign="middle">&nbsp;
+                <div id="signature_value_[% id %]" style="display: inline;">
+                [% IF shipments.$id.is_signature_required %]
+                    <img style="display: inline;" src="/images/icons/tick.png" title="Signature Required" alt="Signature Required" border="0" />
+                [% ELSE %]
+                    <img style="display: inline;" src="/images/icons/cross.png" title="Signature Not Required" alt="Signature Not Required" border="0" />
+                [% END %]
+                [% IF can_edit_deliv_signature && shipments.$id.object.can_edit_signature_flag %]
+                    <img name="edit_signature_icon" id="edit_signature_[% id %]" class="link_cursor" src="/images/icons/note_edit.png" width="16" height="16" style="float:right;"  alt="Edit Signature" title="Edit Signature" />
+                </div>
+                <div id="signature_edit_[% id %]" style="display: none;">
+                    <form id="edit_signature_form_[% id %]" name="edit_signature_form_[% id %]" method="post" action="[% url %]" style="display: inline;">
+                        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                        <input type="hidden" name="edit_delivery_signature_flag_shipment_id" value="[% id %]" />
+                        <input type="radio" name="signature_flag" value="1" [% IF shipments.$id.is_signature_required %]checked="checked"[% END %] /> Yes
+                        [% IF can_opt_out_of_requiring_a_delivery_signature %]
+                        &nbsp;&nbsp;
+                        <input type="radio" name="signature_flag" value="0" [% IF !shipments.$id.is_signature_required %]checked="checked"[% END %] /> No
+                        &nbsp;&nbsp;&nbsp;
+                        [% ELSE %]
+                        &nbsp;&nbsp;&nbsp; Option 'No' is not allowed
+                        [% END %]
+                        <img name="submit_signature_icon" id="submit_signature_[% id %]" class="link_cursor" src="/images/icons/note_add.png" width="16" height="16" style="float:right;" title="Change Signature Flag" alt="Change Signature Flag" />
+                        <img name="abort_signature_icon" id="abort_signature_[% id %]" class="link_cursor" src="/images/icons/stop.png" width="12" height="12" style="float:right; margin-right: 5px; margin-top: 2px;" title="Abandon Change" alt="Abandon Change" />
+                    </form>
+                </div>
+                [% ELSE %]
+                </div>
+                [% END %]
+            </td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+            <td align="right">&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            <td><img src="/images/blank.gif" width="1" height="1"></td>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        [% END %]
+        [% IF instance == 'AM' %]
+            <tr>
+                <td align="right"><strong>Carrier Automated:&nbsp;</strong></td>
+                <td>&nbsp;[% IF shipments.$id.real_time_carrier_booking %]<img style="display: inline;" src="/images/icons/tick.png" title="Shipment Automated" alt="Shipment Automated" border="0" />[% END %]</td>
+                <td><img src="/images/blank.gif" width="1" height="24"></td>
+                <td align="right">&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                <td><img src="/images/blank.gif" width="1" height="1"></td>
+                <td colspan="2"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        [% END %]
+        [% IF shipments.$id.outward_airway_bill != "none" || shipments.$id.return_airway_bill != "none" %]
+            <tr>
+                <td colspan="5" height="30">&nbsp;</td>
+            </tr>
+            [% IF shipments.$id.shipment_type_id == 2 %]
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                    <td><img src="/images/blank.gif" width="1" height="1"></td>
+                    <td colspan="2"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr>
+                    <td align="right"><b>Courier Reference:</b>&nbsp;&nbsp;</td>
+                    <td>&nbsp;[% shipments.$id.outward_airway_bill %]</td>
+                    <td><img src="/images/blank.gif" width="1" height="24"></td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                    <td><img src="/images/blank.gif" width="1" height="1"></td>
+                    <td colspan="2"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+            [% ELSE %]
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                    <td><img src="/images/blank.gif" width="1" height="1"></td>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr>
+                    <td align="right"><b>[% IF shipments.$id.carrier == 'DHL Ground' %]Tracking Number:[% ELSE %]Outward Airwaybill:[% END %]</b>&nbsp;&nbsp;</td>
+                    <td>&nbsp;
+                        [% IF shipments.$id.carrier == 'DHL Ground' %]
+                            [% FOREACH boxid = shipments.$id.boxes.keys %]
+                                JJD00022[% shipments.$id.boxes.$boxid.tracking_number %][% IF loop.count < shipments.$id.boxes.size %]<br />&nbsp;[% END %]
+                            [% END %]
+                        [% ELSE %]
+                            <a href="[% shipments.$id.carrier_tracking_uri %][% shipments.$id.outward_airway_bill %]" target="_blank">[% shipments.$id.outward_airway_bill %]</a>
+                        [% END %]
+                    </td>
+                    <td><img src="/images/blank.gif" width="1" height="24"></td>
+                    <td align="right"><strong>Return Airwaybill:&nbsp;&nbsp;</strong></td>
+                    <td>&nbsp;
+                        <a href="[% shipments.$id.carrier_tracking_uri %][% shipments.$id.return_airway_bill %]" target="_blank">[% shipments.$id.return_airway_bill %]</a>
+                    </td>
+                </tr>
+                [% IF shipments.$id.return_arrivals.size > 0 %]
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>&nbsp;
+                            (Arrival Scan -
+                            [% FOREACH arrival_id = shipments.$id.return_arrivals.keys %]
+                                [% shipments.$id.return_arrivals.$arrival_id.date_arrived %]
+                            [% END %]
+                            )
+                        </td>
+                    </tr>
+                [% END %]
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                    <td><img src="/images/blank.gif" width="1" height="1"></td>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+            [% END %]
+        [% END %]
+    </table>
+
+    [% IF can_release_exchange_shipment && shipments.$id.class == 'Exchange' && ( shipments.$id.status == 'Return Hold' || shipments.$id.status == 'Exchange Hold' ) %]
+        <form id="releaseExchange_[% id %]" name="releaseExchange_[% id %]" action="[% short_url %]/ReleaseExchange?order_id=[% orders_id %]&shipment_id=[% id %]" method="post">
+            [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td colspan="3" class="blank" align="right"><br /><input class="button" type="submit" name="submit" value="Release Exchange Shipment &raquo;"></td>
+            </tr>
+            </table>
+        </form>
+    [% END %]
+
+    [% IF shipments.$id.gift == 1 %]
+        <br /><br />
+        <h3 class="title-[% channel_config.$sales_channel %]">Gift Shipment</h3>
+        <div class="formrow divideabove dividebelow">
+            <b>Gift Message:</b>
+            [% IF shipments.$id.has_vouchers %]
+                <span style="font-style:italic;color:#800;">Print below gift-card specific message(s)</span>
+            [% ELSE %]
+                <span id="gift_message_[% id %]">[% shipments.$id.short_gift_msg || '<i>[No message]</i>' | html %]</span>
+                [% IF can_preview_shipment_messages %]
+                    <input id="preview_gift_message_[% id %]" name="preview_gift_message" class="button" type="button" value="Preview" style="min-width:60px" />
+                [% END %]
+            [% END %]
+        </div>
+
+        <div name="dialog" id="gift_message_preview_[% id %]" style="display:none">
+            <form name="preview_form" id="preview_form_[% id %]" method="POST">
+                [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                <textarea rows="10" cols="40" name="gift_message_text_[% id %]" id="gift_message_text_[% id %]">[% shipments.$id.gift_message | html %]</textarea>
+            </form>
+        </div>
+    [% END %]
+
+
+    <br><br>
+
+    [% IF shipments.$id.shipment_status_id == 3 %]
+        <h3 class="title-[% channel_config.$sales_channel %]">Shipment Hold</h3>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" id="shipment_hold">
+            <tr>
+                <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td align="right" width="15%"><b>Held By:</b>&nbsp;&nbsp;</td>
+                <td>[% shipments.$id.hold.name %]</td>
+                <td><img src="/images/blank.gif" width="1" height="24"></td>
+            </tr>
+            <tr>
+                <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td align="right" width="15%"><b>Date Held:</b>&nbsp;&nbsp;</td>
+                <td>[% shipments.$id.hold.hold_date %]</td>
+                <td><img src="/images/blank.gif" width="1" height="24"></td>
+            </tr>
+            <tr>
+                <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td align="right" width="15%"><b>Reason:</b>&nbsp;&nbsp;</td>
+                <td>[% shipments.$id.hold.reason %]</td>
+                <td><img src="/images/blank.gif" width="1" height="24"></td>
+            </tr>
+            <tr>
+                <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td align="right" width="15%"><b>Comment:</b>&nbsp;&nbsp;</td>
+                <td>[% shipments.$id.hold.comment %]</td>
+                <td><img src="/images/blank.gif" width="1" height="24"></td>
+            </tr>
+            <tr>
+                <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td align="right" width="15%"><b>Release Date:</b>&nbsp;&nbsp;</td>
+                <td>[% shipments.$id.hold.release_date %]</td>
+                <td><img src="/images/blank.gif" width="1" height="24"></td>
+            </tr>
+            <tr>
+                <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        </table>
+        <br>
+        <br>
+    [% END %]
+
+    [% IF shipments.$id.shipment_type_id == db_constant('SHIPMENT_TYPE__PREMIER') %]
+        <h3 class="title-[% channel_config.$sales_channel %]">Delivery Routing Information</h3>
+        [% PROCESS show_routing_schedule schedules=shipments.$id.routing_schedules,rout_sched_id="s" _ id %]
+    [% END %]
+
+    [%-
+        SET virt_vouchers   = 0;
+        SET virt_codes      = 0;
+    -%]
+
+    <h3 class="title-[% channel_config.$sales_channel %]">Shipment Items</h3>
+    <table class="order_view_shipment_item wide-data data">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>&nbsp;&nbsp;SKU</th>
+                <th>Name</th>
+                <th>Designer</th>
+                <th>Size</th>
+                <th>Status</th>
+                <th>MD</th>
+                <th>PR</th>
+                <th>Unit Price</th>
+                <th>Tax</th>
+                <th>Duties</th>
+                <th>Sub-Total&nbsp;&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            [%- FOREACH itemid = shipments.$id.ship_items.keys.nsort %]
+
+                [%- class = "" -%]
+                [%- voucher_code_disp   = '';
+                    sitem   = shipments.$id.ship_items.$itemid;
+                    IF sitem.voucher && !sitem.is_physical
+                       && sitem.shipment_item_status_id != SHIPMENT_ITEM_STATUS__CANCEL_PENDING
+                       && sitem.shipment_item_status_id != SHIPMENT_ITEM_STATUS__CANCELLED;
+                    THEN;
+                        virt_vouchers   = virt_vouchers + 1;
+                        IF sitem.voucher_code_id;
+                        THEN;
+                            virt_codes  = virt_codes + 1;
+                        END;
+                    END;
+                    IF sitem.voucher && department_id == 19; # Customer Care Manager
+                    THEN;
+                        IF sitem.voucher_code == '';
+                        THEN;
+                            voucher_code_disp   = '&nbsp;(<span style="font-style: italic">No Code Assigned</span>)';
+                        ELSE;
+                            voucher_code_disp   = '&nbsp;(<span style="font-style: italic">' _ sitem.voucher_code _ '</span>)';
+                        END;
+                    END;
+                -%]
+
+                [% IF sitem.shipment_item_status_id == SHIPMENT_ITEM_STATUS__CANCEL_PENDING
+                   || sitem.shipment_item_status_id == SHIPMENT_ITEM_STATUS__CANCELLED
+                   || sitem.shipment_item_status_id == SHIPMENT_ITEM_STATUS__LOST
+                   || sitem.shipment_item_status_id == SHIPMENT_ITEM_STATUS__UNDELIVERED %]
+                    [% class = " class=\"light\"" %]
+                [% END %]
+                <tr class="dividebelow">
+                    <td[% class %] style="white-space:nowrap;">
+                        [% PROCESS page_elements/returnable_icon.tt item_returnable_state_id=sitem.returnable_state_id %]<a href="[% sitem.image.0 %]" title="View Product Image" target="new" class="imagezoom"><img class="inline" src="/images/icons/image.png"></a>
+                        [% IF sitem.is_hazmat %]
+                            <div class="restriction_hazmat">
+                                <img src='/images/product_extras/hazmat_transparent.png' alt='Hazmat - PID: [% sitem.product_id %]' title='Hazmat - PID: [% sitem.product_id %]' width="20" />
+                            </div>
+                        [% END %]
+                        [% IF sitem.is_aerosol %]
+                            <div class="restriction_hazmat">
+                                <img src='/images/product_extras/aerosol.jpg' alt='Aerosol - PID: [% sitem.product_id %]' title='Aerosol - PID: [% sitem.product_id %]' width="20" />
+                            </div>
+                        [% END %]
+                        [% IF sitem.is_hazmat_lq %]
+                            <div class="restriction_hazmat">
+                                <img src='/images/product_extras/hazmat_lq.jpg' alt='Hazmat LQ - PID: [% sitem.product_id %]' title='Hazmat LQ - PID: [% sitem.product_id %]' width="20" />
+                            </div>
+                        [% END %]
+                        [%- IF sitem.voucher %]
+                            <!-- voucher usage history -->
+                            [% PROCESS shared/order_view/voucher_usage_history.tt %]
+
+                            [%- IF can_preview_voucher_messages %]
+                                <img src="/images/icons/page_white_edit.png" alt="Preview Gift Voucher Message" class="inline link_cursor" title="Preview Gift Voucher Message" id="preview_voucher_message_[% itemid %]" name="preview_voucher_message" />
+                                <div name="dialog" id="voucher_message_preview_[% itemid %]" style="display:none">
+                                    <form name="preview_form", id="preview_form_[% itemid %]" method="POST">
+                                    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                                    <div class="formrow">
+                                        <label for="gift_to_[% itemid %]">To</label>&nbsp;<input type="text" cols="40" name="gift_to" id="gift_to_[% itemid %]" value="[% sitem.gift_to %]" />
+                                    </div>
+                                    <div class="formrow">
+                                        <label for="voucher_message_text_[% itemid %]">Message</label>&nbsp;<textarea rows="10" cols="40" name="voucher_message_text_[% itemid %]" id="voucher_message_text_[% itemid %]">[% sitem.gift_message | html %]</textarea>
+                                    </div>
+                                    <div class="formrow">
+                                        <label for="gift_from_[% itemid %]">From</label>&nbsp;<input type="text" cols="40" name="gift_from" id="gift_from_[% itemid %]" value="[% sitem.gift_from %]" />
+                                    </div>
+                                    </form>
+                                </div>
+                            [%- END -%]
+                            [% IF can_edit_recipient_email && sitem.voucher && !sitem.is_physical && sitem.shipment_item_status_id == db_constant('SHIPMENT_ITEM_STATUS__DISPATCHED') %]
+                             <img src="/images/icons/page_white_edit.png" alt="Preview Gift Voucher Recipient Email" class="inline link_cursor" title="Preview Gift Voucher Recipient Email" id="preview_recipient_email_[% itemid %]" name="preview_recipient_email" />
+                              <div name="dialog" id="recipient_email_preview_[% itemid %]" style="display:none">
+                                    <form name="email_preview_form", id="email_preview_form_[% itemid %]" method="POST">
+                                    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                                    <div class="formrow">
+                                        <label for="recipient_email_[% itemid %]">Recipient Email</label>&nbsp;<input type="text" col= "40" name="recipient_email_[% itemid %]" id="recipient_email_[% itemid %]" value="[%  shipments.$id.ship_items.$itemid.gift_recipient_email %]" />
+                                    </div>
+                                    </form>
+                                </div>
+
+                             [% END %]
+
+                        [%- END %]
+                    </td>
+                    <td[% class %]>&nbsp;&nbsp;[% sitem.product_id %]-[% sitem.sku_size %]&nbsp;[% IF sitem.special_order_flag == 1 %]<b>s</b>[% END %]</td>
+                    <td[% class %]>[% sitem.name %][% voucher_code_disp %]
+                        [% IF sitem.voucher && !sitem.is_physical && shipments.$id.ship_items.$itemid.gift_recipient_email %]
+                                 <br> <b>Recipient Email:</b><br> [% shipments.$id.ship_items.$itemid.gift_recipient_email %]
+
+                         [% END %]
+                    </td>
+                    <td[% class %]>[% sitem.designer %]</td>
+                    <td[% class %]>
+                        [%- IF sitem.designer_size == 999 -%]
+                            No Size
+                        [%- ELSE -%]
+                            [% sitem.short_name _ ' ' IF sitem.short_name != "" %]
+                            [% sitem.designer_size %]
+                            [% ' (' _ sitem.size _ ')' IF sitem.designer_size != sitem.size %]
+                        [%- END -%]
+                    </td>
+                    <td[% class %]>
+                        <b>[% sitem.status %]</b>
+                        [% IF sitem.container_id %]<br />[% sitem.container_id %][% END %]
+                        [% IF sitem.pack_lane_name && prl_rollout_phase > 0 %]<br />[% sitem.pack_lane_name %][% END %]
+                    </td>
+                    <td[% class %]>[% IF shipments.$id.markdowns.$itemid %][% shipments.$id.markdowns.$itemid FILTER format('%.0f') %]%[% ELSE %]-[% END %]</td>
+                    <td[% class %]>[% IF sitem.promotion_percentage %][% sitem.promotion_percentage %]%[% ELSE %]-[% END %]</td>
+                    <td[% class %] align="right">[% sitem.unit_price %]</td>
+                    <td[% class %] align="right">[% sitem.tax %]</td>
+                    <td[% class %] align="right">[% sitem.duty %]</td>
+                    <td[% class %] align="right">[% sitem.sub_total %]&nbsp;&nbsp;</td>
+                </tr>
+            [% END %]
+
+            [%- BLOCK summary_row %]
+                <td class="blank" colspan="8">&nbsp;</td>
+                <td class="blank" colspan="3" align="right"><b>[% row_name %]</b>&nbsp;</td>
+                <td class="blank" align="right" style="white-space:nowrap;">[% '<span class="lowlight">' IF is_cancelled %]<b>[% row_value %]&nbsp;&nbsp;</b>[% '</span>' IF is_cancelled %]</td>
+            [%- END %]
+
+            [%- is_cancelled = 1 IF shipments.$id.shipment_status_id == 5 %]
+            <tr class="dividebelow">
+                [%- PROCESS summary_row
+                    row_name='Shipping'
+                    is_cancelled=is_cancelled
+                    row_value=( shipments.$id.shipping_charge ) %]
+            </tr>
+            [% IF ( osct = order.store_credit_tender ) %]
+                <tr class="dividebelow">
+                    [%- PROCESS summary_row
+                        row_name='Store Credit'
+                        is_cancelled=is_cancelled
+                        row_value=( '- ' _ osct.value ) %]
+                </tr>
+            [% END %]
+            [% FOR t IN order.voucher_tenders  %]
+                <tr class="dividebelow">
+                    [%- PROCESS summary_row
+                        row_name='Voucher Credit'
+                        is_cancelled=is_cancelled
+                        row_value=('- ' _ t.value) %]
+                </tr>
+            [% END %]
+            <tr class="dividebelow">
+                [%- PROCESS summary_row
+                    row_name='Shipment Total'
+                    is_cancelled=is_cancelled
+                    row_value=( orders.currency _ ' ' _ shipments.$id.shipment_total ) %]
+            </tr>
+        </tbody>
+    </table>
+
+    [% IF department_id == 5 || department_id == 10 || department_id == 19 %]
+        [% IF virt_vouchers > 0 && virt_codes < virt_vouchers %]
+            <br/>
+            <form id="request_virtual_codes_[% id %]" name="request_virtual_codes_[% id %]" method="POST" action="[% url %]">
+                [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                <input type="hidden" name="request_virtual_codes" value="1" />
+                <input type="hidden" name="request_shipment_id" value="[% id %]" />
+                [% PROCESS page_elements/forms/submit.tt submit="Request Virtual Voucher Codes &raquo;" %]
+            </form>
+        [% END %]
+    [% END %]
+
+    <br /><br /><br />
+
+    [% IF shipments.$id.promotions.size %]
+
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+            <tr>
+                <td class="blank"><h3 class="title-[% channel_config.$sales_channel %]">Promotions</h3></td>
+                <td class="blank" align="right" style="padding-right:15px"><a href="javascript:toggle_view('promotionsDiv', 'Promotions');"><span id="lnkpromotionsDiv"><img src="/images/icons/zoom_in.png" alt="View Promotions"></span></a></td>
+            </tr>
+            <tr>
+                <td colspan="8" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        </table>
+
+        <div id="promotionsDiv" style="display:none">
+            [% FOREACH promo = shipments.$id.promotions.keys %]
+                [% SET promo_total = 0 %]
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+                    <tr>
+                        <td align="right" width="10%"><b>Name:</b>&nbsp;</td>
+                        <td>[% promo %]</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="15"></td>
+                    </tr>
+                </table>
+
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+                    <tr>
+                        <td colspan="7" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+                    </tr>
+
+                    [% IF shipments.$id.promotions.$promo.items.size > 0 %]
+
+                         <tr height="24">
+                            <td class="tableHeader">&nbsp;&nbsp;&nbsp;SKU</td>
+                            <td class="tableHeader">Name</td>
+                            <td class="tableHeader">Designer</td>
+                            <td class="tableHeader" width="7%" align="right">Unit Price</td>
+                            <td class="tableHeader" width="7%" align="right">Tax</td>
+                            <td class="tableHeader" width="10%" align="right">Duties</td>
+                            <td class="tableHeader" width="12%" align="right">Sub-Total&nbsp;&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td colspan="7" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+                        </tr>
+
+                        [% FOREACH itemid = shipments.$id.promotions.$promo.items.keys %]
+
+                            [% SET item_total = shipments.$id.promotions.$promo.items.$itemid.unit_price + shipments.$id.promotions.$promo.items.$itemid.tax + shipments.$id.promotions.$promo.items.$itemid.duty %]
+
+                            [% SET promo_total = promo_total + item_total %]
+
+                            <tr height="24">
+                                <td>&nbsp;&nbsp;&nbsp;<a href="javascript://" onClick="window.open('[% shipments.$id.ship_items.$itemid.image.0 %]','viewimage','width=240,height=345,scrollbars=no');" class="noline">[% shipments.$id.ship_items.$itemid.product_id %]-[% shipments.$id.ship_items.$itemid.sku_size %]</a>&nbsp;[% IF shipments.$id.ship_items.$itemid.special_order_flag == 1 %]<b>s</b>[% END %]</td>
+                                <td>[% shipments.$id.ship_items.$itemid.name %]</td>
+                                <td>[% shipments.$id.ship_items.$itemid.designer %]</td>
+                                <td align="right">-[% shipments.$id.promotions.$promo.items.$itemid.unit_price FILTER format('%02.2f') %]</td>
+                                <td align="right">-[% shipments.$id.promotions.$promo.items.$itemid.tax FILTER format('%02.2f') %]</td>
+                                <td align="right">-[% shipments.$id.promotions.$promo.items.$itemid.duty FILTER format('%02.2f') %]</td>
+                                <td align="right">-[% item_total FILTER format('%02.2f') %]&nbsp;&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                            </tr>
+                        [% END %]
+                    [% END %]
+
+                    [% IF shipments.$id.promotions.$promo.shipping %]
+
+                        [% SET promo_total = promo_total + shipments.$id.promotions.$promo.shipping %]
+
+                        <tr>
+                            <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+                            <td class="blank" colspan="5" align="right"><b>Shipping:</b></td>
+                            <td class="blank" align="right">-[% shipments.$id.promotions.$promo.shipping FILTER format('%02.2f') %]&nbsp;&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td colspan="7" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                        </tr>
+                    [% END %]
+                        <tr>
+                            <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+                            <td class="blank" colspan="5" align="right"><b>Promotion Total:</b></td>
+                            <td class="blank" align="right">[% orders.currency %]&nbsp;-[% promo_total FILTER format('%02.2f') %]&nbsp;&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td colspan="7" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                        </tr>
+                </table>
+                <br /><br />
+
+            [% END %]
+
+        </div>
+        <br /><br /><br />
+    [% END %]
+
+    [% IF shipments.$id.boxes.size > 0 %]
+
+        <h3 class="title-[% channel_config.$sales_channel %]">Shipment Boxes</h3>
+
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+            <tr>
+                <td colspan="8" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr height="24">
+                <td class="tableHeader" width="20%">&nbsp;&nbsp;&nbsp;Box Number</td>
+                <td class="tableHeader" width="12%">Box Type</td>
+                <td class="tableHeader" width="8%">Items</td>
+                <td class="tableHeader" width="13%">Total Weight</td>
+                <td class="tableHeader" width="13%">Vol. Weight</td>
+                <td class="tableHeader" width="24%">Box Tracking (LP) Number</td>
+                <td class="tableHeader" width="10%"></td>
+            </tr>
+            <tr>
+                <td colspan="8" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        </table>
+
+        [% SET num_boxes = shipments.$id.boxes.size %]
+        [% SET box_count = 0 %]
+
+        [% FOREACH boxid = shipments.$id.boxes.keys %]
+
+            [% box_count = box_count + 1 %]
+
+            [% SET shipments.$id.boxes.$boxid.num_items = 0 %]
+            [% SET shipments.$id.boxes.$boxid.total_weight = shipments.$id.boxes.$boxid.weight %]
+
+            [% FOREACH itemid = shipments.$id.ship_items.keys %]
+
+                [% IF shipments.$id.ship_items.$itemid.shipment_box_id == boxid %]
+                    [% shipments.$id.boxes.$boxid.num_items = shipments.$id.boxes.$boxid.num_items + 1 %]
+                    [% shipments.$id.boxes.$boxid.total_weight = shipments.$id.boxes.$boxid.total_weight + shipments.$id.ship_items.$itemid.weight %]
+                [% END %]
+
+            [% END %]
+
+
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+                <tr height="24">
+                    <td width="20%">&nbsp;&nbsp;&nbsp;[% boxid %]</td>
+                    <td width="12%">[% shipments.$id.boxes.$boxid.box %]</td>
+                    <td width="8%">[% shipments.$id.boxes.$boxid.num_items %]</td>
+                    <td width="13%">[% shipments.$id.boxes.$boxid.total_weight | format('%.3f') %] [% weight_unit %]</td>
+                    <td width="13%">[% shipments.$id.boxes.$boxid.volumetric_weight | format('%.3f') %]</td>
+                    <td width="24%">
+                        [% IF shipments.$id.boxes.$boxid.tracking_number %]
+                            [% IF shipments.$id.carrier == 'UPS' %]
+                                [% shipments.$id.boxes.$boxid.tracking_number %]
+                            [% ELSE %]
+                                (J) JD00[% IF shipments.$id.carrier == 'DHL Ground' %]022[% END %][% shipments.$id.boxes.$boxid.tracking_number %]
+                            [% END %]
+                        [% ELSE %]
+                            -
+                        [% END %]
+                    </td>
+                    <td width="10%" align="right" style="padding-right:15px"><a href="javascript:toggle_view('shipmentBox[% boxid %]', 'Items');"><span id="lnkshipmentBox[% boxid %]"><img src="/images/icons/zoom_in.png" alt="View Items"></span></a></td>
+                </tr>
+                <tr>
+                    <td colspan="8" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+            </table>
+
+            <div id="shipmentBox[% boxid %]" style="display:none">
+                <br>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+                    <tr>
+                        <td colspan="7" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+                    </tr>
+                    <tr height="24">
+                        <td class="tableHeader" width="12%">&nbsp;&nbsp;&nbsp;SKU</td>
+                        <td class="tableHeader" width="27%">Name</td>
+                        <td class="tableHeader" width="23%">Designer</td>
+                        <td class="tableHeader" width="13%">Size</td>
+                        <td class="tableHeader" width="15%">Customs Value</td>
+                        <td class="tableHeader" width="10%">Unit Weight</td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+                    </tr>
+                    [% FOREACH itemid = shipments.$id.ship_items.keys %]
+                        [% IF shipments.$id.ship_items.$itemid.shipment_box_id == boxid %]
+                            <tr height="24">
+                                <td>&nbsp;&nbsp;&nbsp;[% shipments.$id.ship_items.$itemid.product_id %]-[% shipments.$id.ship_items.$itemid.sku_size %]</td>
+                                <td>[% shipments.$id.ship_items.$itemid.name %]</td>
+                                <td>[% shipments.$id.ship_items.$itemid.designer %]</td>
+                                <td>[% IF shipments.$id.ship_items.$itemid.short_name != "" %][% shipments.$id.ship_items.$itemid.short_name %] [% END %][% shipments.$id.ship_items.$itemid.designer_size %]</td>
+                                <td>[% shipments.$id.ship_items.$itemid.customs_value %]&nbsp;</td>
+                                <td>[% shipments.$id.ship_items.$itemid.weight | format ('%.3f') %]&nbsp;[% weight_unit %]</td>
+                            </tr>
+                            <tr>
+                                <td colspan="9" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                            </tr>
+                        [% END %]
+                    [% END %]
+                </table>
+                <br><br>
+
+                [% IF box_count != num_boxes %]
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+                        <tr>
+                            <td colspan="8" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+                        </tr>
+                        <tr height="24">
+                            <td class="tableHeader" width="20%">&nbsp;&nbsp;&nbsp;Box Number</td>
+                            <td class="tableHeader" width="12%">Box Type</td>
+                            <td class="tableHeader" width="8%">Items</td>
+                            <td class="tableHeader" width="13%">Total Weight</td>
+                            <td class="tableHeader" width="13%">Vol. Weight</td>
+                            <td class="tableHeader" width="24%">LP Number</td>
+                            <td class="tableHeader" width="10%"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="8" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+                        </tr>
+                    </table>
+                [% END %]
+            </div>
+        [% END %]
+    <br><br><br>
+
+    [% END %]
+
+    [% IF shipments.$id.object.renumerations_rs.count %]
+        [% shipment = shipments.$id.object %]
+
+        <h3 class="title-[% channel_config.$sales_channel %]">Payments & Refunds</h3>
+        [% INCLUDE third_party_payment_message div_id='third_party_payment_message_' _ id %]
+        <table id="order_view_payment_refunds_[% id %]" width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+            <tr>
+                <td colspan="7" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr height="24">
+                <td class="tableHeader">&nbsp;&nbsp;&nbsp;Invoice Number</td>
+                <td class="tableHeader">Type</td>
+                <td class="tableHeader">Reason</td>
+                <td class="tableHeader">Status</td>
+                <td class="tableHeader">Value</td>
+                <td class="tableHeader"></td>
+                <td class="tableHeader"></td>
+            </tr>
+            <tr>
+                <td colspan="7" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+
+            [% FOR refund_type IN [ 'payment_renumerations', 'refund_renumerations' ] %]
+                [% renumerations = shipment.$refund_type %]
+                [% CALL renumerations.reset %]
+                [% WHILE ( renumeration = renumerations.next ) %]
+                    [% tdclass = "" %]
+
+                    [% IF renumeration.status.status == "Cancelled" %]
+                        [% tdclass = " class=\"light\"" %]
+                    [% END %]
+
+                    <tr height="24">
+                        <td[% tdclass %]>&nbsp;&nbsp;&nbsp;[% renumeration.invoice_nr %]</td>
+                        <td[% tdclass %]>[% renumeration.renumeration_type.type %]</td>
+                        <td[% tdclass %]>[% renumeration.get_reason_for_display %]</td>
+                        <td[% tdclass %]>[% PROCESS page_elements/show_printed_as_manual.tt status=renumeration.renumeration_status.status %]</td>
+                        <td[% tdclass %]>[% renumeration.currency.currency %]&nbsp;[% renumeration.grand_total FILTER format('%02.2f') %]&nbsp;&nbsp;</td>
+                        <td[% tdclass %]><a href="[% short_url %]/Invoice?order_id=[% order.id %]&shipment_id=[% renumeration.shipment_id %]&action=View&invoice_id=[% renumeration.id %]"><img src="/images/icons/page_go.png" alt="View Invoice"></a></td>
+                        <td[% tdclass %]>
+                            [% IF renumeration.renumeration_status_id < 4 %]
+                                <a href="[% short_url %]/Invoice?order_id=[% order.id %]&shipment_id=[% renumeration.shipment_id %]&action=Edit&invoice_id=[% renumeration.id %]"><img src="/images/icons/page_edit.png" alt="Edit Invoice"></a>
+                            [% END %]
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                    </tr>
+                [% END %]
+            [% END %]
+        </table>
+
+        <br /><br /><br />
+
+    [% END %]
+
+
+    [% IF shipments.$id.returns.size > 0 %]
+
+        [% FOREACH returnid = shipments.$id.returns.keys %]
+            <h3 class="title-[% channel_config.$sales_channel %]">Return Details</h3>
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+                <tr>
+                    <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr>
+                    <td align="right" width="15%"><b>RMA:</b>&nbsp;</td>
+                    <td><a href="[% short_url %]/Returns/View?order_id=[% orders_id %]&shipment_id=[% id %]&return_id=[% returnid %]">[% shipments.$id.returns.$returnid.rma_number %]</a></td>
+                    <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr height="24">
+                    <td align="right" class="blank"><b>Date Created:</b>&nbsp;</td>
+                    <td class="blank">[% shipments.$id.returns.$returnid.date_created %]</td>
+                    <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr height="24">
+                    <td align="right" class="blank"><b>Status:</b>&nbsp;</td>
+                    <td class="blank"><span class="highlight">[% shipments.$id.returns.$returnid.status %]</span></td>
+                    <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="blank"><img src="/images/blank.gif" width="1" height="20"></td>
+                </tr>
+            </table>
+
+            [% IF shipments.$id.shipment_type_id == db_constant('SHIPMENT_TYPE__PREMIER') %]
+                <h3 class="title-[% channel_config.$sales_channel %]">Collection Routing Information</h3>
+                [% PROCESS show_routing_schedule schedules=shipments.$id.returns.$returnid.routing_schedules,rout_sched_id="r" _ returnid %]
+            [% END %]
+
+            <h3 class="title-[% channel_config.$sales_channel %]">Return Items</h3>
+            <table class="data wide-data divided-data">
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Type</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Date Received</th>
+                        <th>AWB</th>
+                    </tr>
+                </thead>
+                <tbody>
+                [% FOREACH returnitemid = shipments.$id.returns.$returnid.return_items.keys %]
+                    [% tdclass = shipments.$id.returns.$returnid.return_items.$returnitemid.status == "Cancelled" ? ' class="light"' : '' %]
+                    <tr>
+                        <td[% tdclass %]>[% shipments.$id.returns.$returnid.return_items.$returnitemid.product_id %]-[% shipments.$id.returns.$returnid.return_items.$returnitemid.sku_size %]</td>
+                        <td[% tdclass %]>[% shipments.$id.returns.$returnid.return_items.$returnitemid.type %]</td>
+                        <td[% tdclass %]>[% shipments.$id.returns.$returnid.return_items.$returnitemid.reason %]</td>
+                        <td[% tdclass %]>[% shipments.$id.returns.$returnid.return_items.$returnitemid.status %]</td>
+                        <td[% tdclass %]>[% shipments.$id.returns.$returnid.return_items.$returnitemid.date_received %]</td>
+                        <td[% tdclass %]>
+                            [% rawb = shipments.$id.returns.$returnid.return_items.$returnitemid.return_airway_bill %]
+                            [% IF rawb && rawb != 'premier' && rawb != 'london' %]
+                                [% tu = shipments.$id.carrier_tracking_uri %]
+                                [% IF tu.length %] <a href="[% tu _ rawb %]" target="_blank"> [% END %]
+                                [% rawb %]
+                                [% IF tu.length %] </a> [% END %]
+                            [% END %]
+                         </td>
+                    </tr>
+                [% END %]
+                </tbody>
+            </table>
+
+            <br><br>
+
+        [% END %]
+
+        <br>
+
+    [% END %]
+
+
+    [% IF shipments.$id.emails.size > 0 %]
+        <h3 class="title-[% channel_config.$sales_channel %]">Shipment Email Log</h3>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data" id="email_log_shipment_[% id %]">
+            <tr>
+                <td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td class="tableHeader">&nbsp;&nbsp;&nbsp;Type</td>
+                <td class="tableHeader">&nbsp;&nbsp;&nbsp;Date Sent</td>
+                <td class="tableHeader">&nbsp;&nbsp;&nbsp;Sent By</td>
+            </tr>
+            <tr>
+                <td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            [% FOREACH emailid = shipments.$id.emails.keys.nsort %]
+
+            <tr>
+                <td>&nbsp;&nbsp;&nbsp;[% shipments.$id.emails.$emailid.template %]</td>
+                <td>&nbsp;&nbsp;&nbsp;[% shipments.$id.emails.$emailid.date %]</td>
+                <td>&nbsp;&nbsp;&nbsp;[% shipments.$id.emails.$emailid.operator %]</td>
+            </tr>
+            <tr>
+                <td colspan="4" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+
+            [% END %]
+        </table>
+        <br><br><br>
+    [% END %]
+
+    [% IF shipments.$id.return_emails.size %]
+        [%
+            PROCESS page_elements/display_return_email_logs.tt
+                            ret_tab_id='email_log_return_' _ id,
+                            ret_email_logs=shipments.$id.return_emails,
+                            ret_show_rma=1
+        %]
+        <br/><br/><br/>
+    [% END %]
+
+    [% IF shipments.$id.paperwork.size > 0 %]
+        <h3 class="title-[% channel_config.$sales_channel %]" id="print_log">Print Log</h3>
+        <form name="reprintForm" action="[% url %]" method="POST">
+            [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+            <table class="data wide-data divided-data">
+                <thead>
+                    <tr>
+                        <th>Document</th>
+                        <th>Date Printed</th>
+                        <th>Printer</th>
+                        <th style="width: 30%">Re-Print</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    [% FOREACH docid = shipments.$id.paperwork.keys.nsort %]
+                        <tr>
+                            [%# Intercept and deparse MRP Sticker rows and do something nice #%]
+                            [% SET particles = shipments.$id.paperwork.$docid.document.match('MRP Sticker (\d+) cop') %]
+                            [% IF particles.0 %]
+                                <td>MrP Sticker ([% particles.0 %]): "[% shipments.$id.paperwork.$docid.file | html %]"</td>
+                            [% ELSE %]
+                                <td>[% '<a href="' _ url _ '&viewdoc=' _ docid _ '" target="_blank">' IF shipments.$id.paperwork.$docid.file; shipments.$id.paperwork.$docid.document; '</a>' IF shipments.$id.paperwork.$docid.file %]</td>
+                            [% END %]
+                            [% printer_name = shipments.$id.paperwork.$docid.name %]
+                            <td>[% shipments.$id.paperwork.$docid.date %]</td>
+                            <td>[% printer_name %]</td>
+                            [% IF particles.0 %]
+                                <td><i>See "Personalized Sticker" above for reprints</i></td>
+                            [% ELSE %]
+                                <td>[% IF printer_name != '-' %]<input type="radio" name="reprint" value="[% shipments.$id.paperwork.$docid.file %]">[% END %]</td>
+                            [% END %]
+                        </tr>
+                    [% END %]
+                </tbody>
+            </table>
+            [% INCLUDE printer_selection %]
+            <div class="formrow buttons aftertable">
+                <input type="submit" class="button" name="submit" value="Re-Print Documents &raquo;">
+            </div>
+        </form>
+    [% END %]
+
+    [% IF shipments.$id.pick_paperwork.size > 0 %]
+        <h3 class="title-[% channel_config.$sales_channel %]" id="pick_prints">Print at pick items</h3>
+        <form name="pick_prints" action="[% url %]" method="POST">
+            [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+            <table class="data wide-data divided-data">
+                <thead>
+                    <tr>
+                        <th>Document</th>
+                        <th>Document contents</th>
+                        <th style="width: 30%">Regenerate and Print</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    [% FOREACH docid = shipments.$id.pick_paperwork.keys.sort %]
+                        <tr>
+                            <td>[% shipments.$id.pick_paperwork.$docid.fullname %]</td>
+                            <td>[% shipments.$id.pick_paperwork.$docid.description.replace('\n', '<br>') %]</td>
+                            [%# Intercept and deparse MRP Sticker rows and do something nice #%]
+                            [% IF docid == 'MrPSticker' %]
+                                <td><i>See "Personalized Sticker" above for reprints</i></td>
+                            [% ELSE %]
+                                <td><input type="radio" name="pick_print" value="[% docid %]"></td>
+                            [% END %]
+                        </tr>
+                    [% END %]
+                </tbody>
+            </table>
+            [% INCLUDE printer_selection %]
+            <div class="formrow buttons aftertable">
+                <input type="hidden" name="shipment_id" value="[% id %]">
+                <input type="submit" class="button" name="submit" value="Regenerate and Print Documents &raquo;">
+            </div>
+        </form>
+    [% END %]
+
+
+    [% BLOCK printer_selection %]
+        <div class="formrow aftertable">
+            <label for="select_printer">Select printer :</label>
+            <select name="printer" id="select_printer">
+                <option value="0">.....</option>
+                [% FOREACH printer = printers %]
+                    <option value="[% printer %]">[% printer %]</option>
+                [% END %]
+            </select>
+        </div>
+    [% END %]
+
+
+[% END %]
+
+[% BLOCK show_routing_schedule %]
+<table class="wide-data data" id="rout_sched_[% rout_sched_id %]">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Task Window</th>
+            <th>Driver</th>
+            <th>Run Number</th>
+            <th>Outcome</th>
+            <th width="20%">Signatory</th>
+            <th>Undelivered Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        [% IF schedules %]
+            [% FOREACH schedule IN schedules %]
+            [%-
+                SET class = "";
+                IF base_obj.is_cancelled;
+                    class = " class='light'";
+                ELSIF ( schedule.success );
+                THEN;
+                    class   = " class='highlight2'";
+                END;
+            -%]
+            <tr class="dividebelow">
+                <td[% class %]>[% IF schedule.task_window_date %][% order.channel.business.branded_date( schedule.task_window_date ) %][% END %]</td>
+                <td[% class %]>[% schedule.task_window %]</td>
+                [% IF schedule.task_window != 'TBC' %]
+                <td[% class %]>[% schedule.driver | html %]</td>
+                <td[% class %]>[% schedule.run_number %] [% IF schedule.run_order_number %]<em title="Run Order Number">([% schedule.run_order_number %])</em>[% END %]</td>
+                [% ELSE %]
+                <td[% class %]>&nbsp;</td>
+                <td[% class %]>&nbsp;</td>
+                [% END %]
+                <td[% class %]>[%-
+                        SET outcome = 'Pending';
+                        IF schedule.success;
+                            outcome = 'Success';
+                        END;
+                        IF schedule.failed;
+                            outcome = 'Failed';
+                        END;
+                        IF schedule.resched;
+                            outcome = 'Re-Scheduled';
+                        END;
+                    -%]
+                    [%- outcome -%]
+                </td>
+                [% IF schedule.success %]
+                <td[% class %]>[% IF schedule.signatory %]<strong>[% schedule.signatory | html %]</strong>[% IF schedule.signature_time %]<br/>[% order.channel.business.branded_date( schedule.signature_time ) %] @ [% schedule.signature_time.format_cldr("HH':'mm") %][% END %][% END %]</td>
+                [% ELSE %]
+                <td[% class %]>&nbsp;</td>
+                [% END %]
+                <td[% class %]>[% IF schedule.failed %][% schedule.undelivered_notes | html %][% END %]</td>
+            </tr>
+            [% END %]
+        [% ELSE %]
+            <tr class="dividebelow">
+                <td[% class %] colspan="7">Premier delivery/collection details are currently not available, please refer to SATNAP for the most up to date information.</td>
+            </tr>
+        [% END %]
+    </tbody>
+</table>
+<br/><br/>
+[% END %]
+
+[% BLOCK third_party_payment_message %]
+    [%- IF order.is_paid_using_third_party_psp -%]
+        [%- SET third_party_payment = order.get_third_party_payment_method -%]
+        <div id="[% div_id %]" class="third_party_payment_message spaced">
+            <strong>Please Note:</strong> this Order was paid with using <span>[% third_party_payment.payment_method %]</span>.
+        </div>
+    [%- END -%]
+[% END %]
+
+<div id="fraudrules__test_popup"></div>

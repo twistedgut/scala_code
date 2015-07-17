@@ -1,0 +1,445 @@
+[%# USE Dumper %]
+
+[% IF tt_process_block; PROCESS $tt_process_block; END %]
+
+
+[% BLOCK frm_search_pids %]
+<span class="title">Search Form</span><br />
+<table class="data" width="100%" cellpadding="0" cellspacing="0" border="0">
+<form name="frm_search_pids" action="NonFaulty" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <tr>
+        <td colspan="2" class="divider"></td>
+    </tr>
+    <tr>
+        <td width="20%" align="right"><b>Sales Channel:</b>&nbsp;</td>
+        <td width="80%">
+            <select name="channel_id">
+                [% FOREACH channel_id = channels.keys %]
+                    <option value="[% channel_id %]">[% channels.$channel_id.name %]</option>
+                [% END %]
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"></td>
+    </tr>
+    <tr valign="top">
+        <td align="right" style="padding-top:4px; padding-bottom:4px"><span style="font-weight: bold">Enter Product ID's:</span>&nbsp;&nbsp;<br />(comma-separated)&nbsp;&nbsp;</td>
+        <td style="padding-top:4px; padding-bottom:4px"><textarea name="txta_product_ids" rows="5" cols="80" style="border: 1px solid grey; text-align: justify;">[% posted_product_ids %]</textarea></td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"></td>
+    </tr>
+    <tr>
+        <td class="blank" colspan="2" align="right" style="padding-top:8px"><input type="submit" name="submit_search_pids" class="button" style="cursor: pointer;" value="Select &raquo;" /></td>
+    </tr>
+    </form>
+</table>
+
+
+<script type="text/javascript">
+<!--
+    document.forms.frm_search_pids.txta_product_ids.focus();
+//-->
+</script>
+[% END ## (BLOCK frm_search_pids) %]
+
+
+
+
+[% BLOCK frm_select_items %]
+[% PROCESS page_elements/javascript/inventory.tt %]
+<span class="title title-[% channel_config.$channel %]">Search Results</span><br />
+
+
+[% SET got_results = 0 %]
+
+[% FOREACH row = nonfaulty_stock %]
+
+    [% IF row.quantity_id.defined %]
+        [% SET got_results = 1 %]
+    [% END %]
+
+[% END %]
+
+[% IF got_results == 0 %]
+    <b>No records returned</b><br />
+    <br />
+[% ELSE %]
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <form name="frm_select_items" id="frm_select_items" action="NonFaulty" method="post" onsubmit="return validateForm();">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="channel_id" value="[% channel_id %]">
+    <thead>
+        <tr>
+            <td colspan="11" class="divider"></td>
+        </tr>
+        <tr>
+            <td class="tableHeader" width="20%">Designer<br />&nbsp;</td>
+            <td class="tableHeader" width="5%">SKU<br />(PID </span></td>
+            <td class="tableHeader" width="5%"><br />-</td>
+            <td class="tableHeader" width="5%"><br />Size&nbsp;ID)</td>
+            <td class="tableHeader" width="5%">Alloc.<br />&nbsp;</td>
+            <td class="tableHeader" width="8%">Size</td>
+            <td class="tableHeader" width="10%">Location<br />&nbsp;</td>
+            <td class="tableHeader" width="6%">Qty.<br />&nbsp;</td>        
+            <td class="tableHeader" width="6%">RTV<br />&nbsp;</td>
+            <td class="tableHeader" width="15%">Request<br />&nbsp;</td>
+            <td class="tableHeader" width="6%">Include<br />&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="11" class="divider"></td>
+        </tr>
+    </thead>
+    <tbody>
+
+    [% SET group_designer_id = 0 %]    
+    [% SET group_product_id = 0 %]
+    [% SET group_sku = 0 %]
+    [% SET group_location = 0 %]
+
+    [%## Set up grouping dividers (designer, product, sku) %]
+    [% SET divider_grp_1    = ' border-top: solid 12px #cfcfcf;' %]
+    [% SET divider_grp_2    = ' border-top: solid 2px darkblue;' %]
+    [% SET divider_grp_3    = ' border-top: dotted 1px brown;' %]
+    [% SET divider_grp_4    = ' border-top: dotted 1px green;' %]
+    [% SET divider_grp_5    = ' border-top: dotted 1px grey;' %]
+    [% SET divider_none     = ' border-top: 0;' %]
+
+    [% SET zero_stock_skus = [] %]
+    [% SET show_submit = 0 %]
+
+    [% FOREACH row = nonfaulty_stock %]
+
+        [% SET row_id = row.quantity_id %]
+        [% SET row_variant_id = row.variant_id %]
+
+        [% IF !row.quantity_id.defined %]
+            [% zero_stock_skus.push(row.sku) %]
+            [% NEXT %]
+        [% END %]
+        
+        [% IF (group_designer_id && row.designer_id != group_designer_id) %]
+            [% divider_designer = divider_grp_1 %]
+            [% divider_product  = divider_grp_1 %]
+            [% divider_sku      = divider_grp_1 %]
+            [% divider_location = divider_grp_1 %]
+            [% divider          = divider_grp_1 %]
+        [% ELSIF (group_product_id && row.product_id != group_product_id) %]
+            [% divider_designer = divider_none %]
+            [% divider_product  = divider_grp_2 %]
+            [% divider_sku      = divider_grp_2 %]
+            [% divider_location = divider_grp_2 %]
+            [% divider          = divider_grp_2 %]
+        [% ELSIF (group_sku && row.sku != group_sku) %]
+            [% divider_designer = divider_none %]
+            [% divider_product  = divider_none %]
+            [% divider_sku      = divider_grp_3 %]
+            [% divider_location = divider_grp_3 %]
+            [% divider          = divider_grp_3 %]
+        [% ELSIF (group_location && row.location != group_location) %]
+            [% divider_designer = divider_none %]
+            [% divider_product  = divider_none %]
+            [% divider_sku      = divider_none %]
+            [% divider_location = divider_grp_4 %]
+            [% divider          = divider_grp_4 %]
+        [% ELSE %]
+            [% divider_designer = divider_none %]
+            [% divider_product  = divider_none %]
+            [% divider_sku      = divider_none %]
+            [% divider_location = divider_none %]
+            [% divider          = divider_grp_5 %]
+        [% END %]
+        [% IF 0 %]<tr><td colspan="11">[% Dumper.dump_html(row) %]</td></tr>[% END %]
+        <tr>
+            <td style="vertical-align: top;[% divider_designer %]; font-weight: bold;">
+            [% IF row.designer_id != group_designer_id%]
+                [% row.designer | html %]
+            [% ELSE %]
+                <span style="color: lightgrey;">[% row.designer | html %]</span>
+            [% END %]
+            </td>
+            <td style="vertical-align: top;[% divider_product %]">
+            [% IF row.product_id != group_product_id %]
+                <a href="../StockControl/Inventory/Overview?product_id=[% row.product_id %]" style="text-decoration: none;">[% row.product_id %]</a>
+            [% ELSE %]
+                <span style="color: lightgrey;">[% row.product_id %]</span>
+            [% END %]
+            </td>
+            <td style="vertical-align: top;[% divider_sku %]">-</td>
+            <td style="vertical-align: top; text-align: left;[% divider_sku %]">
+            [% IF row.sku != group_sku %]
+                <a href="../StockControl/Inventory/Overview?variant_id=[% row.variant_id %]" style="text-decoration: none;">[% row.size_id FILTER format('%03d') %]</a>
+            [% ELSE %]
+                <span style="color: lightgrey;">[% row.size_id FILTER format('%03d') %]</span>
+            [% END %]
+            </td>
+            <td style="vertical-align: top; text-align: left;[% divider_sku %]">
+            [% IF row.sku != group_sku %]
+                [% IF nonfaulty_allocated.$row_variant_id.quantity > 0 %]
+                    <span style="color: red; font-weight: bold;">[[% nonfaulty_allocated.$row_variant_id.quantity %]]</span>
+                [% ELSE %]
+                    &nbsp;
+                [% END %]
+            [% ELSE %]
+                &nbsp;
+            [% END %]
+            </td>
+            <td style="vertical-align: top; [% divider_sku %]">
+            [% IF row.sku != group_sku %]
+                [% row.designer_size %]
+            [% ELSE %]
+                <span style="color: lightgrey;">[% row.designer_size %]</span>
+            [% END %]
+            </td>
+            <td style="vertical-align: top; [% divider_location %]">[% row.location %]</td>
+            <td style="vertical-align: top; [% divider_location %]; font-weight: bold;">[% row.quantity %]&nbsp;</td>
+            <td style="vertical-align: top; [% divider_location %];">
+                <input type="hidden" id="edit_designer_id_[% row_id %]" name="edit_designer_id_[% row_id %]" value="off" />
+                <input type="hidden" id="designer_id_[% row_id %]" name="designer_id_[% row_id %]" value="[% row.designer_id %]" />
+                <input type="hidden" id="edit_sku_[% row_id %]" name="edit_sku_[% row_id %]" value="off" />
+                <input type="hidden" id="sku_[% row_id %]" name="sku_[% row_id %]" value="[% row.sku %]" />
+                <input type="hidden" id="edit_variant_id_[% row_id %]" name="edit_variant_id_[% row_id %]" value="off" />
+                <input type="hidden" id="variant_id_[% row_id %]" name="variant_id_[% row_id %]" value="[% row.variant_id %]" />
+                <input type="hidden" id="edit_location_id_[% row_id %]" name="edit_location_id_[% row_id %]" value="off" />
+                <input type="hidden" id="location_id_[% row_id %]" name="location_id_[% row_id %]" value="[% row.location_id %]" />
+                <input type="hidden" id="row_quantity_[% row_id %]" name="row_quantity_[% row_id %]" value="[% row.quantity %]" />
+                <input type="hidden" id="edit_request_quantity_[% row_id %]" name="edit_request_quantity_[% row_id %]" value="off" />&nbsp;
+                <input type="text" id="request_quantity_[% row_id %]"name="request_quantity_[% row_id %]" style="width: 3em; border: 1px solid grey;" maxlength="3" onchange="validateRow([% row_id %]); editField(this);" autocomplete="off" disabled="disabled" />
+                &nbsp;<span style="font-weight: 900; font-size: 110%; color: red; display: inline; visibility: hidden;" id="attention_qty_[% row_id %]">*</span>
+            </td>
+            <td style="vertical-align: top; [% divider_location %];">
+                [%  INCLUDE page_elements/forms/select_list.tt
+                        id                  = row_id
+                        name                = 'request_detail_type'
+                        options             = request_detail_type
+                        disabled            = 1
+                        first_entry         = 'Please Select...'
+                        option_value_key    = 'id'
+                        option_entry_key    = 'type'
+                        onchange            = 'validateRow(' _ row_id _ ');'
+                %]&nbsp;<span style="font-weight: 900; font-size: 110%; color: red; display: inline; visibility: hidden;" id="attention_type_[% row_id %]">*</span>
+            </td>
+            <td style="vertical-align: top; text-align: center;[% divider_location %];">
+                <input type="checkbox" name="include_[% row_id %]" id="include_[% row_id %]" value="[% row_id %]" disabled="disabled" onchange="includeRow(this); validateRow([% row_id %]);" />
+            </td>
+        </tr>
+        [% SET group_location = row.location %]
+        [% SET group_sku = row.sku %]
+        [% SET group_product_id = row.product_id %]
+        [% SET group_designer_id = row.designer_id %]
+
+        [% SET show_submit = 1 %]
+
+    [% END ## (FOREACH row) %]
+        
+        [% IF show_submit %]
+        <tr>
+            <td colspan="11" class="divider"></td>
+        </tr>
+        <tr>
+            <td colspan="11" class="blank" align="right" style="padding-top:8px">
+                <input type="submit" name="submit_create_rma_request" class="button" style="cursor: pointer;" value="Create&nbsp;RMA&nbsp;Request/s&nbsp;&raquo;" />
+            </td>
+        </tr>
+        [% END %]
+        </tbody>
+</table>
+</form>
+[% END %]
+
+
+[% IF invalid_pids.size > 0 %]
+    <p class="error_msg">The folowing PID's are not valid:-<br />
+            [% invalid_pids.nsort.join(', ') %]
+    </p>
+[% END %]
+
+[% IF zero_stock_skus.size > 0 %]
+    <b>The folowing SKU's have no DC stock:-</b><br /><br />
+    [% FOREACH zero_stock_sku = zero_stock_skus.sort %]
+        [% zero_stock_sku %]<br />
+    [% END ## (FOREACH zero_stock_sku) %]
+
+[% END %]
+    
+
+
+<script type="text/javascript">
+<!--
+
+    function includeRow(checkbox) {
+
+        var id          = checkbox.value;
+        var is_checked  = checkbox.checked;
+        
+        var designer_id                 = document.getElementById('designer_id_' + id);
+        var designer_id_edit            = document.getElementById('edit_designer_id_' + id);
+        var sku                         = document.getElementById('sku_' + id);
+        var sku_edit                    = document.getElementById('edit_sku_' + id);
+        var variant_id                  = document.getElementById('variant_id_' + id);
+        var variant_id_edit             = document.getElementById('edit_variant_id_' + id);
+        var location_id                 = document.getElementById('location_id_' + id);
+        var location_id_edit            = document.getElementById('edit_location_id_' + id);
+        var request_quantity            = document.getElementById('request_quantity_' + id);
+        var request_quantity_edit       = document.getElementById('edit_request_quantity_' + id);
+        var request_detail_type         = document.getElementById('request_detail_type_' + id);
+        var request_detail_type_edit    = document.getElementById('edit_request_detail_type_' + id);
+        
+        designer_id.disabled                = !is_checked;
+        sku.disabled                        = !is_checked;
+        variant_id.disabled                 = !is_checked;
+        location_id.disabled                = !is_checked;
+        request_quantity.disabled           = !is_checked;
+        request_detail_type.disabled        = !is_checked;
+        request_detail_type_edit.disabled   = !is_checked;
+
+        designer_id_edit.value          = is_checked ? 'on' : 'off';
+        sku_edit.value                  = is_checked ? 'on' : 'off';
+        variant_id_edit.value           = is_checked ? 'on' : 'off';
+        location_id_edit.value          = is_checked ? 'on' : 'off';
+        request_quantity.value          = is_checked ? request_quantity.value : '';
+        request_quantity_edit.value     = is_checked ? 'on' : 'off';
+        request_detail_type.value       = is_checked ? request_detail_type.value : '';
+        request_detail_type_edit.value  = is_checked ? 'on' : 'off';
+
+    }
+    
+    
+    function validateRow(id) {
+    
+        var chk_include             = document.getElementById('include_' + id);
+        var txt_request_quantity    = document.getElementById('request_quantity_' + id);
+        var ddl_request_detail_type = document.getElementById('request_detail_type_' + id);
+        var span_attention_qty      = document.getElementById('attention_qty_' + id);
+        var span_attention_type     = document.getElementById('attention_type_' + id);
+        
+        var row_status  = 'valid';
+        
+        if ( chk_include.checked ) {
+        
+            var row_quantity        = parseInt(document.getElementById('row_quantity_' + id).value);
+            var entered_quantity    = parseInt(txt_request_quantity.value);
+
+            if ( (!txt_request_quantity.value.match(/^\d+$/)) || (entered_quantity < 1) || (entered_quantity > row_quantity) ) {
+                span_attention_qty.style.visibility = 'visible';
+                row_status = 'invalid';
+            }
+            else {
+                span_attention_qty.style.visibility = 'hidden';
+            }
+            
+            if ( !ddl_request_detail_type.value.match(/^\d+$/) ) {
+                span_attention_type.style.visibility = 'visible';
+                row_status = 'invalid';
+            }
+            else {
+                span_attention_type.style.visibility = 'hidden';
+            }
+       
+        }
+        else {
+            span_attention_qty.style.visibility = 'hidden';
+            span_attention_type.style.visibility = 'hidden';
+            row_status = 'excluded';
+        }
+        
+        return row_status;
+        
+    }
+    
+
+    
+    function validateForm() {
+    
+        var row_ids = [];
+        
+    [% FOREACH row = nonfaulty_stock %]
+        [% NEXT IF !row.quantity_id.defined %]
+        row_ids.push([% row.quantity_id %]);
+    [% END %]
+    
+        var form_has_rows = false;
+        var form_is_valid = true;
+
+
+        for ( var i in row_ids ) {
+
+            var row_status = validateRow(row_ids[i]);
+
+            if ( row_status == 'valid' ) {
+                form_has_rows = true;
+            }
+            else if ( row_status == 'invalid' ) {
+                form_has_rows = true;
+                form_is_valid = false;
+            }
+
+        }
+
+
+        if ( form_has_rows && form_is_valid ) {
+            return true;
+        }
+        else if ( form_has_rows ) {
+            alert("Invalid request.\nPlease correct highlighted fields to continue.\n\n");
+            return false;
+        }
+        else {
+            alert("Invalid request.\nPlease ensure items are selected for inclusion.\n\n");
+            return false;
+        }
+
+    }
+    
+    
+    
+    // Enable "include" checkboxes after form has rendered
+    var frm_select_items = document.getElementById('frm_select_items');
+
+    for (var i = 0; i < frm_select_items.length; i++) {
+        var fieldname = frm_select_items[i].name;
+        if (fieldname.match(/^include_\d+$/)) {
+            frm_select_items[i].disabled = false;
+        }
+    }
+
+
+
+[% FOREACH row = nonfaulty_stock %]
+    [% NEXT IF !row.quantity_id.defined %]
+    includeRow( document.getElementById('include_' + [% row.quantity_id %]) );
+[% END %]
+
+//-->
+</script>
+
+
+[% END ## (BLOCK frm_select_items %]
+
+
+
+[% BLOCK rma_requests_created %]
+    <table cellpadding="8" cellspacing="0" border="0" style="width: 40%; border: none;">
+        <tr>
+            <td>
+            [% IF rma_request_ids.size > 0 %]
+                The following RMA Requests were created:-
+            [% ELSE %]
+                <span style="font-weight: bold;">No RMA Requests were created</span>
+            [% END %]
+            </td>
+        </tr>
+    [% FOREACH rma_request_id = rma_request_ids %]
+        <tr><td style="font-weight: bold;"><a href="/RTV/ListRMA?rma_request_id=[% rma_request_id %]"style=" text-decoration: none;">[% rma_request_id FILTER format('%05d') %]</a></td></tr>
+    [% END %]
+    </table>
+[% END ## (BLOCK rma_requests_created) %]
+
+
+
+[% IF just_for_test.defined %]
+<pre>[% Dumper.dump_html(just_for_test) %]</pre>
+[% END %]
+

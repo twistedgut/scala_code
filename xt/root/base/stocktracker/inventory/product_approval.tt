@@ -1,0 +1,437 @@
+<!-- TT BEGIN - stocktracker/inventory/product_approval.tt -->
+
+
+[% PROCESS page_elements/javascript/inventory.tt %]
+
+
+[% IF tt_process_block; PROCESS $tt_process_block; END %]
+
+
+[% BLOCK archive %]
+
+<table style="width: 100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <tr>
+        <td colspan="3" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td width="30%" class="tableHeader">&nbsp;&nbsp;&nbsp;Name</td>
+        <td width="30%" class="tableHeader">Created By</td>
+        <td width="30%" class="tableHeader">Date</td>
+    </tr>
+    <tr>
+        <td colspan="3" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    [% FOREACH item = archive %]
+
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;<a href="/StockControl/ProductApproval?archive_id=[% item.id %]">[% item.title %]</a></td>
+            <td>[% item.name %]</td>
+            <td>[% item.created_date %]</td>
+        </tr>
+        <tr>
+            <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+    [% END %]
+</table>
+<br /><br />
+[% END %]
+
+
+
+[% BLOCK frm_enter_product_ids %]
+    [% product_ids %]
+    <form name="product_approval" action="/StockControl/ProductApproval" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="action" value="processlist" />
+    <table style="width: 100%" cellpadding="0" cellspacing="0" border="0" class="data">
+
+    [% IF a_operator %]
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td width="20%" align="right"><b>Created by:</b>&nbsp;</td>
+            <td width="80%">[% a_operator %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td width="20%" align="right"><b>Date:</b>&nbsp;</td>
+            <td width="80%">[% a_created_date %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td width="20%" align="right"><b>Delete:</b>&nbsp;</td>
+            <td width="80%"><input type="checkbox" name="delete" value="[% archive_id %]"></td>
+        </tr>
+    [% END %]
+     <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td width="20%" align="right"><b>Sales Channel:</b>&nbsp;</td>
+        <td width="80%">
+            <select name="channel">
+                [% FOREACH channel_id = channels.keys %]
+                    <option value="[% channels.$channel_id.name %]">[% channels.$channel_id.name %]</option>
+                [% END %]
+            </select>
+        </td>
+    </tr>
+        <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td width="20%" align="right" valign="top" style="padding-top:10px"><b>Product ID's:</b>&nbsp;<br/>(comma-separated)&nbsp;</td>
+        <td width="80%" style="padding-top:10px; padding-bottom:10px"><textarea name="txta_product_ids" rows="20" cols="90">[% posted_product_ids || values || '' %]</textarea></td>
+    </tr>
+        <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+    </tr>
+        <tr>
+            <td colspan="2" class="blank" align="right"><input type="submit" class="button" name="submit" value="Submit &raquo;" style="cursor: pointer" /><td></td>
+        </tr>
+    </table>
+    </form>
+[% END # (BLOCK frm_enter_product_ids) %]
+
+
+
+[% BLOCK product_approval_header %]
+<!-- Product Approval Header -->
+<div id="product_approval_header">
+    <table style="width: 99%" cellpadding="0" cellspacing="1" border="0" class="data">
+        <tr>
+            <td colspan="6" class="dividerHeader"></td>
+        </tr>
+        <tr>
+            <td class="tableHeader" style="width: 10%">&nbsp;</td>
+            <td style="width: 12%">&nbsp;</td>
+            <td class="tableHeader" style="width: 10%">&nbsp;</td>
+            <td style="width: 24%">&nbsp;</td>
+            <td class="tableHeader" style="width: 12%">&nbsp;</td>
+            <td style="width: 14%">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="tableHeader">&nbsp;</td>
+            <td>&nbsp;</td>
+            <td class="tableHeader">&nbsp;</td>
+            <td>&nbsp;</td>
+            <td class="tableHeader">&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="6" class="dividerHeader"></td>
+        </tr>
+        <tr>
+            <td style="height: 0" colspan="3"></td>
+            <td style="height: 0" colspan="2"></td>
+        </tr>
+        <tr><td colspan="6" style="height: 5"></td></tr>
+    </table>
+</div>
+[% END # (BLOCK product_approval_header) %]
+
+
+
+[% BLOCK product_approval_list %]
+[%# PROCESS product_approval_header %]
+
+<div>
+<form name="archive_products" action="" method="post">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+<input type="hidden" name="action" value="archive_products" />
+
+[% FOREACH item = product_approval_list %]
+<input type="hidden" name="product_id-[% item.product_id %]" value="[% item.product_id %]">
+[% END %]
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <tr>
+        <td colspan="2" class="divider"></td>
+    </tr>
+    <tr>
+        <td width="15%" align="right"><b>Title:</b>&nbsp;&nbsp;</td>
+        <td width="85%"><input type="text" size="40" name="archive_title" value="[% archive_title %]" /></td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"></td>
+    </tr>
+    <tr>
+        <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+    </tr>
+    <tr>
+        <td colspan="2" class="blank" align="right">[% INCLUDE page_elements/forms/submit_button.tt btn_name="add to archive" submit="Add to Archive&nbsp;&raquo;" %]</td>
+    </tr>
+</table>
+
+</form>
+</div>
+
+
+<!-- Product Approval Details -->
+<div id="approval_list">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    [% tbl_approval_list_numcols = 5 %]
+    <thead>
+        <tr>
+            <td colspan="[% tbl_approval_list_numcols %]" class="divider"></td>
+        </tr>
+        <tr>
+            <td class="tableHeader" width="10%">PID</td>
+            <td colspan="2" class="tableHeader" width="43%">Description</td>
+            <td class="tableHeader" width="17%">Upload</td>
+            <td class="tableHeader" width="30%">Comments</td>
+        </tr>
+        <tr>
+            <td colspan="[% tbl_approval_list_numcols %]" class="divider"></td>
+        </tr>
+        </thead>
+        [% UNLESS product_approval_list.0 %]
+        <tr><td colspan="[% tbl_approval_list_numcols %]" style="horizontal-align: center">&nbsp;&nbsp;No records to display!</td></tr>
+        [% END %]
+
+        [% FOREACH item = product_approval_list %]
+        [%  item_product_id                = item.product_id
+            item_designer                  = item.designer
+            item_name                      = "<b>$item.name</b><br />"
+            item_classification            = item.classification
+            item_product_type              = item.product_type
+            item_season                    = item.season
+            item_colour                    = item.colour
+            item_has_upload        = item.has_upload
+            item_not_uploaded          = item.not_uploaded
+            item_upload_description        = item.upload_description
+            item_upload_date               = item.upload_date
+            item_upload_status_id          = item.upload_status_id
+            item_upload_status             = item.upload_status
+            dc1_ordered                       = item.dc1_stock.ordered
+            dc2_ordered                       = item.dc2_stock.ordered
+            dc1_delivered                       = item.dc1_stock.delivered
+            dc2_delivered                       = item.dc2_stock.delivered
+            dc1_stock                       = item.dc1_stock.free_stock
+            dc2_stock                       = item.dc2_stock.free_stock
+            dc1_reserved                    = item.dc1_stock.reserved
+            dc2_reserved                    = item.dc2_stock.reserved
+            dc1_sample                      = item.dc1_stock.sample_stock
+            dc2_sample                      = item.dc2_stock.sample_stock
+            dc1_cancelled                   = item.dc1_cancelled
+            dc2_cancelled                   = item.dc2_cancelled
+        %]
+
+        <tr>
+            <td colspan="[% tbl_approval_list_numcols %]"><img src="/images/blank.gif" width="1" height="7"></td>
+        </tr>
+        <tr style="height: 77">
+            <td rowspan="2" valign="top" align="center">
+            [% IF item.image.0 %]
+                <a href="../StockControl/Inventory/Overview?product_id=[% item_product_id %]">
+                    <img class="product" src="[% item.image.0 %]" alt="[% item_product_id %]" width="100" />
+                </a>
+                &nbsp;&nbsp;<a href="../StockControl/Inventory/Overview?product_id=[% item_product_id %]">[% item_product_id %]</a>
+            [% ELSE %]
+                <img class="product" src="/images/blank.gif" alt="[% item_product_id %]" width="100" height="150" />
+                &nbsp;&nbsp;<a href="../StockControl/Inventory/Overview?product_id=[% item_product_id %]">[% item_product_id %]</a>
+            [% END %]
+            </td>
+            <td width="25%" style="text-align: left; border: 2px solid #f2f2f2; vertical-align: top;">
+                <b>[% item_designer %]</b><br />
+                [% IF item.name %]<i>[% item_name %]</i><br />[% END %][% item.description %]
+            </td>
+            <td width="18%" style="text-align: left; border: 2px solid #f2f2f2; vertical-align: top; padding-left:10px">
+                <b>Classification:</b>&nbsp;[% item_classification %]<br />
+                <b>Type:</b> [% item_product_type %]<br /><br />
+                <b>Colour:</b>&nbsp;[% item_colour %]<br />
+                <b>Season:</b>&nbsp;[% item_season %]
+            </td>
+
+            <td style="text-align: left; border: 2px solid #f2f2f2; vertical-align: top;">
+            [% IF item_has_upload %]
+
+                <b>Status:</b> [% IF item.live %]Live : [% IF item.visible %]Visible[% ELSE %]Invisible[% END %][% ELSE %]Non-Live[% END %]<br /><br />
+                <b>Upload Date:</b> [% item_upload_date %]<br /><br />
+            [% ELSE %]
+                <span style="font-weight: normal; color: #8F1700">This item has no associated upload!</span>
+            [% END # (IF item_has_upload) %]
+            </td>
+            <td valign="top">
+                <table cellpadding="1" cellspacing="0" style="width: 100%;">
+                [% FOREACH [1..4] %]
+                    <tr><td style="border: 1px solid #aaaaaa;">&nbsp;</td></tr>
+                [% END %]
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align: left; border: 2px solid #f2f2f2; vertical-align: top; padding-top:20px" colspan="[% tbl_approval_list_numcols - 1 %]">
+
+                <table style="width: 100%" cellpadding="0" cellspacing="1" border="0" class="data">
+                    <tr>
+                        <td style="vertical-align: top;">
+                            &nbsp;<span style="font-weight: bold; color: #CC6600;">
+                <a href="http://[% xt_url_dc1 %]/StockControl/Inventory/Overview?product_id=[% item_product_id %]">DC1</a>
+                </span> -
+
+                [% IF dc1_cancelled %]<span style="color:#cc0000"><b>CANCELLED</b></span><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% END %]
+                <b>Ordered:</b> [% dc1_ordered %]
+
+                &nbsp;&nbsp;
+
+                <b>Delivered:</b> [% dc1_delivered %]<br />
+                <br />
+
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Stock:</b> [% dc1_stock %]
+
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                <b>Reserved:</b> [% dc1_reserved %]
+
+                &nbsp;&nbsp;
+
+                <b>Sample Room:</b> [% dc1_sample %]
+
+                            [% IF item.not_uploaded && item.delivery_details_dc1.size > 0 %]<br />&nbsp;<span style="font-weight: bold; color: #CC6600;">Stock Orders/Deliveries: </span>
+                                <!-- <input type="button" style="border: 0; padding: 0; background-color: transparent; cursor: pointer;" value="[ SO's/Deliveries &raquo; ]" onclick="return expand('[% item_product_id %]_delivery_details_dc1')" /> -->
+                                <div id="expand_[% item_product_id %]_delivery_details_dc1" style="display: normal;">
+                                    <table width="100%" cellpadding="2" cellspacing="1" style="border: 2px solid #CC6600;" class="data">
+                                        <thead>
+                                            <tr>
+                                                <td style="color: #ffffff; background-color: #ababab;">PO</td>
+                                                <td style="color: #ffffff; background-color: #ababab;">Season</td>
+                                                <td style="color: #ffffff; background-color: #ababab;">SO Type</td>
+                                                <td style="color: #ffffff; background-color: #ababab;">Shipping<br />Window</td>
+                                                <td style="color: #ffffff; background-color: #ababab;">SO<br />Cncl</td>
+                                                <td style="color: #ffffff; background-color: #ababab;">SO<br />Qty.</td>
+                                                <td style="color: #ffffff; background-color: #ababab;">SO Status</td>
+                                                <td style="color: #ffffff; background-color: #ababab;">Del.<br />Cncl</td>
+                                                <td style="color: #ffffff; background-color: #ababab;">Del.<br />Qty.</td>
+                                                <td style="color: #ffffff; background-color: #ababab;">Del. Status</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        [% FOREACH delivery_line_dc1 = item.delivery_details_dc1 %]
+                                        [% IF delivery_line_dc1.stock_order_item_cancel || delivery_line_dc1.delivery_item_cancel %][% highlight_css = 'background-color: #FFAFAF; ' %][% ELSE %][% highlight_css = '' %][% END %]
+                                            <tr style="border: 1px solid;">
+                                                <td style="[% highlight_css %]"><a href="/StockControl/PurchaseOrder/Overview?po_id=[% delivery_line_dc1.purchase_order_id %]">[% delivery_line_dc1.purchase_order_number %]</a></td>
+                                                <td style="[% highlight_css %]">[% delivery_line_dc1.season %]</td>
+                                                <td style="[% highlight_css %]">[% delivery_line_dc1.stock_order_type %]</td>
+                                                <td style="[% highlight_css %]">[% delivery_line_dc1.start_ship_date %]<br />[% delivery_line_dc1.cancel_ship_date %]</td>
+                                                <td style="text-align: center; [% highlight_css %]">[% IF delivery_line_dc1.stock_order_item_cancel %]<span style="font-weight: bold; color: red;">Y</span>[% ELSE %]&nbsp;[% END %]</td>
+                                                <td style="text-align: right; [% highlight_css %]">[% delivery_line_dc1.stock_order_item_quantity %]</td>
+                                                <td style="[% highlight_css %]">[% delivery_line_dc1.stock_order_status %]</td>
+                                                <td style="text-align: center; [% highlight_css %]">[% IF delivery_line_dc1.delivery_item_cancel %]<span style="font-weight: bold; color: red;">Y</span>[% ELSE %]&nbsp;[% END %]</td>
+                                                <td style="text-align: right; [% highlight_css %]">[% delivery_line_dc1.delivery_item_quantity %]</td>
+                                                <td style="[% highlight_css %]">[% delivery_line_dc1.delivery_status %]</td>
+                                            </tr>
+                                        [% END # (FOREACH delivery_line_dc1) %]
+                                        </tbody>
+                                    </table>
+                                </div>
+                            [% END # (IF item.not_uploaded) %]
+                        </td>
+                        <td style="vertical-align: top;">
+                            &nbsp;<span style="font-weight: bold; color: #019CCE;">
+<a href="http://[% xt_url_dc2 %]/StockControl/Inventory/Overview?product_id=[% item_product_id %]">DC2</a>
+                                </span> -
+
+                                [% IF dc2_cancelled %]<span style="color:#cc0000"><b>CANCELLED</b></span><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% END %]
+
+                                <b>Ordered:</b> [% dc2_ordered %]
+
+                                &nbsp;&nbsp;
+
+                                <b>Delivered:</b> [% dc2_delivered %]<br />
+                                <br />
+
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Stock:</b> [% dc2_stock %]
+
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                <b>Reserved:</b> [% dc2_reserved %]
+
+                                &nbsp;&nbsp;
+
+                                <b>Sample Room:</b> [% dc2_sample %]
+
+
+                            [% IF item.not_uploaded && item.delivery_details_dc2.size > 0 %]<br />&nbsp;<span style="font-weight: bold; color: #019CCE;">Stock Orders/Deliveries: </span>
+                                <!-- <input type="button" style="border: 0; padding: 0; background-color: transparent; cursor: pointer;" value="[ SO's/Deliveries &raquo; ]" onclick="return expand('[% item_product_id %]_delivery_details_dc2')" /> -->
+                                <div id="expand_[% item_product_id %]_delivery_details_dc2" style="display: normal">
+                                    <table width="100%" cellpadding="2" cellspacing="1" class="data" style="border: 2px solid #019CCE;">
+                                        <thead>
+                                            <tr>
+                                                <td style="color: #ffffff; background-color: #ababab;">PO</td>
+                                                <td style="color: #ffffff; background-color: #ababab;">Season</td>
+                                                <td style="color: #ffffff; background-color: #ababab;">SO Type</td>
+                                                <td style="color: #ffffff; background-color: #ababab;">Shipping<br />Window</td>
+                                                <td style="color: #ffffff; background-color: #ababab;">SO<br />Cncl</td>
+                                                <td style="color: #ffffff; background-color: #ababab;">SO<br />Qty.</td>
+                                                <td style="color: #ffffff; background-color: #ababab;">SO Status</td>
+                                                <td style="color: #ffffff; background-color: #ababab;">Del.<br />Cncl</td>
+                                                <td style="color: #ffffff; background-color: #ababab;">Del.<br />Qty.</td>
+                                                <td style="color: #ffffff; background-color: #ababab;">Del. Status</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        [% FOREACH delivery_line_dc2 = item.delivery_details_dc2 %]
+                                        [% IF delivery_line_dc2.stock_order_item_cancel || delivery_line_dc2.delivery_item_cancel %][% highlight_css = 'background-color: #FFAFAF; ' %][% ELSE %][% highlight_css = '' %][% END %]
+                                            <tr>
+                                                <td style="[% highlight_css %]"><a href="/StockControl/PurchaseOrder/Overview?po_id=[% delivery_line_dc2.purchase_order_id %]">[% delivery_line_dc2.purchase_order_number %]</a></td>
+                                                <td style="[% highlight_css %]">[% delivery_line_dc2.season %]</td>
+                                                <td style="[% highlight_css %]">[% delivery_line_dc1.stock_order_type %]</td>
+                                                <td style="[% highlight_css %]">[% delivery_line_dc2.start_ship_date %]<br />[% delivery_line_dc2.cancel_ship_date %]</td>
+                                                <td style="text-align: center; [% highlight_css %]">[% IF delivery_line_dc2.stock_order_item_cancel %]<span style="font-weight: bold; color: red;">Y</span>[% ELSE %]&nbsp;[% END %]</td>
+                                                <td style="text-align: right; [% highlight_css %]">[% delivery_line_dc2.stock_order_item_quantity %]</td>
+                                                <td style="[% highlight_css %]">[% delivery_line_dc2.stock_order_status %]</td>
+                                                <td style="text-align: center; [% highlight_css %]">[% IF delivery_line_dc2.delivery_item_cancel %]<span style="font-weight: bold; color: red;">Y</span>[% ELSE %]&nbsp;[% END %]</td>
+                                                <td style="text-align: right; [% highlight_css %]">[% delivery_line_dc2.delivery_item_quantity %]</td>
+                                                <td style="[% highlight_css %]">[% delivery_line_dc2.delivery_status %]</td>
+                                            </tr>
+                                        [% END # (FOREACH delivery_line_dc2) %]
+                                        </tbody>
+                                    </table>
+                                </div>
+                            [% END # (IF item.not_uploaded) %]
+                        </td>
+                    <tr>
+            <td>[% IF dc1_slugs.$item_product_id %]<img src="[% nap_url %][% dc1_slugs.$item_product_id %]" />[% END %]</td>
+            <td>[% IF dc2_slugs.$item_product_id %]<img src="[% nap_url %][% dc2_slugs.$item_product_id %]" />[% END %]</td>
+                    </tr>
+                    <tr valign="top">
+            <td>[% IF dc1_discounts.$item_product_id.size > 0 %]&nbsp;<b>Markdowns:</b><br />[% FOREACH rock = dc1_discounts.$item_product_id %]&nbsp;&nbsp;&nbsp;[% rock.percentage %]% - [% rock.date_start %]<br />[% END %][% END %]</td>
+            <td>[% IF dc2_discounts.$item_product_id.size > 0 %]&nbsp;<b>Markdowns:</b><br />[% FOREACH rock = dc2_discounts.$item_product_id %]&nbsp;&nbsp;&nbsp;[% rock.percentage %]% - [% rock.date_start %]<br />[% END %][% END %]</td>
+                    </tr>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="[% tbl_approval_list_numcols %]"><img src="/images/blank.gif" width="1" height="7"></td>
+        </tr>
+        <tr>
+            <td colspan="[% tbl_approval_list_numcols %]" class="divider"></td>
+        </tr>
+        [% END # (FOREACH item = product_approval_list...) %]
+
+        <tr>
+            <td class="blank" colspan="[% tbl_approval_list_numcols %]" style="height: 20px;" align="right"><a href="?action=processlist&txta_product_ids=[% txta_product_ids %]&channel=[% sales_channel %]&media=xls" alt="Export to Excel"><img src="/images/icons/application_go.png" border="0" alt="Export to Excel"></a></td>
+        </tr>
+    </table>
+</div>
+[% END # (BLOCK product_approval_list) %]
+
+
+
+
+[% IF just_for_test != '' %]
+    <pre style="font-size: 6pt">[% just_for_test %]</pre>
+[% END %]
+
+<!-- TT END - stocktracker/inventory/product_approval.tt -->

@@ -1,0 +1,100 @@
+=====================================
+XT 2012.16.02 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               : 06/12/2012
+Cherwell           : 
+Release Manager    : Sham
+Build Manager      : Tom
+TechOps            : Ana
+Backend Developer  : 
+Frontend Developer : 
+QA                 : 
+PCI Authorised by  : 
+
+2 - CHANGELOG
+-------------
+http://gitosis.net-a-porter.com/cgit/xt/tree/CHANGES/2012.16.02?h=release/2012.16
+
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2012.16/xt-2012.16.02-0.noarch.rpm
+
+Do this for DC1, DC2 and DC3.
+
+4 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+
+WHM-1508:
+Please add the following keys to XT's live nap properties file:
+
+EA_DHL_XMLPI_ADDRESS                                    xmlpi-ea.dhl.com
+EA_DHL_XMLPI_USERNAME                                   NetAPorter
+EA_DHL_XMLPI_PASSWORD                                   WrIephi8qo
+
+APAC_DHL_XMLPI_ADDRESS                                  xmlpi-ea.dhl.com
+APAC_DHL_XMLPI_USERNAME                                 NetAPorterHK
+APAC_DHL_XMLPI_PASSWORD                                 cFg1kTy6xRi4
+
+And remove the following keys:
+
+DHL_XMLPI_ADDRESS
+DHL_XMLPI_USERNAME
+DHL_XMLPI_PASSWORD
+* UPOP-12: Ability to switch on or off optimized uploads from XT to WebDB
+
+Prior to deployment please add the following lines to the Live Properties file:
+
+# Enable or disable optimized upload per business
+#
+OPTIMIZED_UPLOAD_NAP            0
+OPTIMIZED_UPLOAD_MRP            0
+OPTIMIZED_UPLOAD_OUTNET         0
+OPTIMIZED_UPLOAD_JC             0
+
+* CANDO-1219 New NAP properties:
+
+Please add these new properties before deploying XT.
+
+    MAX_DEADLOCK_ATTEMPTS_DC1       19
+    MAX_DEADLOCK_DELAY_DC1          11
+    MIN_DEADLOCK_DELAY_DC1          1
+    MAX_DEADLOCK_ATTEMPTS_DC2       19
+    MAX_DEADLOCK_DELAY_DC2          11
+    MIN_DEADLOCK_DELAY_DC2          1
+    MAX_DEADLOCK_ATTEMPTS_DC3       19
+    MAX_DEADLOCK_DELAY_DC3          11
+    MIN_DEADLOCK_DELAY_DC3          1
+5 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+sudo yum install xt
+
+6 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+No action needs to be performed after the deployment
+
+7 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

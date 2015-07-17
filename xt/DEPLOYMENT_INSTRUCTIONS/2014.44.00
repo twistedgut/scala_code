@@ -1,0 +1,412 @@
+=====================================
+XT 2014.44.00 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               :
+Cherwell           :
+Release Manager    : Rajani Chamarthi
+Build Manager      : Matt Davies
+TechOps            :
+Backend Developer  :
+Frontend Developer :
+QA                 :
+PCI Authorised by  :
+
+2 - CHANGELOG
+-------------
+http://stash.vm.wtf.nap/projects/BAK/repos/xt/browse/CHANGES/2014.44.00?at=refs/heads/release/2014.44
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2014.44/xt-2014.44.00-0.noarch.rpm
+
+Unless otherwise stated, do the following for DC1, DC2 and DC3.
+
+4 - NEW PROPERTIES:
+-------------------
+Add or update the following in "/etc/nap.properties" prior to release
+
+5 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+No action needs to be performed before the deployment
+
+6 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+
+WHM-3058 Update /etc/cups/printers.conf on all DCs. Make sure you do this on
+both web servers. Also, before updating the files make sure you stop cups, you
+can do this by running the following command:
+
+sudo service cups stop
+
+Once you've made the changes, make sure you restart cups, which you can do by
+executing
+
+sudo service cups start
+
+DC1
+---
+
+Remove the following printer definitions:
+
+quality_control_printer_01
+quality_control_printer_02
+jc_quality_control_printer_01
+spare_01
+spare_02
+spare_03
+
+Copy/paste the following printers into /etc/cups/printers.conf on *BOTH* web
+servers:
+
+<Printer quality_control_printer_01>
+    Info quality_control_printer_01
+    XTLocation Quality Control Station 01
+    XTSection goods_in_qc
+    XTType document
+    Location DC1
+    DeviceURI lpd://quality_control_printer_01/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer spare_01>
+    Info spare_01
+    XTLocation Quality Control Station 02
+    XTSection goods_in_qc
+    XTType document
+    Location DC1
+    DeviceURI lpd://quality_control_printer_02/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer jc_quality_control_printer_01>
+    Info jc_quality_control_printer_01
+    XTLocation JC Quality Control Station 01
+    XTSection goods_in_qc
+    XTType document
+    Location DC1
+    DeviceURI lpd://jc_quality_control_printer_01/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+DC2
+---
+
+Remove the following printer definitions:
+
+quality_control_printer_01
+quality_control_printer_02
+quality_control_printer_03
+quality_control_printer_04
+quality_control_printer_05
+quality_control_printer_06
+quality_control_printer_07 # Heh, not available but exists in printers.conf
+hvc_doc_1
+spare_01
+spare_02
+spare_03
+
+Copy/paste the following printers into /etc/cups/printers.conf on *BOTH* web
+servers:
+
+<Printer quality_control_printer_01>
+    Info quality_control_printer_01
+    XTLocation Quality Control Station 01
+    XTSection goods_in_qc
+    XTType document
+    Location DC2
+    DeviceURI lpd://quality_control_printer_01/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer quality_control_printer_02>
+    Info quality_control_printer_02
+    XTLocation Quality Control Station 02
+    XTSection goods_in_qc
+    XTType document
+    Location DC2
+    DeviceURI lpd://quality_control_printer_02/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer quality_control_printer_03>
+    Info quality_control_printer_03
+    XTLocation Quality Control Station 03
+    XTSection goods_in_qc
+    XTType document
+    Location DC2
+    DeviceURI lpd://quality_control_printer_03/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer quality_control_printer_04>
+    Info quality_control_printer_04
+    XTLocation Quality Control Station 04
+    XTSection goods_in_qc
+    XTType document
+    Location DC2
+    DeviceURI lpd://quality_control_printer_04/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer quality_control_printer_05>
+    Info quality_control_printer_05
+    XTLocation Quality Control Station 05
+    XTSection goods_in_qc
+    XTType document
+    Location DC2
+    DeviceURI lpd://quality_control_printer_05/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer quality_control_printer_06>
+    Info quality_control_printer_06
+    XTLocation Quality Control Station 06
+    XTSection goods_in_qc
+    XTType document
+    Location DC2
+    DeviceURI lpd://quality_control_printer_06/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer hvc_doc_1>
+    Info hvc_doc_1
+    XTLocation HVC Quality Control Station 01
+    XTSection goods_in_qc
+    XTType document
+    Location DC2
+    DeviceURI lpd://hvc_doc_1/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+DC3
+---
+
+Remove the following printer definitions:
+
+quality_control_printer_01
+quality_control_printer_02
+quality_control_printer_03
+quality_control_printer_04
+hvc_doc_1
+spare_01
+spare_03
+
+Copy/paste the following printers into /etc/cups/printers.conf on *BOTH* web
+servers:
+
+<Printer quality_control_printer_01>
+    Info quality_control_printer_01
+    XTLocation Quality Control Station 01
+    XTSection goods_in_qc
+    XTType document
+    Location DC3
+    DeviceURI lpd://quality_control_printer_01/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer quality_control_printer_02>
+    Info quality_control_printer_02
+    XTLocation Quality Control Station 02
+    XTSection goods_in_qc
+    XTType document
+    Location DC3
+    DeviceURI lpd://quality_control_printer_02/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer quality_control_printer_03>
+    Info quality_control_printer_03
+    XTLocation Quality Control Station 03
+    XTSection goods_in_qc
+    XTType document
+    Location DC3
+    DeviceURI lpd://quality_control_printer_03/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer quality_control_printer_04>
+    Info quality_control_printer_04
+    XTLocation Quality Control Station 04
+    XTSection goods_in_qc
+    XTType document
+    Location DC3
+    DeviceURI lpd://quality_control_printer_04/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer hvc_doc_1>
+    Info hvc_doc_1
+    XTLocation HVC Quality Control Station 01
+    XTSection goods_in_qc
+    XTType document
+    Location DC2
+    DeviceURI lpd://hvc_doc_1/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+sudo yum install xt
+
+7 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+No action needs to be performed after the deployment
+
+8 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

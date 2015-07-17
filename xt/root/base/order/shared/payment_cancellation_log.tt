@@ -1,0 +1,33 @@
+[% IF payment_log.size %]
+    <br/>
+    <h3 class="title title-[% channel_config.$sales_channel %]">[% IF payment_log == payment_replacement_cancel_log %] Replacement  [% END %] Pre-Auth Cancellation Attempts Log</h3>
+    <table class="wide-data data" id="cancelled_pre_auth_log[% IF payment_log == payment_replacement_cancel_log %]_replacement[% END %]">
+        <thead>
+            <tr>
+                <th>Pre-Auth</th>
+                <th>Successful Cancellation</th>
+                <th>Context</th>
+                <th>Date</th>
+                <th>Operator</th>
+            </tr>
+        </thead>
+        <tbody>
+        [% FOREACH log IN payment_log %]
+            <tr class="dividebelow">
+                <td>[% log.preauth_ref_cancelled %]</td>
+                <td>
+                    [% log.cancelled ? 'Yes' : 'No' %]
+                    [% IF !log.cancelled %]
+                        &nbsp;&nbsp;&nbsp;<span title="[% log.message %]" style="font-size: 10px;"><strong>(hover for more info)</strong></span>
+                    [% END %]
+                </td>
+                <td>[% log.context %]</td>
+                <td>[% order.channel.business.branded_date( log.date ) %] @ [% log.date.hms %]</td>
+                <td>[% log.operator.name %]</td>
+            </tr>
+        [% END %]
+        </tbody>
+    </table>
+[% END %]
+
+

@@ -1,0 +1,15 @@
+
+<br>
+<div id="fraudscreen__table_filter_selection">
+    Tag Filter:
+    <input type="text" id="fraudscreen__table_filter_tags"/>
+    Channel Filter:
+    <select id="fraudscreen__table_filter_select">
+        <option value="all">ALL</option>
+        [% FOREACH channel IN channels %]
+            <option value="[% channel.id %]">[% channel.business.config_section %]</option>
+        [% END %]
+    </select>
+
+</div>
+<br>

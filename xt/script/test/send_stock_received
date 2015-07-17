@@ -1,0 +1,69 @@
+#!/usr/bin/env perl
+use NAP::policy "tt";
+use Getopt::Long;
+use Pod::Usage;
+use FindBin::libs;
+use FindBin::libs qw( base=lib_dynamic );
+use XTracker::Database qw/get_database_handle schema_handle/;
+use XTracker::Role::WithAMQMessageFactory;
+
+my ($pgid,$help,$operator_id);
+
+{
+my $p=Getopt::Long::Parser->new(
+    config => [qw(
+        no_auto_abbrev
+        no_getopt_compat
+        no_gnu_compat
+        no_permute
+        no_bundling
+        no_ignore_case
+        no_auto_version
+        no_auto_help
+             )],
+);
+my $help;
+$p->getoptions(
+    'pgid=s' => \$pgid,
+    'operator-id=i' => \$operator_id,
+    'help|h' => \$help,
+) or pod2usage(2);
+
+pod2usage(1) if $help;
+
+pod2usage(2) unless $pgid;
+}
+
+my $schema = schema_handle;
+
+my $payload = {
+    pgid => $pgid,
+};
+if ($payload->{pgid} =~ s/^r-//){
+    $payload->{sr} = $schema->resultset('Public::StockRecode')->find($payload->{pgid});
+} else {
+    $payload->{sp_group_rs} = $schema->resultset('Public::StockProcess')->search({
+                                group_id => $payload->{pgid}
+                              });
+}
+
+if ($operator_id) { $payload->{operator_id} = $operator_id }
+
+my $factory = XTracker::Role::WithAMQMessageFactory->build_msg_factory;
+
+$factory->transform_and_send('XT::DC::Messaging::Producer::WMS::StockReceived',$payload);
+
+__END__
+
+=head1 NAME
+
+send_stock_received - send the C<stock_received> message
+
+It will send it for all items associated with the pgid, so if you want to test
+what happens when not all items are present you'll need to use IWS.
+
+=head1 SYNOPSIS
+
+  send_stock_received --pgid 987654
+
+=cut

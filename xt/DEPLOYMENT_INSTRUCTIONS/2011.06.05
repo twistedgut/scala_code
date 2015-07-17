@@ -1,0 +1,101 @@
+=====================================
+XT 2011.06.05 Deployment Instructions
+=====================================
+
+
+1 - RELEASE DETAILS
+-------------------
+Date               : 2011-06-07
+Cherwell           : 
+Release Manager    : 
+Build Manager      : Frank Wales, Pete Smith
+TechOps            : 
+Backend Developer  : 
+Frontend Developer : 
+QA                 : 
+PCI Authorised by  : 
+
+
+2 - CHANGELOG
+-------------
+http://gitosis.net-a-porter.com/cgit/xt/tree/CHANGES/2011.06.05?h=release/2011.06
+
+
+3 - PACKAGES TO INSTALL:
+------------------------
+
+XTracker:
+
+* Package: xt
+* Version: 2011.06.05
+* Location: cfmaster.dave:/var/www/html/netaporter/dev_releases/x86_64/xt-2011.06.05-0.x86_64.rpm
+
+DEPENDENCIES:
+The following package dependencies need to be installed, but should be resolved
+automatically during the installation of XTracker:
+
+Perl-NAP:
+
+* Package: perl-nap
+* Version: 5.12.3-2011.06.03
+* Location: cfmaster.dave:/var/www/html/netaporter/dev_releases/x86_64/perl-nap-5.12.3-2011.06.03.x86_64.rpm
+
+SMB Client library:
+
+* Package: libsmbclient
+* Version: 3.0.33-3.29.el5_6.2
+* Location: centos-update repo
+
+
+
+4 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+Add the following new properties to /etc/nap.properties
+
+    # note: for, let's call them, 'technical' reasons, ...PROCESSED_NAME...
+    # needs to be an immediate child of ...SHARE_NAME...
+    IWS_RECONCILIATION_SHARE_NAME_DC1       //iws/exports
+    IWS_RECONCILIATION_PROCESSED_NAME_DC1   //iws/exports/processed
+
+    IWS_RECONCILIATION_SHARE_USERNAME_DC1   iwsusername
+    IWS_RECONCILIATION_SHARE_PASSWORD_DC1   iwspassword
+    IWS_RECONCILIATION_SHARE_WORKGROUP_DC1  ''
+
+    IWS_RECONCILIATION_SHARE_READ_SIZE      131072
+    IWS_RECONCILIATION_SHARE_CREATE_MASK    0775
+    IWS_RECONCILIATION_DIR_CREATE_MASK      0775
+
+Note that the username, password, workgroup,share name and
+processed name values are currently dummy values, and so require
+no further set-up.
+
+5 - DEPLOYMENT RECIPE:
+----------------------
+
+sudo yum clean all
+sudo yum remove xt
+sudo yum install xt
+
+Do this both for DC1 and DC2.
+
+*NOTE*: because of the ad-hoc way CANDO-88 was deployed, it may be the
+case that the following error message appears during installation of xt:
+
+  ERROR:  duplicate key value violates unique constraint "customer_category_category_key"
+
+This is harmless, and can be ignored.
+
+
+6 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+No action needs to be performed after the deployment
+
+7 - ROLLBACK PLAN:
+------------------
+sudo yum remove xt perl-nap libsmbclient
+sudo yum install xt-2011.05.12-0.x86_64.rpm perl-nap-5.12.3-2011.05.05.x86_64.rpm
+
+
+=====================================
+End of Deployment Instructions
+=====================================

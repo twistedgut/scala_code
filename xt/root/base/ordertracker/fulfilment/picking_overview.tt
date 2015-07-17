@@ -1,0 +1,159 @@
+[%
+# Template for showing overview of active picks.
+
+SET icon = {
+    'plus'  => '/images/plus.gif',
+    'minus' => '/images/minus.gif' };
+
+SET js = [ '/javascript/jquery.tablesorter.min.js',
+           '/javascript/picking_overview.js' ];
+%]
+
+
+[% BLOCK gen_table %]
+  [% RETURN UNLESS shipment_data.number_items > 0 %]
+  <h1>[% type %] Shipments</h1>
+  <table class="data wide-data divided-data pickingtable">
+    <thead>
+      <tr>
+        <th class="colheader"></th>
+        <th class="colheader">Shipment Number</th>
+        <th class="colheader">Selected for Picking</th>
+        <th class="colheader">Channel</th>
+        <th class="colheader">Total Items ([% shipment_data.number_items %])</th>
+        <th class="colheader">Premier</th>
+        <th class="colheader">SLA Timer</th>
+      </tr>
+    </thead>
+    <tbody>
+      [% FOREACH shipment_id IN shipment_data.shipments.keys %]
+        [% shipment = shipment_data.shipments.$shipment_id %]
+        <tr id="shipment_row-[% shipment.id | html %]">
+          <td>
+            <img border      = "0"
+                 valign      = "middle"
+                 id          = "expand-[% shipment.id | html %]"
+                 shipment-id = "[% shipment.id | html %]"
+                 class       = "expand-img"
+                 alt         = "View allocations for this shipment"/>
+          </td>
+          <td>[% shipment.id %]</td>
+          <td>[% shipment.pick_sent.strftime('%Y/%m/%d %H:%M') || '&nbsp;' %]</td>
+          <td>[% shipment.channel %]</td>
+          <td>
+            [% SET total_number_picked = 0 %]
+            [% SET prl_strings = [] %]
+            [% FOREACH allocation IN shipment.allocs %]
+                [% total_number_picked = total_number_picked + allocation.number_picked %]
+                [% SET prl_string = allocation.prl _ ': ' _ allocation.number_picked _ '/' _ allocation.number_items %]
+                [% prl_strings.push(prl_string) %]
+            [% END # FOREACH allocation %]
+            [% total_number_picked %]/[% shipment.number_items %]
+            ([% prl_strings.join(", ") %])
+          </td>
+          <td>
+            [% IF shipment.is_premier %]
+              <img src="/images/icons/tick.png" alt="yes">
+            [% ELSE %]
+              &nbsp;
+            [% END %]
+          </td>
+          <td>[% shipment.sla_timer || '&nbsp;' %]</td>
+          <td class="alloc-detail">
+            <table>
+              <tbody>
+                <tr id="alloc_row-[% shipment.id | html %]">
+                  <td>&nbsp;</td>
+                  <td colspan=5>
+                    <table class="data wide-data divided-data">
+                      <thead>
+                        <tr>
+                          <th>Allocation ID</th>
+                          <th>Selected</th>
+                          <th>Last Pick</th>
+                          <th>Picked</th>
+                          <th>Inducted</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        [% FOREACH allocation IN shipment.allocs %]
+                          <tr>
+                            <td>[% allocation.id %]</td>
+                            <td>[% allocation.pick_sent.strftime('%Y/%m/%d %H:%M') || '&nbsp;' %]</td>
+                            <td>[% allocation.last_pick.strftime('%Y/%m/%d %H:%M') || '&nbsp;' %]</td>
+                            <td>[% allocation.prl _ ' (' _ allocation.number_picked _ '/' _
+                                   allocation.number_items _ ')' %]</td>
+                            <td>
+                              [% IF allocation.scanned_onto_conveyor %]
+                                <img src="/images/icons/tick.png" alt="yes">
+                              [% ELSE %]
+                                &nbsp;
+                              [% END %]
+                            </td>
+                          </tr>
+                        [% END %]
+                      </tbody>
+                    </table>
+                  </td>
+                  <td>&nbsp;</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      [% END %]
+    </tbody>
+  </table>
+[% END %]
+
+
+[% PROCESS gen_table type='Regular' shipment_data = main_shipments %]
+<br>
+[% PROCESS gen_table type='Sample' shipment_data = sample_shipments %]
+<br>
+<h1>Picking status information</h1>
+[% FOREACH property_name = pick_scheduler_settings.keys %]
+[% property_group = pick_scheduler_settings.$property_name %]
+[% IF property_group.visible == 1 %]
+<span class="title">[% property_group.description %] settings</span>
+<table id="pick_scheduler_settings" width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <thead>
+        <tr><td class="dividerHeader" colspan="3" /></tr>
+        <tr>
+            <td class="tableHeader">Name</td>
+            <td class="tableHeader" style="text-align: center; width: 140px;">Value</td>
+        </tr>
+        <tr><td class="dividerHeader" colspan="3" /></tr>
+    </thead>
+    <tbody>
+        [% FOREACH property = property_group.parameters %]
+        <tr>
+            <td>[% property.description %]</td>
+            <td style="text-align: center">[% value_to_string(property.value) %]</td>
+        </tr>
+        [% END %]
+    </tbody>
+</table>
+[% END %]
+[% END %]
+<span class="title">Current pick scheduler values</span>
+<table id="pick_scheduler_properties" width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <thead>
+        <tr><td class="dividerHeader" colspan="3" /></tr>
+        <tr>
+            <td class="tableHeader">Name</td>
+            <td class="tableHeader">Description</td>
+            <td class="tableHeader" style="text-align: center; width: 140px;">Value</td>
+        </tr>
+        <tr><td class="dividerHeader" colspan="3" /></tr>
+    </thead>
+    <tbody>
+        [% FOREACH property = pick_scheduler_properties %]
+        <tr>
+            <td>[% property.name %]</td>
+            <td>[% property.description %]</td>
+            <td style="text-align: center">[% value_to_string(property.value) %]</td>
+        </tr>
+        [% END %]
+    </tbody>
+</table>

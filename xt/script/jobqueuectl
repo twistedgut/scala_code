@@ -1,0 +1,27 @@
+#!/bin/bash
+
+XTDC_ENV_CONF=/etc/xtdc/xtdc.env
+
+[ -e /etc/profile ] && . /etc/profile
+
+# Set the umask for group write permissions
+umask 002
+
+# automatically source a file in /etc/xtdc if it exists
+if [ ! -z "$RUNAS" -o ! -z "$XTDC_BASE_DIR" ]; then
+    echo "Using ENV overrides from the shell...";
+elif [ ! -f $XTDC_ENV_CONF ]; then
+    echo "I'm missing some important ENV variables..."
+    echo "Are you sure you sourced your env file?"
+    exit 1
+else
+    source $XTDC_ENV_CONF
+fi
+
+# We need to make sure we change the current working directory to a world
+# readable location. If the current directory wasn't readable by the $runas
+# user, then loading modules by iterating through @INC would fail when trying
+# to read ('.')
+cd '/'
+
+$XTDC_BASE_DIR/script/job_queue_daemon --worker-group=ALL $@

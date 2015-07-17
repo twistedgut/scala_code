@@ -1,0 +1,30 @@
+    <span class="title title-[% channel_config.$channel %]">Delivery Log</span>
+
+    <table class="wide-data data">
+        <thead>
+            <tr class="divideabove dividebelow">
+                <td width="15%" class="tableHeader">[% INCLUDE page_elements/headerspacer.tt %]Date</td>
+                <td width="10%" class="tableHeader">Time</td>
+                <td width="10%" class="tableHeader">Delivery</td>
+                <td width="10%" class="tableHeader">Type</td>
+                <td width="15%" class="tableHeader">Action</td>
+                <td width="10%" class="tableHeader">Notes</td>
+                <td width="10%" class="tableHeader">Unit</td>
+                <td width="20%" class="tableHeader">Operator</td>
+            </tr>
+        </thead>
+        <tbody>
+            [% FOREACH log = log_data.$channel %]
+                <tr class="dividebelow">
+                    <td>[% INCLUDE page_elements/tablespacer.tt %][% log.date %]</td>
+                    <td>[% log.time %]</td>
+                    <td>[% log.delivery_id %]</td>
+                    <td>[% log.type %]</td>
+                    <td>[% log.action %]</td>
+                    <td>[% log.notes %]</td>
+                    <td>[% log.quantity %]</td>
+                    <td>[% log.operator %]</td>
+                </tr>
+            [% END %]
+        </tbody>
+    </table>

@@ -1,0 +1,34 @@
+    <span class='title title-[% channel_config.$channel %]'>Discrepancies Log</span>
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <thead>
+
+            <tr>
+                <td colspan="5" class="dividerHeader"></td>
+            </tr>
+            <tr height="24"> 
+                <td width="20%" class="tableHeader">[% INCLUDE page_elements/headerspacer.tt %]Process Group</td>
+                <td width="20%" class="tableHeader">SKU</td>
+                <td width="20%" class="tableHeader">Expected Quantity</td>
+                <td width="20%" class="tableHeader">Putaway Quantity</td>
+                <td width="20%" class="tableHeader">Date</td>
+            </tr>
+            <tr>
+                <td colspan="5" class="dividerHeader"></td>
+            </tr>
+        </thead>
+        <tbody>
+            [% FOREACH log = log_data.$channel %]
+                <tr height="20">
+                    <td>[% INCLUDE page_elements/tablespacer.tt %][% log.stock_process.group_id %]</td>
+                    <td>[% log.variant.product_id %]-[%log.variant.size_id %]</td>
+                    <td>[% log.quantity %]</td>
+                    <td>[% log.ext_quantity %]</td>
+                    <td>[% log.recorded.ymd %] [% log.recorded.hms %]</td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="divider"></td>
+                </tr>
+            [% END %]
+        </tbody>
+    </table>

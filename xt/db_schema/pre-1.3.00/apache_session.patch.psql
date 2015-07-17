@@ -1,0 +1,40 @@
+-- Purpose:
+--   add a new sessions table to the database for use with the
+--   Apache::Session module
+--
+-- Usage:
+--
+--  psql -U www -d xtracker -f db_schema/apache_session.patch.psql
+--
+
+-- if it breaks we don't want to commit it to the database!!
+BEGIN;
+
+CREATE TABLE sessions (
+    id              text
+                    PRIMARY KEY,
+    a_session       text,
+    created         timestamp with time zone 
+                    not null default
+                    CURRENT_TIMESTAMP,
+    last_modified   timestamp with time zone
+                    not null
+                    default CURRENT_TIMESTAMP
+);
+
+
+CREATE OR REPLACE FUNCTION update_last_modified_time() RETURNS trigger AS $stuff$
+ BEGIN
+   NEW.last_modified := current_timestamp;
+   IF NEW.last_modified IS NULL THEN
+        RAISE EXCEPTION '% cannot have null salary', NEW.id;
+   END IF;
+   RETURN NEW;
+ END;
+$stuff$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_session_last_modified BEFORE UPDATE ON sessions
+    FOR EACH ROW EXECUTE PROCEDURE update_last_modified_time();
+
+
+COMMIT;

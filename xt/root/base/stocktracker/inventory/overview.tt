@@ -1,0 +1,227 @@
+<!-- TT BEGIN - stocktracker/inventory/overview.tt -->
+[%- main_status_id = db_constant('FLOW_STATUS__MAIN_STOCK__STOCK_STATUS') %]
+<div id='display_product'>
+    [% PROCESS page_elements/display_product.tt %]
+</div>
+
+<div id="tabContainer" class="yui-navset">
+    [% PROCESS page_elements/channel_tabs.tt channel_list=channel_info,no_size=1,tab_channel_to_use=active_channel.channel_name %]
+    <div class="yui-content">
+        [% FOREACH channel = channel_info.keys.sort %]
+        <div id="tab[% loop.count %]" class="tabWrapper-[% channel_config.$channel %]">
+            <div class="tabInsideWrapper">
+                [%-
+                    FOREACH table_info = overview.$channel.table_types;
+                        table_type = table_info.type;
+                        grand_totals = overview.$channel.$table_type.grand_totals;
+                        autoexpand = [];
+                %]
+                <h3 class="title title-[% channel_config.$channel %]">[% table_info.title %]</h3>
+                <table class="wide-data divided-data data">
+                    [%- PROCESS overview_table_head %]
+                    <tbody>
+                    [%-
+                        FOREACH row = overview.$channel.$table_type.rows;
+                            sku_extras = '';
+                            IF table_type == 'stock_main';
+                                sku_extras = ' (' _ row.third_party_sku _ ')' IF row.third_party_sku;
+                            ELSIF table_type == 'sample';
+                                sku_extras = ' (s)' IF row.variant_type == 'Sample';
+                            END;
+                    %]
+                        <!-- basic details [% row.sku %] -->
+                        <tr>
+                            <td><a href="Overview?variant_id=[% row.variant_id %]">[% row.sku %]</a>[% sku_extras %]</td>
+                            <td>[% row.size %]</td>
+                            <td>[% row.designer_size %]</td>
+                            <td>[% row.location.display_name %]
+                                [% IF row.location.expand %]
+                                <a class="zoom" href="javascript://" onclick="return $('.expand_[% channel_config.$channel %]_[% row.size_id %]_[% table_type %]').toggle()">[+]</a>
+                                [% END %]
+                            </td>
+                        [%- IF table_type == 'stock_main' && stock_view == 'extended' %]
+                            <td>[% row.ordered %]</td>
+                            <td>[% row.delivered %]</td>
+                            <td>[% row.reserved %]</td>
+                        [%- ELSE %]
+                            <td>[% row.total_location %]</td>
+                        [%- END # extended view %]
+                        [%- IF table_type == 'stock_main' %]
+                            <td>[% row.total %]</td>
+                            <td>[% row.allocated %][% ' (' _ row.picked _ ')' IF row.picked %]</td>
+                            <td>[% row.free %]</td>
+                        [%- END # main-only columns %]
+                            <td>&nbsp;</td>
+                        </tr>
+                        [%-
+                            IF row.location.expand;
+                                last_colspan = '';
+                                IF table_type == 'stock_main';
+                                    last_colspan = ' colspan="' _ ( stock_view == 'extended' ? 4 : 3 ) _ '"';
+                                END;
+                        %]
+                        <!-- expanded details header [% row.sku %] -->
+                        <tr class="expand expand_[% channel_config.$channel %]_[% row.size_id %]_[% table_type %]" style="display:none">
+                            <td colspan="3" class="none">&nbsp;</td>
+                            <th>Location</th>
+                            <th>Qty</th>
+                            <th[% last_colspan %]>&nbsp;</th>
+                        </tr>
+                        <!-- expanded details row [% row.sku %] [% row.location.name %] -->
+                        [%-     FOREACH expand_row IN row.expand_rows %]
+                        <tr class="expand expand_[% channel_config.$channel %]_[% row.size_id %]_[% table_type %]" style="display:none">
+                            <td colspan="3" class="none">&nbsp;</td>
+                            <td>[% expand_row.location_display %]</td>
+                            <td>[% expand_row.quantity %]</td>
+                            <td[% last_colspan %]>
+                                [% PROCESS buttons_for_expand_rows location=expand_row.location variant=row channel_id=expand_row.channel_id IF table_type != 'stock_main' %]
+                            </td>
+                        </tr>
+                        [%-     END # expanded location row %]
+                        [%- END # should expand? %]
+                    [%- END # row %]
+                        <!-- totals for [% table_type %] -->
+                        <tr class="totals">
+                            <td colspan="4">&nbsp;</td>
+                            [%- IF table_type == 'stock_main' && stock_view == 'extended' %]
+                            <td>[% grand_totals.ordered_item %]</td>
+                            <td>[% grand_totals.delivered_item %]</td>
+                            <td>[% grand_totals.reserved %]</td>
+                            [%- ELSE %]
+                            <td>[% grand_totals.location %]</td>
+                            [%- END %]
+                            [%- IF table_type == 'stock_main' %]
+                            <td>[% grand_totals.stock %]</td>
+                            <td>[% grand_totals.allocated %]</td>
+                            <td>[% grand_totals.free %]</td>
+                            [%- END %]
+                            <td>&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                [%-     IF table_type != 'stock_main' && autoexpand.size > 0 && (op_request_types.size || department == 'Sample') %]
+                <script type="text/javascript">
+                [%-         FOREACH autoexpand_size_id = autoexpand.unique %]
+                    $('.expand_[% channel_config.$channel %]_[% autoexpand_size_id %]_[% table_type %]').show();
+                [%-         END %]
+                </script>
+                [%-     END # do any autoexpansion %]
+
+                <br />
+
+                [%- END # table_info %]
+            </div>
+
+                <form action="/StockControl/Inventory/Broadcast" method="post">
+                    [%- INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                    <input type="hidden" name="product_id" value="[% product_id %]" />
+                    <input type="submit" value="Broadcast Stock Levels">
+                </form>
+
+
+        </div>
+
+        [%- END %]
+
+    </div>
+
+</div>
+
+[% PROCESS page_elements/tab_script.tt %]
+
+<script language="Javascript">
+function confirmDelete(form){
+
+    var use_response = confirm("Are you sure you want to delete this item from sample stock?")
+
+    if(use_response){
+        return double_submit();
+    }
+    else {
+        return false;
+    }
+}
+</script>
+[%- BLOCK overview_table_head %]
+                    <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>Size</th>
+                            <th>Designer Size</th>
+                            <th>Location</th>
+[%-     IF table_type == 'stock_main' && stock_view == 'extended' %]
+                            <th>Ordered</th>
+                            <th>Delivered</th>
+                            <th>Reserved</th>
+[%-     ELSE %]
+                            <th>Loc Qty</th>
+[%-     END %]
+[%-     IF table_type == 'stock_main' %]
+                            <th>Total</th>
+                            <th>Allocated</th>
+                            <th>Free</th>
+[%-     END %]
+                            <th>&nbsp;</th>[%# action buttons column %]
+                        </tr>
+                    </thead>
+[%- END %]
+[%- BLOCK buttons_for_expand_rows %]
+                            [%-
+                                # Determine whether the operator can add item to their sample cart
+                                IF (location == 'Sample Room' && op_request_types_nonpress) ||
+                                    ( (location == 'Press Samples' || location == 'Press') && op_request_types.size );
+                                    autoexpand.push( variant.size_id );
+                            %]
+                                <form action="/Sample/SampleCart/Process/AddItemLocation" method="post">
+                                    [%- INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                                    <input type="hidden" name="action" value="add_variant" />
+                                    <input type="hidden" name="variant_id" value="[% variant.variant_id %]" />
+                                    <input type="hidden" name="location" value="[% location %]" />
+                                    <input type="hidden" name="quantity" value="1" />
+                                    <input type="image" src="/images/icons/cart_put.png" alt="Add to Sample Cart" title="Add to Sample Cart" />
+                                </form>
+                            [%-
+                                END;
+
+                                # These are only available to the Sample department
+                                IF department == 'Sample';
+                                    # Button for transferring between Sample Room and Press Samples
+                                    IF (location == "Sample Room" || location == "Press Samples");
+                                        autoexpand.push( variant.size_id );
+                                        icon_text = location_from == 'Sample Room'
+                                            ? 'Transfer to Press'
+                                            : 'Transfer to Sample Room';
+                            %]
+                                <form action="/Sample/SampleTransfer/Process/TransferPress" method="post">
+                                    [%- INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                                    <input type="hidden" name="action" value="transfer_press_sample" />
+                                    <input type="hidden" name="product_id" value="[% variant.product_id %]" />
+                                    <input type="hidden" name="variant_id" value="[% variant.variant_id %]" />
+                                    <input type="hidden" name="channel_id" value="[% channel_id %]" />
+                                    <input type="hidden" name="location_from" value="[% location %]" />
+                                    <input type="hidden" name="quantity" value="1" />
+                                    <input type="image" src="/images/icons/arrow_switch.png" alt="[% icon_text %]" title="[% icon_text %]" />
+                                </form>
+                            [%-
+                                    END;
+                                    # Button to abort sample transfer (not visible in Sample Overview table)
+                                    IF (location == "Transfer Pending" && table_type != 'sample');
+                                        autoexpand.push(variant.size_id);
+                            %]
+                                <form action="/StockControl/Sample/ReverseSampleGoodsOut" method="post">
+                                    [%- INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                                    <input type="hidden" name="action" value="reverse_goods_out" />
+                                    <input type="hidden" name="product_id" value="[% variant.product_id %]" />
+                                    <input type="hidden" name="variant_id" value="[% variant.variant_id %]" />
+                                    <input type="hidden" name="channel_id" value="[% channel_id %]" />
+                                    <input type="hidden" name="location_from" value="[% location %]" />
+                                    <input type="hidden" name="quantity" value="1" />
+                                    <input type="image" src="/images/icons/arrow_undo.png" alt="Reverse Sample Goods Out" title="Reverse Sample Goods Out" />
+                                </form>
+                            [%
+                                    END;
+                                END;
+                            %]
+[%- END %]
+<!-- TT END - stocktracker/inventory/overview.tt -->

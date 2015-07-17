@@ -1,0 +1,8 @@
+<pre>
+
+h1. Bug Fixes
+  
+ * EN-1870 - relax the regexp match to allow any number of digits	(d7139c6)
+ * EN-1595 standardize DC1 small barcodes and resize for long skus	(af37b9c)
+ * Clean-up RPM generation and processes				(59c58d9)
+</pre>

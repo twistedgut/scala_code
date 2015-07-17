@@ -1,0 +1,141 @@
+.title-NAP {
+	color: [% NAP.primary_colour %] !important;
+}
+.title-OUTNET {
+	color: [% OUTNET.primary_colour %] !important;
+}
+.title-MRP {
+	color: [% MRP.primary_colour %] !important;
+}
+.title-JC {
+	color: [% JC.primary_colour %] !important;
+}
+
+.warning_msg-NAP {
+	color: [% NAP.primary_colour %];
+	background-color: [% NAP.secondary_colour %];
+	border: 1px dashed [% NAP.primary_colour %];
+}
+
+.warning_msg-OUTNET {
+	color: [% OUTNET.primary_colour %];
+	background-color: [% OUTNET.secondary_colour %];
+	border: 1px dashed [% OUTNET.primary_colour %];
+}
+
+.warning_msg-MRP {
+	color: [% MRP.primary_colour %];
+	background-color: [% MRP.secondary_colour %];
+	border: 1px dashed [% MRP.primary_colour %];
+}
+
+.warning_msg-JC {
+	color: [% JC.primary_colour %];
+	background-color: [% JC.secondary_colour %];
+	border: 1px dashed [% JC.primary_colour %];
+}
+
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-NAP:hover,
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-NAP:hover em,
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-NAP:focus {
+    background:[% NAP.secondary_colour %]; /* mouseover tab background */
+    color:[% NAP.primary_colour %];
+	outline:0;
+}
+
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-NAP,
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-NAP em,
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-NAP:focus, /* no focus effect for selected */
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-NAP:hover,
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-NAP:hover em { /* no hover effect for selected */
+    color:#fff;
+	background:[% NAP.primary_colour %]; /* selected tab background */
+	font-weight: bold;
+}
+
+.yui-skin-sam .yui-navset .yui-content .tabWrapper-NAP,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-content .tabWrapper-NAP {
+    background-color: #fff;
+	border:1px dotted [% NAP.primary_colour %]; /* content border */
+	/*border-top: 2px solid #aaa;*/
+    padding:1.5em; /* content padding */
+}
+
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-OUTNET:hover,
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-OUTNET:hover em,
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-OUTNET:focus {
+    background:[% OUTNET.secondary_colour %]; /* mouseover tab background */
+    color:[% OUTNET.primary_colour %];
+	outline:0;
+}
+
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-OUTNET,
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-OUTNET em,
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-OUTNET:focus, /* no focus effect for selected */
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-OUTNET:hover,
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-OUTNET:hover em { /* no hover effect for selected */
+    color:#fff;
+	background:[% OUTNET.primary_colour %]; /* selected tab background */
+	font-weight: bold;
+}
+
+.yui-skin-sam .yui-navset .yui-content .tabWrapper-OUTNET,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-content .tabWrapper-OUTNET {
+    background-color: #fff;
+	border:1px dotted [% OUTNET.primary_colour %]; /* content border */
+	/*border-top: 2px solid #aaa;*/
+    padding:1.5em; /* content padding */
+}
+
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-MRP:hover,
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-MRP:hover em,
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-MRP:focus {
+    background:[% MRP.secondary_colour %]; /* mouseover tab background */
+    color:[% MRP.primary_colour %];
+	outline:0;
+}
+
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-MRP,
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-MRP em,
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-MRP:focus, /* no focus effect for selected */
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-MRP:hover,
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-MRP:hover em { /* no hover effect for selected */
+    color:#fff;
+	background:[% MRP.primary_colour %]; /* selected tab background */
+	font-weight: bold;
+}
+
+.yui-skin-sam .yui-navset .yui-content .tabWrapper-MRP,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-content .tabWrapper-MRP {
+    background-color: #fff;
+	border:1px dotted [% MRP.primary_colour %]; /* content border */
+	/*border-top: 2px solid #aaa;*/
+    padding:1.5em; /* content padding */
+}
+
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-JC:hover,
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-JC:hover em,
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-JC:focus {
+    background:[% JC.secondary_colour %]; /* mouseover tab background */
+    color:[% JC.primary_colour %];
+	outline:0;
+}
+
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-JC,
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-JC em,
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-JC:focus, /* no focus effect for selected */
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-JC:hover,
+.yui-skin-sam .yui-navset .yui-nav .selected a.contentTab-JC:hover em { /* no hover effect for selected */
+    color:#fff;
+	background:[% JC.primary_colour %]; /* selected tab background */
+	font-weight: bold;
+}
+
+.yui-skin-sam .yui-navset .yui-content .tabWrapper-JC,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-content .tabWrapper-JC {
+    background-color: #fff;
+	border:1px dotted [% JC.primary_colour %]; /* content border */
+	/*border-top: 2px solid #aaa;*/
+    padding:1.5em; /* content padding */
+}
+

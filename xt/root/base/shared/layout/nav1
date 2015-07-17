@@ -1,0 +1,127 @@
+<script type="text/javascript">
+    (function(){
+        // Initialize and render the menu bar when it is available in the DOM
+        function over_menu(e){
+            e = (e) ? e : event;
+            var elem = (e.srcElement) ? e.srcElement : e.target
+            var parent = elem.parentNode;
+
+            // get parent list item, submenu container and submenu list
+            // and return if this isn't a manu item with child lists
+            if (elem.tagName != 'A' || parent.tagName != 'LI') return;
+            var submenu_container = parent.getElementsByTagName('div')[0];
+            if (!submenu_container) return;
+            if (!submenu_container.getElementsByTagName('ul')[0]) return;
+
+            // find the position to display the element
+            var xy = YAHOO.util.Dom.getXY(parent);
+
+            // hide all other visible menus
+            hide_all_menus();
+
+            // make submenu visible
+            submenu_container.style.left = (xy[0] - 3) + 'px';
+            submenu_container.style.top = (xy[1] + parent.offsetHeight) + 'px';
+        }
+        function out_menu(e){
+            e = (e) ? e : event;
+            var elem = (e.srcElement) ? e.srcElement : e.target
+            var parent = elem.parentNode;
+
+            // and return if this isn't a manu item with child lists
+            if (parent.tagName != 'LI' || !parent.className.match(/yuimenubaritem/)) return;
+            var submenu_container = parent.getElementsByTagName('div')[0];
+            if (!submenu_container) return;
+            if (!submenu_container.getElementsByTagName('ul')[0]) return;
+
+            // return if we're hovering over exposed menu
+            var xy = YAHOO.util.Dom.getXY(submenu_container);
+            var pointer = mousepos(e);
+            var tolerence = 5;
+            if (pointer.x > xy[0] && pointer.x < xy[0] + submenu_container.offsetWidth &&
+                pointer.y > (xy[1] - tolerence) && pointer.y < xy[1] + submenu_container.offsetHeight) return;
+
+            hide_menu(submenu_container);
+        }
+        function mousepos(e){
+            var pos = {x: 0, y: 0};
+            if (e.pageX || e.pageY) {
+                pos = {x: e.pageX, y: e.pageY};
+            } else if (e.clientX || e.clientY)    {
+                pos.x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+                pos.y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+            }
+            return pos
+        }
+        function hide_menu(menu){
+            menu.style.left = -9999 + 'px';
+            menu.style.top = -9999 + 'px';
+        }
+        function hide_all_menus(){
+            var menu = document.getElementById('nav1').getElementsByTagName('ul')[0].getElementsByTagName('ul');
+            for (var i = menu.length - 1; i >= 0; i--){
+                hide_menu(menu[i].parentNode.parentNode);
+            }
+        }
+
+        YAHOO.util.Event.onContentReady("nav1", function () {
+            if (YAHOO.env.ua.ie > 5 && YAHOO.env.ua.ie < 7) {
+                // YUI menu too slow on thin clients and uses too much memory.
+                // Going to have to write my own version for speed.
+                // Yes really :-(
+                var menu = document.getElementById('nav1').getElementsByTagName('ul')[0];
+                if (!menu) return;
+                menu.onmouseover = over_menu;
+                menu.onmouseout = out_menu;
+            } else {
+                var oMenuBar = new YAHOO.widget.MenuBar("nav1", { autosubmenudisplay: false, hidedelay: 250, lazyload: true });
+                oMenuBar.render();
+            }
+        });
+    })();
+</script>
+<div id="nav1" class="yuimenubar yuimenubarnav">
+    [% IF disablemenus %]
+        <span>Menu disabled until [% disablemenus_reason || 'current process' %] has been completed.</span>
+    [% ELSIF mainnav.keys.size %]
+        <div class="bd">
+            <ul class="first-of-type">
+                [%  subnavcount = 0;
+                    FOREACH sec = mainnav.keys;
+                        FOREACH subsec = mainnav.$sec.keys;
+                            subnavcount = subnavcount + 1;
+                        END;
+                    END; -%]
+                [% IF operator_name %]
+                    <li class="yuimenubaritem first-of-type"><a href="/Home" class="yuimenubaritemlabel">Home</a></li>
+                [% END %]
+                [% IF subnavcount <= 9 %]
+                    [% # reduced nav for people with very few options %]
+                    [% FOREACH sec = mainnav.keys.sort %]
+                        [% FOREACH subsec = mainnav.$sec.keys.nsort %]
+                                <li class="yuimenubaritem"><a href="/[% sec | replace('\s+', '') %]/[% mainnav.$sec.$subsec.sub_section | replace('\s+', '') %]" class="yuimenubaritemlabel">[% mainnav.$sec.$subsec.sub_section %]</a></li>
+                        [% END %]
+                    [% END %]
+                [% ELSE %]
+                    [% # full pull down nav %]
+                    [% FOREACH sec = mainnav.keys.sort %]
+                        <li class="yuimenubaritem[% ' yuimenubaritem-hassubmenu' IF mainnav.$sec.size %]">
+                            <a href="#" class="yuimenubaritemlabel[% ' yuimenubaritemlabel-hassubmenu' IF mainnav.$sec.size %]">[% sec %]</a>
+                            <div class="yuimenu">
+                                <div class="bd">
+                                    <ul>
+                                        [% FOREACH subsec = mainnav.$sec.keys.nsort %]
+                                            <li class="menuitem">
+                                                <a href="/[% sec | replace('\s+', '') %]/[% mainnav.$sec.$subsec.sub_section | replace('\s+', '') %]" class="yuimenuitemlabel">[% mainnav.$sec.$subsec.sub_section %]</a>
+                                            </li>
+                                        [% END %]
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    [% END %]
+                [% END %]
+            </ul>
+        </div>
+    [% END %]
+</div>

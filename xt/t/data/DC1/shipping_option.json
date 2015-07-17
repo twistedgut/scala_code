@@ -1,0 +1,63 @@
+{
+   "shipping_option" : [
+      {
+         "carrier" : "DHL Express",
+         "name" : "DHL Express - FTBC",
+         "description" : "FTBC",
+         "zones" : [],
+         "option_type" : "FTBC",
+         "product_name" : null
+      },
+      {
+         "carrier" : "DHL Express",
+         "name" : "DHL Express - International Road",
+         "description" : "International Road",
+         "zones" : [
+            "European Islands",
+            "Europe EU - Ground1",
+            "Europe EU - Ground2",
+            "Europe Other - Ground1",
+            "Europe Other - Ground2",
+            "Mainland Europe",
+            "Mainland Europe - Group 1",
+            "Mainland Europe - Group 2"
+         ],
+         "option_type" : "International Road",
+         "product_name" : "DHL Economy Select"
+      },
+      {
+         "carrier" : "DHL Express",
+         "name" : "DHL Express - International",
+         "description" : "International",
+         "zones" : [
+            "European Islands",
+            "Europe EU - Express",
+            "Europe EU - Ground1",
+            "Europe EU - Ground2",
+            "Europe Other - Ground1",
+            "Europe Other - Ground2",
+            "International",
+            "Mainland Europe",
+            "Mainland Europe - Group 1",
+            "Mainland Europe - Group 2",
+            "Middle/Far East",
+            "North America",
+            "Rest of World",
+            "US/Americas"
+         ],
+         "option_type" : "International",
+         "product_name" : "DHL Express Worldwide"
+      },
+      {
+         "carrier" : "DHL Express",
+         "name" : "DHL Express - Domestic",
+         "description" : "Domestic",
+         "zones" : [
+            "Channel Islands",
+            "United Kingdom"
+         ],
+         "option_type" : "Domestic",
+         "product_name" : "DHL Domestic Worldwide"
+      }
+   ]
+}

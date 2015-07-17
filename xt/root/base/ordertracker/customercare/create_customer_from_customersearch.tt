@@ -1,0 +1,31 @@
+[%-
+    SET allow_create_in_xt  = 0;
+    IF is_operator AND (
+            department_id == db_constant('DEPARTMENT__PERSONAL_SHOPPING') ||
+            department_id == db_constant('DEPARTMENT__FASHION_ADVISOR')
+        );
+    THEN;
+        allow_create_in_xt  = 1;
+    END;
+-%]
+
+<form name="create_customer" id="create_customer" method="POST" action="/CustomerCare/CustomerSearch/CreateCustomer">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="channel_id" value="">
+    <input type="hidden" name="customer_nr" value="">
+</form>
+
+<script type="text/javascript" language="javascript">
+
+function create_customer_in_xt (customer_nr, channel_id) {
+    var xform   = document.getElementById('create_customer');
+    xform.elements['customer_nr'].value = customer_nr;
+    xform.elements['channel_id'].value = channel_id;
+    xform.submit();
+    // in-case the Back button is hit
+    xform.elements['customer_nr'].value = '';
+    xform.elements['channel_id'].value = '';
+    return true;
+}
+
+</script>

@@ -1,0 +1,25 @@
+<form method="POST" action="/GoodsIn/ReturnsArrival/Delivery" name="create_delivery">
+<input type="hidden" name="create_delivery" value="1">
+<input type="hidden" name="is_handheld" value="[% IF template_type == "handheld" %]1[% END %]">
+<input type="submit" name="action" value="Create Delivery" class="button" />
+</form>
+<br />
+<h3>Open Deliveries</h3>
+<table class="wide-data divided-data data">
+    <tr>
+        [% IF template_type == "handheld" %]<th>ID</th>[% END %]
+        <th>Date Created</th>
+        <th>Created By</th>
+    </tr>
+    [% FOREACH return_delivery IN return_deliveries %]
+        <tr>
+            [% IF template_type == "handheld" %]<td>[% return_delivery.id %]</td>[% END %]
+            <td>
+                <a href="/GoodsIn/ReturnsArrival/Delivery/[% return_delivery.id %][% IF template_type == "handheld" %]?view=HandHeld[% END %]">
+                    [% return_delivery.date_created.strftime('%F %R') %]
+                </a>
+            </td>
+            <td>[% return_delivery.created_by.name %]</td>
+        </tr>
+    [% END %]
+</table>

@@ -1,0 +1,109 @@
+<script language="JavaScript">
+<!--
+function set_maximum(min_select, other_select) {
+  var min_value = min_select.options[min_select.selectedIndex].value;
+  var other_value = other_select.options[other_select.selectedIndex].value;
+
+  if (other_value < min_value) {
+    other_select.selectedIndex = min_select.selectedIndex;
+  }
+  return true;
+}
+
+function set_minimum(max_select, other_select) {
+  var max_value = max_select.options[max_select.selectedIndex].value;
+  var other_value = other_select.options[other_select.selectedIndex].value;
+
+  if (other_value > max_value) {
+    other_select.selectedIndex = max_select.selectedIndex;
+  }
+  return true;
+}
+-->
+</script>
+
+
+<table width="719" cellpadding="0" cellspacing="0" border="0" class="data">	
+	<tr>
+		<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td width="15%" class="tableHeader"></td>
+		<td width="7%" class="tableHeader">Floor</td>
+		<td width="7%" class="tableHeader">Zone</td>
+		<td width="9%" class="tableHeader">Location</td>
+		<td width="62%" class="tableHeader">Level</td>
+	</tr>
+	<tr>
+		<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td align="right"><b>Start Location:</b>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		<td>
+			<select name="start_floor" id="start_floor" onChange="set_maximum(this, document.getElementById('end_floor'))">
+			      [% FOREACH option = floors %]
+			      <option value="[% option %]"[% IF start_floor == option %] selected[% END %]>[% option %]</option>
+			      [% END %]
+			    </select>
+		</td>
+		<td>
+			<select name="start_zone" id="start_zone" onChange="set_maximum(this, document.getElementById('end_zone'))">
+			      [% FOREACH option = zones %]
+			      <option value="[% option %]"[% IF start_zone == option %] selected[% END %]>[% option %]</option>
+			      [% END %]
+			    </select>		
+		</td>
+		<td>
+			<select name="start_location" id="start_location" onChange="set_maximum(this, document.getElementById('end_location'))">
+			      [% FOREACH option = locations %]
+			      <option value="[% option %]"[% IF start_location == option %] selected[% END %]>[% option %]</option>
+			      [% END %]
+			    </select>		
+		</td>
+		<td>
+			<select name="start_level" id="start_level" onChange="set_maximum(this, document.getElementById('end_level'))">
+			      [% FOREACH option = levels %]
+			      <option value="[% option %]"[% IF start_level == option %] selected[% END %]>[% option %]</option>
+			      [% END %]
+			    </select>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td align="right"><b>End Location:</b>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		<td>
+			 <select name="end_floor" id="end_floor"onChange=" set_minimum(this, document.getElementById('start_floor'))">
+			      [% FOREACH option = floors %]
+			      <option value="[% option %]"[% IF end_floor == option %] selected[% END %]>[% option %]</option>
+			      [% END %]
+			    </select>
+		</td>
+		<td>
+			<select name="end_zone" id="end_zone" onChange="set_minimum(this, document.getElementById('start_zone'))">
+			      [% FOREACH option = zones %]
+			      <option value="[% option %]"[% IF end_zone == option %] selected[% END %]>[% option %]</option>
+			      [% END %]
+			    </select>	
+		</td>
+		<td>
+			 <select name="end_location" id="end_location" onChange="set_minimum(this, document.getElementById('start_location'))">
+			      [% FOREACH option = locations %]
+			      <option value="[% option %]"[% IF end_location == option %] selected[% END %]>[% option %]</option>
+			      [% END %]
+			    </select>	
+		</td>
+		<td>
+			<select name="end_level" id="end_level" onChange="set_minimum(this, document.getElementById('start_level'))">
+			      [% FOREACH option = levels %]
+			      <option value="[% option %]"[% IF end_level == option %] selected[% END %]>[% option %]</option>
+			      [% END %]
+			    </select>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+</table>
+

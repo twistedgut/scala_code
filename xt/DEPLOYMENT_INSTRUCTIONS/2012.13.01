@@ -1,0 +1,67 @@
+=====================================
+XT 2012.13.01 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               : 04/10/2012
+Cherwell           : 
+Release Manager    : Shamir Raniga
+Build Manager      : Rich Moore
+TechOps            : 
+Backend Developer  : 
+Frontend Developer : 
+QA                 : 
+PCI Authorised by  : 
+
+2 - CHANGELOG
+-------------
+http://gitosis.net-a-porter.com/cgit/xt/tree/CHANGES/2012.13.01?h=release/2012.13
+
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2012.13/xt-2012.13.01-0.noarch.rpm
+
+Do this for DC1, DC2 and DC3.
+
+4 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+No action needs to be performed before the deployment
+
+5 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+sudo yum install xt
+
+6 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+whm-1240 Run this script on both DCs:
+    sudo /opt/xt/xt-perl/bin/perl -I/opt/xt/deploy/xtracker/lib /opt/xt/deploy/xtracker/script/oneoffs/whm/whm-1240-populate_link_return_arrival__shipment_table.pl
+    email the output to whm-dev@net-a-porter.com
+ 
+whm-913 Run this script on DC1:
+    sudo /opt/xt/xt-perl/bin/perl -I/opt/xt/deploy/xtracker/lib /opt/xt/deploy/xtracker/script/oneoffs/whm/whm-913_populate_log_putaway_discrepancy_with_channel.pl
+    email the output to whm-dev@net-a-porter.com
+
+7 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

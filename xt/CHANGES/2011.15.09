@@ -1,0 +1,8 @@
+<pre>
+
+h1. Application Support (APS)
+
+  * LIVE-OI: Use join instead of prefetch             (70005540)
+  * LIVE-OI: speed up customers_with_same_email()     (ebcdd9a9)
+
+</pre>

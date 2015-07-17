@@ -1,0 +1,168 @@
+<h2>Which products should this promotion be restricted to?</h2>
+
+<p style="text-align:right;"><strong>NOTE:</strong> If nothing is selected there are
+<em>no restrictions by product</em></p>
+
+<!-- once again, really sorry for using a table! -->
+<table width="100%" border="0" class="increasefont topalign">
+    <tbody>
+        <tr>
+            <td width="33%">
+                <h3>Seasons</h3>
+            </td>
+            <td width="33%">
+                <h3>Brands/Designers</h3>
+            </td>
+            <td width="33%">
+                <h3>Product Types</h3>
+            </td>
+        </tr>
+
+        <tr>
+            <td width="33%">
+                <div class="left_action_button">
+                    <input type="button" class="button" value="Select All" onClick="set_checkbox_list('season_checkboxes',true);" [%disabled%] />
+                </div>
+                <div class="right_action_button">
+                    <input type="button" class="button" value="Clear All" onClick="set_checkbox_list('season_checkboxes',false);" [%disabled%] />
+                </div>
+            </td>
+            <td width="33%">
+                <div class="left_action_button">
+                    <input type="button" class="button" value="Select All" onClick="set_checkbox_list('designer_checkboxes',true);" [%disabled%]  />
+                </div>
+                <div class="right_action_button">
+                    <input type="button" class="button" value="Clear All" onClick="set_checkbox_list('designer_checkboxes',false);" [%disabled%] />
+                </div>
+            </td>
+            <td width="33%">
+                <div class="left_action_button">
+                    <input type="button" class="button" value="Select All" onClick="set_checkbox_list('producttype_checkboxes',true);" [%disabled%]  />
+                </div>
+                <div class="right_action_button">
+                    <input type="button" class="button" value="Clear All" onClick="set_checkbox_list('producttype_checkboxes',false);" [%disabled%] />
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td width="33%">
+                <div class="product_group_list">
+                    [% FOREACH season IN seasons.all %]
+                    <input type="checkbox" id="season_sb_[%season.id%]" name="season_checkboxes" value="[%season.id%]" [%disabled%]>[% season.season %]<br />
+                    [% END %]
+                </div>
+                <div style="text-align:right;">
+                    [% IF promotion.detail_seasons_rs.count == 1 %]
+                    [% thingy="season" %]
+                    [% ELSE %]
+                    [% thingy="seasons" %]
+                    [% END %]
+                    [% promotion.detail_seasons_rs.count || 'No' %]
+                    [%thingy%] selected
+                </div>
+            </td>
+            <td width="33%">
+                <div class="product_group_list">
+                    [% FOREACH designer IN designers.all %]
+                    <input type="checkbox" id="designer_cb_[%designer.id%]" name="designer_checkboxes" value="[%designer.id%]" [%disabled%]>[% designer.designer %]<br />
+                    [% END %]
+                </div>
+                <div style="text-align:right;">
+                    [% IF promotion.detail_designers_rs.count == 1 %]
+                    [% thingy="designer" %]
+                    [% ELSE %]
+                    [% thingy="designers" %]
+                    [% END %]
+                    [% promotion.detail_designers_rs.count || 'No' %]
+                    [%thingy%] selected
+                </div>
+            </td>
+            <td width="33%">
+                <div class="product_group_list">
+                    [% FOREACH product_type IN product_types.all %]
+                    <input type="checkbox" id="producttype_cb_[%product_type.id%]" name="producttype_checkboxes" value="[%product_type.id%]" [%disabled%]>[% product_type.product_type %]<br />
+                    [% END %]
+                </div>
+                <div style="text-align:right;">
+                    [% IF promotion.detail_producttypes_rs.count == 1 %]
+                    [% thingy="type" %]
+                    [% ELSE %]
+                    [% thingy="types" %]
+                    [% END %]
+                    [% promotion.detail_producttypes_rs.count || 'No' %]
+                    product [%thingy%] selected
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td width="33%">
+                Individual Products:
+                <br />
+                <em>(Add a list if Product PIDs separated by commas&nbsp;e.g.
+                    12345,24680)</em>
+            </td>
+            <td width="66%" colspan="2">
+                <textarea name="product_pid_list" rows="4" cols="50" class="product_pid_list" [%disabled%]></textarea>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                Limit to products that have been on the site for over a
+                specified time period?
+            </td>
+            <td colspan="2">
+                <div style="float:left;">
+                    <input type="radio" name="restrict_by_weeks" value="1" [%disabled%] />
+                    Yes
+                    <br />
+                    <input type="radio" name="restrict_by_weeks" value="0" [%disabled%] />
+                    No
+                </div>
+                <div style="float:left; margin-left: 20px;">
+                    <select name="restrict_x_weeks" [%disabled%]>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
+                    </select>
+                    week(s) or over.
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="3">
+                [% IF is_readonly %]
+                &nbsp;
+                [% ELSE %]
+                <input type="submit" name="action" value="Save Promotion" class="button" style="float:right;" />
+                [% END %]
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    function set_checkbox_list(checkbox_name, cb_status) {
+        try {
+            var elements = document.getElementsByName(checkbox_name);
+            for (i=0;i<elements.length;i++) {
+                elements[i].checked = cb_status;
+            }
+
+
+        }
+        catch(e) {
+            alert(e.message);
+        }
+    }
+</script>

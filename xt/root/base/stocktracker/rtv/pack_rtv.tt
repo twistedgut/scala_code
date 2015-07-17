@@ -1,0 +1,232 @@
+<!-- TT BEGIN - stocktracker/rtv/pack_rtv.tt -->
+[%# USE Dumper %]
+
+[% PROCESS page_elements/display_status.tt %]
+
+[% IF tt_process_block; PROCESS $tt_process_block; END %]
+
+
+[% BLOCK pack_rtv %]
+
+    [% SET global.display_commit    = 0 %]
+    [% SET global.table_css_width   = '35%' %]
+
+    [% IF !rtv_shipment_id.match('\A\d+\z') %]
+        [% PROCESS select_rtv_shipment_id %]
+    [% ELSIF rtv_shipment_validate_pack.size > 0 %]
+        [% PROCESS pack_rtv_entry %]
+        [% PROCESS pack_rtv_list %]
+        [% PROCESS pack_rtv_submit %]
+    [% ELSE %]
+        [% PROCESS rtv_shipment_status %]
+    [% END %]
+    
+[% END ## (BLOCK pack_rtv) %]
+
+
+
+[% BLOCK select_rtv_shipment_id %]
+<form name="frm_select_rtv_shipment" action="PackRTV" method="post">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+<table style="width: [% global.table_css_width %]; border: 1px solid lightgrey; background-color: #efefef;" cellpadding="4" cellspacing="0" border="0">
+	<tr>
+	    <td style="font-weight: bold; width: 60%">
+	        RTV&nbsp;Shipment:
+	    </td>
+	    <td style="font-weight: bold; width: 40%">
+	        <input type="text" name="rtv_shipment_id" maxlength="10" style="width: 9em; border: 1px solid grey;" />
+	    </td>
+	</tr>
+	<tr>
+		<td colspan="2" style="text-align: right;">
+	        <input type="submit" name="select_rtv_shipment" value="Submit&nbsp;&raquo;" class="button" style="cursor: pointer;" />
+	    </td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
+<!--
+    document.forms.frm_select_rtv_shipment.rtv_shipment_id.focus();
+//-->
+</script> 
+[% END ## (BLOCK select_rtv_shipment) %]
+
+
+
+[% BLOCK rtv_shipment_status %]
+[% IF rtv_shipment_status %]
+<table style="width: [% global.table_css_width %]; border: 1px solid lightgrey; background-color: #efefef;" cellpadding="4" cellspacing="0" border="0">
+    <tr>
+        <td style="font-weight: bold; color: red;">
+            RTV&nbsp;Shipment [% rtv_shipment_id %] has a status of [% rtv_shipment_status %]
+        </td>
+    </tr>
+    <tr><td><a href="PackRTV">&laquo;&nbsp;&nbsp;back</a></td></tr>
+</table>
+[% END ## IF rtv_shipment_status %]
+[% END ## (BLOCK rtv_shipment_packed) %]
+
+
+
+[% BLOCK pack_rtv_entry %]
+<div id="pack_rtv_entry" name="pack_rtv_entry" style="display: block;">
+    <form name="frm_pack_rtv_entry" action="PackRTV" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <table style="width: [% global.table_css_width %]; border: 1px solid lightgrey; background-color: #efefef;" cellpadding="5" cellspacing="0" border="0">
+        <tr>
+            <td colspan="3">RTV&nbsp;Shipment:&nbsp;[% rtv_shipment_validate_pack.0.rtv_shipment_id %]&nbsp;([% rtv_shipment_status %])</td>
+        </tr>
+    	<tr>
+    	    <td style="width: 33%; font-weight: bold;">
+    	        <input type="text" name="txt_entry" maxlength="20" style="width: 9em; border: 1px solid grey;" />
+    	    </td>
+    	    <td style="width: 33%;">&nbsp;</td>
+    	    <td style="width: 33%; text-align: right;">
+    	        <input type="hidden" name="rtv_shipment_id" value="[% rtv_shipment_id %]" />
+    	        <input type="hidden" name="submit_pack_rtv_entry" value="1" />
+    	        <input type="submit" name="submit_pack_rtv_entry" value="Submit&nbsp;&raquo;" class="button" style="cursor: pointer;" />
+    	    </td>
+    	</tr>
+    	<tr>
+    	    <td colspan="3">
+            	<table style="width: 100%; border: 1px solid lightgrey; background-color: #efefef;" cellpadding="5" cellspacing="0" border="0">
+                	<tr>
+                        <td style="font-weight: bold; background-color: lightgrey;">SKU</td>
+                        <td style="width: 50%; font-weight: bold; background-color: lightgrey; border-right: 1px solid lightgrey;">&nbsp;</td>
+                	</tr>
+                	<tr>
+                	    <td style="font-weight: bold;">[% IF sku %][% sku %][% ELSE %]&nbsp;--&nbsp;[% END %]</td>
+                        <td style="width: 50%; font-weight: bold; border-right: 1px solid lightgrey;">&nbsp;</td>
+                	</tr>
+                </table>
+    	    </td>
+    	</tr>
+    </table>
+    </form>
+<script type="text/javascript">
+<!--
+    document.forms.frm_pack_rtv_entry.txt_entry.focus();
+//-->
+</script>
+</div>
+[% END ## (BLOCK pack_rtv_entry) %]
+
+
+
+[% BLOCK pack_rtv_list %]
+<table class="sortdata" style="width: [% global.table_css_width %]; background-color: #f2f2f2;" cellspacing="0" cellpadding="2" border="0">
+    <thead>
+        <tr style="height: 20; background-color: #c5c5c5;">
+            <td style="text-align: center; border: 0;">SKU</td>
+            <td style="text-align: right; border: 0;">Qty.&nbsp;</td>
+            <td style="text-align: right; border: 0;">Packed&nbsp;</td>
+            <td style="text-align: right; border: 0;">To Pack&nbsp;</td>
+        </tr>                            
+    </thead>
+    <tbody>
+    [% DEFAULT
+        total_sum_packlist_quantity = 0
+        total_packed_quantity       = 0
+        total_remaining_to_pack     = 0
+    %]
+    
+    [% FOREACH item = rtv_shipment_validate_pack %]
+        [% total_sum_packlist_quantity = total_sum_packlist_quantity + item.sum_packlist_quantity %]
+        [% total_packed_quantity = total_packed_quantity + item.packed_quantity %]
+        [% total_remaining_to_pack = total_remaining_to_pack + item.remaining_to_pack %]
+        
+        [% NEXT IF item.packed_quantity == item.sum_packlist_quantity  ## skip fully-packed rows %]
+        
+        [%  IF item.packed_quantity == 0;
+                item_color = 'black';
+            ELSIF item.packed_quantity > 0 and item.packed_quantity < item.sum_packlist_quantity;
+                item_color = 'darkorange';
+            ELSIF item.packed_quantity == item.sum_packlist_quantity;
+                item_color = 'darkgreen';
+            ELSE;
+                item_color = 'darkred';
+            END
+        %]
+
+        [% item_style = "color: $item_color; text-align: right; font-weight: bold; border: 0;" %]
+        <tr>
+            <td style="color: grey; text-align: center; font-weight: bold; border: 0;">[% item.sku %]</td>
+            <td style="[% item_style %]">[% item.sum_packlist_quantity %]&nbsp;</td>
+            <td style="[% item_style %]">[% item.packed_quantity %]&nbsp;</td>
+            <td style="[% item_style %]">[% item.remaining_to_pack %]&nbsp;</td>
+        </tr>
+        <tr><td colspan="8" style="border: 0; background-color: #d2d2d2; font-size: 1; height: 1;">&nbsp;</td></tr>
+    [% END ## (FOREACH item...) %]
+
+    [%  IF total_packed_quantity == 0;
+            total_color = 'black';
+        ELSIF total_packed_quantity > 0 and total_packed_quantity < total_sum_packlist_quantity;
+            total_color = 'darkorange';
+        ELSIF total_packed_quantity == total_sum_packlist_quantity;
+            total_color = 'darkgreen';
+            global.display_commit = 1;
+        ELSE;
+            total_color = 'darkred';
+        END
+    %]
+    
+    [% total_style = "color: $total_color; text-align: right; font-weight: bold; font-size: 105%; background-color: #d2d2d2; border-bottom: 1px solid grey; border-top: 1px solid grey;" %]
+        <tr>
+            <td style="text-align: right; font-weight: bold; background-color: #d2d2d2; border-bottom: 1px solid grey; border-top: 1px solid grey;">Total:</td>
+            <td style="[% total_style %]">[% total_sum_packlist_quantity || '&nbsp;--&nbsp;' %]</td>
+            <td style="[% total_style %]">[% total_packed_quantity || '&nbsp;--&nbsp;' %]</td>
+            <td style="[% total_style %]">[% total_remaining_to_pack || '&nbsp;--&nbsp;' %]</td>
+        </tr>
+    </tbody>
+</table>
+[% END ## (BLOCK pack_rtv_list) %]
+
+
+
+[% BLOCK pack_rtv_submit %]
+<form name="frm_pack_rtv" action="PackRTV" method="post" onsubmit="return confirm_submit('Are you sure?');">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+<input type="hidden" name="rtv_shipment_id" value="[% rtv_shipment_id %]" />
+<table style="width: [% global.table_css_width %]; border: 1px solid lightgrey; background-color: #efefef;" cellpadding="4" cellspacing="0" border="0">
+    [% IF (operator_auth_level == AUTH_LEVEL_MANAGER) && (global.display_commit != 1) %]
+    <tr>
+        <td style="text-align: left; border: 0;">
+            <input type="submit" name="submit_pack_auto" value="Auto-Pack&nbsp;&raquo;" class="button" style="width: 90px; cursor: pointer;" />
+        </td>
+    </tr>
+    [% END %]
+    <tr>
+        <td style="text-align: right; border: 0;">
+            <input type="submit" name="submit_pack_rtv_cancel" value="Cancel&nbsp;&raquo;" class="button" style="width: 90px; background-color: darkred; cursor: pointer;" />
+        </td>
+    </tr>
+    [% IF global.display_commit == 1 %]
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+    <tr>
+        <td style="text-align: right; border: 0;">
+            <input type="submit" name="submit_pack_rtv_commit" value="Commit&nbsp;&raquo;" class="button" style="width: 90px; background-color: darkgreen; cursor: pointer;" />
+        </td>
+    </tr>
+    [% END %]
+</table>
+</form>
+<script type="text/javascript">
+<!--
+
+    function confirm_submit(message) {
+        var answer = confirm(message);
+    	return answer;
+    }
+
+//-->
+</script>
+[% END ## (BLOCK pack_rtv_submit) %]
+
+
+
+
+[% IF just_for_test.keys.size %]<pre>[% Dumper.dump_html(just_for_test) %]</pre>[% END %]
+[%# Dumper.dump_html(rtv_shipment_validate_pack.0) %]
+<!-- TT END - stocktracker/rtv/pack_rtv.tt -->

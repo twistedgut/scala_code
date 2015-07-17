@@ -1,0 +1,88 @@
+#!/bin/bash
+
+#
+# Make a Seaview request and dump it to the console
+#
+
+usage() {
+    echo "Usage: $0 <action> <key> <cacert> <clientcert> <seaview-url>";
+    exit 127
+}
+
+[[ $# -ne 5 ]] && usage;
+
+KEY_FILE=$2
+CA_CERT_FILE=$3
+CLIENT_CERT_FILE=$4
+SEAVIEW_URL=$5
+
+get () {
+    curl -v --silent                              \
+         --key ${KEY_FILE}                        \
+         --cacert ${CA_CERT_FILE}                 \
+         --cert ${CLIENT_CERT_FILE}               \
+         -H 'Accept: application/ld+json'         \
+         -H 'NAP-User-Credentials: Universal Key' \
+         ${SEAVIEW_URL} | json_xs
+}
+
+post () {
+    curl -v --silent                              \
+         --key ${KEY_FILE}                        \
+         --cacert ${CA_CERT_FILE}                 \
+         --cert ${CLIENT_CERT_FILE}               \
+         -H 'Accept: application/json'            \
+         -H 'NAP-User-Credentials: Universal Key' \
+         -H 'Content-Type: application/json'      \
+         -H 'If-Unmodified-Since: Thu, 21 Nov 2013 14:42:56 GMT' \
+         ${SEAVIEW_URL}                           \
+         -X POST                                  \
+         -d '{"category":"urn:nap:category:none"}' \
+         | json_xs
+}
+
+home () {
+    curl -v --silent                              \
+         --key ${KEY_FILE}                        \
+         --cacert ${CA_CERT_FILE}                 \
+         --cert ${CLIENT_CERT_FILE}               \
+         -H 'Accept: application/json-home'       \
+         -H 'NAP-User-Credentials: Universal Key' \
+         ${SEAVIEW_URL}                           \
+         | json_xs
+}
+
+schema () {
+    curl -v --silent                              \
+         --key ${KEY_FILE}                        \
+         --cacert ${CA_CERT_FILE}                 \
+         --cert ${CLIENT_CERT_FILE}               \
+         -H 'Accept: application/schema+json'     \
+         -H 'NAP-User-Credentials: Universal Key' \
+         ${SEAVIEW_URL}                           \
+         | json_xs
+}
+
+
+case "$1" in
+    get)
+        $1
+        RETVAL=$?
+        ;;
+    post)
+        $1
+        RETVAL=$?
+        ;;
+    home)
+        $1
+        RETVAL=$?
+        ;;
+    schema)
+        $1
+        RETVAL=$?
+        ;;
+    *)
+        usage
+        exit 2
+esac
+

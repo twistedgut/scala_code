@@ -1,0 +1,218 @@
+<form name="createRetForm" action="[% short_url %]/CreateReturn?order_id=[% order_id %]&shipment_id=[% shipment_id %]" method="post" onSubmit="return double_submit()">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+<input type="hidden" name="select_items" value="1">
+<input type="hidden" name="rma_number" value="[% rma_number %]">
+<span class="title title-[% channel_config.$sales_channel %]">Select Item(s)</span><br>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <tr height="24" class="divideabove dividebelow">
+        <td class="tableHeader" width="5%">&nbsp;&nbsp;&nbsp;</td>
+        <td class="tableHeader" width="22%">Product</td>
+        <td class="tableHeader" width="10%">Size</td>
+        <td class="tableHeader" width="8%">Select</td>
+        <td class="tableHeader" width="13%">Exchange</td>
+        <td class="tableHeader" width="15%">Exchange Size</td>
+        <td class="tableHeader" width="22%">Reason for Return</td>
+        <td class="tableHeader" width="11%">Full Refund</td>
+    </tr>
+
+        [% FOREACH itemid = return_items.keys %]
+                <input type="hidden" name="selected-[% itemid %]" value="1">
+                <input type="hidden" name="type-[% itemid %]" value="[% return_items.$itemid.type %]">
+                <input type="hidden" name="exchange_variant-[% itemid %]" value="[% return_items.$itemid.exchange_variant %]">
+                <input type="hidden" name="reason_id-[% itemid %]" value="[% return_items.$itemid.reason_id %]">
+                <input type="hidden" name="full_refund-[% itemid %]" value="[% return_items.$itemid.full_refund %]">
+                <tr>
+                    <td align="center"><a href="[% shipment_items.$itemid.images.0 %]" title="View Product Image" target="new" class="imagezoom"><img src="/images/icons/image.png"></a></td>
+                    <td>[% shipment_items.$itemid.sku %]</td>
+                    <td>[% IF shipment_items.$itemid.short_name %][% shipment_items.$itemid.short_name %] [% END %][% shipment_items.$itemid.designer_size %][% IF shipment_items.$itemid.designer_size != shipment_items.$itemid.size %] ([% shipment_items.$itemid.size %])[% END %]</td>
+                    <td>Yes</td>
+                    <td>[% return_items.$itemid.type == 'Exchange' ? 'Yes' : 'No' %]</td>
+                    <td>[% return_items.$itemid.exchange_size ? return_items.$itemid.exchange_size : 'n/a' %]</td>
+				[% SET r_id = return_items.$itemid.reason_id %]
+                    <td>[% reasons.$r_id %]</td>
+                    <td>[% return_items.$itemid.full_refund ? 'Yes' : 'No' %]</td>
+                </tr>
+                <tr class="dividebelow">
+                    <td>&nbsp;</td>
+                    <td colspan="7" valign="top"><i>[% shipment_items.$itemid.designer %] - [% shipment_items.$itemid.name %]</i></td>
+                </tr>
+        [% END %]
+</table>
+
+<br />
+<br />
+
+<span class="title title-[% channel_config.$sales_channel %]">Refund/Debit</span><br>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data" id="return_create__refund_debit">
+    <tr height="24" class="divideabove dividebelow">
+        <td class="tableHeader" width="30%">&nbsp;&nbsp;&nbsp;Product</td>
+        <td align="right" class="tableHeader" width="10%">Unit Price</td>
+        <td align="right" class="tableHeader" width="10%">Tax</td>
+        <td align="right" class="tableHeader" width="10%">Duty</td>
+        <td align="right" class="tableHeader" width="30%">Sub-Total</td>
+        <td class="tableHeader" width="10%">&nbsp;</td>
+    </tr>
+
+    [% SET total = 0 %]
+
+    [% FOREACH itemid = return_items.keys %]
+            <tr class="dividebelow">
+                <td>&nbsp;&nbsp;&nbsp;[% shipment_items.$itemid.sku %]</td>
+                <td align="right">[% return_items.$itemid.unit_price FILTER format('%02.2f') %]</td>
+                <td align="right">[% return_items.$itemid.tax FILTER format('%02.2f') %]</td>
+                <td align="right">[% return_items.$itemid.duty FILTER format('%02.2f') %]</td>
+                <td align="right">[% (return_items.$itemid.unit_price + return_items.$itemid.tax + return_items.$itemid.duty) FILTER format('%02.2f') %]</td>
+                <td>&nbsp;
+                    <input type="hidden" name="unit_price-[% itemid %]"value="[% return_items.$itemid.unit_price %]">
+                    <input type="hidden" name="tax-[% itemid %]"value="[% return_items.$itemid.tax %]">
+                    <input type="hidden" name="duty-[% itemid %]"value="[% return_items.$itemid.duty %]">
+                </td>
+            </tr>
+            [% total = total + return_items.$itemid.unit_price + return_items.$itemid.tax + return_items.$itemid.duty %]
+    [% END %]
+
+    [% IF shipping_refund %]
+        [% total = total + shipping_refund %]
+
+        <tr class="dividebelow">
+            <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+            <td class="blank" colspan="4" align="right"><b>Shipping Refund:&nbsp;&nbsp;</b></td>
+            <td class="blank">
+                [% shipping_refund FILTER format('%02.2f') %] [% order.currency %]
+                <input type="hidden" name="shipping_refund" value="[% shipping_refund %]">
+            </td>
+        </tr>
+
+    [% END %]
+    [% IF shipping_charge %]
+        [% total = total + shipping_charge %]
+
+        <tr class="dividebelow">
+            <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+            <td class="blank" colspan="4" align="right"><b>Return Shipping Charge:&nbsp;&nbsp;</b></td>
+            <td class="blank">
+                [% shipping_charge FILTER format('%02.2f') %] [% order.currency %]
+                <input type="hidden" name="shipping_charge" value="[% shipping_charge %]">
+            </td>
+        </tr>
+
+    [% END %]
+
+    <tr class="dividebelow">
+        <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+        <td class="blank" colspan="4" align="right"><b>Grand Total:&nbsp;&nbsp;</b></td>
+        <td class="blank" id="return_create__refund_debit__grand_total">
+            [% total FILTER format('%02.2f') %] [% order.currency %]
+            [% SET total_shipment_refund = total + ( previous_refund_total ? previous_refund_total : 0 ) %]
+            <input type="hidden" name="total_shipment_refund" value="[% total_shipment_refund %]">
+        </td>
+    </tr>
+    <tr class="dividebelow">
+        <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+        <td class="blank" colspan="4" align="right"><b>Credit/Debit Type:&nbsp;&nbsp;</b></td>
+        <td class="blank" id="return_create__refund_debit__type">
+			[% IF refund_id == 1 %]
+                <input type="hidden" name="refund_type_id" value="1">
+				Store Credit
+            [% ELSIF total < 0 %]
+                <input type="hidden" name="refund_type_id" value="3">
+                Card Debit
+            [% ELSIF total > 0 %]
+                [% IF refund_name == "No Refund" %]<span class="highlight">[% END %][% refund_name %]
+                <input type="hidden" name="refund_type_id" value="[% refund_id %]">
+            [% ELSE %]
+                None
+                <input type="hidden" name="refund_type_id" value="0">
+            [% END %]
+        </td>
+    </tr>
+    [% IF refund_id == 1 %]
+    <tr class="dividebelow">
+            <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+            <td class="blank" colspan="4" align="right"><b>Assign Store Credit To Alternative Customer Number:&nbsp;&nbsp;</b></td>
+            <td class="blank"><input type="text" name="alt_customer_nr" value="" size="10"></td>
+        </tr>
+    [% END %]
+</table>
+
+<br />
+<br />
+
+[% IF shipment_info.shipment_type_id == 2 %]
+    <span class="title title-[% channel_config.$sales_channel %]">Courier Pickup</span><br />
+    <div class="formrow dividebelow divideabove aftertable">
+        <span class="fakelabel">Status:</span>
+
+        <span style="display: inline-block; padding:3px 0">[% pickup == "true" ? 'Selected' : 'Anytime' %]</span>
+        <input type="hidden" name="pickup" value="[% pickup %]">
+    </div>
+    <br />
+    <br />
+[% ELSE %]
+    <input type="hidden" name="pickup" value="false">
+[% END %]
+
+<span class="title title-[% channel_config.$sales_channel %]">Notes</span><br>
+
+<div class="formrow divideabove dividebelow">
+    <span class="fakelabel">Notes:</span>
+    <span style="display: inline-block; padding:3px 0">[% notes || '-' | html %]</span>
+    <input name="notes" type="hidden" value="[% notes %]" />
+</div>
+
+<br />
+<br />
+
+[% IF department_id != db_constant('DEPARTMENT__DISTRIBUTION_MANAGEMENT') %]
+<span class="title title-[% channel_config.$sales_channel %]">Email Template</span><br>
+
+<div class="formrow divideabove dividebelow">
+    <span class="fakelabel">Send Email:</span>
+    <input type="hidden" name ="email_content_type" value="[% email_content_type %]" >
+
+    <input type="radio" name="send_email" value="yes" id="send_email-yes" checked>
+    <label class="for-radio" for="send_email-yes">Yes</label>
+
+    <input type="radio" name="send_email" value="no" id="send_email-no">
+    <label class="for-radio" for="send_email-no">No</label>
+</div>
+
+<div class="formrow dividebelow">
+    <label for="email_to">To:</label>
+    <input class="larger" name="email_to" value="[% email_to | html %]" id="email_to">
+</div>
+
+<div class="formrow dividebelow">
+    <label for="email_from">From:</label>
+    <input class="larger" name="email_from" value="[% email_from | html %]" id="email_from">
+</div>
+
+<div class="formrow dividebelow">
+    <label for="email_replyto">Reply-To:</label>
+    <input class="larger" name="email_replyto" value="[% email_from | html %]" id="email_replyto">
+</div>
+
+<div class="formrow dividebelow">
+    <label for="email_subject">Subject:</label>
+    <input class="larger" name="email_subject" value="[% email_subject | html %]" id="email_subject">
+</div>
+
+<div class="formrow dividebelow">
+    <label for="email_body">Email Text:</label>
+    <textarea id="email_body" name="email_body" rows="22" cols="90">[% email_msg | html %]</textarea>
+</div>
+[%  END %]
+
+<br />
+<br />
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <tr>
+        <td class="blank" colspan="8" align="right">
+            [% INCLUDE page_elements/forms/submit_button.tt submit='Create Return &raquo;' %]
+        </td>
+    </tr>
+</table>
+
+</form>
+

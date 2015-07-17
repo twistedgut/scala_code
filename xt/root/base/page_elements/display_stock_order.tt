@@ -1,0 +1,104 @@
+[% IF sales_channel %]
+    <span class="title title-[% channel_config.$sales_channel %]">
+[% ELSE %]
+    <span class="title">
+[% END %]
+Stock Order Details</span><br />
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <thead>
+        <tr>
+            <td colspan="3" class="divider"></td>
+        </tr>
+        <tr>
+            <td class="tableHeader">
+                [% INCLUDE page_elements/headerspacer.tt %][% purchase_order.purchase_order_number %]
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="divider"></td>
+        </tr>
+    </thead>
+   <tbody>
+   </tbody>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+    <thead>
+        
+        
+        <tr height="30">
+            <td width="20%" class="tableHeader">[% INCLUDE page_elements/tablespacer.tt %]Shipping Window</td>
+            <td>
+        
+        [% start_date = stock_order.parse_start_date %]
+        [% cancel_date = stock_order.parse_cancel_date %]
+        
+        [% IF !enable_edit_purchase_order %]
+        [% start_date.day %]/[% start_date.month %]/[% start_date.year %]&nbsp;---&nbsp;[% cancel_date.day %]/[% cancel_date.month %]/[% cancel_date.year %]
+        [% ELSE %]
+            [% months = [
+                { id => '1', name => 'Jan' }
+                { id => '2', name => 'Feb' }
+                { id => '3', name => 'Mar' }
+                { id => '4', name => 'Apr' }
+                { id => '5', name => 'May' }
+                { id => '6', name => 'Jun' }
+                { id => '7', name => 'Jul' }
+                { id => '8', name => 'Aug' }
+                { id => '9', name => 'Sep' }
+                { id => '10', name => 'Oct' }
+                { id => '11', name => 'Nov' }
+                { id => '12', name => 'Dec' } ]
+            %]
+
+            [% start_date = stock_order.parse_start_date %]
+
+        <select name='start_ship_day'>
+            [%- FOR day IN [ 1..31 ] -%]
+                <option value='[% day %]'[% ' selected' IF day == start_date.day %]>[% day %]</option>
+            [% END %]
+        </select>
+
+        <select name='start_ship_month'>
+        [% FOREACH months %]
+           <option value='[% id %]'[% ' selected' IF id == start_date.month %]>[% name %]</option>
+        [% END %]
+        </select>
+
+        [% INCLUDE page_elements/reusable_year_select.tt select_name = 'start_ship_year' selected_year = start_date.year %]
+
+                &nbsp;---&nbsp;
+
+        [% cancel_date = stock_order.parse_cancel_date %]
+
+        <select name='cancel_ship_day'>
+            [% FOR day IN [ 1..31 ] %]
+                <option value='[% day %]'[% ' selected' IF day == cancel_date.day %]>[% day %]</option>
+            [% END %]
+        </select>
+
+        <select name='cancel_ship_month'>
+        [% FOREACH months %]
+           <option value='[% id %]'[% ' selected' IF id == cancel_date.month %]>[% name %]</option>
+        [% END %]
+        </select>
+
+
+        [% INCLUDE page_elements/reusable_year_select.tt select_name = 'cancel_ship_year' selected_year = cancel_date.year %]
+        [% END %]
+            </td>
+        </tr>
+
+        <tr><td colspan="2" class="divider"></td></tr>
+        <tr height="24">
+            <td width="20%" class="tableHeader">[% INCLUDE page_elements/tablespacer.tt %]Comments</td>
+            <td><textarea name="comment" rows="3" cols="50" [% UNLESS enable_edit_purchase_order %] disabled="disabled" [% END %]>[% stock_order.comment %]</textarea></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<br />
+<br />

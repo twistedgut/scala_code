@@ -1,0 +1,27 @@
+<pre>
+
+h1. CANDO
+    * CANDO-1892: MIS: Store order language attribute with order
+    * CANDO-1837: CMS/Translations: change capitalisation of branded salutation.
+    * CANDO-1889: CMS/Translations: Customer Care Emails P2 & 3
+    * CANDO-2022: Stop credit check email being sent out
+    * CANDO-654 : BUG: Duplicate records are getting populated in E-mail content for RMA's which go through Convert TO Exchange/Convert FROM Exchange
+    * CANDO-1706: Online Fraud - Indicate ALL Virtual Gift Voucher Orders
+    * CANDO-1015: BUG: Stock/Reservation/Product.pm wrongly HTML-encodes its note
+    * CANDO-1878: BUG: Order being placed on hold after it's been packed
+    * CANDO-1891: Translations: Translate NAP email addresses for all DC's
+    * CANDO-1734: DC3 Create pre-order to hong kong address > post code required in address field - postcodes not used in this country
+    * CANDO-1906: NAPAC: 'Orders Placed on the Incorrect Web-Site' INTERNAL Email not set-up for DC3
+
+h1. DC2A
+    * DCA-52: RouteReqest-messages (for sending Containers to conveyor destinations)
+    * DCA-1332: New goods in printers
+    * DCA-1554: Shipment_item status not updated after pick_complete and container_ready (PRL only)
+
+h1. CVIEW
+    * CVIEW-778: Fix Edit Shipment Address giving Internal Server Error
+
+h1. Product Management
+    * PM-1378: Aligning landed and uplift cost in XT with original cost price set via EditPO
+
+</pre>

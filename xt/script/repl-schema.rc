@@ -1,0 +1,24 @@
+use lib 'lib';
+use FindBin::libs qw( base=lib_dynamic );
+use XTracker::Database qw(:common);
+
+my ( $schema, $dbh ) = get_schema_and_ro_dbh('xtracker_schema');
+
+=head1 DESCRIPTION
+
+This L<Devel::REPL> rc file can be used to load the L<XT::Central> DBIC 
+schema to allow interactive inspection of the schema and data in the 
+devel database.
+
+=head1 SYNOPSIS
+
+ $ re.pl --rcfile script/repl-schema.rc
+
+ > my $product = $schema->resultset('Public::Product')->find(1000);
+ ..
+ > $product->name
+ Black Montanna mules
+ > $product->variants->count
+ 11
+
+=cut

@@ -1,0 +1,14 @@
+<pre>
+    h1. System Infrastructure
+        * SI-47: [Andrew B] New AMQ Consumer Code & Consumer Server Daemon, also got rid of old consumers
+                            and moved them to use the new name space.
+
+    h1. Enhancements, Tech Priorities, BAU
+        * EN-493: [Felix H] Filter Fulfilment/Selection by stock transfer or customer order
+        * EN-233: [Felix H] SLA breach emails to be sent everyday
+        * EN-316: [Felix H] Automate credit expiry BAU
+        * EN-72:  [Felix H] Select All option in Product Watch
+
+	h1. Vouchers
+    	* GV http://confluence.net-a-porter.com/display/Blue/Managing+Vouchers
+</pre>

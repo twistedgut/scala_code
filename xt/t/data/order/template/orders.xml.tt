@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ORDERS>
+  <ORDER O_ID="[% order._o_id %]" ORDER_DATE="[% order._order_date || '2009-07-22 15:30' %]" CHANNEL="[% order._channel %]" CUST_ID="[% order._cust_id || 27016 %]" CUST_IP="[% order._cust_ip %]" USED_STORED_CREDIT_CARD="[% order._used_stored_credit_card || 'F' %]" LOGGED_IN_USERNAME="[% order._logged_in_username || 'bob@gmail.com' %]">
+[% FOREACH line IN order.tender_line %]
+    <TENDER_LINE TL_ID="[% line._tl_id || '729565' %]" TYPE="[% line._type || 'Store Credit' %]">
+      <VALUE CURRENCY="[% line.value._currency %]">[% line.value.value %]</VALUE>
+    </TENDER_LINE>
+[% END %]
+[% billing = order.billing_details %]
+    <BILLING_DETAILS>
+      <NAME>
+        <TITLE>[% billing.name.title %]</TITLE>
+        <FIRST_NAME>[% billing.name.first %]</FIRST_NAME>
+        <LAST_NAME>[% billing.name.last %]</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>[% billing.address.line1 %]</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2>[% billing.address.line2 %]</ADDRESS_LINE_2>
+        <ADDRESS_LINE_3>[% billing.address.line3 %]</ADDRESS_LINE_3>
+        <TOWNCITY>[% billing.address.towncity %]</TOWNCITY>
+        <COUNTY>[% billing.address.county %]</COUNTY>
+        <STATE>[% billing.address.state %]</STATE>
+        <POSTCODE>[% billing.address.postcode %]</POSTCODE>
+        <COUNTRY>[% billing.address.country %]</COUNTRY>
+      </ADDRESS>
+      <CONTACT_DETAILS>
+[% FOREACH line IN billing.contact_details.telephone %]
+        <TELEPHONE TYPE="[% line._type %]">[% line.number %]</TELEPHONE>
+[% END %]
+        <EMAIL>[% billing.contact_details.email %]</EMAIL>
+      </CONTACT_DETAILS>
+    </BILLING_DETAILS>
+[% del = order.delivery_details %]
+    <DELIVERY_DETAILS>
+      <NAME>
+        <TITLE>[% del.name.title %]</TITLE>
+        <FIRST_NAME>[% del.name.first %]</FIRST_NAME>
+        <LAST_NAME>[% del.name.last %]</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>[% del.address.line1 %]</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2>[% del.address.line2 %]</ADDRESS_LINE_2>
+        <ADDRESS_LINE_3>[% del.address.line3 %]</ADDRESS_LINE_3>
+        <TOWNCITY>[% del.address.towncity %]</TOWNCITY>
+        <COUNTY>[% del.address.county %]</COUNTY>
+        <STATE>[% del.address.state %]</STATE>
+        <POSTCODE>[% del.address.postcode %]</POSTCODE>
+        <COUNTRY>[% del.address.country %]</COUNTRY>
+      </ADDRESS>
+      <ORDER_LINE OL_ID="2995400" DESCRIPTION="Basic Packaging" SKU="900007-001" QUANTITY="1" OL_SEQ="1">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </UNIT_NET_PRICE>
+	<TAX>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+
+[% FOREACH line IN del.order_line %]
+      <ORDER_LINE OL_ID="[% line._ol_id %]" DESCRIPTION="[% line._description %]" SKU="[% line._sku %]" QUANTITY="[% line._quantity %]" OL_SEQ="[% line.ol_seq %]">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="[% line.unit_net_price._currency %]">[% line.unit_net_price.value %]</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">1.40</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+[% END  %]
+      [% SET total = 20 + 1.4; # Shipping costs
+         FOREACH li IN order.items;
+           total = total + (li.unit_price || 0) + (li.tax || 0) + (li.duty || 0); %]
+      <ORDER_LINE OL_ID="[% 2995401 + loop.index %]" DESCRIPTION="[% li.description || 'Suede thigh-high boots' %]" SKU="[% li.sku %]" QUANTITY="[% li.quantity || 1 %]" OL_SEQ="[% 2 + loop.index %]">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">[% li.unit_price %]</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">[% li.tax %]</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">[% li.duty %]</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      [% END %]
+    </DELIVERY_DETAILS>
+    <GROSS_TOTAL>
+      <VALUE CURRENCY="GBP">761.09</VALUE>
+    </GROSS_TOTAL>
+    <POSTAGE>
+      <VALUE CURRENCY="GBP">0.00</VALUE>
+    </POSTAGE>
+  </ORDER>
+</ORDERS>

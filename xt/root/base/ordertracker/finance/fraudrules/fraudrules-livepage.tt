@@ -1,0 +1,62 @@
+<script>
+    var edit_table_mode = false;
+</script>
+[% INCLUDE 'ordertracker/finance/fraudrules/fraudrules-script.tt' %]
+[% INCLUDE 'ordertracker/finance/fraudrules/fraudrules-filters.tt' %]
+<table id="fraudscreen__ruleset_table" class="data wide-data">
+    <thead>
+        <tr class="dividebelow divideabove">
+            <td class="tableHeader">&nbsp;</td>
+            <td class="tableHeader">#</td>
+            <td class="tableHeader">Name</td>
+            <td class="tableHeader">Start Date</td>
+            <td class="tableHeader">End Date</td>
+            <td class="tableHeader">Channel</td>
+            <td class="tableHeader">Action</td>
+            <td class="tableHeader">Enabled</td>
+            <td class="tableHeader">&nbsp;</td>
+        </tr>
+    </thead>
+    <tbody id="fraudscreen__ruleset_sequence">
+        <tr class="dividebelow" id="fraudscreen__blank_rule_row">
+            <td>&nbsp;</td>
+            <td class="fraudscreen__rule_data fraudscreen__rule_number"></td>
+            <td class="fraudscreen__rule_data fraudscreen__rule_name"></td>
+            <td class="fraudscreen__rule_data fraudscreen__rule_start_date"></td>
+            <td class="fraudscreen__rule_data fraudscreen__rule_end_date"></td>
+            <td class="fraudscreen__rule_data fraudscreen__rule_channel"></td>
+            <td class="fraudscreen__rule_data fraudscreen__rule_action"></td>
+            <td class="fraudscreen__rule_data fraudscreen__rule_enabled"><img class="fraudscreen__rule_enabled"></td>
+            <td>&nbsp;</td>
+        </tr>
+    </tbody>
+</table>
+<br/>
+<div class="log_title_wrapper">
+        <div class="log_title"><h3> Change Log</h3></div>
+        <div class="log_title_toggle">
+            <img class="log_toggle_more" src="/images/icons/zoom_out.png" alt="Logs"/>
+            <img class="log_toggle_less" src="/images/icons/zoom_in.png" alt="Logs"/>
+        </div>
+        <br clear="all"/>
+</div>
+<table id="fraud_rules_log" class="wide-data data divided-data">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Operator</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        [% FOREACH log IN change_log %]
+            <tr>
+                <td>[% log.created.ymd %] @ [% log.created.hms %]</td>
+                <td>[% log.operator.name %]</td>
+                <td>[% log.description %]</td>
+            </tr>
+        [% END %]
+    </tbody>
+</table>
+
+[% INCLUDE 'ordertracker/finance/fraudrules/fraudrules-listdialog.tt' %]

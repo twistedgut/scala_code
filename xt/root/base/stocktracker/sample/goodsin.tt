@@ -1,0 +1,70 @@
+[% IF from_stock.size %]
+<br/><br/>
+<div id="tabContainer" class="yui-navset">
+    [% PROCESS page_elements/channel_tabs.tt channel_list = from_stock %]
+    <div class="yui-content">
+    [% SET channel_count = 1 %]
+
+    [% FOREACH channel = from_stock.keys.sort %]
+        <div id="tab[% channel_count %]" class="tabWrapper-[% channel_config.$channel %]">
+            <div class="tabInsideWrapper">
+
+                <h3 class="title-[% channel_config.$channel %]">Stock Transfer</h3>
+
+                <form name="search_[% channel_count %]" action="/StockControl/Sample/SetSampleGoodsIn" method="post" onSubmit="return double_submit()">
+                    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                    <table class="wide-data divided-data data">
+                        <thead>
+                            <tr>
+                                <th>Shipment</th>
+                                <th>SKU</th>
+                                <th>Requested</th>
+                                <th>Name</th>
+                                <th>Designer</th>
+                                <th>Type</th>
+                                <th>Reason</th>
+                                <th>Additional Info</th>
+                                [% IF can_receive %]<th>Received</th>[% END %]
+                            </tr>
+                        </thead>
+                        <tbody>
+                        [% FOREACH shipment IN from_stock.$channel %]
+                            [% pid = shipment.product_id %]
+                            <tr>
+                                <td><a href="/StockControl/Sample/ShipmentView/[% shipment.id %]">[% shipment.id %]</a></td>
+                                <td>
+                                    <a href="/StockControl/Inventory/Overview?product_id=[% pid %]"><img class="product" src="[% images.$pid %]" width="50" /></a>
+                                    <br />
+                                    [% pid %]-[% shipment.size_id %]
+                                </td>
+                                <td>[% shipment.date %]</td>
+                                <td>[% shipment.name %]</td>
+                                <td>[% shipment.designer %]</td>
+                                <td>[% shipment.variant_type %]</td>
+                                <td>[% shipment.reason %][% IF shipment.reason == 'Upload' %]<br />([% shipment.upload_date %])[% END %]</td>
+                                <td>[% shipment.info %]</td>
+                                [% IF can_receive %]<td><input type="checkbox" name="stock-[% shipment.id %]-[% shipment.channel_id %]" value="1"></td>[% END %]
+                            </tr>
+                        [% END %]
+                        </tbody>
+                    </table>
+                    <br><br>
+
+                    [% IF can_receive %]
+                    <div class="formrow buttons aftertable">
+                        [% PROCESS page_elements/forms/submit_button.tt %]
+                    </div>
+                    [% END %]
+
+                </form>
+            </div>
+        </div>
+        [% SET channel_count = channel_count + 1 %]
+    [% END %]
+    </div>
+</div>
+[% PROCESS page_elements/tab_script.tt %]
+[% ELSE %]
+        <h3>No Samples</h3>
+[% END %]
+<br/><br/>

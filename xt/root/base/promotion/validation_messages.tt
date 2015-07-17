@@ -1,0 +1,67 @@
+[%
+    SET error_message = {
+        # messages for missing fields
+        missing => {
+            applicability_website          => 'You must select at least one applicable website',
+            coupon_generation              => 'You must select an option for generating coupons',
+            coupon_restriction_freelimit   => 'You must provide the number of uses allowed for the coupon',
+            offer_type                     => 'You must select an offer type for the promotion',
+            discount_type                  => 'You must select an offer type for the promotion',
+            title             => 'You must provide the order line heading',
+            subtitle                => 'You must provide the order line text',
+            percentage_discount_amount     => 'You must provide the discount percentage amount',
+            promotion_name                 => 'You must provide a title for the promotion',
+            promotion_start                => 'You must provide a start-date for the promotion',
+            add_customers                  => 'You must provide a customer ID to add to the group',
+            remove_customers               => 'You must provide a customer ID to remove from the group',
+            website                        => 'You must select a website',
+            cg_select                      => 'You must select a customer group',
+        },
+
+        # messages for invalid fields (failed constraints)
+        invalid => {
+            coupon_code_in_use             => 'this coupon code is already being used',
+            coupon_code_too_long           => 'this must be no more than 16 characters long',
+            coupon_code_too_short          => 'this must be no less than 2 characters long',
+            coupon_prefix_too_long         => 'this must be no more than 8 characters long',
+            end_in_future                  => 'the promotion end-date must be in the future', 
+            invalid_combination            => 'an invalid combination of options has been selected',
+            invalid_coupon_prefix          => 'you may only use letters (A-Z, a-z) and numbers (0-9)',
+            invalid_customer_groups        => 'one or more selections are invalid',
+            invalid_lump_sum_discount      => 'you must provide a value for the lump sum discount',
+            invalid_pid                    => 'one or more individual PIDs are invalid',
+            invalid_ymd                    => 'the submitted value is not in a yyyy-mm-dd format',
+            max_length                     => 'the submitted value exceeds the maximum permitted length',
+            not_5_to_90                    => 'the value must be from 5 to 90 inclusive',
+            not_divisible_by_5             => 'the value must be divisible by 5',
+            start_after_end                => 'the end-date must be after the start-date',
+            title_not_unique               => 'there is already a promotion with that name',
+            value_too_large                => 'the value entered is too large',
+        },
+
+        # mappings from field names to something we'd like to show the user
+        name => {
+            coupon_code                    => 'Coupon Code',
+            coupon_prefix                  => 'Coupon Prefix/Code',
+            coupon_restriction_freelimit   => 'Custom Coupon Limit',
+            customer_group_list            => 'Customer Groups',
+            discount_dollars               => 'Lump Sum Discount (&#36;)',
+            discount_euros                 => 'Lump Sum Discount (&euro;)',
+            discount_pounds                => 'Lump Sum Discount (&pound;)',
+            offer_type                     => 'Offer',
+            discount_type                  => 'Offer',
+            title             => 'Order Line Heading',
+            subtitle                => 'Order Line Text',
+            percentage_discount_amount     => '% Discount',
+            product_pid_list               => 'Individual Product List',
+            promotion_end                  => 'Promotion end-date',
+            promotion_start                => 'Promotion start-date',
+            promotion_stipulation          => 'Failed business rule',
+            promotion_title                => 'Promotion title',
+            promotion_name                 => 'Promotion title',
+            trigger_dollars                => 'Basket Trigger (&#36;)',
+            trigger_euros                  => 'Basket Trigger (&euro;)',
+            trigger_pounds                 => 'Basket Trigger (&pound;)',
+        },
+    }
+%]

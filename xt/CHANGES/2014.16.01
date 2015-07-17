@@ -1,0 +1,48 @@
+<pre>
+
+
+h1. CANDO - Customer & Orders
+
+* CANDO-7976: Remove the Mr Porter Postcard Promotion
+
+
+h1. DC2A - DC2 Automation
+
+*
+
+
+h1. DCOP - DC Operations
+
+* DCOP-676: Add indexes to improve performance of get_stock_process_items
+
+
+h1. SHIP - Expedited Shippping
+
+*
+
+
+h1. WHM - Warehouse
+
+*
+
+
+
+h1. Other
+
+h2. BS - Build Support
+
+*
+
+h2. PM - Product Management
+
+* PM-3696: Improve linkshare feed generation so it runs from both DC1 and DC2
+
+h2. SAS - Search & Aggregation
+
+*
+
+h2. Misc
+
+*
+
+</pre>

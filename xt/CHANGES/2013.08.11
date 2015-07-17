@@ -1,0 +1,7 @@
+<pre>
+
+h1. DC2A
+* DCA-2523, DCA-2521: Don't try to pick an allocation unless it has allocated items
+* DCA-2591: Timely allocate message sending for Samples shipment
+
+</pre>

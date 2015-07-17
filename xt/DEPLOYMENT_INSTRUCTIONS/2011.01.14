@@ -1,0 +1,219 @@
+=====================================
+XT 2011.01.14 Deployment Instructions
+=====================================
+
+Release Date:       2011-02-17
+
+PACKAGES TO INSTALL:
+
+XTracker:
+
+* Package: xt
+* Version: 2011.01.14
+* Location: cfmaster.dave:/var/www/html/netaporter/dev_releases/x86_64/xt-2011.01.14-0.x86_64.rpm
+
+Perl-NAP:
+
+* Package: perl-nap
+* Version: 2010.26.00 
+* Location: cfmaster.dave:/var/www/html/netaporter/dev_releases/x86_64/perl-nap-5.8.8-2010.26.00-0.x86_64.rpm 
+
+jQuery:
+
+* Package: jquery-nap
+* Version: 1.4.2-4
+* Location: cfmaster.dave:/var/www/html/netaporter/dev_releases/noarch/jquery-nap-1.4.2-4.noarch.rpm
+
+Apache-NAP:
+
+* Package: apache-nap
+* Version: 1.3.42-910
+* Location: cfmaster.dave:/var/www/html/netaporter/dev_releases/x86_64/apache-nap-1.3.42-910.x86_64.rpm
+
+
+Apache-Config-NAP:
+
+* Package: apache-config-nap
+* Version: 1.3.42-003
+* Location: cfmaster.dave:/var/www/html/netaporter/dev_releases/x86_64/apache-config-nap-1.3.42-003.x86_64.rpm
+
+These instructions assume the packages are in a repo the box can see.
+
+* sudo yum clean all
+* sudo yum update xt
+
+Installing the XT package _should_ apply the DB patches and restart 
+all the required services. 
+
+However, if this is on a new box, part of the install will fail due
+to log file permission errors. If this happens, remove and install
+the app again, and that should fix it.
+
+
+=====================================
+XT 2011.01.14 Deployment Instructions
+=====================================
+
+PRE DEPLOYMENT:
+
+1. As part of the addition of four new shipping document printers
+   at DC1, and the migration of configuration data for these
+   printers into the database, the print queues for the existing
+   document and label printers have been renamed.
+
+   Previously, the printers were called:
+
+      Name               | lp_name
+  =======================+=========================================
+     Shipping Document 1 | shippingdocument1
+     Shipping Document 2 | shippingdocument2
+     Shipping Label 1    | shippinglabel3
+     Shipping Label 2    | shippinglabel2
+
+   Note "Shipping Label 1"'s comically incongruous lp_name.
+
+   Now, the printers are called:
+
+      Name               | lp_name
+  =======================+=========================================
+     Shipping Document 1 | shippingdocument01
+     Shipping Document 2 | shippingdocument02
+     Shipping Document 3 | shippingdocument03
+     Shipping Document 4 | shippingdocument04
+     Shipping Document 5 | shippingdocument05
+     Shipping Document 6 | shippingdocument06
+     Shipping Label 1    | shippinglabel01
+     Shipping Label 2    | shippinglabel02
+     Shipping Label 3    | shippinglabel03
+     Shipping Label 4    | shippinglabel04
+     Shipping Label 5    | shippinglabel05
+     Shipping Label 6    | shippinglabel06
+
+   The deployment process needs to include either renaming
+   the existing queues, or (probably safer) setting up
+   the above queues with the first two shipping and label
+   printers' queues just aliases to the previous names,
+   which then become deprecated, and subject to removal
+   at TechOps's leisure.
+
+   Note that this release migrates the configuration of
+   these printers, and their accompanying label printers,
+   entirely into the database and the config file, so
+   that future alterations or additions to the configuration
+   for Shipping Document and Shipping Label printers can
+   be made without the need for a code release.
+
+2. Just a heads up - during the 2010.27 deployment
+   db_schema/2010.27/Common/01_deferrable_fk.sql failed on DC2 and a locally
+   modified version was applied via patcher.
+   This will cause patcher to fire a warning when it reads that file, but it
+   will not attempt to reapply the patch.
+   This is expected and is *not* a problem, so don't worry about it.
+
+POST DEPLOYMENT:
+
+1. Make sure nginx is running and listening to port 80. Better still, just 
+browse to http://xtdc1-qa1.dave  If the page isn't displayed:
+
+    sudo /usr/sbin/puppetd -tv
+
+and to see that it's running:
+
+    cat /etc/nrpe.d/puppet_managed.cfg
+
+
+2. Mr Porter product type creation and designer category updates
+
+Please run
+    perl /opt/xt/deploy/xtracker/script/mrporter/insert_web_product_types.pl
+    perl /opt/xt/deploy/xtracker/script/mrporter/insert_web_designer_categories.pl
+on xtdc1 and xtdc2.
+
+
+3. On XTDC1, check that there are no running instances of
+   /opt/xt/deploy/xtracker/script/barcode/barcodescannerctl nor of
+   /opt/xt/deploy/xtracker/script/housekeeping/orders/scanner_reader.pl
+
+   Also, remove any reference to these scripts in cronjobs or init scripts.
+
+   This is only for XTDC1!
+
+
+3. Mr Porter designer category visibility setup
+
+Please run the following (expected output from the first script is nothing, from 
+the second should be several hundred lines saying which designer categories are
+being made visible/invisible):
+
+xtdc1:
+    /opt/xt/deploy/xtracker/script/mrporter/sync_web_designer_categories_visibility.pl
+    /opt/xt/deploy/xtracker/script/housekeeping/web_mgmt/navigation/designer_category_maintainance.pl --channel_id=5 --channel_name=MRP --force_update=1
+
+xtdc2:
+    /opt/xt/deploy/xtracker/script/mrporter/sync_web_designer_categories_visibility.pl
+    /opt/xt/deploy/xtracker/script/housekeeping/web_mgmt/navigation/designer_category_maintainance.pl --channel_id=6 --channel_name=MRP --force_update=1
+
+
+4. Mr Porter designer category visibility cron
+
+Then please add this to cron on xtdc1 and xtdc2, to run as root, as frequently
+as the same script is already being run for NAP:
+
+xtdc1:
+    /opt/xt/deploy/xtracker/script/housekeeping/web_mgmt/navigation/designer_category_maintainance.pl --channel_id=5 --channel_name=MRP
+
+xtdc2:
+    /opt/xt/deploy/xtracker/script/housekeeping/web_mgmt/navigation/designer_category_maintainance.pl --channel_id=6 --channel_name=MRP
+
+
+5. Add STD size mappings
+ 
+Please run the following on xtdc1:
+ 
+    perl script/mrporter/generate_std_size_mappings.pl --logging true --input script/mrporter/std_sizes_clothing.csv --channel_id 5 --fudge true
+    perl script/mrporter/generate_std_size_mappings.pl --logging true --input script/mrporter/std_sizes_shoes.csv --channel_id 5 --fudge true
+ 
+and the following on xtdc2:
+ 
+    perl script/mrporter/generate_std_size_mappings.pl --logging true --input script/mrporter/std_sizes_clothing.csv --channel_id 6 --fudge true
+    perl script/mrporter/generate_std_size_mappings.pl --logging true --input script/mrporter/std_sizes_shoes.csv --channel_id 6 --fudge true
+ 
+6. Update STD site mappings (2011.01.13 only)
+
+xtdc1:
+    cd /opt/xt/deploy/xtracker; \
+    script/mrporter/generate_std_size_mappings.pl --logging true --input script/mrporter/std_sizes_clothing_v01.csv --channel_id 5 --fudge true
+    cd /opt/xt/deploy/xtracker; \
+    script/mrporter/generate_std_size_mappings.pl --logging true --input script/mrporter/std_sizes_clothing_extra_v01.csv --channel_id 5 --fudge true
+    cd /opt/xt/deploy/xtracker; \
+    script/mrporter/generate_std_size_mappings.pl --logging true --input script/mrporter/std_sizes_shoes_v01.csv --channel_id 5 --fudge true
+
+
+xtdc2:
+   cd /opt/xt/deploy/xtracker; \
+   script/mrporter/generate_std_size_mappings.pl --logging true --input script/mrporter/std_sizes_clothing_v01.csv --channel_id 6 --fudge true
+   cd /opt/xt/deploy/xtracker; \
+   script/mrporter/generate_std_size_mappings.pl --logging true --input script/mrporter/std_sizes_clothing_extra_v01.csv --channel_id 6 --fudge true
+   cd /opt/xt/deploy/xtracker; \
+   script/mrporter/generate_std_size_mappings.pl --logging true --input script/mrporter/std_sizes_shoes_v01.csv --channel_id 6 --fudge true 
+
+7. Add the following crons (2011.01.13 only). cron frequency TBA.
+
+xtdc1:
+    
+    script/housekeeping/web_mgmt/product/coming_soon_status.pl --channel_id=5 --channel_name=MRP
+
+xtdc2:
+
+    script/housekeeping/web_mgmt/product/coming_soon_status.pl --channel_id=6 --channel_name=MRP
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

@@ -1,0 +1,43 @@
+#!/bin/bash
+
+requiredparam=false
+testdir="t/30-functional"
+
+# Called with parameters:
+while getopts ":i:x:" opt; do
+  case $opt in
+    i)
+      requiredparam=true
+      grep -Hr '^#TAGS' $testdir | grep " $OPTARG" | cut -d: -f1 | grep -v txt$
+      ;;
+    x)
+      requiredparam=true
+      grep -Hr '^#TAGS' $testdir | grep -v " $OPTARG" | cut -d: -f1 | grep -v txt$
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+      ;;
+  esac
+done
+
+# Called without parameters:
+if ! $requiredparam
+then
+    echo "Script to display a list of tests that match specified tags."
+    echo "Currently only supports a single tag per search. Examples:"
+    echo
+    echo "(-i = include) All tests which have been tagged with 'putaway':"
+    echo
+    echo "    tags -i putaway"
+    echo
+    echo "(-x = exclude) All tests which have *not* tagged with 'whm':"
+    echo
+    echo "    tags -x whm"
+    echo
+fi
+ 

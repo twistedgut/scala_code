@@ -1,0 +1,449 @@
+[% PROCESS page_elements/printer_station_name.tt %]
+[% IF delivery_id %]
+    [% IF delivery.cancel %]
+        <p class="error_msg">This delivery has been cancelled, please contact a supervisor.</p>
+        <img src="/images/blank.gif" width="1" height="300">
+    [% ELSIF delivery.on_hold %]
+        <p class="error_msg">This delivery is currently on hold, please contact a supervisor.</p>
+        <img src="/images/blank.gif" width="1" height="300">
+    [% ELSE %]
+        [% PROCESS page_elements/display_product.tt %]
+
+    [% IF voucher %]
+        [% SET sp = stock_process.first %]
+        [% IF code_count %]
+            <script type="text/javascript">
+                var delivery_code = [% code %];
+                var last_key = 0;
+
+                function check_voucher_code (key){
+                    last_key = key;
+                    var codeBox = document.getElementById('code_box');
+                        prev = document.getElementById('previous_voucher_code');
+
+                    // check total doesn't exceed quantity
+                    var count = document.getElementById('counted_[%sp.id%]').value;
+                    var total = Number(document.getElementById('checked_[%sp.id%]').value);
+
+                    if (total >= count){
+                        codeBox.disable = true;
+                        codeBox.style.backgroundColor = '#CFCFCF';
+                        codeBox.value = "QC complete";
+                        return false;
+                    }
+
+                    // if enter key check key code
+                    if(key == 13){
+                        var val = prev.innerHTML = codeBox.value;
+                        codeBox.value = '';
+                        // check voucher code is 9 digits long
+                        if ( val.length != 9 ) {
+                            alert("Voucher code did not have 9 characters");
+                        }
+                        else if(delivery_code[val] == 0) {
+                            delivery_code[val] = 1;
+                            codeBox.style.backgroundColor = '#75FF81';
+                            incr_checked();
+                        }
+                        else if (delivery_code[val] == 1)
+                            alert("You have already scanned this item!");
+                        else {
+                            codeBox.style.backgroundColor = '#FF8288';
+                            incr_checked();
+                            incr_faulty();
+                        }
+                    }
+                    else {
+                        codeBox.style.backgroundColor = '#FFFFFF';
+                    }
+                }
+
+                function incr_checked () {
+                    var checked = document.getElementById('ro_checked_[%sp.id%]');
+                    checked.innerHTML = Number(checked.innerHTML) + 1;
+                    var total_checked = document.getElementById('checked_[%sp.id%]');
+                    total_checked.value = Number(total_checked.value) + 1;
+                }
+
+                function incr_faulty () {
+                    var faulty = document.getElementById('ro_faulty_[%sp.id%]');
+                    faulty.innerHTML = Number(faulty.innerHTML) + 1;
+                    var total_faulty = document.getElementById('faulty_[%sp.id%]');
+                    total_faulty.value = Number(total_faulty.value) + 1;
+                }
+
+            </script>
+            <span class="title title-[% channel_config.$sales_channel %]">Scan Voucher Code</span><br>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+                <tbody>
+                    <tr>
+                        <td colspan="3" class="divider"></td>
+                    </tr>
+                    <tr height="20">
+                        <td width="20%" align="right"><b>Voucher codes:</b>&nbsp;&nbsp;</td>
+                        <td width="80%">
+                            <input type="text" name="code_box" id="code_box" onkeydown="return check_voucher_code(event.keyCode);">
+
+                            <button class="button" onclick="check_voucher_code(13)">Validate</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="divider"></td>
+                    </tr>
+                    <tr height="20">
+                        <td width="20%" align="right"><b>Previous Code Scanned:</b>&nbsp;&nbsp;</td>
+                        <td width="80%" id="previous_voucher_code">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="divider"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <script type="text/javascript">
+                document.getElementById('code_box').focus();
+            </script>
+            <br><br>
+        [% ELSE %]
+            <p class="error_msg">No voucher codes associated with this delivery!</p>
+        [% END %]
+    [% END %]
+        <div id="main_form">
+            <form action='/GoodsIn/QualityControl/SetQualityControl' method='post' name='quality_control' onsubmit="return checkQCData()">
+            [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+            <input type="hidden" name="prod_id" value="[% product_id %]">
+            <input type="hidden" name="voucher" value="[% voucher %]">
+            <input type="hidden" id="packing_note_modified" name="packing_note_modified" value="">
+            <h2 class="title-[% channel_config.$sales_channel %]">Product Information</h2>
+            <div class="formstart formrow divideabove dividebelow">
+                <label for="country">Country of Origin</label>
+                [% INCLUDE page_elements/forms/select_basic.tt id="country" options = countries, current_id = attribute.country_id, disable_select = (voucher ? 1 : 0) %]
+            </div>
+            <div class="formrow dividebelow">
+                <label for="length">Length</label>
+                <input type="text" id="length" name="length" value="[% IF attribute.length.defined; convert('cm', dimensions_unit, attribute.length) | format('%.1f'); END; %]" disabled />&nbsp;[% dimensions_unit %]
+            </div>
+            <div class="formrow dividebelow">
+                <label for="width">Width</label>
+                <input type="text" id="width" name="width" value="[% IF attribute.width.defined; convert('cm', dimensions_unit, attribute.width) | format('%.1f'); END; %]" disabled />&nbsp;[% dimensions_unit %]
+            </div>
+            <div class="formrow dividebelow">
+                <label for="height">Height</label>
+                <input type="text" id="height" name="height" value="[% IF attribute.height.defined; convert('cm', dimensions_unit, attribute.height) | format('%.1f'); END; %]" disabled />&nbsp;[% dimensions_unit %]
+            </div>
+            <div class="formrow dividebelow">
+                <label for="weight">Weight</label>
+                <input type="text" id="weight" name="weight" value="[% attribute.weight %]" onkeydown='return checkkey(event.keyCode);'[% ' disabled' IF voucher %] />&nbsp;[% weight_unit %]
+            </div>
+            <div class="formrow dividebelow">
+                <label for="fabric_content">Fabric Content</label>
+                <input type="text" id="fabric_content" name="fabric_content" size="30" value="[% attribute.fabric_content %]" onkeydown='return checkkey(event.keyCode);'[% ' disabled' IF voucher %] />
+            </div>
+            <div class="formrow dividebelow">
+                <label for="storage_type">Storage Type</label>
+                <select id="storage_type" name="storage_type"[% IF storage_types.count == 1 %] disabled[% END %]>
+                    [% IF storage_types.count != 1 %]<option value="">-- Please Select --</option>[% END %]
+                    [% WHILE (storage_type = storage_types.next) %]
+                    <option value="[% storage_type.id %]">[% storage_type.name %]</option>
+                    [% END %]
+                </select>
+            </div>
+            <div class="formrow formend dividebelow">
+                <label for="packing_note">
+                    Packing Note
+                    [% IF attribute.packing_note_operator %]
+                        <br />
+                        Added by: [% attribute.packing_note_operator.name %]
+                        <br />
+                        ([% attribute.packing_note_date_added.strftime('%F %R') %])
+                    [% END %]
+                </label>
+                <textarea id="packing_note" name="packing_note" cols="50" rows="5" onChange="editField( this )">[% attribute.packing_note %]</textarea>
+            </div>
+
+            <h2 class="title-[% channel_config.$sales_channel %]">QC Results</h2>
+            <table class="data wide-data divided-data">
+            [% IF voucher %]
+                <thead>
+                    <tr>
+                        <th>Voucher</th>
+                        <th>Counted</th>
+                        <th>Checked</th>
+                        <th>Total Checked</th>
+                        <th>Faulty</th>
+                        <th>Total Faulty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    [% IF sp %]
+                    <tr>
+                        <td>[% product.name %]</td>
+                        <td id="counted">[% sp.quantity %]
+                            <input type='hidden' name='counted_[% sp.id %]' id='counted_[% sp.id %]' value='[% sp.quantity %]'>
+                        </td>
+                        <td id="ro_checked_[%sp.id%]">0</td>
+                        <td><input name="checked_[%sp.id%]" id="checked_[%sp.id%]" type="text" value="0" onkeydown='return checkkey(event.keyCode);'></td>
+                        <td><span id="ro_faulty_[%sp.id%]" style="color: red">0</span></td>
+                        <td><input name="faulty_[%sp.id%]" id="faulty_[%sp.id%]" type="text" value="0"onkeydown='return checkkey(event.keyCode);' ></td>
+                    </tr>
+                    [% END %]
+                </tbody>
+            [% ELSE %]
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Designer Size</th>
+                        <th>Counted</th>
+                        <th>Checked</th>
+                        <th>Faulty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    [% validation_field = {} %]
+                    [% FOREACH sp = stock_process_items.nsort('size_id') %]
+                    <tr class="no-top-bottom-padding">
+                         <td>[% product.id %]-[% sp.size_id %]</td>
+                        <td>[% sp.designer_size %]</td>
+                        <td>[% sp.quantity %] <input type='hidden' name='counted_[% sp.id %]' id='counted_[% sp.id %]' value='[% sp.quantity %]'></td>
+                        [% checked_sp_id = "checked_$sp.id" %]
+                        <td><input type='text' size='5' name='[% checked_sp_id %]' value='0' onkeydown='return checkkey(event.keyCode);' onkeyup="calculate_qc_results()">&nbsp;<span id="[% checked_sp_id %]" class="tfvNormal">*</span></td>
+                        [% validation_field.$checked_sp_id = "{ 'l': 'Checked', 'r': true, 'f': 'unsigned', 't': '$checked_sp_id', 'm': null, 'mn': 1, 'mx': 3 }" %]
+                        [% faulty_sp_id = "faulty_$sp.id" %]
+                        <td><input type='text' size='5' name='[% faulty_sp_id %]' value='0' onkeydown='return checkkey(event.keyCode);' onkeyup="calculate_qc_results()">&nbsp;<span id="[% faulty_sp_id %]" class="tfvNormal">*</span></td>
+                        [% validation_field.$faulty_sp_id = "{ 'l': 'Faulty', 'r': true, 'f': 'unsigned', 't': '$faulty_sp_id', 'm': null, 'mn': 1, 'mx': 3 }" %]
+                    </tr>
+                    [% END %]
+                    <tr>
+                        <td colspan='2' align='right'><b style='margin-right:30px'>Total</b></td>
+                        <td><b id="qc_total_counted"></b></td>
+                        <td><b id="qc_total_checked"></b><b id='checked_precent'></b></td>
+                        <td><b id="qc_total_faulty"></b><b id='faulty_percent'></b></td>
+                    </tr>
+                </tbody>
+            [% END %]
+            </table>
+
+            <script type="text/javascript">
+
+                $(document).ready(function(){
+                    calculate_qc_results();
+                });
+
+                function calculate_qc_results() {
+
+                    // total checked
+                    var qc_total_checked = 0;
+                    $("input[name^='checked_']").each(function() {
+                        qc_total_checked += parseInt($(this).attr('value'));
+                    });
+                    $("#qc_total_checked").html(qc_total_checked);
+
+                    // total faulty
+                    var qc_total_faulty = 0;
+                    $("input[name^='faulty_']").each(function() {
+                        qc_total_faulty += parseInt($(this).attr('value'));
+                    });
+                    $("#qc_total_faulty").html(qc_total_faulty);
+
+                    // total counted
+                    var qc_total_counted = 0;
+                    $("input[name^='counted_']").each(function() {
+                        qc_total_counted += parseInt($(this).attr('value'));
+                    });
+                    $("#qc_total_counted").html(qc_total_counted);
+
+                    // checked percent
+                    var checked_percent = (qc_total_checked / qc_total_counted) * 100;
+                    $("#checked_precent").html(' (' + parseFloat(checked_percent).toFixed(2) + '%)');
+
+                    // faulty percent
+                    var faulty_percent = (qc_total_faulty / qc_total_counted) * 100;
+                    $("#faulty_percent").html(' (' + parseFloat(faulty_percent).toFixed(2) + '%)');
+
+                    if (qc_total_checked != parseInt(qc_total_checked)) {
+                        $("#qc_total_checked").html('N/A');
+                        $("#checked_precent").html('');
+                    }
+                    if (qc_total_faulty != parseInt(qc_total_faulty)) {
+                        $("#qc_total_faulty").html('N/A');
+                        $("#faulty_percent").html('');
+                    }
+                }
+            </script>
+
+            [% IF processed_measurements.size %]
+                <br />
+                <br />
+                <h2 class="title-[% channel_config.$sales_channel %]">Measurements</h2>
+
+                [% INCLUDE stocktracker/measurement/measurement_table.tt %]
+
+            [% END %]
+            <br />
+
+            <input type="hidden" name="delivery_id" value="[% delivery_id %]">
+
+            <div class="formrow buttons aftertable">
+                [% INCLUDE page_elements/forms/submit.tt %]
+            </div>
+
+            </form>
+
+            <script type="text/javascript">
+            function checkkey(key) {
+                return key != 13;
+            }
+
+            var original_packing_note = "[% attribute.packing_note %]";
+
+            function checkQCData (){
+                var passed = 1;
+                var why = '';
+
+                // set a flag if packing notes was modified
+                if (original_packing_note != document.getElementById('packing_note').value) {
+                    document.getElementById('packing_note_modified').value = 1;
+                }
+                var theForm = document.quality_control.elements;
+
+                for(z = 0; z < theForm.length; z++){
+                    var fieldName = theForm[z].name;
+
+                    if (fieldName == 'storage_type' &&
+                        !theForm[z].value){
+                        passed = false;
+                        why = "Please select a storage type before continuing";
+                        break;
+                    }
+
+                    var arr = fieldName.split("_");
+
+                    if(arr[0] == 'checked'){
+                        if (!theForm[z].value.match(/^\d+$/)){
+                            passed = false;
+                            why = "Checked quantity is not a valid whole number";
+                        }
+
+                        if (parseInt(theForm[z].value) > parseInt(document.getElementById('counted_'+ arr[1]).value)){
+                            passed = 0;
+                            why = 'Checked quantity is greater than counted quantity, please check and try again';
+                        }
+
+                        if (document.getElementById('ro_checked_'+ arr[1]) &&
+                            parseInt(theForm[z].value) < Number(document.getElementById('ro_checked_'+ arr[1]).innerHTML)){
+                            passed = 0;
+                            why = 'Checked field cannot be less than the existing checked count';
+                        }
+                    }
+
+                    if(arr[0] == 'faulty' && arr[1] != 'container') {
+                        if (!theForm[z].value.match(/^\d+$/)){
+                            passed = false;
+                            why = "Faulty quantity is not a valid whole number";
+                        }
+
+                        if (parseInt(theForm[z].value) > parseInt(theForm['checked_' + arr[1]].value) ){
+                            passed = 0;
+                            why = 'Faulty quantity is greater than checked quantity, please check and try again';
+                        }
+
+                        if (document.getElementById('ro_faulty_'+ arr[1]) &&
+                            parseInt(theForm[z].value) < Number(document.getElementById('ro_faulty_'+ arr[1]).innerHTML)){
+                            passed = 0;
+                            why = 'Faulty field cannot be less than the existing faulty count';
+                        }
+                    }
+                }
+
+                if (passed == 1){
+                    return true;
+                }
+                else {
+                    alert(why);
+                    return false;
+                }
+
+                    }
+            </script>
+
+        </div>
+    [% END %]
+
+[% ELSE %]
+
+
+    [% INCLUDE page_elements/forms/barcode_entry.tt method='get' %]
+
+    [% IF deliveries.size %]
+
+<div id="tabContainer" class="yui-navset">
+    [% PROCESS page_elements/channel_tabs.tt channel_list=deliveries %]
+    <div class="yui-content">
+
+        [% SET channel_count = 1 %]
+
+        [% FOREACH channel = deliveries.keys.sort %]
+
+        <div id="tab[% channel_count %]" class="tabWrapper-[% channel_config.$channel %]">
+            <div class="tabInsideWrapper">
+                <h2 class='title-[% channel_config.$channel %]'>Deliveries Awaiting [% scan.title %]</h2>
+
+                <table class="data wide-data divided-data">
+                    <thead>
+                        <tr>
+                            <th>Delivery</th>
+                            <th>PID</th>
+                            <th>Designer</th>
+                            <th>Colour</th>
+                            <th>Delivery Date</th>
+                            <th>Counted Date</th>
+                            <th>Upload Date</th>
+                            <th>PS</th>
+                            <th>Count</th>
+                            [% '<th>Cancel</th>' IF scan.action == 'DeliveryCancel/Update' %]
+                        </tr>
+                    </thead>
+                    <tbody>
+                        [% FOREACH del_id = deliveries.$channel.keys.nsort %]
+
+                            [% SET del = deliveries.$channel.$del_id %]
+
+                            [% tr_class = del.on_hold ? 'light' : del.live || del.priority ? 'warn' : '' %]
+
+                        <tr[% ' class="' _ tr_class _ '"' IF tr_class %]>
+                            <td>
+                                [% IF del.on_hold %]
+                                    [% del_id %]&nbsp;(On Hold)
+                                [% ELSE %]
+                                    <a href="[% scan.action %]?delivery_id=[% del_id %]">[% del_id %]</a>
+                                [% END %]
+                            </td>
+                            <td>[% del.product_id || del.voucher_id %]</td>
+                            <td>[% del.designer %]</td>
+                            <td>[% del.colour %]</td>
+                            <td>[% del.date %]</td>
+                            <td>[% del.count_date %]</td>
+                            <td>[% IF del.live %]<span style="font-weight: bold; color:#ff0000">Live</span>[% ELSE %][% IF del.priority %]<span style="font-weight: bold; color:#ff0000">[% END %][% del.upload_date %][% END %]</td>
+                            <td>[% del.packing_slip %]</td>
+                            <td>[% del.quantity %]</td>
+
+                            [% IF scan.action == 'DeliveryCancel/Update' %]
+                                <td><input type='checkbox' name='cancel_[% del.id %]' ></td>
+                            [% END %]
+                        </tr>
+                    [% END %]
+                    </tbody>
+                </table>
+
+                <br><b>Total:</b> [% deliveries.$channel.size %] [% deliveries.$channel.size == 1 ? 'delivery' : 'deliveries' %]
+            </div>
+        </div>
+
+            [% SET channel_count = channel_count + 1 %]
+        [% END %]
+    </div>
+</div>
+
+        [% PROCESS page_elements/tab_script.tt %]
+    [% END %]
+
+[% END %]

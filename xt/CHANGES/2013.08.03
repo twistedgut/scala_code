@@ -1,0 +1,65 @@
+<pre>
+
+h1. LOGGING
+ * Add test log config (51acb46)
+
+h1. DC2A
+
+ * DCA-2345: Log changes to system parameters
+ * DCA-2379: Fix: Induction is mentioned in DC1 even though there is no such place
+
+ Migration scripts (to be used for switch to PRL):
+ * DCA-2082: Export XT Main/Dead stock data
+ * DCA-2084: Script to turn on PRL config
+ * DCA-2086: Script to select orders without turning on autoselect
+ * DCA-2077: Support turning off login temporarily during migration
+ * DCA-2358: Update all items in cage locations to have storage type of Cage
+ * DCA-2374: wrong family_group for sku's that are migrated from XT to PRL
+ * DCA-2080: Clear DLQ utility scripts
+ * DCA-2083: Scripts for reconciliation between XT and PRL stock levels
+ * DCA-2085: New script to re-allocate orders that need new allocations in the FWPRL
+ * DCA-2488: Fix putaway-virtually.pl
+ * DCA-2494: Selection script fix
+ * DCA-2501: Migration export quantity updates
+ * DCA-2502: Make reconciliation export use client instead of channel
+ * DCA-2503: Migration export quantity updates for vouchers
+
+ PRL phase only:
+ * DCA-2334: Container status displayed at packing for cage containers
+ * DCA-2355/DCA-2356: Routing to dispatch lanes
+ * DCA-2262: Picking overview fixes
+ * DCA-2354: Measure current staging area size in containers, not allocations
+ * DCA-2338: Fix missing images for JC products
+ * DCA-2292: Update hardcoded cycle_count_frequency value
+ * DCA-2261: Fix sibling allocations test to avoid picking dematic too early
+ * DCA-2232: Include containers en route in packing capacity calculations
+ * DCA-2223: Do not release on-hold Dematic-only shipments
+ * DCA-2210: Problem Resolution Page accepting containers with non failed advices
+ * DCA-2311: Do not allow packing before induction (if shipment id is scanned)
+ * DCA-2390: Better SKU detection in PP to support recode barcodes containing '-'
+ * DCA-2370: Add additional information to induction screen
+ * DCA-2375: Include dms picks in progress when calculating packing capacity
+ * DCA-2359: Allocate exchange shipments as soon as they're created
+ * DCA-2400: Induction page ordering is not grouping per Shipments with identical sla_cutoff
+ * DCA-2439: Move allocation.pick_sent update out of producer
+ * DCA-2275 Putaway Prep checks the correct qty of each SKU is being scanned not just total qty. Discrepant SKUs table was added to "Putaway Admin" page.
+ * DCA-2065: Migration reports
+ * DCA-2396: Weight issues in putaway prep
+
+
+h1. CANDO
+ * CANDO-2443: Shipment labels with characters outside Latin-1 being printed without correct encoding
+ * CANDO-2198: TRANSLATIONS: Changes in Welcome pack logic
+ * CANDO-2481: Customer Care: DDU acceptance bug
+ * CANDO-367:  Compensation Reason Codes
+ * CANDO-2582: Additional Change to Extending the Expiry Date for Live Reservations - apply at Operator Level
+ * CANDO-2586: CONRAD: Prevent Double Quotes in Rule Names from Crashing the 'Staging Rules' page
+ * CANDO-2632: Store Credit can be created by any user
+ * CANDO-2564: Add new customer category 'Ex - EIP'
+ * CANDO-2288: PS: Add New Reservation Sources
+ * CANDO-1723: Add 'Order placed on wrong site' in cancelation reason list
+
+h1. Product Management
+    * PM-1760: Adding patch to create unique constraint in the size_scheme_variant_size table
+
+</pre>

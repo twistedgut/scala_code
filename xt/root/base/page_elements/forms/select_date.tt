@@ -1,0 +1,51 @@
+
+[% SET cur_year  = current.split('-').0 %]
+[% SET cur_month = current.split('-').1 %]
+[% SET cur_day = current.split('-').2 %]
+
+<input type="hidden" id="edit_[% name %]_day" name="edit_[% name %]_day" value="off">
+<select name='[% name %]_day' onchange="editField(this)">
+   [% SET day = 1 %]
+   [% SET max = 31 %]
+   [% WHILE day <= max %] 
+   <option value='[% day %]' 
+   [% IF day == cur_day %] selected[% END %] 
+   >[% day %]</option>   
+   [% SET day = day + 1 %]
+   [% END %]
+</select>
+
+[% months = [ { id => '01', name => 'Jan' }
+              { id => '02', name => 'Feb' } 
+              { id => '03', name => 'Mar' } 
+              { id => '04', name => 'Apr' } 
+              { id => '05', name => 'May' } 
+              { id => '06', name => 'Jun' } 
+              { id => '07', name => 'Jul' } 
+              { id => '08', name => 'Aug' } 
+              { id => '09', name => 'Sep' } 
+              { id => '10', name => 'Oct' } 
+              { id => '11', name => 'Nov' } 
+              { id => '12', name => 'Dec' } ]
+%]
+
+<input type="hidden" id="edit_[% name %]_month" name="edit_[% name %]_month" value="off">
+<select name='[% name %]_month' onchange="editField(this)">
+[% FOREACH months %]
+   <option value='[% id %]'
+   [% IF id == cur_month %] selected[% END %] 
+   >[% name %]    
+[% END %]
+</select>
+
+
+[% years = [ 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 ] %]
+
+<input type="hidden" id="edit_[% name %]_year" name="edit_[% name %]_year" value="off">
+<select name='[% name %]_year' onchange="editField(this)">
+[% FOREACH year = years %]
+   <option value='[% year %]'
+   [% IF year == cur_year %] selected[% END %]>[% year %]    
+[% END %]
+</select>
+

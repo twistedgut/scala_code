@@ -1,0 +1,48 @@
+=====================================
+XT 2010.21.00 Deployment Instructions
+=====================================
+
+2010.21.00: Initial Release
+
+1. Notice the change in release number scheme.
+
+2. Be aware that patch dcea_10-populate-status.sql may take a while to run.
+
+3. nap_properties file has changed the following need to be populated:
+        PAYMENT_SERVICE_MRP_MERCHANT_URL
+        WEB_LIVE_MRP_INTL_DB_NAME
+        WEB_LIVE_MRP_INTL_DB_HOST
+        WEB_LIVE_MRP_INTL_DB_USER
+        WEB_LIVE_MRP_INTL_DB_PASS
+        WEB_LIVE_MRP_INTL_DB_TYPE
+        WEB_LIVE_MRP_AM_DB_NAME
+        WEB_LIVE_MRP_AM_DB_HOST
+        WEB_LIVE_MRP_AM_DB_USER
+        WEB_LIVE_MRP_AM_DB_PASS
+        WEB_LIVE_MRP_AM_DB_TYPE
+        WEB_STAGING_MRP_INTL_DB_NAME
+        WEB_STAGING_MRP_INTL_DB_HOST
+        WEB_STAGING_MRP_INTL_DB_USER
+        WEB_STAGING_MRP_INTL_DB_PASS
+        WEB_STAGING_MRP_INTL_DB_TYPE
+        WEB_STAGING_MRP_AM_DB_NAME
+        WEB_STAGING_MRP_AM_DB_HOST
+        WEB_STAGING_MRP_AM_DB_USER
+        WEB_STAGING_MRP_AM_DB_PASS
+        WEB_STAGING_MRP_AM_DB_TYPE
+
+   PAYMENT_SERVICE_MRP_MERCHANT_URL should be http://www.mrporter.com
+   please copy NAP settings for everything else.
+
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+
+

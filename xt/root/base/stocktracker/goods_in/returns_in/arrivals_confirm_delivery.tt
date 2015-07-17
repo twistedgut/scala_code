@@ -1,0 +1,263 @@
+[% USE PrintDocs -%]
+
+[% IF manifest;
+    PROCESS manifest_css;
+    PROCESS manifest_header;
+    PROCESS arrivals_list;
+    PROCESS manifest_footer;
+ELSE;
+    PROCESS arrivals_list;
+    PROCESS list_actions;
+    PROCESS edit_note;
+END %]
+
+[% BLOCK manifest_css %]
+<style type="text/css">
+    body { width: 560; }
+    table { width: 100%; }
+    th, td { font-family: monospace; font-size: 0.9em; text-align: left; }
+    div.bold { font-weight: bold; }
+    div.small { font-size: 0.8em; }
+    div.footer { font-size: 0.8em; }
+</style>
+[% END %]
+
+[% BLOCK manifest_header %]
+<div class="bold">
+    NET-A-PORTER.COM
+</div>
+<div class="bold small">
+    <br />
+    Date: [% return_delivery.date_confirmed.strftime( '%d-%m-%y %R' ) %]
+    <br />
+    Exported by: [% return_delivery.operator.name %]
+    <br />
+    Total packages: [% return_delivery.total_packages %]
+</div>
+[% END %]
+
+[% BLOCK arrivals_list %]
+<h3>Arrivals in Delivery</h3>
+<table id="return_arrivals_table" class="data wide-data divided-data">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>AWB #</th>
+            <th>DHL Tape</th>
+            <th>Damaged</th>
+            <th>Notes</th>
+            <th># of Packages</th>
+            [% UNLESS manifest %]
+            <th>[% return_delivery.confirmed ? 'Removed' : '&nbsp;' %]</th>
+            [% END %]
+        </tr>
+    </thead>
+    <tbody>
+    [% arrival_id_list = "" %]
+    [% FOREACH return_arrival IN return_arrivals %]
+        <tr>
+            <td>[% return_arrival.date.strftime('%d-%m-%y %R') %]</td>
+            <td>
+                [% IF NOT manifest AND return_arrival.shipment %]
+                    <a href="/CustomerCare/OrderSearch/OrderView?order_id=[% return_arrival.shipment.link_order__shipment.order.id %]">
+                        [% return_arrival.return_airway_bill %]
+                    </a>
+                [% ELSE %]
+                        [% return_arrival.return_airway_bill %]
+                [% END %]
+            </td>
+            <td>
+                [% IF return_arrival.dhl_tape_on_box %]
+                    <img src="http://xtracker.net-a-porter.com/images/icons/tick.png" alt="DHL Tape" title="DHL Tape" />
+                [% END %]
+            </td>
+            <td>
+                [% IF return_arrival.box_damaged %]
+                    <img src="http://xtracker.net-a-porter.com/images/icons/tick.png" alt="Damaged" title="Damaged" />
+                [% END %]
+            </td>
+            <td>
+                [% UNLESS manifest %]
+                    <a id="arr_[% return_arrival.id %]" href="javascript:showActionLayer('editNoteActionLayer','[% return_arrival.return_airway_bill %]',[% return_arrival.id %]);"><img id="arr_[% return_arrival.id %]" style="display: inline; cursor: pointer;" src="/images/icons/note_edit.png" alt="Edit Notes" title="Edit Notes" /></a>&nbsp;
+                    [% arrival_id_list = arrival_id_list _ ',' _ '"arr_' _ return_arrival.id _ '"'; %]
+                [% END %]
+                <span id="arr_[% return_arrival.id %]_notes">[% return_arrival.damage_description %]</span>
+            </td>
+            <td>[% return_arrival.packages %]</td>
+            [% UNLESS manifest %]
+            <td>
+                [% IF return_delivery.confirmed %]
+                    [% IF return_arrival.removed %]
+                        <div class="red" style="padding-top: 2px; width: 120px;">
+                            [% IF return_arrival.removal_notes != "" %]
+                                <img id="notes_[% return_arrival.id %]_toggle" onclick="javascript:expand('notes_[% return_arrival.id %]');" style="display: inline; cursor: pointer;" src="/images/plus.gif" title="Expand" alt="[+]" />&nbsp;&nbsp;
+                            [% END %]
+                            [% return_arrival.return_removal_reason.name %]
+                        </div>
+                        [% IF return_arrival.removal_notes != "" %]
+                            <div id="expand_notes_[% return_arrival.id %]" style="display: none; width: 120px; padding: 2px 0px;">[% return_arrival.removal_notes %]</div>
+                        [% END %]
+                    [% ELSE %]
+                        &nbsp;
+                    [% END %]
+                [% ELSE %]
+                    <form name="delete_arrival" action="/GoodsIn/ReturnsArrival/Arrival/[% return_arrival.id %]" method="post">
+                        <input type="hidden" name="action" value="delete" />
+                        <input type="submit" value="Delete" onClick="javascript:return confirm('Are you sure you want to delete this arrival?')" />
+                    </form>
+                [% END %]
+            </td>
+            [% END %]
+        </tr>
+    [% END %]
+    </tbody>
+</table>
+[% END %]
+
+[% BLOCK list_actions %]
+<div class="spaced_above" id="total_packages">
+    <strong>Total packages: [% return_delivery.total_packages %]</strong>
+</div>
+[% IF return_delivery.confirmed %]
+    <div class="formrow aftertable">
+        <a href="[% PrintDocs.relative_document_path('return_delivery-' _ return_delivery.id) %]" target="_new" id="print_manifest_link">Print manifest</a>
+    </div>
+[% ELSE %]
+    <div class="formrow aftertable buttons">
+        <form name="confirm_delivery" action="[% hh_uri('/GoodsIn/ReturnsArrival/Delivery/' _ return_delivery.id) %]" method="post">
+            <input type="hidden" name="action" value="confirm_delivery" />
+            <input type="submit" name="submit" value="Submit Delivery" class="button" />
+        </form>
+    </div>
+[% END %]
+[% END %]
+
+[% BLOCK manifest_footer %]
+    <div class="footer">
+        <p>
+        The transit liability of the carrier shall commence when any consignment
+        is handed to the carrier at the point of collection.
+        </p>
+        <p>
+        The transit liability of the carrier shall end upon successful delivery to
+        NET-A-PORTER.COM premises and subsequent quality check.
+        </p>
+        <p>
+        Procedure for quality check shall be as follows:
+        </p>
+        <p>
+        Any consignment with evident damage to the packaging will be prioritised
+        through the quality control process; any damage to the content will be
+        notified to the carrier within 24 hours.
+        </p>
+        <p>
+        The carrier shall be liable for any loss, incorrect delivery or damage to
+        any consignment under its control.
+        </p>
+        <br />
+        <br />
+        Carrier: ____________________________<br />
+        <br />
+        <br />
+        <br />
+        Receiver: ___________________________
+    </div>
+[% END %]
+
+[% BLOCK edit_note %]
+<style type="text/css">
+    div.red { color: red; }
+
+    .popHd {
+        font: bold 11px Arial;
+        padding-top: 7px;
+        padding-left: 10px;
+        padding-bottom: 7px;
+        border-bottom: 1px dotted #666;
+        background:url('/images/popHDBG.gif');
+    }
+
+    .popFt {
+        font: bold 11px Arial;
+        padding-top:6px;
+        padding-bottom:6px;
+        padding-right:10px;
+        margin-top:10px;
+        border-top: 1px dotted #999;
+        text-align: right;
+    }
+
+    .popFt input { margin-left:10px; }
+</style>
+<div id="editNoteActionLayer" style="display: none; position: absolute; z-index: 11; padding: 0px 0px 2px 2px; background-color: #aaa;">
+    <div style="width: 300px; background-color: #FFF; border: 1px solid #333;">
+        <div class="popHd">Edit Note</div>
+
+        <form id="editNoteArrivalForm" name="editNoteArrivalForm" method="post" action="[% hh_uri('/GoodsIn/ReturnsArrival/Arrival/' _ return_arrival_id) %]" style="margin: 0px; padding: 0px;">
+            <table width="100%" border="0">
+                <tr>
+                    <td width="35%" height="30" align="right"><strong>AWB:</strong></td>
+                    <td width="65%"><strong><span id="actionEditAWB">empty</span></strong></td>
+                </tr>
+                <tr>
+                    <td height="30" align="right" valign="top"><strong>Note:</strong></td>
+                    <td>
+                        <textarea id="edit_notes" name="edit_notes" rows="4" style="width: 95%;"></textarea>
+                    </td>
+                </tr>
+            </table>
+            <input type="hidden" name="action" value="edit_note" />
+
+            <div class="popFt">
+                <input type="button" class="button" name="" value="Cancel" onclick="javascript:hideActionLayer('editNoteActionLayer');" />
+                <input type="submit" class="button" name="" value="Save" />
+            </div>
+        </form>
+    </div>
+</div>
+
+[% PROCESS page_elements/javascript/inventory.tt %]
+
+<script type="text/javascript" language="javascript">
+    var Xpos        = 0;
+    var Ypos        = 0;
+    var layerwidth  = 320;
+    var layerheight = 190;
+    var content_pos = [0,0];
+
+    // add a listner to every edit link to get it's co-ordinates
+    // for displaying the pop-up box
+    [% arrival_id_list = arrival_id_list.replace('^,',''); %]
+    var arrival_id_arr = new Array([% arrival_id_list %]);
+    function EditfnOnClick (e) {
+        Xpos    = YAHOO.util.Event.getPageX(e);
+        Ypos    = YAHOO.util.Event.getPageY(e);
+        content_pos = YAHOO.util.Dom.getXY('content');
+    }
+    YAHOO.util.Event.addListener( arrival_id_arr, "click", EditfnOnClick );
+
+    // display action popup layer
+    function showActionLayer (layerName,awb,arrival_id) {
+
+        // write AWB passed to function to placeholder in div
+        document.getElementById('actionEditAWB').innerHTML = awb;
+
+        document.getElementById('editNoteArrivalForm').action = '/GoodsIn/ReturnsArrival/Arrival/'+arrival_id;
+
+        // write AWB ID passed to function to form in div
+        document.getElementById('edit_notes').value        = document.getElementById('arr_'+arrival_id+'_notes').innerHTML;
+
+        // position action layer
+        document.getElementById(layerName).style.left = (Xpos - content_pos[0] - layerwidth) + 'px';
+        document.getElementById(layerName).style.top  = (Ypos - content_pos[1] - layerheight) + 'px';
+
+        // show action layer
+        document.getElementById(layerName).style.display   = "block";
+    }
+
+    // hide popup action layer
+    function hideActionLayer (layerName) {
+        document.getElementById(layerName).style.display   = "none";
+    }
+</script>
+[% END %]

@@ -1,0 +1,240 @@
+
+<script src="http://maps.google.com/maps?file=api&v=2.x&key=[% api_key %]" type="text/javascript"></script>
+<script type="text/javascript">
+
+/**
+ * @name ProgressbarControl
+ * @version 1.0
+ * @author Bjorn BRala
+ * @copyright (c) 2008 SWIS BV - www.geostart.nl
+ * @fileoverview Creates a progress bar control for usage in google maps. 
+ *   It can be used to show the progress of loading markers, for example.
+ */
+
+/**
+ * @name ProgressbarOptions
+ * @class This class represents optional arguments to 
+ *   {@link ProgressbarControl}, 
+ * @property {Number} [width=176] Specifies, in pixels, the width of the bar.
+ * @property {String} [loadstring=Loading...] Specifies the string displayed 
+ *  when first starting the control, before any update.
+ */
+
+
+/**
+ * Custom progress bar control, for placement on map.
+ * 
+ * @private
+ * @return {GControl}
+ */    
+function ProgressbarMapControl(map, width) { 
+  this.map_ = map; 
+  this.width_ = width; 
+}
+
+
+/**
+ * @private
+ */
+ProgressbarMapControl.prototype = new GControl(true, false);
+
+
+/**
+ * @private
+ * @desc Initializes the GControl. Creates the HTML and styles.
+ * @return {Element}
+ */
+ProgressbarMapControl.prototype.initialize = function () {
+  var container_ = document.createElement('div');
+  container_.innerHTML = '<div style="position:absolute;width:100%;border:5px;'
+    + 'text-align:center;vertical-align:bottom;" id="geo_progress_text"></div>'
+    + '<div style="background-color:#999;height:100%" id="geo_progress"></div>';
+  container_.id = "geo_progress_container";
+  container_.style.display = "none";
+  container_.style.width = this.width_ + "px";
+  container_.style.fontSize = "0.8em";
+  container_.style.height = "1.3em";
+  container_.style.border = "1px solid #555";
+  container_.style.backgroundColor = "white";
+  container_.style.textAlign = "left";
+  this.map_.getContainer().appendChild(container_);
+  return container_;
+};
+
+
+/**
+ * @private 
+ * @desc Return the default position for the control
+ * @return {GControlPosition}
+ */
+ProgressbarMapControl.prototype.getDefaultPosition = function () {
+  return new GControlPosition(G_ANCHOR_TOP_RIGHT, new GSize(30, 56));
+};
+
+
+/**
+ * Creates a progress bar control on the given map, with the given options.
+ *
+ * @constructor
+ * @param {GMap2} Map object
+ * @param  {ProgressbarOptions} opt_opts
+ */
+function ProgressbarControl(map, opt_opts) {
+  this.options_ = opt_opts || {};
+
+  this.width_ = this.options_.width || 176;
+  this.loadstring_ = this.options_.loadstring || 'Loading...';
+
+  this.control_ = new ProgressbarMapControl(map, this.width_);
+  this.map_ = map;
+  this.map_.addControl(this.control_);
+  this.div_ = document.getElementById('geo_progress');
+  this.text_ = document.getElementById('geo_progress_text');
+  this.container_ = document.getElementById('geo_progress_container');
+
+  this.operations_ = 0;
+  this.current_ = 0;
+}
+
+
+/**
+ * @desc Start the progress bar. 
+ * @param {Number} operations Total amount of operations that will be executed.
+ */
+ProgressbarControl.prototype.start = function (operations) {
+  this.div_.style.width = '0%'; 
+  this.operations_ = operations || 0;
+  this.current_ = 0;
+  this.text_.style.color = "#111";
+  this.text_.innerHTML = this.loadstring_;
+  this.container_.style.display = "block";
+};
+
+
+/**
+ * @desc  Update the progress with specified number of operations.
+ * @param {Number} step Number of operations to add to bar.
+ */
+ProgressbarControl.prototype.updateLoader = function (step) {
+  this.current_ += step;
+  if (this.current_ > 0) {
+    var percentage_ = Math.ceil((this.current_ / this.operations_) * 100);
+    if (percentage_ > 100) { 
+      percentage_ = 100; 
+    }
+    this.div_.style.width = percentage_ + '%'; 
+    this.text_.innerHTML = this.current_ + ' / ' + this.operations_;
+  }
+};
+
+
+/**
+ * @desc Remove control.
+ */
+ProgressbarControl.prototype.remove = function () {
+  this.container_.style.display = 'none';
+};
+
+
+</script>
+<script type="text/javascript">
+var map;
+var progressBar;
+var geocoder = new GClientGeocoder();
+
+var addressArray = [ '' ];
+
+[%- FOREACH order_id = orders.keys.nsort -%]
+addressArray.push(["[% IF orders.$order_id.postcode %][% orders.$order_id.postcode.remove('"') %][% END %]", "[% orders.$order_id.towncity.remove('"') %], [% orders.$order_id.country.remove('"') %]", "[% order_id %]", "[% orders.$order_id.order_nr.remove('"') %]", "[% orders.$order_id.first_name.remove('"') %] [% orders.$order_id.last_name.remove('"') %]"]);
+[% END %]
+
+function loadMap() {
+  map = new GMap2(document.getElementById("map"));
+  map.setCenter(new GLatLng(20, 12), 2);
+  map.addControl(new GLargeMapControl());
+  map.addControl(new GMapTypeControl());
+  progressBar = new ProgressbarControl(map, {width:150}); 
+
+  [% IF orders.size %]
+      loadMarkers();
+  [% END %]
+}
+
+var markersArray = [];
+var maxNum = [% orders.size %];
+var num = 0;
+
+function loadMarkers(){
+  progressBar.start(maxNum);
+  setTimeout('createMarker()', 5);
+}
+
+function createMarker(){
+  num++;
+  progressBar.updateLoader(1);
+
+  var address = addressArray[num][1];
+  if ( addressArray[num][0] != '') {
+    address = addressArray[num][0] + ', ' + address;
+  }
+
+  geocoder.getLatLng(
+	  address,
+	  function(point) {
+		if (!point) {
+		  loopMarkers();
+		} 
+		else {
+			placeMarker(point, addressArray[num][1], addressArray[num][2], addressArray[num][3], addressArray[num][4]);	
+		}
+	  }
+  );
+
+}
+
+function placeMarker(point, address, order_id, order_number, customer){
+  
+  var marker = new GMarker(point);
+  markersArray.push(marker);
+  map.addOverlay(marker);
+
+  GEvent.addListener(marker, "click", function() {
+	marker.openInfoWindowHtml('<span style="font: normal 11px Arial"><b>Order Number:</b>&nbsp;&nbsp;<a href="#" onClick="window.opener.location.href=\'/CustomerCare/OrderSearch/OrderView?order_id='+order_id+'\'">'+order_number+'</a></b><br><br><b>Location:</b>&nbsp;&nbsp;'+address+'</span>');
+  });
+
+  loopMarkers();
+}
+
+function loopMarkers(){ 
+  if (num < maxNum) {
+    setTimeout('createMarker()', 5);
+  } 
+  else {
+    progressBar.remove();
+    num = 0;
+  }
+}
+
+</script>
+
+<style type="text/css" media="screen">@import "/css/xtracker.css";</style>
+<style type="text/css" media="screen">@import "/css/xtracker_static.css";</style>
+<style type="text/css" media="print">@import "/css/print.css";</style>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <tr>
+        <td class="blank" valign="middle"><span class="title title-[% channel_config.$sales_channel %]" style="font-size:18px">&nbsp;Interactive Order Map</span>[% IF !orders.size %]<span class="title" style="font-size: 14px;">&nbsp;-&nbsp;No Orders Found!</span>[% END %]</td>
+        <td class="blank" align="right"><span class="title title-[% channel_config.$sales_channel %]" style="font-size:14px">[% day %]/[% month %]/[% year %]&nbsp;&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td colspan="2"><div id="map" style="width: 800px; height: 450px"></div></td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+</table>
+
+

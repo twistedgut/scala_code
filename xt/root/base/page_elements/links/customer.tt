@@ -1,0 +1,1 @@
+<a href="/CustomerCare/OrderSearch/CustomerView?customer_id=[% customer.id %]">[% customer.display_name %]</a>

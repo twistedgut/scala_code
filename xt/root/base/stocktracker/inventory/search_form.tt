@@ -1,0 +1,198 @@
+[% INCLUDE page_elements/javascript/showhide.tt %]
+
+<script type="text/javascript">
+    function showhideWrapper() {
+        var divs = ['advanced', 'simple', 'classification', 'media', 'colour'];
+        for ( var i in divs ) {
+            showhide(divs[i]);
+        }
+    }
+</script>
+
+<div id='product_search_form'>
+
+    <form name="inventorySearch" id="inventorySearch" action="/StockControl/Inventory/Search" method="GET">
+        [% IF restrict_loc %]
+            <input type="hidden" name="keep_restrict_loc" value="[% restrict_loc %]" />
+        [% END %]
+        [% IF restrict_type %]
+            <input type="hidden" name="keep_restrict_type" value="[% restrict_type %]" />
+        [% END %]
+        [% IF hide_samples %]
+            <input type="hidden" name="keep_hide_samples" value="[% hide_samples %]" />
+        [% END %]
+
+        <div class="formrow divideabove dividebelow">
+            <label for="product">Product Id</label>
+            <input type="text" name="product" id="product" />
+        </div>
+
+        <div class="formrow dividebelow">
+            <label for="designer">Designer</label>
+            [% INCLUDE page_elements/forms/select_basic.tt options = designers, current = classify.designer %]
+        </div>
+
+        <div class="formrow">
+            <label for="season">Season:</label>
+            [% INCLUDE page_elements/forms/select_basic.tt options = seasons, current = classify.season %]
+        </div>
+        <div class="formrow">
+            <label for="act">Act</label>
+            <td>[% INCLUDE page_elements/forms/select_basic.tt options = acts, current = classify.act %]
+        </div>
+        <div class="formrow dividebelow">
+            <label for="department">Department</label>
+            [% INCLUDE page_elements/forms/select_basic.tt options = departments, current = classify.product_department %]
+        </div>
+
+        <div class="formrow">
+            <label for="keywords">Keywords</label>
+            <input type="text" name="keywords" id="keywords" />
+        </div>
+        <div class="formrow dividebelow">
+            <label for="style_ref">Style Ref</label>
+            <input type="text" name="style_ref" id="style_ref" />
+        </div>
+
+        <div class="formrow dividebelow">
+            <label for="channel_id">Channel</label>
+            <select name="channel_id" id="channel_id">
+                <option value="">-----------------</option>
+                [% FOREACH channel_id = sales_channels.keys %]
+                    <option value="[% channel_id %]">[% sales_channels.$channel_id.name %]</option>
+                [% END %]
+            </select>
+        </div>
+
+        <div class="formrow dividebelow">
+            <label for="location">Location</label>
+            [% locations = { alllocated         => 'All Located',
+                             dc1stock           => 'DC1 Stock',
+                             dc1                => 'DC1',
+                             sample             => 'Sample Department',
+                             sample_room        => 'Sample - Sample Room',
+                             sample_room_press  => 'Sample - Press Samples',
+                             sample_editorial   => 'Sample - Editorial',
+                             sample_styling     => 'Sample - Styling',
+                             sample_upload_1    => 'Sample - Upload 1',
+                             sample_upload_2    => 'Sample - Upload 2',
+                             sample_faulty      => 'Sample - Faulty',
+                             sample_gift        => 'Sample - Gift',
+                             sample_press       => 'Sample - Press',
+                             all                => 'All',
+                             transfer           => 'Transfer Pending',
+                             dead               => 'Dead Stock',
+                             rtv_workstation    => 'RTV Workstation',
+                             rtv_process        => 'RTV Process', }
+            %]
+
+                [% IF restrict_loc %]
+                    <input type="hidden" name="location" value="[% restrict_loc %]" /><span style="font-weight: bold">[% locations.$restrict_loc %]</span>
+                [% ELSE %]
+                    <select name="location" id="location">
+                        [% FOREACH option_value = locations.keys.sort %]
+                            <option value="[% option_value %]"[% ' selected' IF option_value == 'dc1stock' AND ( department == 'Shipping' OR department == 'Returns' ) %]>[% locations.$option_value %]</option>
+                        [% END %]
+                    </select>
+                [% END %]
+        </div>
+
+        [% UNLESS hide_samples %]
+            <div class="formrow dividebelow">
+                <label>Stock / Sample</label>
+                [% IF restrict_type %]
+                    <input type="hidden" name="stockvendor" value="vendor" /><span style="font-weight: bold">Samples</span>
+                [% ELSE %]
+                    <input type="radio" name="stockvendor" id="stockvendor_all" value="all" checked />All
+                    <input type="radio" name="stockvendor" id="stockvendor_stock" value="stock">Stock
+                    <input type="radio" name="stockvendor" id="stockvendor_vendor" value="vendor" />Samples
+                [% END %]
+            </div>
+        [% ELSE %]
+            <input type="hidden" name="stockvendor" value="all" />
+        [% END %]
+
+    <div id="advanced" class="formrow dividebelow">
+        <span class="fakelink fakelabel" onClick="showhideWrapper()">Advanced Search &raquo;</span>
+    </div>
+    <div id="simple" class="formrow dividebelow" style="display: none">
+        <span class="fakelink fakelabel" onClick="showhideWrapper()">Simple Search &raquo;</span>
+    </div>
+
+    <div id="colour" style="display: none;">
+        <div class="formrow">
+            <label for="colour">Colour</label>
+            [% INCLUDE page_elements/forms/select_basic.tt options = colour, current = classify.colours %]
+        </div>
+        <div class="formrow">
+            <label for="colour_filter">Colour Filter</label>
+            [% INCLUDE page_elements/forms/select_basic.tt options = colour_filter, current = classify.colour_filters %]
+        </div>
+        <div class="formrow dividebelow">
+            <label for="fabric">Fabric</label>
+            <input type="text" name="fabric" size="15">
+        </div>
+    </div>
+
+    <div id="classification" style="display: none;">
+        <div class="formrow">
+            <label for="classification">Classification</label>
+            [% INCLUDE page_elements/forms/select_basic.tt options = classification, current = classify.classification %]
+        </div>
+        <div class="formrow">
+            <label for="product_type">Product Type</label>
+            [% INCLUDE page_elements/forms/select_basic.tt options = product_types, current = classify.product_types %]
+        </div>
+        <div class="formrow dividebelow">
+            <label for="sub_type">Sub Type</label>
+            [% INCLUDE page_elements/forms/select_basic.tt options = sub_types, current = classify.sub_types %]
+        </div>
+    </div>
+
+    <div id="media" style="display: none;" >
+        [% UNLESS hide_samples %]
+            <div class="formrow dividebelow">
+                <label>Media</label>
+                <input type="radio" name="media_type" id="media_type_screen" value="screen" checked />Screen<br />
+                <input type="radio" name="media_type" id="media_type_excel" value="excel" />Excel/CSV<br />
+            </div>
+        [% ELSE %]
+                <input type="hidden" name="media_type" value="screen" />
+        [% END %]
+
+        <div class="formrow dividebelow">
+            <label>Discount</label>
+            <input type="radio" name="discount" value="all" id="discount_all" checked="checked" />all<br />
+            <input type="radio" name="discount" value="discount" id="discount_discount" />discount<br />
+            <input type="radio" name="discount" value="notdiscount" id="discount_notdiscount" />not discounted<br />
+        </div>
+        <div class="formrow dividebelow">
+            <label>Live:</label>
+            <input type="radio" name="live" value="all" id="live_all"checked="checked" />all<br />
+            <input type="radio" name="live" value="live" id="live_live" />live<br />
+            <input type="radio" name="live" value="notlive" id="live_notlive" />not live<br />
+        </div>
+        <div class="formrow dividebelow">
+            <label>Visible</label>
+            <input type="radio" name="visible" value="all" id="visible_all" checked="checked" />all<br />
+            <input type="radio" name="visible" value="visible" id="visible_visible" />visible<br />
+            <input type="radio" name="visible" value="notvisible" id="visible_notvisible" />not visible<br />
+        </div>
+    </div>
+
+    <div class="formrow buttons">
+        <input type="submit" name="action" value="Search">
+    </div>
+
+    </form>
+</div>
+
+<script type="text/javascript">
+    // default cursor
+    document.inventorySearch.product.focus();
+
+    // stop double submit
+    $('form#inventorySearch').submit(function(){
+       $(this).find("input[type='submit']").attr("disabled","true");
+    });
+</script>

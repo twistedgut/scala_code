@@ -1,0 +1,7 @@
+Vagrant.configure(2) do |config|
+  config.vm.box = "vagrant-centos-66-1427729137.box"
+  config.vm.box_url = "http://pulp.wtf.nap/pulp/repos/vagrant/vagrant-centos-66-1427729137.box"
+  config.vm.network "forwarded_port", guest: 8529, host: 8530
+  config.vm.provision "shell", path: "vagrant/commission.sh"
+
+end

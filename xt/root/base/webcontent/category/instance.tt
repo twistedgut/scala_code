@@ -1,0 +1,787 @@
+
+
+<style>
+
+.popHd {
+	font: bold 11px Arial;
+	padding-top: 7px;
+	padding-left:10px;
+	padding-bottom:3px;
+	margin-bottom:7px;
+	border-bottom: 1px dotted #666;
+	background:url('/images/popHDBG.gif');
+	height: 28px;	
+} 
+
+.popFt {
+        font: bold 11px Arial;
+        padding-top:6px;
+	padding-bottom:6px;
+	padding-right:10px;
+        margin-top:10px;
+        border-top: 1px dotted #999;
+	text-align: right;
+}
+
+.popFt input {
+	margin-left:10px;
+}
+
+</style>
+
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+	<tr>
+		<td><span class="title">[% instance.get_column('page_name') %]</span></td>
+		<td align="right"><a href="http://www.net-a-porter.com/Shop/[% instance.get_column('page_key') %]" target="_blank">View Live Page</a></td>
+	</tr>
+</table>
+
+[% IF instance %]	
+
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+
+		<form name="contentForm" action="/WebContent/CategoryLanding/UpdateInstance" method="post" onSubmit="return validateForm(this)">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+		<input type="hidden" name="redirect" value ="/WebContent/CategoryLanding/Instance?page_id=[% page_id %]&instance_id=[% instance_id %]">
+		<input type="hidden" name="page_id" value ="[% page_id %]">
+		<input type="hidden" name="instance_id" value ="[% instance_id %]">
+		
+		<input type="hidden" name="remote_image_path" value="images/productCategoryPage">
+		<input type="hidden" name="image_files" value="">
+
+		<tr>
+			<td colspan="6" class="divider"></td>
+		</tr>
+		<tr> 
+			<td width="26%" class="tableHeader">&nbsp;&nbsp;Version Name</td>
+			<td width="16%" class="tableHeader">Created</td>
+			<td width="16%" class="tableHeader">Created By</td>
+			<td width="16%" class="tableHeader">Last Updated</td>
+			<td width="16%" class="tableHeader">Last Updated By</td>
+			<td width="10%" class="tableHeader">Status</td>
+		</tr>
+		<tr>
+			<td colspan="6" class="divider"></td>
+		</tr>	
+		<tr> 
+			<td>&nbsp;&nbsp;[% instance.label %]</td>
+			<td>[% instance.created.dmy %] [% instance.created.hour %]:[% instance.created.minute %]</td>
+			<td>[% instance.get_column('created_by_name') %]</td>
+			<td>[% instance.last_updated.dmy %] [% instance.last_updated.hour %]:[% instance.last_updated.minute %]</td>
+			<td>[% instance.get_column('updated_by_name') %]</td>
+			<td>[% instance.get_column('status') %]</td>
+		</tr>
+		<tr>
+			<td colspan="6" class="divider"></td>
+		</tr>
+
+	</table>
+	<br />
+	<br />
+
+[% ELSE %]
+
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+		
+		<form name="contentForm" action="/WebContent/CategoryLanding/CreateInstance" method="post" onSubmit="return validateForm(this)">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+	
+		<input type="hidden" name="redirect" value ="/WebContent/CategoryLanding/Instance">
+		<input type="hidden" name="page_id" value ="[% page_id %]">
+
+		<input type="hidden" name="remote_image_path" value="images/productCategoryPage">
+		<input type="hidden" name="image_files" value="">
+
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+		<tr height="24"> 
+			<td width="15%" align="right"><b>Name:</b>&nbsp;&nbsp;</td>
+			<td width="85%">
+				<input type="text" size="30" name="name">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+	</table>
+
+	<br />
+	<br />
+
+[% END %]
+
+	
+<span class="title">Content</span><br />
+
+[% IF instance.get_column('status') == 'Archived' %]
+	Click on "Publish to Live" to replace the current live version.
+[% ELSE %]
+	Click on each content area to edit.  <b>Please note</b> that any changes will not be saved until you click on [% IF instance.get_column('status') == 'Publish' %]"Publish to Live"[% ELSE %]one of the buttons at the bottom of the page[% END %].
+[% END %]	
+<br />
+<br />
+
+
+<div id="template1">
+
+	<div id="pagecontainer" style="float:left; width: 757px">
+		
+		<div id="mainimage" class="editable-imageAndLink" style="float: left; width:452px; height:475px; border-width: 1px 1px 1px 1px; border-style:dotted; border-color: red; [% IF instance.get_column('status') != 'Archived' %]cursor: pointer[% END %]" [% IF instance.get_column('status') != 'Archived' %]onClick="showLayer('editContent', 'main_area')"[% END %]>
+			[% IF contents.main_area %]
+				<input type="hidden" id="content_[% contents.main_area.image.id %]" name="content_[% contents.main_area.image.id %]" value="[% contents.main_area.image.content %]">
+				<input type="hidden" id="content_[% contents.main_area.alt_tag.id %]" name="content_[% contents.main_area.alt_tag.id %]" value="[% contents.main_area.alt_tag.content %]">
+				<input type="hidden" id="content_[% contents.main_area.url.id %]" name="content_[% contents.main_area.url.id %]" value="[% contents.main_area.url.content %]">
+				
+				[% IF contents.main_area.image.content %]
+					<img src="/images/cms_content/productCategoryPage/[% contents.main_area.image.content %]" width="452" height="475" name="main_areaImage">
+				[% ELSE %]
+					<img src="/images/blank.gif" width="452" height="475" name="main_areaImage">
+				[% END %]
+			[% ELSE %]
+
+				<input type="hidden" id="content_1" name="content_1" value="">
+				<input type="hidden" id="content_2" name="content_2" value="">
+				<input type="hidden" id="content_3" name="content_3" value="">
+
+				<input type="hidden" id="field_1" name="field_1" value="52">
+				<input type="hidden" id="field_2" name="field_2" value="53">
+				<input type="hidden" id="field_3" name="field_3" value="54">
+
+				<img src="/images/blank.gif" width="452" height="475" name="main_areaImage">
+			[% END %]
+		</div>
+
+		<div id="promoelements" style="float: left">
+			
+			<div id="promoelement1" class="editable-whatsHot" style="width:300px; height:170px; border-width: 1px 1px 1px 0px; border-style:dotted; border-color: red; [% IF instance.get_column('status') != 'Archived' %]cursor: pointer[% END %]">
+
+				<script>
+
+					var action_re = /(product.[^\/]+)\/thumb\/index.jpg$/;
+								 
+					function bannerAction() {
+						action_re.test( document.images["bannerActionImg"].src );
+						var action = RegExp.$1
+						if (actionList[action].loc.indexOf('popup')==-1)
+						   {window.location.href = actionList[action].loc;}
+						else if(actionList[action].loc.indexOf('Flash')>0)
+							{       launchPopUp(actionList[action].loc,812,639)}
+						else
+						   {launchPopUp(actionList[action].loc,367,298)}
+						}
+					 
+					function switchBanner() {
+								   
+							action_re.test( document.images["bannerActionImg"].src );
+							var nextBannerIdx = (actionList[RegExp.$1].idx +1) % actionList.length;  
+							document.images["bannerActionImg"].src = "http://www.net-a-porter.com/images/" + actionList[nextBannerIdx] + '/thumb/index.jpg';           
+					}
+
+					var ticker;
+
+				</script>
+
+
+				[% IF contents.top_right %]
+
+					<input type="hidden" id="content_[% contents.top_right.type.id %]" name="content_[% contents.top_right.type.id %]" value="[% contents.top_right.type.content %]">
+
+					[% IF contents.top_right.type.content == 'Whats Hot' %]
+
+						<input type="hidden" id="content_[% contents.top_right.image.id %]" name="content_[% contents.top_right.image.id %]" value="[% contents.top_right.image.content %]">
+						<input type="hidden" id="content_[% contents.top_right.whatshot_list.id %]" name="content_[% contents.top_right.whatshot_list.id %]" value="[% contents.top_right.whatshot_list.content %]">
+											
+
+						<script>
+							
+							var actionList = new Array();
+
+							[% SET loop_count = 0 %]
+
+							[% FOREACH product = contents.top_right.prods.keys %]
+
+								[% SET first_prod = product %]
+
+								actionList[[% loop_count %]] = 'product/[% product %]';
+							
+								actionList['product/[% product %]'] = {idx:[% loop_count %], loc:"product/[% product %]"};
+
+								[% SET loop_count = loop_count + 1 %]
+								
+							[% END %]
+							
+							[% IF contents.top_right.prods.size > 0 %]
+								ticker = window.setInterval(switchBanner,2500);
+							[% END %]
+
+						</script>
+							
+						<div id="whatsHotTicker" style="display: inline;  width: 300; height: 170;">
+							<table cellpadding="0" cellspacing="0" border="0">
+								<tr>
+									<td style="background-image: url(http://dev-intl.net-a-porter.com/images/productCategoryPage/whats-hot-background.jpg);" width="131" height="170">
+										[% IF instance.get_column('status') != 'Archived' %]<a href="javascript:showLayer('editWhatsHot', 'top_right')">[% END %]
+											[% IF contents.top_right.prods.size > 0 %]
+												<img style="position: relative; left: 55px;" src="http://www.net-a-porter.com/images/product/[% first_prod %]/thumb/index.jpg" border="0" width="56" height="84"   name="bannerActionImg" />
+											[% ELSE %]
+												<img style="position: relative; left: 55px;" src="/images/blank.gif" border="0" width="56" height="84"   name="bannerActionImg" />
+											[% END %]
+										</a>
+									</td>
+									<td>
+										[% IF contents.top_right.image.content %]
+											[% IF instance.get_column('status') != 'Archived' %]<a href="javascript:showLayer('editWhatsHot', 'top_right')">[% END %]
+											<img src="/images/cms_content/productCategoryPage/[% contents.top_right.image.content %]" border="0" width="169" height="170"  name="top_rightImage" /></a>
+										[% ELSE %]
+											[% IF instance.get_column('status') != 'Archived' %]<a href="javascript:showLayer('editWhatsHot', 'top_right')">[% END %]
+											<img src="/images/blank.gif" border="0" width="169" height="170"  name="top_rightImage" /></a>
+										[% END %]
+									</td>
+								</tr>
+							</table>
+						</div>
+					[% ELSE %]
+						
+						<input type="hidden" id="content_[% contents.top_right.image.id %]" name="content_[% contents.top_right.image.id %]" value="[% contents.top_right.image.content %]">
+						<input type="hidden" id="content_[% contents.top_right.alt_tag.id %]" name="content_[% contents.top_right.alt_tag.id %]" value="[% contents.top_right.alt_tag.content %]">
+						<input type="hidden" id="content_[% contents.top_right.url.id %]" name="content_[% contents.top_right.url.id %]" value="[% contents.top_right.url.content %]">
+
+						[% IF contents.top_right.image.content %]
+							[% IF instance.get_column('status') != 'Archived' %]<a href="javascript:showLayer('editContent', 'top_right')">[% END %]<img src="/images/cms_content/productCategoryPage/[% contents.top_right.image.content %]" width="300" height="170" name="top_rightImage"></a>
+						[% ELSE %]
+							[% IF instance.get_column('status') != 'Archived' %]<a href="javascript:showLayer('editContent', 'top_right')">[% END %]<img src="/images/blank.gif" width="300" height="170" name="top_rightImage"></a>
+						[% END %]
+					[% END %]
+
+				[% ELSE %]
+
+					<input type="hidden" id="content_4" name="content_4" value="Whats Hot">
+					<input type="hidden" id="content_5" name="content_5" value="">
+					<input type="hidden" id="content_6" name="content_6" value="">
+
+					<input type="hidden" id="field_4" name="field_4" value="61">
+					<input type="hidden" id="field_5" name="field_5" value="63">
+					<input type="hidden" id="field_6" name="field_6" value="55">
+
+					<div id="whatsHotTicker" style="display: inline;  width: 300; height: 170;">
+						<table cellpadding="0" cellspacing="0" border="0">
+							<tr>
+								<td style="background-image: url(http://dev-intl.net-a-porter.com/images/productCategoryPage/whats-hot-background.jpg);" width="131" height="170">
+									[% IF instance.get_column('status') != 'Archived' %]<a href="javascript:showLayer('editWhatsHot', 'top_right')">[% END %]
+										<img style="position: relative; left: 55px;" src="/images/blank.gif" border="0" width="56" height="84"  name="bannerActionImg" />
+									</a>
+								</td>
+								<td>
+									[% IF instance.get_column('status') != 'Archived' %]<a href="javascript:showLayer('editWhatsHot', 'top_right')">[% END %]
+									<img src="/images/blank.gif" border="0" width="169" height="170" name="top_rightImage" /></a>
+								</td>
+							</tr>
+						</table>
+					</div>
+				[% END %]
+			</div>
+			<div id="promoelement2" class="editable-imageAndLink" style="width:300px; height:305px; border-width: 0px 1px 1px 0px; border-style:dotted; border-color: red; [% IF instance.get_column('status') != 'Archived' %]cursor: pointer[% END %]" [% IF instance.get_column('status') != 'Archived' %]onClick="showLayer('editContent', 'bottom_right')"[% END %]>
+				[% IF contents.bottom_right %]
+					
+					<input type="hidden" id="content_[% contents.bottom_right.image.id %]" name="content_[% contents.bottom_right.image.id %]" value="[% contents.bottom_right.image.content %]">
+					<input type="hidden" id="content_[% contents.bottom_right.alt_tag.id %]" name="content_[% contents.bottom_right.alt_tag.id %]" value="[% contents.bottom_right.alt_tag.content %]">
+					<input type="hidden" id="content_[% contents.bottom_right.url.id %]" name="content_[% contents.bottom_right.url.id %]" value="[% contents.bottom_right.url.content %]">
+
+					[% IF contents.bottom_right.image.content %]
+						<img src="/images/cms_content/productCategoryPage/[% contents.bottom_right.image.content %]" alt="Click to edit" width="300" height="305" name="bottom_rightImage">
+					[% ELSE %]
+						<img src="/images/blank.gif" width="300" height="305" name="bottom_rightImage">
+					[% END %]
+				[% ELSE %]
+					
+					<input type="hidden" id="content_7" name="content_7" value="">
+					<input type="hidden" id="content_8" name="content_8" value="">
+					<input type="hidden" id="content_9" name="content_9" value="">
+
+					<input type="hidden" id="field_7" name="field_7" value="58">
+					<input type="hidden" id="field_8" name="field_8" value="59">
+					<input type="hidden" id="field_9" name="field_9" value="60">
+
+					<img src="/images/blank.gif" width="300" height="305" name="bottom_rightImage">
+				[% END %]
+			</div>
+		</div>      
+	</div>
+</div>
+
+<!--
+<div style="position:relative; z-index:100; width:80px; height:20px; left:10px; top:-30px; border: 1px solid #666; background-color: #333; color: #fff; padding:3px"><b>Edit Content</b></div>
+
+<div style="position:relative; z-index:100; width:80px; height:20px; left:470px; top:-53px; border: 1px solid #666; background-color: #333; color: #fff; padding:3px"><b>Edit Content</b></div>
+
+<div style="position:relative; z-index:100; width:80px; height:20px; left:470px; top:-420px; border: 1px solid #666; background-color: #333; color: #fff; padding:3px"><b>Edit Content</b></div>
+-->
+
+<br />
+<br />
+
+
+[% IF instance && is_operator %]
+
+	<table width="100%" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td colspan="3"><img src="/images/blank.gif" width="1" height="15"></td>
+		</tr>
+		<tr>
+			[% IF instance.get_column('status') == 'Draft' %]
+				<td width="42%"><input type="submit" class="button" name="status" value="Save Changes"></td>
+				<td width="15%" align="right"><input type="submit" class="button" name="status" value="Archive"></td>
+				<td width="23%" align="right"><input type="submit" class="button" name="status" value="Publish to Staging"></td>
+				<td width="20%" align="right"><input type="submit" class="button" name="status" value="Publish to Live"></td>
+			[% ELSIF instance.get_column('status') == 'Publish' %]
+				<td align="right"><input type="submit" class="button" name="status" value="Publish to Live"></td>
+			[% ELSIF instance.get_column('status') == 'Archived' %]
+				<td align="right"><input type="submit" class="button" name="status" value="Publish to Live"></td>
+			[% END %]
+		</tr>
+		</form>
+	</table>
+
+[% ELSE %]
+
+	<table width="100%" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td><img src="/images/blank.gif" width="1" height="15"></td>
+		</tr>
+		<tr>
+			<td align="right"><input type="submit" class="button" name="status" value="Save Draft"></td>
+		</tr>
+		</form>
+	</table>
+
+[% END %]
+
+
+
+
+
+
+
+<!-- opaque mask to go behind pop-up layers -->
+
+<div id='screenMask' style="display:none; z-index:10; position:absolute; left:0px; top:0px; width:100%; height:100%; background-color:#000;filter:alpha(opacity=20);opacity: 0.2;-moz-opacity:0.2;">&nbsp;</div>
+
+
+<!-- Edit Content Layer -->
+
+<div id="editContent" style="display:none; z-index:11; position:absolute; left:350px; top:200px; padding: 0px; background-color:#aaa;">
+	
+	<div style="width:350px; background-color:#FFF; border: 1px solid #333;">
+		<div class="popHd">Edit Content</div>
+
+		<table width="100%" border="0">
+				<form name="editContentForm" enctype="multipart/form-data">
+                [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+				<input type="hidden" name="contentName" value="">
+				<input type="hidden" name="contentType" value="Content">
+
+				<tr>
+						<td width="28%" height="28" align="right"><b>Current Image:</td>
+						<td width="72%"><span id="editContentForm_curImage"></span></td>
+				</tr>
+				<tr>
+						<td height="28" align="right"><b>New Image:</td>
+						<td><input type="file" name="uploadImg1" size="25"></td>
+				</tr>
+				<tr>
+						<td colspan="2"><img src="/images/blank.gif" width="1" height="10"></td>
+				</tr>
+				<tr>
+						<td height="28" align="right"><b>Alt Tag:</td>
+						<td><input type="text" name="alt_tag" size="39" value=""></td>
+				</tr>
+				<tr>
+						<td height="28" align="right"><b>URL:</td>
+						<td><input type="text" name="url" size="39" value=""></td>
+				</tr>
+				</form>
+		</table>
+
+		<div class="popFt">
+				<input type="button" class="button" name="" value="Cancel" onClick="hideLayer('editContent');">
+				<input type="button" class="button" name="" id="Update1" value="Update" onClick="saveChanges(document.editContentForm);">
+		</div>
+	</div>
+</div>
+
+
+<div id="editWhatsHot" style="display:none; z-index:11; position:absolute; left:350px; top:200px; padding: 0px; background-color:#aaa;">
+	
+	<div style="width:350px; background-color:#FFF; border: 1px solid #333;">
+		<div class="popHd">Edit Content</div>
+
+		<table width="100%" border="0">
+				<form name="editWhatsHotForm" enctype="multipart/form-data">
+                [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+				<input type="hidden" name="contentName" value="">
+				<input type="hidden" name="contentType" value="WhatsHot">
+
+				<tr>
+						<td width="28%" height="28" align="right"><b>Current Image:</td>
+						<td width="72%"><span id="editWhatsHotForm_curImage"></span></td>
+				</tr>
+				<tr>
+						<td height="28" align="right"><b>New Image:</td>
+						<td><input type="file" name="uploadImg2" size="25"></td>
+				</tr>
+				<tr>
+						<td colspan="2"><img src="/images/blank.gif" width="1" height="10"></td>
+				</tr>
+				<tr valign="top">
+						<td height="28" align="right"><b>What's Hot List:</td>
+						<td>
+							<select name="whatshot_list">
+								<option value="">------------</option>
+
+								[% WHILE (list = whatshot_lists.next) %]
+									<option value="[% list.get_column('id') %]">[% list.get_column('name') %]</option>
+								[% END %]
+
+								<option value="">------------</option>
+							</select>
+						</td>
+				</tr>
+				</form>
+		</table>
+
+		<div class="popFt">
+				<input type="button" class="button" name="" value="Cancel" onClick="hideLayer('editWhatsHot');">
+				<input type="button" class="button" name="" id="Update2" value="Update" onClick="saveChanges(document.editWhatsHotForm);">
+		</div>
+	</div>
+</div>
+
+
+<script type="text/javascript" src="/yui/yahoo/yahoo.js?_yuiversion=2.3.1"></script>
+<script type="text/javascript" src="/yui/event/event.js?_yuiversion=2.3.1"></script>
+<script type="text/javascript" src="/yui/connection/connection.js?_yuiversion=2.3.1"></script>
+<script type="text/javascript" src="/yui/yahoo-dom-event/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="/yui/connection/connection-min.js"></script>
+<script type="text/javascript" src="/javascript/centeredDiv.js"></script>
+
+<script language="Javascript">
+<!--
+
+// this is to keep track of all the images uploaded
+// so we can copy them to the website at the end
+var image_files = '';
+
+// content arrays to populate form fields
+var content = new Array(3);
+content['main_area'] = new Array(4);
+content['top_right'] = new Array(4);
+content['bottom_right'] = new Array(4);
+
+[% IF contents.main_area %]
+	content['main_area']['image']	= [ '[% contents.main_area.image.id %]', '[% contents.main_area.image.content %]' ];
+	content['main_area']['alt_tag'] = [ '[% contents.main_area.alt_tag.id %]', '[% contents.main_area.alt_tag.content %]' ];
+	content['main_area']['url']	= [ '[% contents.main_area.url.id %]', '[% contents.main_area.url.content %]' ];
+[% ELSE %]
+	content['main_area']['image']	= [1,''];
+	content['main_area']['url']	= [2,''];
+	content['main_area']['alt_tag'] = [3,''];	
+[% END %]
+
+[% IF contents.top_right %]
+	[% IF contents.top_right.type.content == 'Whats Hot' %]
+		content['top_right']['image']		= [ '[% contents.top_right.image.id %]', '[% contents.top_right.image.content %]' ];
+		content['top_right']['whatshot_list']	= [ '[% contents.top_right.whatshot_list.id %]', '[% contents.top_right.whatshot_list.content %]' ];
+	[% ELSE %]
+		content['top_right']['image']	= [ '[% contents.top_right.image.id %]', '[% contents.top_right.image.content %]' ];
+		content['top_right']['alt_tag'] = [ '[% contents.top_right.alt_tag.id %]', '[% contents.top_right.alt_tag.content %]' ];
+		content['top_right']['url']	= [ '[% contents.top_right.url.id %]', '[% contents.top_right.url.content %]' ];
+	[% END %]
+[% ELSE %]
+	content['top_right']['whatshot_list'] = [5,''];
+	content['top_right']['image']	= [6,''];
+[% END %]
+
+[% IF contents.bottom_right %]
+	content['bottom_right']['image']	= [ '[% contents.bottom_right.image.id %]', '[% contents.bottom_right.image.content %]' ];
+	content['bottom_right']['alt_tag']	= [ '[% contents.bottom_right.alt_tag.id %]', '[% contents.bottom_right.alt_tag.content %]' ];
+	content['bottom_right']['url']		= [ '[% contents.bottom_right.url.id %]', '[% contents.bottom_right.url.content %]' ];
+[% ELSE %]
+	content['bottom_right']['image']	= [7,''];
+	content['bottom_right']['url']		= [8,''];
+	content['bottom_right']['alt_tag']	= [9,''];	
+[% END %]
+
+
+function showLayer(layerName, contentName){
+
+	// get browser size for mask layer
+	var winW = 630, winH = 460;
+
+	if (parseInt(navigator.appVersion)>3) {
+		if (navigator.appName=="Netscape") {
+			winW = window.innerWidth;
+			winH = window.innerHeight;
+		}
+		if (navigator.appName.indexOf("Microsoft")!=-1) {
+			winW = document.body.offsetWidth;
+			winH = document.body.scrollHeight;
+		}
+	}
+
+	if (contentName){
+
+		if (layerName == 'editContent'){
+			document.editContentForm.contentName.value = contentName;
+			document.getElementById('editContentForm_curImage').innerHTML = content[contentName]['image'][1];
+			document.editContentForm.alt_tag.value = content[contentName]['alt_tag'][1];
+			document.editContentForm.url.value = content[contentName]['url'][1];
+		}
+		else {
+			document.editWhatsHotForm.contentName.value = contentName;
+			document.getElementById('editWhatsHotForm_curImage').innerHTML = content[contentName]['image'][1];
+
+			for(i = 0; i < document.editWhatsHotForm.whatshot_list.options.length; i ++) {
+				if ( document.editWhatsHotForm.whatshot_list.options[i].value == content[contentName]['whatshot_list'][1] ){
+					document.editWhatsHotForm.whatshot_list.options[i].selected = true;
+				}
+			}
+		}
+
+	}
+
+	// set mask layer width and height to browser dimensions
+	document.getElementById('screenMask').style.width = winW - 18;
+	document.getElementById('screenMask').style.height = winH;
+
+	// show mask layer
+	document.getElementById('screenMask').style.display = "block";
+
+	// center the edit div
+	alignDivCenter(layerName, 350, 300);
+
+	// show action layer
+	document.getElementById(layerName).style.display = "block";
+}
+
+// hide popup action layer
+
+function hideLayer(layerName){
+
+	// hide mask layer
+	document.getElementById('screenMask').style.display = "none";
+
+	// hide action layer
+	document.getElementById(layerName).style.display = "none";
+}
+
+
+function validateForm(theForm){
+
+	document.getElementById('screenMask').style.display = 'block';
+
+	// populate image files field
+	theForm.image_files.value = image_files;
+
+	if (theForm.name.value != '' ){
+		return true;
+	}
+	else {
+		alert("Please enter a version name before proceeding");	
+
+		document.getElementById('screenMask').style.display = 'none';
+		return false;
+	}
+}
+
+
+var cur_Layer;
+var cur_contentName;
+
+function saveChanges(formName){
+	
+
+	document.getElementById('screenMask').style.zIndex = 1000;
+
+	var contentName = formName.contentName.value;
+	var contentType	= formName.contentType.value;
+
+	cur_contentName = contentName;
+	cur_Layer	= 'edit' + contentType;
+
+	if (contentType == 'WhatsHot'){
+	
+		// set array values
+		content[contentName]['whatshot_list'][1] = formName.whatshot_list.value;
+
+		// set hidden form value
+		document.getElementById('content_'+ content[contentName]['whatshot_list'][0] ).value = formName.whatshot_list.value;
+
+		if (formName.uploadImg2.value == ''){
+			hideLayer(cur_Layer);
+			document.getElementById('screenMask').style.zIndex = 10;
+		}
+
+		// reset whats hot ticker
+		document.bannerActionImg.src = '/images/blank.gif';
+		clearInterval(ticker);
+
+	}
+	else {
+
+		// set array values
+		content[contentName]['alt_tag'][1]	= formName.alt_tag.value;
+		content[contentName]['url'][1]		= formName.url.value;
+
+		// set hidden form value
+		document.getElementById('content_'+ content[contentName]['alt_tag'][0] ).value = formName.alt_tag.value;
+		document.getElementById('content_'+ content[contentName]['url'][0] ).value = formName.url.value;
+
+		if (formName.uploadImg1.value == ''){
+			hideLayer(cur_Layer);
+			document.getElementById('screenMask').style.zIndex = 10;
+		}
+	}
+}
+
+
+// image upload wizardry
+function initUpload(){
+  
+	var onUploadButtonClick = function(e){
+	
+		//the second argument of setForm is crucial,
+		//which tells Connection Manager this is a file upload form
+		YAHOO.util.Connect.setForm('editContentForm', true);
+	
+		
+		var handleUploadSucess = function(oResponse){
+
+		if (oResponse.responseText){
+			var response = oResponse.responseText;
+
+			if ( response.match("ERROR:") || response.match("Internal") ){
+				alert(response);
+
+				hideLayer(cur_Layer);
+				document.getElementById('screenMask').style.zIndex = 10;
+			}
+			else {
+				//alert(response + ' uploaded successfully');
+
+				// add filename to image file var
+				if (image_files == ''){
+					image_files = 'productCategoryPage/'+response;
+				}
+				else {
+					image_files += ',productCategoryPage/'+response;
+				}
+
+				// set up content fields
+				content[cur_contentName]['image'][1]	= response;
+				document.getElementById('content_'+ content[cur_contentName]['image'][0] ).value = response;
+
+				// image swap
+				document[cur_contentName+'Image'].src = '/images/cms_content/productCategoryPage/'+response;
+
+				hideLayer(cur_Layer);
+				document.getElementById('screenMask').style.zIndex = 10;
+			}
+		}
+		else {
+			hideLayer(cur_Layer);
+			document.getElementById('screenMask').style.zIndex = 10;
+		}
+	} 
+
+	var uploadHandler = {
+		upload:handleUploadSucess
+	};
+
+	if (document.editContentForm.uploadImg1.value != ''){
+            // https://metacpan.org/module/Plack::Middleware::CSRFBlock#javascript
+            YAHOO.util.Connect.initHeader(
+                "X-CSRF-Token", $("meta[name='csrf_token']").attr("content")
+            );
+            YAHOO.util.Connect.asyncRequest('POST', '/WebContent/CategoryLanding/UploadImage?ms=' + new Date().getTime() + '&instance_id=[% instance_id %]&destination=productCategoryPage', uploadHandler);
+	}
+};
+	YAHOO.util.Event.on('Update1', 'click', onUploadButtonClick);
+}
+
+YAHOO.util.Event.on(window, 'load', initUpload);
+
+
+function initUpload2(){
+  
+	var onUploadButtonClick2 = function(e){
+	
+		//the second argument of setForm is crucial,
+		//which tells Connection Manager this is a file upload form
+		YAHOO.util.Connect.setForm('editWhatsHotForm', true);
+	
+		
+		var handleUploadSucess = function(oResponse){
+
+		if (oResponse.responseText){
+			var response = oResponse.responseText;
+
+			if ( response.match("ERROR:") ){
+				alert(response);
+
+				hideLayer(cur_Layer);
+				document.getElementById('screenMask').style.zIndex = 10;
+			}
+			else {
+				//alert(response + ' uploaded successfully');
+
+				// add filename to image file var
+				if (image_files == ''){
+					image_files = 'productCategoryPage/'+response;
+				}
+				else {
+					image_files += ',productCategoryPage/'+response;
+				}
+
+				// set up content fields
+				content[cur_contentName]['image'][1]	= response;
+				document.getElementById('content_'+ content[cur_contentName]['image'][0] ).value = response;
+
+				// image swap
+				document[cur_contentName+'Image'].src = '/images/cms_content/productCategoryPage/'+response;
+
+				hideLayer(cur_Layer);
+				document.getElementById('screenMask').style.zIndex = 10;
+			}
+		}
+		else {
+			hideLayer(cur_Layer);
+			document.getElementById('screenMask').style.zIndex = 10;
+		}
+	} 
+
+	var uploadHandler = {
+		upload:handleUploadSucess
+	};
+
+	if (document.editWhatsHotForm.uploadImg2.value != ''){
+            // https://metacpan.org/module/Plack::Middleware::CSRFBlock#javascript
+            YAHOO.util.Connect.initHeader(
+                "X-CSRF-Token", $("meta[name='csrf_token']").attr("content")
+            );
+            YAHOO.util.Connect.asyncRequest('POST', '/WebContent/CategoryLanding/UploadImage?ms=' + new Date().getTime() + '&instance_id=[% instance_id %]&destination=productCategoryPage', uploadHandler);
+	}
+};
+	YAHOO.util.Event.on('Update2', 'click', onUploadButtonClick2);
+}
+
+
+YAHOO.util.Event.on(window, 'load', initUpload2);
+
+
+-->
+</script>

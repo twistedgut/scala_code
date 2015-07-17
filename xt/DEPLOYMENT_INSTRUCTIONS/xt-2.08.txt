@@ -1,0 +1,173 @@
+=================================
+XT 2.08 Release Instructions
+=================================
+
+Release Date:       2009/10/20
+Downtime Required:	NO
+
+
+These instructions are meant to be used with those detailed in confluence:
+
+    http://confluence.net-a-porter.com/display/DEV/XT+Deployment#XTDeployment-XTApplicationdeployment
+
+
+====================
+Release Dependencies
+====================
+
+Please specify related JIRA tickets where possible.
+
+Website
+-------
+
+Yes, version 8.9
+
+Fulcrum
+-------
+
+None
+
+
+=========================
+Point Release Information
+=========================
+
+2.08.00
+=======
+
+    Initial release. No extra information required.
+    Please follow steps below as normal.
+
+2.08.01
+=======
+
+    No extra information required.
+    Please follow steps below as normal.
+
+2.08.02
+=======
+
+    Release notes have been updated since 2.08.01, make sure they are followed
+    through!
+
+    -Make sure you get the newly update xt_deploy script from here.
+
+    wget -nv -O /tmp/xt_deploy.sh http://10.3.2.223/cobbler/localmirror/scripts/xt_deploy.sh
+
+2.08.03
+=======
+
+    No extra information required.
+    Please follow steps below as normal.
+
+2.08.04
+=======
+
+    No extra information required.
+    Please follow steps below as normal.
+
+2.08.05
+=======
+
+    No extra information required.
+    Please follow steps below as normal.
+
+==============================================
+Before The Code Release (downtime required)
+==============================================
+
+1. DB Patches
+---------------
+
+Run release_db_patcher as normal (this is probably done as part of the
+xt_deploy script)
+
+
+2. Edialog config change
+------------------------
+
+Change the following section in xtracker.conf for both DCs to set the directory
+where the DC edialog_feed script places the pipe delimited output files to be
+sent to edialog:
+
+<edialog>
+    waiting_dir /path/to/directory
+</edialog>
+
+
+3. Remove Lyris cron job
+------------------------
+
+Add script/edialog_feed to cron for both DCs, have it running once a day at a
+pre-defined time (some time between 2am-8am maybe, check with e-Dialog team).
+
+
+4. Update ActiveMQ consumer app config
+--------------------------------------
+
+Check that the hostname in /opt/xt/local-conf/xt_activemq_dc.conf is correct.
+Bruno should know what the hostnames are for various environments.
+
+
+5. Start the activeMQ consumer app
+----------------------------------
+
+Run the following command:
+
+  $ /opt/xt/deploy/xtracker/script/xt_activemq_dc_daemon.pl -d
+
+(The -d flag will product debug loggging on every message received. We want
+this on for now.)
+
+That script also has a 'stop' option to stop the consumer:
+
+  $ /opt/xt/deploy/xtracker/script/xt_activemq_dc_daemon.pl stop
+
+Sorry, there is no status command at present -- starting will complain if its
+already running however.
+
+
+6. Add Edialog cron job
+-----------------------
+
+NOTE: This is a step that needs to be done after the frontend goes live with
+their build for e-Dialog, currently scheduled for Nov. 4, so please check with
+the e-Dialog team as to when this needs to be done!
+
+Add script/edialog_feed to cron for both DCs, have it running once a day at a
+pre-defined time (some time between 2am-8am maybe, check with e-Dialog team).
+
+
+7. Restart the scanner reader daemon
+------------------------------------
+
+Restart the scanner reader daemon - the script lives in
+script/housekeeping/orders/scanner_reader.pl
+
+
+X. Lastly
+---------
+
+Paste any console output from the steps above as a
+
+  {noformat}
+  ...
+  {noformat}
+
+comment to the JIRA ticket for this release.
+
+
+====================
+For the Code Release
+====================
+
+Release XT, as described on:
+
+    http://confluence.net-a-porter.com/display/DEV/XT+Deployment
+
+
+======================
+After the Code Release
+======================
+
+As normal.

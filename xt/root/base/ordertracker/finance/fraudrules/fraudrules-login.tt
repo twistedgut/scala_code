@@ -1,0 +1,19 @@
+<div id="fraudrules__popup_login">
+    <form id="fraudscreen__login_form" name="fraudscreen__login_form" method="POST">
+        <p id="fraudscreen__login_prompt">Your session has expired. Please login below.</p>
+        <p id="fraudscreen__login_auth_failed">Sorry, you were not found on the system, please contact the IT department for help.</p>
+        <div class="formrow">
+            <label for="username">Username</label>
+            <input id="fraudscreen__login_username" type="text" name="username">
+        </div>
+        <div class="formrow">
+            <label for="password">Password</label>
+            <input id="fraudscreen__login_password" type="password" name="pass">
+        </div>
+        <div class="formrow buttons">
+            <div class="fraudscreen__page_buttons">
+                <input class="button" type="submit" id="fraudscreen__login_button" value="Login &raquo">
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,316 @@
+<link rel='stylesheet' type='text/css' href='/css/testtools/neworder.css'>
+
+<div id="">
+<p>Please remember that you must have the <strong>app_TEST_ONLY_INJECT_ORDERS_DO_NOT_ASSIGN_THIS_ROLE</strong> role to be able to submit orders using this tool. Assign the role to your session using the <a href="/Admin/UserRoles">UserRoles Admin Screen</a></p>
+</div>
+
+<div id="new_order_form">
+    <h1>Create a new order</h1>
+    <div id="no_order" class="no_section">
+        <h2>Order</h2>
+        <table>
+            <tr>
+                <th><label for="no_orderid">Order Number:</label></th>
+                <td><input id="no_orderid" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_order_date">Date:</label></th>
+                <td><input id="no_order_date" type="text" placeholder="yyyy-mm-dd hh:mm:ss" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_channel">Channel:</label></th>
+                <td><input id="no_channel" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_customer_id">Customer ID:</label></th>
+                <td><input id="no_customer_id" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_account_urn">Account URN:</label></th>
+                <td><input id="no_account_urn" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_username">Logged-in Username:</label></th>
+                <td><input id="no_username" type="text" /></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="no_shipping" class="no_section">
+        <h2>Shipping</h2>
+        <table>
+            <tr>
+                <th><label for="no_shipping_sku">SKU:</label></th>
+                <td><input id="no_shipping_sku" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_shipping_description">Description:</label></th>
+                <td><input id="no_shipping_description" type="text" /></td>
+            <tr>
+                <th><label for="no_shipping_unprice">Unit Net Price:</label></th>
+                <td>
+                    <input id="no_shipping_unprice" type="text" />
+                    <select id="no_shipping_uncurrency">
+                        <option value="GBP">GBP</option>
+                        <option value="USD">USD</option>
+                        <option value="HKD">HKD</option>
+                        <option value="EUR">EUR</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="no_shipping_taxprice">Tax Price:</label></th>
+                <td>
+                    <input id="no_shipping_taxprice" type="text" />
+                    <select id="no_shipping_taxcurrency">
+                        <option value="GBP">GBP</option>
+                        <option value="USD">USD</option>
+                        <option value="HKD">HKD</option>
+                        <option value="EUR">EUR</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="no_shipping_dutyprice">Duties Price:</label></th>
+                <td>
+                    <input id="no_shipping_dutyprice" type="text" />
+                    <select id="no_shipping_dutycurrency">
+                        <option value="GBP">GBP</option>
+                        <option value="USD">USD</option>
+                        <option value="HKD">HKD</option>
+                        <option value="EUR">EUR</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="no_delivery" class="no_section">
+        <h2>Delivery</h2>
+        <table>
+            <tr>
+                <th colspan="2">Contact Details</th>
+            </tr>
+            <tr>
+                <th><label for="no_delivery_contact_title">Title:</label></th>
+                <td><input id="no_delivery_contact_title" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_delivery_contact_fname">First Name:</label></th>
+                <td><input id="no_delivery_contact_fname" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_delivery_contact_lname">Last Name:</label></th>
+                <td><input id="no_delivery_contact_lname" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_delivery_contact_hphone">Home Phone:</label></th>
+                <td><input id="no_delivery_contact_hphone" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_delivery_contact_mphone">Mobile Phone:</label></th>
+                <td><input id="no_delivery_contact_mphone" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_delivery_contact_ophone">Office Phone:</label></th>
+                <td><input id="no_delivery_contact_ophone" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_delivery_contact_email">E-mail:</label></th>
+                <td><input id="no_delivery_contact_email" type="text" /></td>
+            </tr>
+        </table>
+
+        <table>
+            <tr>
+                <th colspan="2">Address</th>
+            </tr>
+            <tr>
+                <th><label for="no_delivery_address_urn">URN:</label></th>
+                <td><input id="no_delivery_address_urn" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_delivery_address_line1">Line 1:</label></th>
+                <td><input id="no_delivery_address_line1" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_delivery_address_line2">Line 2:</label></th>
+                <td><input id="no_delivery_address_line2" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_delivery_address_line3">Line 3:</label></th>
+                <td><input id="no_delivery_address_line3" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_delivery_address_city">City:</label></th>
+                <td><input id="no_delivery_address_city" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_delivery_address_division">Division:</label></th>
+                <td><input id="no_delivery_address_division" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_delivery_address_postcode">Post Code:</label></th>
+                <td><input id="no_delivery_address_postcode" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_delivery_address_country">Country:</label></th>
+                <td><input id="no_delivery_address_country" type="text" /></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="no_billing" class="no_section">
+            <h2 style="display: inline">Billing</h2>
+            <label for="no_use_delivery_data_for_billings">Use delivery contact details for billing?:</label>
+            <input id="no_use_delivery_data_for_billings" type="checkbox" checked="" />
+
+        <table class="hidden">
+            <tr>
+                <th colspan="2">Contact Details</th>
+            </tr>
+            <tr>
+                <th><label for="no_billing_contact_title">Title:</label></th>
+                <td><input id="no_billing_contact_title" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_billing_contact_fname">First Name:</label></th>
+                <td><input id="no_billing_contact_fname" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_billing_contact_lname">Last Name:</label></th>
+                <td><input id="no_billing_contact_lname" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_billing_contact_hphone">Home Phone:</label></th>
+                <td><input id="no_billing_contact_hphone" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_billing_contact_mphone">Mobile Phone:</label></th>
+                <td><input id="no_billing_contact_mphone" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_billing_contact_ophone">Office Phone:</label></th>
+                <td><input id="no_billing_contact_ophone" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_billing_contact_email">E-mail:</label></th>
+                <td><input id="no_billing_contact_email" type="text" /></td>
+            </tr>
+        </table>
+
+        <table class="hidden">
+            <tr>
+                <th colspan="2">Address</th>
+            </tr>
+            <tr>
+                <th><label for="no_billing_address_urn">Urn:</label></th>
+                <td><input id="no_billing_address_urn" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_billing_address_line1">Line 1:</label></th>
+                <td><input id="no_billing_address_line1" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_billing_address_line2">Line 2:</label></th>
+                <td><input id="no_billing_address_line2" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_billing_address_line3">Line 3:</label></th>
+                <td><input id="no_billing_address_line3" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_billing_address_city">City:</label></th>
+                <td><input id="no_billing_address_city" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_billing_address_division">Division:</label></th>
+                <td><input id="no_billing_address_division" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_billing_address_postcode">Post Code:</label></th>
+                <td><input id="no_billing_address_postcode" type="text" /></td>
+            </tr>
+            <tr>
+                <th><label for="no_billing_address_country">Country:</label></th>
+                <td><input id="no_billing_address_country" type="text" /></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="no_order_items_d" class="no_section">
+        <h2 style="display: inline">Order Items</h2>
+        <button id="no_add_order_items">+</button>
+    </div>
+
+     <div id="no_promotion_line_items" class="no_section">
+        <h2 style="display: inline">Promotion line items</h2>
+        <button id="no_add_promotion_line_items">+</button>
+    </div>
+
+    <div id="no_promotion_basket_items" class="no_section">
+        <h2 style="display: inline">Promotion basket items</h2>
+        <button id="no_add_promotion_basket_items">+</button>
+    </div>
+
+    <div id="no_payment_details" class="no_section">
+        <h2>Payment Details</h2>
+        <table>
+            <tr>
+                    <th><label for="no_payment_type">Payment Type</label></th>
+                    <td>
+                    <select id="no_payment_type">
+                        <option value="Store Credit">Store Credit</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="no_auth_code">Auth code</label></th>
+                <td><input id="no_auth_code" type="text" /></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="no_totals" class="no_section">
+        <h2>Totals</h2>
+        <table>
+            <tr>
+                <th><label for="no_gross_amount">Gross:</label></th>
+                <td>
+                    <input id="no_gross_amount" type="text" />
+                    <select id="no_gross_currency">
+                        <option value="GBP">GBP</option>
+                        <option value="USD">USD</option>
+                        <option value="HKD">HKD</option>
+                        <option value="EUR">EUR</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="no_postage_amount">Postage:</label></th>
+                <td>
+                    <input id="no_postage_amount" type="text" />
+                    <select id="no_postage_currency">
+                        <option value="GBP">GBP</option>
+                        <option value="USD">USD</option>
+                        <option value="HKD">HKD</option>
+                        <option value="EUR">EUR</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div>
+        <button id="no_submit">Create!</button>
+    </div>
+</div>
+
+    <div>
+        <button id="no_generate">Populate fields</button>
+    </div>
+
+<script type="text/javascript">
+    $.getScript( "/javascript/testtools/order_importer.js", function() {});
+    $.getScript( "/javascript/testtools/populate_fields.js", function() {});
+</script>

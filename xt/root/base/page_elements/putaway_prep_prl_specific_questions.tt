@@ -1,0 +1,87 @@
+[%#
+    Renders PRL specific questions.
+
+    Relies on following mandatory parameters:
+
+        prl_questions: perl data structure with all information about supported
+           PRL specific questions;
+
+        container_complete_selector: jquery selector for DOM element clicking on
+            which triggers "complete putaway prep" action. Suggested one is button.
+%]
+
+[% IF prl_questions %]
+
+    <div>&nbsp</div>
+
+    [%# Show new separate block for each question,
+        each block consists of question and list of predefined possible
+        answers, implemented as "radio"
+    %]
+    [% FOREACH question IN prl_questions.keys %]
+
+    <table id="prl_specific_question_[% question %]" class="data wide-data prl-specific-questions">
+        <tr><th id="prl_specific_question__[% question %]__wording">
+            [% prl_questions.$question.question_wording %]
+        </th></tr>
+        [% FOREACH answer_key IN prl_questions.$question.answers.keys.sort %]
+            <tr><td>
+                <input
+                    type  = "radio"
+                    name  = "prl_specific_question__[% question %]"
+                    id    = "[% question %]_[% answer_key %]"
+                    value = "[% prl_questions.$question.answers.$answer_key.value %]"
+                    class = "prl-specific-answer"
+                />
+                <label for="[% question %]_[% answer_key %]">
+                    [% prl_questions.$question.answers.$answer_key.wording %]
+                </label>
+            </td></tr>
+        [% END %]
+    </table>
+    [% END %]
+[% END %]
+
+
+<script>
+    $(document).ready( function() {
+        // by default keep PRL specific questions hidden
+        $('.prl-specific-questions').hide();
+
+        // Assign handler on mark container as complete button, so it is impossible
+        // to submit container until all PRL specific questions are answered.
+        $('[% container_complete_selector %]').bind('click', function(event){
+            var obj = {},
+                is_complete = true;
+
+            // get list of names for inputs with answers
+            $('.prl-specific-answer').each(function(index, el){
+                obj[ $(el).attr('name') ] = 1;
+            });
+
+            // check if all answers are populated, and if any of them are not answered -
+            // stay on current page
+            $.each( obj, function(key){
+                if ( typeof $('input:radio[name='+key+']:checked').val() == 'undefined' ) {
+
+                    // in case if question is going to be shown for first time: highlight it
+                    // with green color, if user ignores it and keep clicking "complete container"
+                    // - highlight question with red color
+                    $('#' + key + '__wording').is(':visible')
+                        ? $('#' + key + '__wording').css('background-color', 'red')
+                        : $('#' + key + '__wording').css('background-color', 'green');
+
+                    // make sure question is visible
+                    $('.prl-specific-questions').show();
+
+                    is_complete = false;
+                }
+            } );
+
+            // depending on if question was answered or not - allow form submission or stay
+            // on this page until all questions are finished
+            return is_complete;
+        });
+    });
+</script>
+

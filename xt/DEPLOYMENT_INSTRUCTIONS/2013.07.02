@@ -1,0 +1,85 @@
+=====================================
+XT 2013.07.02 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               : 4th July 2013
+Cherwell           :
+Release Manager    : Kaushal Patel
+Build Manager      : Matt Davies
+TechOps            :
+Backend Developer  :
+Frontend Developer :
+QA                 :
+PCI Authorised by  :
+
+2 - CHANGELOG
+-------------
+http://gitosis.net-a-porter.com/cgit/xt/tree/CHANGES/2013.07.02?h=release/2013.07
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2013.07/xt-2013.07.02-0.noarch.rpm
+
+NOTE: Solr code duplicated in XT and Fulcrum moved to separate RPMS
+
+Nap-Service-Product-1.0.0.noarch.rpm and NAP-Solr-Perl-1.0.0-0.noarch.rpm
+should be installed. These are declared using RPM dependencies so we expect
+them to be installed automatically. If you get error messages about
+NAP::Solr::Client or NAP::Service::*::Solr, it suggests this did not work.
+
+Unless otherwise stated, do the following for DC1, DC2 and DC3.
+
+4 - NEW PROPERTIES:
+-------------------
+Add or update the following in "/etc/nap.properties" prior to release
+
+APS-3786: 
+DC1_DHL_API_TIMEOUT             10
+DC2_DHL_API_TIMEOUT             10
+DC3_DHL_API_TIMEOUT             20
+
+
+5 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+No action needs to be performed before the deployment
+
+6 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+sudo yum install xt
+
+7 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+
+CANDO-2353 - Givenchy - Populate packaging_type and packing_attribute DB patch for NAP & Mr P
+    The following scripts should be run on EACH DC
+
+    sudo -u xt-web perl -I/opt/xt/deploy/xtracker/lib /opt/xt/deploy/xtracker/script/BAU/send-all-packaging-products.pl --sku '900111-001' --staging
+        then
+    sudo -u xt-web perl -I/opt/xt/deploy/xtracker/lib /opt/xt/deploy/xtracker/script/BAU/send-all-packaging-products.pl --sku '900111-001' --upload
+        and answer 'y' when prompted
+
+
+8 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

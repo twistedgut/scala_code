@@ -1,0 +1,284 @@
+[% IF shipments.size %]
+
+    <span class="title title-[% channel_config.$sales_channel %]">Select Shipment</span><br>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="9" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="24">
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Shipment Number</td>
+            <td class="tableHeader">Date</td>
+            <td class="tableHeader">Type</td>
+            <td class="tableHeader">Status</td>
+        </tr>
+        <tr>
+            <td colspan="9" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+        [% FOREACH id = shipments.keys %]
+            <tr>
+                [% IF shipments.$id.shipment_class_id != 2 && shipments.$id.shipment_class_id != 4 && (shipments.$id.shipment_status_id == 2 || shipments.$id.shipment_status_id == 3 || shipments.$id.shipment_status_id == 6 || shipments.$id.shipment_status_id == 7 || shipments.$id.shipment_status_id == 9) %]
+                    <td>&nbsp;&nbsp;&nbsp;<a href="[% short_url %]/SizeChange?order_id=[% order_id %]&shipment_id=[% id %]">[% id %]</a></td>
+                    <td>[% shipments.$id.date %]</td>
+                    <td>[% shipments.$id.class %]</td>
+                    <td>[% shipments.$id.status %]</td>
+                [% ELSE %]
+                    <td class="light">&nbsp;&nbsp;&nbsp;[% id %]</td>
+                    <td class="light">[% shipments.$id.date %]</td>
+                    <td class="light">[% shipments.$id.class %]</td>
+                    <td class="light">[% shipments.$id.status %]</td>
+                [% END %]
+            </tr>
+            <tr>
+                <td colspan="4" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        [% END %]
+
+    </table>
+
+[% ELSIF num_changed_items == 0 %]
+
+    <span class="title title-[% channel_config.$sales_channel %]">Select Item(s)</span><br>
+
+    <form name="sizeChangeForm" action="[% short_url %]/SizeChange?order_id=[% order_id %]&shipment_id=[% shipment_id %]" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="select_item" value="1">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="9" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="24">
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;SKU</td>
+            <td class="tableHeader">Name</td>
+            <td class="tableHeader">Size</td>
+            <td class="tableHeader">Select Item(s)</td>
+            <td class="tableHeader">Change To</td>
+            <td class="tableHeader">Stock Discrepancy</td>
+        </tr>
+        <tr>
+            <td colspan="6" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+        [% FOREACH itemid = shipment_items.keys %]
+            [% IF ( shipment_items.$itemid.shipment_item_status_id == SHIPMENT_ITEM_STATUS__NEW
+               || shipment_items.$itemid.shipment_item_status_id == SHIPMENT_ITEM_STATUS__SELECTED
+               || shipment_items.$itemid.shipment_item_status_id == SHIPMENT_ITEM_STATUS__PICKED
+               || shipment_items.$itemid.shipment_item_status_id == SHIPMENT_ITEM_STATUS__PACKING_EXCEPTION ) && !shipment_items.$itemid.voucher %]
+
+                [% SET available_sizes = 0 %]
+                [% FOREACH varid = shipment_items.$itemid.sizes.keys.nsort %]
+                    [% IF shipment_items.$itemid.sizes.$varid.quantity > 0 %]
+                        [% SET available_sizes = available_sizes + 1 %]
+                    [% END %]
+                [% END %]
+
+                <tr height="24">
+                    <td>&nbsp;&nbsp;&nbsp;<a href="javascript://" onClick="window.open('[% shipment_items.$itemid.image.0 %]','viewimage','width=230,height=345,scrollbars=no');" class="noline">[% shipment_items.$itemid.product_id %]-[% shipment_items.$itemid.sku_size %]</a></td>
+                    <td>[% shipment_items.$itemid.name %]</td>
+                    <td>[% shipment_items.$itemid.designer_size %][% IF shipment_items.$itemid.designer_size != shipment_items.$itemid.size %] ([% shipment_items.$itemid.size %])[% END %]</td>
+                    <td>
+                        [% IF available_sizes > 0 %]
+                            <input type="checkbox" name="item-[% itemid %]" value="1">
+                        [% ELSE %]
+                            No available sizes
+                        [% END %]
+                    </td>
+                    <td>
+                        [% IF available_sizes > 0 %]
+                            <select name="exch-[% itemid %]">
+                                <option value="0">Choose alternative size...</option>
+                                <option value="0">------------------------------</option>
+                                [% FOREACH varid = shipment_items.$itemid.sizes.keys.nsort %]
+                                    [% IF shipment_items.$itemid.sizes.$varid.quantity > 0 %]
+                                        <option value="[% varid %]_[% shipment_items.$itemid.sizes.$varid.designer_size %]_[% shipment_items.$itemid.sizes.$varid.sku %]">[% shipment_items.$itemid.sizes.$varid.designer_size %][% IF shipment_items.$itemid.sizes.$varid.size != shipment_items.$itemid.sizes.$varid.size %] ([% shipment_items.$itemid.sizes.$varid.size %])[% END %] - [% shipment_items.$itemid.sizes.$varid.sku %]</option>
+                                    [% END %]
+                                [% END %]
+                            </select>
+                        [% ELSE %]
+                            -
+                        [% END %]
+                    </td>
+                    <td>
+                        [% IF available_sizes > 0 %]
+                            <input type="checkbox" name="discrep-[% itemid %]" value="1">
+                        [% ELSE %]
+                            -
+                        [% END %]
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+            [% ELSE %]
+                <tr height="24">
+                    <td class="light">&nbsp;&nbsp;&nbsp;[% shipment_items.$itemid.product_id %]-[% shipment_items.$itemid.sku_size %]</a></td>
+                    <td class="light">[% shipment_items.$itemid.name %]</td>
+                    <td class="light">[% shipment_items.$itemid.size %]</td>
+                    <td class="light">[% shipment_items.$itemid.status %]</td>
+                    <td class="light"></td>
+                    <td class="light"></td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+            [% END %]
+        [% END %]
+        <tr>
+            <td class="blank" colspan="6"><img src="/images/blank.gif" width="1" height="10"></td>
+        </tr>
+        <tr>
+            <td class="blank" colspan="6" align="right"><input class="button" type="button" name="" value="submit >" onClick="validate()"></td>
+        </tr>
+    </table>
+
+    </form>
+
+        <script language="Javascript">
+
+            function validate(){
+
+                frmLength = document.sizeChangeForm.length;
+                isEmpty = false;
+
+                for (i=0; i<frmLength;i++){
+                    if(document.sizeChangeForm[i].options) {
+                        if (document.sizeChangeForm[i].options[document.sizeChangeForm[i].selectedIndex].value == 0){
+                            field_nm = document.sizeChangeForm[i].name;
+                            arr = field_nm.split("-");
+
+                            field_nm2 = "item-"+arr[1];
+
+                            if (document.sizeChangeForm["item-"+arr[1]].checked ) {
+                                isEmpty = true;  //one element is empty
+                            }
+                        }
+                    }
+                }
+
+                if(isEmpty){
+                    alert("Please select a size to change for before submitting.");
+                }
+                else {
+                    document.sizeChangeForm.submit();
+                }
+
+            }
+
+
+        </script>
+
+[% ELSE %]
+
+    <span class="title title-[% channel_config.$sales_channel %]">Changed Item(s)</span><br>
+
+    <form name="sizeChangeForm" action="[% short_url %]/ChangeShipmentItem?order_id=[% order_id %]&shipment_id=[% shipment_id %]" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="24">
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;SKU</td>
+            <td class="tableHeader">Name</td>
+            <td class="tableHeader">Size</td>
+            <td class="tableHeader">New SKU</td>
+            <td class="tableHeader">New Size</td>
+        </tr>
+        <tr>
+            <td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+        [% FOREACH itemid = shipment_items.keys %]
+
+            [% IF changed_items.$itemid.change == 1 %]
+                <tr height="24">
+                    <td>&nbsp;&nbsp;&nbsp;<a href="javascript://" onClick="window.open('/OrderTracker/ViewImages/11861','viewimage','width=230,height=345,scrollbars=no');" class="noline">[% shipment_items.$itemid.product_id %]-[% shipment_items.$itemid.sku_size %]</a></td>
+                    <td>[% shipment_items.$itemid.name %]</td>
+                    <td>[% shipment_items.$itemid.designer_size %][% IF shipment_items.$itemid.designer_size != shipment_items.$itemid.size %] ([% shipment_items.$itemid.size %])[% END %]</td>
+                    <td>[% changed_items.$itemid.change_to_sku %]</td>
+                    <td>[% changed_items.$itemid.change_to_size %]</td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <input type="hidden" name="item-[% itemid %]" value="1">
+                <input type="hidden" name="exch-[% itemid %]" value="[% changed_items.$itemid.change_to_id %]_[% changed_items.$itemid.change_to_size %]_[% changed_items.$itemid.change_to_sku %]">
+                <input type="hidden" name="discrep-[% itemid %]" value="[% changed_items.$itemid.discrep %]">
+            [% END %]
+        [% END %]
+    </table>
+
+    <br><br>
+
+    <span class="title title-[% channel_config.$sales_channel %]">Customer Email</span><br>
+
+
+    <table id="size_change_email_form" width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr height="24">
+            <td width="149" align="right"><b>Send Email:</b>&nbsp;&nbsp;</td>
+            <td width="570"><input type="radio" name="send_email" value="yes" checked>&nbsp;&nbsp;Yes&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="send_email" value="no">&nbsp;&nbsp;No</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr height="30">
+            <td align="right"><b>To:</b>&nbsp;&nbsp;</td>
+            <td><input type="text" size="35" name="email_to" value="[% email_info.email_to %]"></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr height="30">
+            <td align="right"><b>From:</b>&nbsp;&nbsp;</td>
+            <td><input type="text" size="35" name="email_from" value="[% email_info.email_from %]"></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr height="30">
+            <td align="right"><b>Reply-To:</b>&nbsp;&nbsp;</td>
+            <td><input type="text" size="35" name="email_replyto" value="[% email_info.email_from %]"></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr height="30">
+            <td align="right"><b>Subject:</b>&nbsp;&nbsp;</td>
+            <td><input type="text" size="35" name="email_subject" value="[% email_info.subject %]"></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr>
+            <td colspan="2" height="10"></td>
+        </tr>
+        <tr valign="top">
+            <td align="right"><b>Email Text:&nbsp;&nbsp;</b></td>
+            <td>
+                <input type="hidden" value="[% email_info.content_type %]" name="email_content_type">
+                <textarea name="email_body" rows="15" cols="80">[% email_info.content %]</textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" height="10"></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr>
+            <td class="blank" colspan="2"><img src="/images/blank.gif" width="1" height="15"></td>
+        </tr>
+        <tr>
+            <td class="blank" colspan="2" align="right"><input type="submit" name="submit" value="SUBMIT >" class="button"></td>
+        </tr>
+
+    </table>
+    </form>
+[% END %]
+
+<br />
+<br />
+

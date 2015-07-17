@@ -1,0 +1,40 @@
+[% IF results && results.size >= 1 %]
+
+[% PROCESS ordertracker/customercare/create_customer_from_customersearch.tt %]
+
+<a name="customerresults"></a>
+<span class="title">Search Results for [% title %] by [% query_description %] - [% query | html %]</span>&nbsp;&nbsp;&nbsp;&nbsp;([% results.size %] result[% IF results.size > 1 %]s[% END %] found)
+<br>
+<table class="data wide-data divided-data">
+    <thead>
+        <tr>
+            <th>Customer Number</th>
+            <th>First Name</th>
+            <th>Surname</th>
+            <th>Email</th>
+            <th>View Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        [% FOREACH custid = results.keys.nsort %]
+            <tr>
+                <td>[% custid | html %]</td>
+                <td>[% results.$custid.first_name | html %]</td>
+                <td>[% results.$custid.last_name | html %]</td>
+                <td>[% results.$custid.email | html %]</td>
+                <td>
+                    [% IF results.$custid.customer_id != '0' %]
+                        <a href="/CustomerCare/CustomerSearch/CustomerView?customer_id=[% results.$custid.customer_id | html %]">Customer View</a>
+                    [% ELSE %]
+                        No record in xTracker
+                        [% IF allow_create_in_xt %]
+                            &nbsp;&nbsp;&nbsp;<a href="javascript:create_customer_in_xt([% custid %], [% results.$custid.channel_id %]);">Create Customer in xTracker</a>
+                        [% END %]
+                    [% END %]
+                </td>
+            </tr>
+        [% END %]
+    </tbody>
+</table>
+[% END %]
+

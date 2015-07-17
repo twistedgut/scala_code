@@ -1,0 +1,115 @@
+<script type="text/javascript" src="/javascript/yui_autocomplete.js"></script>
+<style type="text/css">
+/* Override yui classes that set width to 100% */
+#ac_input { width: 155px; }
+</style>
+
+<h3>Filter Results</h3>
+<form name="inbound_by_action_search" method="get">
+    <div class="formrow formstart dividebelow">
+        <label for="start_date">From</label>
+        <input type="text" class="jq_calendar" name="start_date" id="start_date" autocomplete="no" value="[% form.start_date %]" />
+        <select id="start_hour" name="start_hour" class="no-min-width">
+    [% FOR hour IN [0..23] %]
+            <option value="[% hour %]"[% ' selected="selected"' IF hour == form.start_hour %]>[% hour | format('%02i') %]</option>
+    [% END %]
+        </select>
+        <select id="start_minute" name="start_minute" class="no-min-width">
+    [% FOR minute IN [0,15,30,45] %]
+            <option value="[% minute %]"[% ' selected="selected"' IF minute == form.start_minute %]>[% minute | format('%02i') %]</option>
+    [% END %]
+        </select>
+    </div>
+    <div class="formrow dividebelow">
+        <label for="end_date">To</label>
+        <input type="text" class="jq_calendar" name="end_date" id="end_date" autocomplete="no" value="[% form.end_date %]" />
+        <select id="end_hour" name="end_hour" class="no-min-width">
+    [% FOR hour IN [0..23] %]
+            <option value="[% hour %]"[% ' selected="selected"' IF hour == form.end_hour %]>[% hour | format('%02i') %]</option>
+    [% END %]
+        </select>
+        <select id="end_minute" name="end_minute" class="no-min-width">
+    [% FOR minute IN [0,15,30,45] %]
+            <option value="[% minute %]"[% ' selected="selected"' IF minute == form.end_minute %]>[% minute | format('%02i') %]</option>
+    [% END %]
+        </select>
+    </div>
+    <div class="formrow dividebelow">
+        <label>Sales Channel:</label>
+        [% FOR channel_key IN channels.keys.nsort %]
+        <div>
+            <input type="checkbox" id="channel_id_[% channel_key %]" name="channel_id" value="[% channel_key %]"
+
+            [% IF form.channel_id.0 %]
+                [% FOREACH channel IN form.channel_id %]
+                    [% IF channel == channel_key %]
+                        checked="checked"
+                    [% END %]
+                [% END %]
+            [% ELSIF form.channel_id == channel_key || !form.channel_id.defined %]
+                    checked="checked"
+            [% END %]
+
+            />
+            <label class="for-checkbox" for="channel_id_[% channel_key %]">[% channels.$channel_key.name %]</label>
+        </div>
+        [% END %]
+    </div>
+    <div class="formrow dividebelow">
+        <label>Delivery Action</label>
+        [% FOR action IN delivery_actions %]
+        <div>
+            <input type="checkbox" id="delivery_action_id_[% action.id %]" name="delivery_action_id" value="[% action.id %]" />
+            <label class="for-checkbox" for="delivery_action_id_[% action.id %]">[% action.action %]</label>
+        </div>
+        [% END %]
+    </div>
+    <div class="formrow dividebelow">
+        <label for="ac_input">Operator</label>
+        <input id="ac_input" type="text" name="operator_name" />
+        <input id="ac_input_id" type="hidden" name="operator_id" />
+        <div id="ac_container"></div>
+    </div>
+    <div class="formrow buttons aftertable formend">
+        [% INCLUDE page_elements/forms/submit_button.tt no_name=1 %]
+    </div>
+</form>
+
+[% IF log_deliveries.size;
+    PROCESS inbound_by_action_results;
+ELSIF c.req.query_parameters.keys;
+    'No results';
+END %]
+
+[% BLOCK inbound_by_action_results %]
+<table class="wide-data divided-data data">
+    <thead>
+        <tr>
+            <th><a href="[% INCLUDE sort_url colname = 'delivery_id' %]">Delivery&nbsp;ID</a>[% INCLUDE order_marker colname = 'delivery_id' %]</th>
+            <th><a href="[% INCLUDE sort_url colname = 'product_id' %]">Product&nbsp;ID</a>[% INCLUDE order_marker colname = 'product_id' %]</th>
+            <th><a href="[% INCLUDE sort_url colname = 'delivery_action_rank' %]">Action</a>[% INCLUDE order_marker colname = 'delivery_action_rank' %]</th>
+            <th><a href="[% INCLUDE sort_url colname = 'quantity' %]">Quantity</a>[% INCLUDE order_marker colname = 'quantity' %]</th>
+            <th><a href="[% INCLUDE sort_url colname = 'operator_name' %]">Operator</a>[% INCLUDE order_marker colname = 'operator_name' %]</th>
+            <th><a href="[% INCLUDE sort_url colname = 'date' %]">Date</a>[% INCLUDE order_marker colname = 'date' %]</th>
+        </tr>
+    </thead>
+    <tbody>
+        [% USE date(format = '%F %R'); FOR row IN log_deliveries %]
+        <tr>
+            <td>[% row.delivery_id %]</td>
+            <td>[% stock_order = row.delivery.link_delivery__stock_order.stock_order; stock_order.product_id || stock_order.voucher_product_id %]</td>
+            <td>[% row.delivery_action.action %]</td>
+            <td>[% row.quantity %]</td>
+            <td>[% row.operator.name %]</td>
+            <td>[% date.format(row.date) %]</td>
+        </tr>
+        [% END %]
+    </tbody>
+</table>
+[% END %]
+
+[% BLOCK sort_url; c.req.uri_with({order_by => colname, asc_desc => ( c.req.query_params.order_by == colname && c.req.query_params.asc_desc == 'asc' ? 'desc' : 'asc' ) }); END %]
+[% BLOCK order_marker;
+    BREAK UNLESS c.req.query_params.order_by == colname;
+    c.req.query_params.asc_desc == 'desc' ? '&nbsp;&and;' : '&nbsp;&or;';
+END %]

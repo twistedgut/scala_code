@@ -1,0 +1,582 @@
+[% SET season_id = product.season_id %]
+
+[% purchase = purchase_pricing.last %]
+[% UNLESS purchase.defined %]<div class="warning">"purchase" is undefined; this can only lead to pain ... and zero margins</div>[% END %]
+
+<div id='display_product'>
+    [% PROCESS page_elements/display_product.tt %]
+</div>
+
+<div id='product_content'>
+
+    <span class="title">Retail Pricing</span><br>
+<br>
+
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td width="10%"><span class="title">Default</span></td>
+                <td width="90%">[% IF price_log.price_default.size > 0 %]<a href="javascript://" alt="View Change Log" onMouseOver="showLayer('log_price_default', 20, -40, event);" onMouseOut="hideLayer('log_price_default');"><img src="/images/icons/application_view_list.png" border="0"></a>[% END %]</td>
+            </tr>
+        </table>
+
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <thead>
+            <tr>
+                <td colspan="5" class="dividerHeader"></td>
+            </tr>
+            <tr>
+	            <td class="tableheader" width="15%">&nbsp;&nbsp;&nbsp;Price</td>
+	            <td class="tableheader" width="15%">Currency</td>
+	            <td class="tableheader" width="15%"></td>
+	            <td class="tableheader" width="15%">Margin</td>
+	            <td class="tableheader" width="40%"></td>
+	        </tr>
+	        <tr>
+                <td colspan="5" class="dividerHeader"></td>
+            </tr>
+        </thead>
+        <tbody>
+            [% FOREACH default = default_pricing %]
+            	[% SET curr_id = default.currency_id %]
+            	[% TRY %]
+					[% IF purchase.uk_landed_cost > 0 %]
+	            		[% SET margin = (default.price * conversion.$season_id.$curr_id.$local_currency_id) / purchase.uk_landed_cost %]
+					[% END %]
+            	[% CATCH %]
+            		[% SET margin = 0; SET error=undef %]
+            	[% END %]
+                <tr height="20">
+                    <td>&nbsp;&nbsp;&nbsp;[% default.price %]</td>
+                    <td>[% default.currency %]</td>
+                    <td></td>
+                    <td>[% IF margin && margin < 2.2 %]<font color="#cc0000">[% END %][% margin FILTER format('%02.2f') %]</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="divider"></td>
+                </tr>
+            [% END %]
+        </tbody>
+    </table>
+    
+    <br><br>
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td width="10%"><span class="title">Region</span></td>
+		<td width="90%">[% IF price_log.price_region.size && price_log.price_region.size > 0 %]<a href="javascript://" alt="View Change Log" onMouseOver="showLayer('log_price_region', 20, -40, event);" onMouseOut="hideLayer('log_price_region');"><img src="/images/icons/application_view_list.png" border="0"></a>[% END %]</td>
+            </tr>
+	</table>
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <thead>
+            <tr>
+                <td colspan="6" class="dividerHeader"></td>
+            </tr>
+            <tr>
+            		<td class="tableheader" width="15%">&nbsp;&nbsp;&nbsp;Price</td>
+	            <td class="tableheader" width="15%">Currency</td>
+	            <td class="tableheader" width="15%">Region</td>
+	            <td class="tableheader" width="15%">Margin</td>
+	            <td class="tableheader" width="30%"></td>
+	            [% IF !product.live  %]
+	            <td class="tableheader" width="10%">Delete</td>
+	            [% END %]
+	        </tr>
+	        <tr>
+                <td colspan="6" class="dividerHeader"></td>
+            </tr>
+        </thead>
+        <tbody>
+            [% SET count = 0 %]
+            [% FOREACH regionpr = region_pricing %]
+			[% SET curr_id = regionpr.currency_id %]
+			[% TRY %]
+				[% IF regionpr.region == 'Europe' %]
+					[% SET margin = ((regionpr.price / 1.18) * conversion.$season_id.$curr_id.$local_currency_id) / purchase.uk_landed_cost %]
+				[% ELSE %]
+					[% SET margin = (regionpr.price * conversion.$season_id.$curr_id.$local_currency_id) / purchase.uk_landed_cost %]
+				[% END %]
+			[% CATCH %]
+				[% SET margin = 0; SET error=undef %]
+			[% END %]
+            <tr height="20">
+                <td>&nbsp;&nbsp;&nbsp;[% regionpr.price %]</td>
+                <td>
+                	[% regionpr.currency %]
+                </td>
+                <td>
+                	[% regionpr.region %]                	
+                </td>
+                <td>[% IF margin < 2.2 %]<font color="#cc0000">[% END %][% margin FILTER format('%02.2f') %]</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="6" class="divider"></td>
+           </tr>
+           [% SET count = count + 1 %]
+           [% END %]
+        </tbody>
+    </table>
+  
+
+   <br>
+
+   <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td width="10%"><span class="title">Country</span></td>
+		<td width="90%">[% IF price_log.price_country.size && price_log.price_country.size > 0 %]<a href="javascript://" alt="View Change Log" onMouseOver="showLayer('log_price_country', 20, -40, event);" onMouseOut="hideLayer('log_price_country');"><img src="/images/icons/application_view_list.png" border="0"></a>[% END %]</td>
+            </tr>
+	</table>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <thead>
+            <tr>
+                <td colspan="6" class="dividerHeader"></td>
+            </tr>
+             <tr>
+	            <td class="tableheader" width="15%">&nbsp;&nbsp;&nbsp;Price</td>
+	            <td class="tableheader" width="15%">Currency</td>
+	            <td class="tableheader" width="15%">Country</td>
+	            <td class="tableheader" width="15%">Margin</td>
+	            <td class="tableheader" width="30%"></td>
+	        </tr>
+	        <tr>
+                <td colspan="6" class="dividerHeader"></td>
+            </tr>
+        </thead>
+        <tbody>
+            [% SET count = 0 %]
+            [% FOREACH countrypr = country_pricing.sort('country') %]
+            
+            [% SET curr_id = countrypr.currency_id %]
+            [% TRY %]
+		[% IF countrypr.country == 'United Kingdom' %]
+			[% SET margin = ((countrypr.price / countrypr.vat_rate) * conversion.$season_id.$curr_id.$local_currency_id) / purchase.uk_landed_cost %]
+		[% ELSE %]
+            		[% SET margin = (countrypr.price * conversion.$season_id.$curr_id.$local_currency_id) / purchase.uk_landed_cost %]
+		[% END %]
+           [% CATCH %]
+           	[% SET margin = 0; SET error=undef %]
+           [% END %]
+            
+            <tr height="20">
+                <td>&nbsp;&nbsp;&nbsp;[% countrypr.price %]</td>
+                <td>[% countrypr.currency %]</td>
+                <td>[% countrypr.country %]</td>
+                <td>[% IF margin < 2.2 %]<font color="#cc0000">[% END %][% margin FILTER format('%02.2f') %]</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="6" class="divider"></td>
+           </tr>
+           [% SET count = count + 1 %]
+           [% END %]
+        </tbody>
+    </table>
+
+   
+    <br><br>
+
+
+  [% IF markdown.size > 0 %]
+
+    <span class="title">Markdowns</span><br>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <thead>
+        <tr>
+            <td colspan="7" class="divider"></td>
+        </tr>
+        <tr height="24">
+            
+            <td class="tableheader" width="19%">&nbsp;&nbsp;&nbsp;Start Date</td>
+            <td class="tableheader" width="19%">End Date</td>
+            <td class="tableheader" width="18%">Markdown %</td>
+            <td class="tableheader" width="30%">Category</td>
+            <td class="tableheader" width="15%">Current</td>
+        </tr>
+        <tr>
+            <td colspan="7" class="divider"></td>
+        </tr>
+    </thead>
+        <tbody>
+        	[% SET active = 0 %]
+        	[% SET active_markdown = 0 %]
+        	       
+        	[% FOREACH mark = markdown.keys.nsort %]
+        		[% IF markdown.$mark.current == 1 %]
+        			[% active = mark %]
+        			[% active_markdown = markdown.$mark.percentage %]
+        		[% END %]
+        	[% END %]
+        	
+            [% FOREACH mark = markdown.keys.nsort.reverse %]
+            <tr height="20">                
+                <td>&nbsp;&nbsp;&nbsp;[% markdown.$mark.start_date %]</td>
+                <td>[% markdown.$mark.end_date %]</td>
+                <td>[% markdown.$mark.percentage %]</td>
+                <td>[% markdown.$mark.category %]</td>
+                <td>[% IF mark == active %]<img src="/images/icons/tick.png">[% END %]</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="divider"></td>
+           </tr>
+           [% END %]
+        </tbody>
+    </table>
+
+    
+    [% IF active > 0 %]
+    	<br>
+
+    	<span class="title">Markdown Retail Pricing</span><br>
+   
+    
+
+	    <span class="title">Default</span><br>
+	    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+	        <thead>
+	            <tr>
+	                <td colspan="5" class="dividerHeader"></td>
+	            </tr>
+	            <tr>
+		            <td class="tableheader" width="15%">&nbsp;&nbsp;&nbsp;Price</td>
+		            <td class="tableheader" width="15%">Currency</td>
+		            <td class="tableheader" width="15%"></td>
+		            <td class="tableheader" width="15%">Margin</td>
+		            <td class="tableheader" width="40%"></td>
+		        </tr>
+		        <tr>
+	                <td colspan="5" class="dividerHeader"></td>
+	            </tr>
+	        </thead>
+	        <tbody>
+	            [% FOREACH default = default_pricing %]
+	            [% SET curr_id = default.currency_id %]
+	                <tr height="20">
+	                    <td>&nbsp;&nbsp;&nbsp;[% default.price * (1 - (active_markdown / 100)) FILTER format('%02.2f') %]</td>
+	                    <td>[% default.currency %]</select></td>
+	                    <td></td>
+	                    <td>
+	                    [% TRY %]
+	                    	[% ((default.price * (1 - (active_markdown / 100)) ) * conversion.$season_id.$curr_id.$local_currency_id) / purchase.uk_landed_cost FILTER format('%02.2f') %]
+	                    [% CATCH %]
+	                    	<span style="color: #ff0000;">0.00</span>
+	                    [% SET error=undef; END %]			
+	                    </td>
+	                    <td></td>
+	                </tr>
+	                <tr>
+	                    <td colspan="5" class="divider"></td>
+	                </tr>
+	            [% END %]
+	        </tbody>
+	    </table>
+
+
+	    <span class="title">Region</span><br>
+	    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+	        <thead>
+	            <tr>
+	                <td colspan="5" class="dividerHeader"></td>
+	            </tr>
+	            <tr>
+	            	<td class="tableheader" width="15%">&nbsp;&nbsp;&nbsp;Price</td>
+		            <td class="tableheader" width="15%">Currency</td>
+		            <td class="tableheader" width="15%">Region</td>
+		            <td class="tableheader" width="15%">Margin</td>
+		            <td class="tableheader" width="40%"></td>
+		        </tr>
+		        <tr>
+	                <td colspan="5" class="dividerHeader"></td>
+	            </tr>
+	        </thead>
+	        <tbody>
+	            [% FOREACH region = region_pricing %]
+				[% SET curr_id = region.currency_id %]
+	            <tr height="20">
+	                <td>&nbsp;&nbsp;&nbsp;[% region.price * (1 - (active_markdown / 100)) FILTER format('%02.2f') %]</td>
+	                <td>[% region.currency %]</td>
+	                <td>[% region.region %]</td>
+	                <td>
+	                [% TRY %]
+	                	[% ((region.price * (1 - (active_markdown / 100)) ) * conversion.$season_id.$curr_id.$local_currency_id) / purchase.uk_landed_cost FILTER format('%02.2f') %]
+	                [% CATCH %]
+	                	<span style="color: #ff0000;">0.00</span>
+	                [% SET error=undef; END %]
+	                </td>
+	                <td></td>
+	            </tr>
+	            <tr>
+	                <td colspan="5" class="divider"></td>
+	           </tr>
+	           [% END %]
+	        </tbody>
+	    </table>
+	
+	
+
+	    <span class="title">Country</span><br>
+	    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+	        <thead>
+	            <tr>
+	                <td colspan="5" class="dividerHeader"></td>
+	            </tr>
+	            <tr>
+	            	<td class="tableheader" width="15%">&nbsp;&nbsp;&nbsp;Price</td>
+		            <td class="tableheader" width="15%">Currency</td>
+		            <td class="tableheader" width="15%">Country</td>
+		            <td class="tableheader" width="15%">Margin</td>
+		            <td class="tableheader" width="40%"></td>
+		        </tr>
+		        <tr>
+	                <td colspan="5" class="dividerHeader"></td>
+	            </tr>
+	        </thead>
+	        <tbody>
+	            [% FOREACH country = country_pricing %]
+	            [% SET curr_id = country.currency_id %]
+	            <tr height="20">
+	                <td>&nbsp;&nbsp;&nbsp;[% country.price * (1 - (active_markdown / 100)) FILTER format('%02.2f')  %]</td>
+	                <td>[% country.currency %]</td>
+	                <td>[% country.country %]</td>
+	                <td>
+	                [% TRY %]
+	                	[% ((country.price * (1 - (active_markdown / 100)) ) * conversion.$season_id.$curr_id.$local_currency_id) / purchase.uk_landed_cost FILTER format('%02.2f') %]
+	                [% CATCH %]
+	                	<span style="color: #ff0000;">0.00</span>
+	                [% SET error=undef; END %]	
+	                </td>
+	                <td></td>
+	            </tr>
+	            <tr>
+	                <td colspan="5" class="divider"></td>
+	           </tr>
+	           [% END %]
+	        </tbody>
+	    </table>
+	
+	[% END %]
+
+	[% END %]
+	
+
+</div>
+
+
+
+<div id="log_price_default" style="visibility:hidden; position:absolute; left:0px; top:0px; z-index:1000; padding-left:3px; padding-bottom:3px; background-color: #cccccc">
+        
+	<div style="border:1px solid #666666; background-color: #fff; padding: 10px; z-index:1001">
+
+		<div style="width:300px; margin-bottom:5px"><b>Change Log:</b> Default Price</div>
+		<div style="width:430px">
+		<table width="100%" class="data">
+		<thead>
+		    <tr>
+		    <td colspan="6" class="divider"></td>
+		    </tr>
+		    <tr>
+			<td width="14%" class="tableHeader">&nbsp;Field</td>
+			<td width="10%" class="tableHeader">&nbsp;From</td>
+			<td width="11%" class="tableHeader">&nbsp;To</td>
+			<td width="15%" class="tableHeader">&nbsp;Operator</td>
+			<td width="10%" class="tableHeader">&nbsp;Date</td>
+			<td width="10%" class="tableHeader">&nbsp;Time</td>		   
+		</tr>
+		    <tr>
+		    <td colspan="6" class="divider"></td>
+		    </tr>
+		</thead>
+		<tbody>
+
+		[% FOREACH id = price_log.price_default.keys.nsort.reverse %]
+			<tr height="24"> 
+				<td>&nbsp;[% price_log.price_default.$id.field_name %]</td>
+				<td>&nbsp;[% price_log.price_default.$id.value_pre %]</td>
+				<td>&nbsp;[% price_log.price_default.$id.value_post %]</td>
+				
+				<td>&nbsp;[% price_log.price_default.$id.name %]</td>
+				<td>&nbsp;[% price_log.price_default.$id.date %]</td>
+				<td>&nbsp;[% price_log.price_default.$id.time %]</td>
+				
+			</tr>
+			<tr>
+				<td colspan="6" class="divider"></td>
+			</tr>
+		[% END %]
+		</tbody>
+		</table>
+		</div>
+	</div>
+</div>
+
+
+
+<div id="log_price_region" style="visibility:hidden; position:absolute; left:0px; top:0px; z-index:1000; padding-left:3px; padding-bottom:3px; background-color: #cccccc">
+        
+	<div style="border:1px solid #666666; background-color: #fff; padding: 10px; z-index:1001">
+
+		<div style="width:300px; margin-bottom:5px"><b>Change Log:</b> Region Price</div>
+		<div style="width:430px">
+		<table width="100%" class="data">
+		<thead>
+		    <tr>
+		    <td colspan="7" class="divider"></td>
+		    </tr>
+		    <tr>
+			<td width="15%" class="tableHeader">&nbsp;Region</td>
+			<td width="14%" class="tableHeader">&nbsp;Field</td>
+			<td width="10%" class="tableHeader">&nbsp;From</td>
+			<td width="11%" class="tableHeader">&nbsp;To</td>
+			<td width="15%" class="tableHeader">&nbsp;Operator</td>
+			<td width="10%" class="tableHeader">&nbsp;Date</td>
+			<td width="10%" class="tableHeader">&nbsp;Time</td>		   
+		</tr>
+		    <tr>
+		    <td colspan="7" class="divider"></td>
+		    </tr>
+		</thead>
+		<tbody>
+
+		[% FOREACH id = price_log.price_region.keys.nsort.reverse %]
+			<tr height="24"> 
+				<td>&nbsp;[% price_log.price_region.$id.region %]</td>
+				<td>&nbsp;[% price_log.price_region.$id.field_name %]</td>
+				<td>&nbsp;[% price_log.price_region.$id.value_pre %]</td>
+				<td>&nbsp;[% price_log.price_region.$id.value_post %]</td>				
+				<td>&nbsp;[% price_log.price_region.$id.name %]</td>
+				<td>&nbsp;[% price_log.price_region.$id.date %]</td>
+				<td>&nbsp;[% price_log.price_region.$id.time %]</td>
+				
+			</tr>
+			<tr>
+				<td colspan="7" class="divider"></td>
+			</tr>
+		[% END %]
+		</tbody>
+		</table>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+<div id="log_price_country" style="visibility:hidden; position:absolute; left:0px; top:0px; z-index:1000; padding-left:3px; padding-bottom:3px; background-color: #cccccc">
+        
+	<div style="border:1px solid #666666; background-color: #fff; padding: 10px; z-index:1001">
+
+		<div style="width:300px; margin-bottom:5px"><b>Change Log:</b> Country Price</div>
+		<div style="width:430px">
+		<table width="100%" class="data">
+		<thead>
+		    <tr>
+		    <td colspan="7" class="divider"></td>
+		    </tr>
+		    <tr>
+			<td width="15%" class="tableHeader">&nbsp;Country</td>
+			<td width="14%" class="tableHeader">&nbsp;Field</td>
+			<td width="10%" class="tableHeader">&nbsp;From</td>
+			<td width="11%" class="tableHeader">&nbsp;To</td>
+			<td width="15%" class="tableHeader">&nbsp;Operator</td>
+			<td width="10%" class="tableHeader">&nbsp;Date</td>
+			<td width="10%" class="tableHeader">&nbsp;Time</td>		   
+		</tr>
+		    <tr>
+		    <td colspan="7" class="divider"></td>
+		    </tr>
+		</thead>
+		<tbody>
+
+		[% FOREACH id = price_log.price_country.keys.nsort.reverse %]
+			<tr height="24"> 
+				<td>&nbsp;[% price_log.price_country.$id.country %]</td>
+				<td>&nbsp;[% price_log.price_country.$id.field_name %]</td>
+				<td>&nbsp;[% price_log.price_country.$id.value_pre %]</td>
+				<td>&nbsp;[% price_log.price_country.$id.value_post %]</td>
+				
+				<td>&nbsp;[% price_log.price_country.$id.name %]</td>
+				<td>&nbsp;[% price_log.price_country.$id.date %]</td>
+				<td>&nbsp;[% price_log.price_country.$id.time %]</td>
+				
+			</tr>
+			<tr>
+				<td colspan="7" class="divider"></td>
+			</tr>
+		[% END %]
+		</tbody>
+		</table>
+		</div>
+	</div>
+</div>
+
+
+
+<script language="Javascript">
+		
+		
+	
+function init() {type = chk();}
+
+function chk(){
+
+   var brow = 0;
+
+   if (document.getElementById){ brow = 0; } // dom
+   else if (document.all) { brow = 2; } // ie < 6 + quirks
+   else if (document.layers) { brow = 1; } // ns < 6 quirks
+   else { brow = 0; }
+
+   return brow;
+
+}
+
+init();
+		
+function layObj(type,div,nest,nest2){
+
+   if (type == 2) {this.ref = eval('document.all.' + div + '.style');}
+   else if (type == 1) {
+
+		if (nest!=null){
+		 if (nest2!=null){this.ref = eval('document.layers.'+nest2+'.document.layers.'+nest+'.document.'+div);}
+		 else{this.ref = eval('document.layers.' + nest + '.document.' + div);}
+		}
+		else{this.ref = eval('document.' + div);}
+
+	} // eval('document.layers[div]');} seems to be wrong??
+
+   else { this.ref = document.getElementById(div).style;} // default to dom  
+
+}
+
+
+
+function showLayer(which, left_offset, top_offset, e){
+
+	var evt = window.event ? window.event : e;
+
+	layobj = new layObj(type,which);			
+
+	var leftpos = evt.clientX + document.body.scrollLeft;
+	var toppos =  evt.clientY + document.body.scrollTop;
+
+	layobj.ref.left = leftpos + left_offset;
+	layobj.ref.top = toppos + top_offset;
+
+
+	layobj.ref.visibility = "visible";
+
+}
+
+
+function hideLayer(which){
+
+	layobj = new layObj(type,which);	
+	layobj.ref.visibility = "hidden";
+}
+
+</script> 

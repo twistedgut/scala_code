@@ -1,0 +1,12 @@
+<pre>
+h1. Projects
+
+h2. DAVE 
+    * RPM based packaging
+    * Automatic deployment based on properties files
+    * INFO - http://confluence.net-a-porter.com/display/TA/DAVE
+
+h2. Product Generation [orange]
+    * Purchase Order creation from Fulcrum (via ActiveMQ)
+    * Product creation from Fulcrum (via ActiveMQ)
+</pre>

@@ -1,0 +1,974 @@
+[%- USE Department -%]
+[%-
+    # find out if the user can edit the 'Order Contact Options'
+    SET can_edit_order_contact  = 0;
+    IF (
+            contact_subjects.size && (
+                department_id == db_constant('DEPARTMENT__SHIPPING')
+                || department_id == db_constant('DEPARTMENT__SHIPPING_MANAGER')
+                || Department.in_department_group( 'Customer Care', department_id )
+            )
+       );
+    THEN;
+        can_edit_order_contact  = 1;
+    END;
+-%]
+
+[% IF customer_id %]
+
+    <form name="marketingForm" action="[% short_url %]/UpdateCustomer" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="customer_id" value="[% customer_id %]">
+    <span class="title title-[% channel_config.$sales_channel %]">Customer Details</span><br />
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data" id="tbl_customer_details">
+        <tr>
+            <td colspan="6" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td class="tableHeader" width="15%">&nbsp;&nbsp;&nbsp;<span title="Customer Number">Cust No.</span></td>
+            <td class="tableHeader" width="10%">Title</td>
+            <td class="tableHeader" width="25%">Name</td>
+            <td class="tableHeader" width="25%">Email</td>
+            <td class="tableHeader" width="10%"><span title="Date of Birth">DOB</span></td>
+            <td class="tableHeader" width="15%">Category</td>
+        </tr>
+        <tr>
+            <td colspan="6" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;[% customer_info.is_customer_number %]</td>
+            <td>[% customer_info.title %]</td>
+            <td>[% customer_info.first_name %] [% customer_info.last_name %]</td>
+            <td>[% customer_info.email %]</td>
+            <td>[% customer_info.date_of_birth %]</td>
+            <td>
+                [% IF department_id == tt_constants.DEP_PERSONALSHOPPING || department_id == tt_constants.DEP_MARKETING %]
+                    <select name="category_id">
+                        [% FOREACH category_id = customer_categories.keys.sort %]
+                            <option value="[% category_id %]" [% IF category_id == customer_info.category_id %]selected[% END %]>[% customer_categories.$category_id %]</option>
+                        [% END %]
+                    </select>
+                [% ELSE %]
+                    [% customer_info.category %]
+                [% END %]
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        [% IF department_id == tt_constants.DEP_PERSONALSHOPPING || department_id == tt_constants.DEP_MARKETING %]
+            <tr>
+                <td class="blank" colspan="6"><img src="/images/blank.gif" width="1" height="10"></td>
+            </tr>
+            <tr>
+                <td class="blank" colspan="5">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Please note that any changes to a customer category will not be copied to the website.</td>
+                <td class="blank" align="right">[% INCLUDE page_elements/forms/submit_button.tt %]</td>
+            </tr>
+        [% END %]
+        <tr>
+            <td colspan="6" class="blank"><img src="/images/blank.gif" width="1" height="7"></td>
+        </tr>
+    </table><br />
+    </form>
+
+
+    [% IF matched_customers.size %]
+
+        <span class="title title-[% channel_config.$sales_channel %]">Alternative Accounts</span><br />
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data" id="tbl_alternative_accounts">
+            <tr>
+                <td colspan="6" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td class="tableHeader" width="15%">&nbsp;&nbsp;&nbsp;Sales Channel</td>
+                <td class="tableHeader" width="15%">Customer Number</td>
+                <td class="tableHeader" width="8%">Title</td>
+                <td class="tableHeader" width="15%">Name</td>
+                <td class="tableHeader" width="25%">Email</td>
+                <td class="tableHeader" width="12%">Category</td>
+            </tr>
+            <tr>
+                <td colspan="6" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            [% FOREACH xcustomer_id = matched_customers.keys.nsort %]
+                [% SET matched_channel = matched_customers.$xcustomer_id.sales_channel %]
+                <tr>
+                    <td>&nbsp;&nbsp;&nbsp;<span class="title-[% channel_config.$matched_channel %]">[% matched_channel %]</span></td>
+                    <td><a href="[% short_url %]/CustomerView?customer_id=[% xcustomer_id %]">[% matched_customers.$xcustomer_id.is_customer_number %]</a></td>
+                    <td>[% matched_customers.$xcustomer_id.title %]</td>
+                    <td>[% matched_customers.$xcustomer_id.first_name %] [% matched_customers.$xcustomer_id.last_name %]</td>
+                    <td>[% matched_customers.$xcustomer_id.email %]</td>
+                    <td>[% matched_customers.$xcustomer_id.category %]</td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+            [% END %]
+        </table>
+        <br />
+
+    [% END %]
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" id="tbl_customer_value">
+        <tr>
+            <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="25"></td>
+        </tr>
+        <tr>
+            <td class="blank"><span class="title title-[% channel_config.$sales_channel %]">Customer Value</span></td>
+            <td class="blank" align="right"><a href="javascript:toggle_view('customer_value');"><span id="lnkcustomer_value">View</span></a></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    </table>
+
+    <div id="customer_value" style="display:none; width: 94%; margin-left: 3%; margin-right: 3%;"></div>
+    <br/>
+
+    [% IF customer.notes.size > 0 %]
+
+    <span class="title title-[% channel_config.$sales_channel %]">Customer Notes</span><br>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data" id="tbl_customer_notes">
+        <tr>
+            <td colspan="8" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td class="tableHeader" width="15%">&nbsp;&nbsp;&nbsp;Date</td>
+            <td class="tableHeader" width="30%">Note</td>
+            <td class="tableHeader" width="2%">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="tableHeader" width="15%">Type</td>
+            <td class="tableHeader" width="15%">Operator</td>
+            <td class="tableHeader" width="15%">Dept.</td>
+            <td class="tableHeader" width="5%"></td>
+            <td class="tableHeader" width="5%"></td>
+        </tr>
+        <tr>
+            <td colspan="8" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    [% FOREACH custnote = customer.notes.keys.nsort %]
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;[% customer.notes.$custnote.date %]</td>
+            <td>[% customer.notes.$custnote.note %]</td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td>[% customer.notes.$custnote.description %]</td>
+            <td>[% customer.notes.$custnote.name %]</td>
+            <td>[% customer.notes.$custnote.department %]</td>
+            <td>[% IF customer.notes.$custnote.operator_id == operator_id %]<a href="[% short_url %]/Note?parent_id=[% customer_id %]&note_category=Customer&sub_id=[% customer_id %]&note_id=[% custnote %]"><img src="/images/icons/page_edit.png" alt="Edit Note"></a>[% END %]</td>
+            <td>[% IF customer.notes.$custnote.operator_id == operator_id %]<a href="[% short_url %]/EditNote?note_category=Customer&action=Delete&parent_id=[% customer_id %]&note_id=[% custnote %]"><img src="/images/icons/cross.png" alt="Delete Note"></a>[% END %]</td>
+        </tr>
+        <tr>
+            <td colspan="8" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    [% END %]
+        <tr>
+            <td colspan="4" class="blank"><img src="/images/blank.gif" width="1" height="7"></td>
+        </tr>
+    </table>
+    <br/>
+    [% END %]
+
+
+    [% IF credit.credit %]
+        <span class="title title-[% channel_config.$sales_channel %]">Store Credit</span><br />
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data" id="tbl_store_credit">
+            <tr>
+                <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td width="15%" align="right"><b>Category:</b>&nbsp;&nbsp;</td>
+                <td width="85%" colspan="2">[% credit.credit %]&nbsp;[% credit.currency %]</td>
+            </tr>
+            <tr>
+                <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+            <td colspan="5" class="blank"><img src="/images/blank.gif" width="1" height="4"></td>
+        </tr>
+        </table>
+
+        <br/>
+
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" id="tbl_store_credit_log">
+            <tr>
+                <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+            </tr>
+            <tr>
+                <td class="blank"><span class="title title-[% channel_config.$sales_channel %]">Store Credit Log</span></td>
+                <td class="blank" align="right"><a href="javascript:toggle_view('credit_log');"><span id="lnkcredit_log">View</span></a></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        </table>
+
+        <div id="credit_log" style="display:none">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+            <thead>
+            <tr height="24">
+                <td width="20%" class="tableHeader">&nbsp;&nbsp;&nbsp;&nbsp;Date</td>
+                <td width="25%" class="tableHeader">Operator</td>
+                <td width="25%" class="tableHeader">Action</td>
+                <td width="10%" class="tableHeader">Change</td>
+                <td width="10%" class="tableHeader">Balance</td>
+                <td width="10%" class="tableHeader"></td>
+            </tr>
+            <tr>
+                <td colspan="8" class="dividerHeader"></td>
+            </tr>
+            </thead>
+            <tbody>
+            [% FOREACH row IN credit_log %]
+            <tr height="20">
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;[% row.date.strftime('%Y-%m-%d %H:%M') %]</td>
+                <td>[% row.name %]</td>
+                <td>[% row.notes || row.action | html %]</td>
+                <td>[% row.change | format('%.3f') | html %]</td>
+                <td>[% row.balance | format('%.3f') | html %]</td>
+                <td>[% IF row.orders_id %]<a href="[% short_url %]/OrderView?order_id=[% row.orders_id %]">View Order</a>[% END %]</td>
+            </tr>
+            <tr>
+                <td colspan="8" class="divider"></td>
+            </tr>
+            [% END %]
+        </table>
+        <br><br>
+        </div>
+
+
+    [% END %]
+
+    [% IF contact_subjects.size %]
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" id="tbl_contact_options">
+            <tr>
+                <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="25"></td>
+            </tr>
+            <tr>
+                <td class="blank"><span class="title title-[% channel_config.$sales_channel %]">Order Contact Options</span></td>
+                <td class="blank" align="right"><a href="javascript:toggle_view('contact_options');"><span id="lnkcontact_options">View</span></a></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        </table>
+
+        <div id="contact_options" style="display:none">
+        <form name="contactOptions" action="[% short_url %]/UpdateCustomer" method="post">
+            [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+            <input type="hidden" name="customer_id" value="[% customer_id %]" />
+            <table class="wide-data data">
+                [% PROCESS page_elements/contact_options.tt csm_contact_subjects=contact_subjects,can_edit_csm=can_edit_order_contact,no_divide_above=1 %]
+                [% IF can_edit_order_contact %]
+                <tr>
+                    <td colspan="2" class="blank">
+                        <span style="font-weight:bold;">Any changes to the above will also update the same options on any Un-Dispatched Orders for the Customer</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="blank" colspan="2" align="right">[% INCLUDE page_elements/forms/submit_button.tt btn_name="update_contact_options" %]</td>
+                </tr>
+                [% END %]
+            </table>
+        </form>
+        <br/>
+        </div>
+    [% END %]
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" id="tbl_customer_options">
+        <tr>
+            <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="25"></td>
+        </tr>
+        <tr>
+            <td class="blank"><span class="title title-[% channel_config.$sales_channel %]">Marketing Options</span></td>
+            <td class="blank" align="right"><a
+            href="javascript:toggle_view('customer_options');"><span id="lnkcustomer_options">View</span></a></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    </table>
+
+    <div id="customer_options">
+    <form name="customerOptions" action="[% short_url %]/UpdateCustomer" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="customer_id" value="[% customer_id %]">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td width="22%" align="right"><b>&nbsp;&nbsp;&nbsp;No Marketing Contact:&nbsp;&nbsp;&nbsp;</td>
+            <td width="29%"><input type="checkbox" id="marketing_contact_2month" name="marketing_contact" value="2month" [% IF customer_info.no_marketing_contact && customer_info.no_marketing_contact != '01-01-2100' %]checked[% END %]>For the next two months[% IF customer_info.no_marketing_contact && customer_info.no_marketing_contact != '01-01-2100' %] ([% customer_info.no_marketing_contact %])[% END %]</td>
+            <td width="49%"><input type="checkbox" id="marketing_contact_forever" name="marketing_contact" value="forever"[% IF customer_info.no_marketing_contact == '01-01-2100' %]checked[% END %]>Forever</td>
+        </tr>
+        <tr>
+            <td width="22%" align="right"><b>&nbsp;&nbsp;&nbsp;New High Value:&nbsp;&nbsp;&nbsp;</td>
+            <td width="29%">
+                [% IF has_marketing_high_value %]
+                    <img style="display: inline" id="marketing_high_value_image" src="/images/icons/tick.png" alt="Yes" title="Yes" />
+                    <span>([% marketing_high_value_date %])</span>
+                [% ELSE %]
+                    <input type="checkbox" id="marketing_high_value" name="marketing_high_value">
+                [% END %]
+            </td>
+            <td width="49%"></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td class="blank" colspan="3"><img src="/images/blank.gif" width="1" height="10"></td>
+        </tr>
+        <tr>
+            <td class="blank" colspan="3" align="right">[% INCLUDE page_elements/forms/submit_button.tt btn_name="update_marketing_options" %]</td>
+        </tr>
+    </table>
+    </form>
+    <br>
+    </div>
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" id="tbl_order_history">
+        <tr>
+            <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="25"></td>
+        </tr>
+        <tr>
+            <td class="blank"><span class="title title-[% channel_config.$sales_channel %]">Order History</span></td>
+            <td class="blank" align="right"><a href="javascript:toggle_view('order_history');"><span id="lnkorder_history">View</span></a></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    </table>
+
+    <div id="order_history" style="display:none">
+
+
+    [% IF view_type != "Full" %]
+
+        <table id="tbl_order_history_min" width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+            <tr>
+                <td class="tableHeader" width="20%">&nbsp;&nbsp;&nbsp;Order Number</td>
+                <td class="tableHeader" width="20%">Date</td>
+                <td class="tableHeader" width="20%">Total Value</td>
+                <td class="tableHeader" width="20%">App Source</td>
+                <td class="tableHeader" width="20%">Status</td>
+            </tr>
+            <tr>
+                <td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+
+            [% FOREACH orderid = orders.keys.nsort.reverse %]
+            [% SET td_style = '' %]
+                [% FOREACH ship_id = orders.$orderid.shipments.keys.nsort %]
+                    [% IF orders.$orderid.shipments.$ship_id.shipment_type_id == db_constant('SHIPMENT_TYPE__PREMIER') %]
+                        [% SET td_style = 'class="highlight"' %]
+                    [% END %]
+                [% END %]
+                <tr [% td_style %]>
+                    <td>&nbsp;&nbsp;&nbsp;<a href="[% short_url %]/OrderView?order_id=[% orderid %]">[% orders.$orderid.order_nr %]</a></td>
+                    <td>[% orders.$orderid.order_date %]</td>
+                    <td>[% orders.$orderid.currency %]&nbsp;[% orders.$orderid.total_value %]</td>
+                    <td>[% IF orders.$orderid.app_name %][% orders.$orderid.app_name %] [% IF orders.$orderid.app_version %][% orders.$orderid.app_version %][% END %][% END %]</td>
+                    <td>[% orders.$orderid.status %]</td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+            [% END %]
+            <tr>
+                <td colspan="5" class="blank"><img src="/images/blank.gif" width="1" height="20"></td>
+            </tr>
+        </table>
+
+
+    [% ELSE %]
+
+        [% FOREACH orderid = orders.keys.nsort.reverse %]
+
+            <table id="tbl_order_history_full" width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+                <tr>
+                    <td align="right" width="15%"><b>Order Number:&nbsp;</td>
+                    <td><a href="[% short_url %]/OrderView?order_id=[% orderid %]">[% orders.$orderid.order_nr %]</a></td>
+                    <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr height="24">
+                    <td align="right" class="blank"><b>Date:&nbsp;</td>
+                    <td class="blank">[% orders.$orderid.order_date %]</td>
+                    <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr height="24">
+                    <td align="right" class="blank"><b>Status:&nbsp;</td>
+                    <td class="blank">[% orders.$orderid.status %]</td>
+                    <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr height="24">
+                    <td align="right" class="blank"><b>Total Value:&nbsp;</td>
+                    <td class="blank">[% orders.$orderid.currency %]&nbsp;[% orders.$orderid.total_value %]</td>
+                    <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr height="24">
+                    <td align="right" class="blank"><b>App Source:&nbsp;</td>
+                    <td class="blank">[% IF orders.$orderid.app_name %][% orders.$orderid.app_name %] [% IF orders.$orderid.app_version %][% orders.$orderid.app_version %][% END %][% END %]</td>
+                    <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+                </tr>
+            </table>
+
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+                <tr>
+                    <td colspan="8" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr>
+                    <td class="tableHeader" width="20%">&nbsp;&nbsp;&nbsp;Shipment Number</td>
+                    <td class="tableHeader" width="20%">Shipment Class</td>
+                    <td class="tableHeader" width="20%">Date</td>
+                    <td class="tableHeader" width="20%">Status</td>
+                    <td class="tableHeader" width="20%">Items</td>
+                </tr>
+                <tr>
+                    <td colspan="8" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                [% FOREACH ship_id = orders.$orderid.shipments.keys.nsort %]
+                    [% SET td_style = '' %]
+                    [% IF orders.$orderid.shipments.$ship_id.shipment_type_id == db_constant('SHIPMENT_TYPE__PREMIER') %]
+                        [% SET td_style = 'class="highlight"' %]
+                    [% END %]
+                    <tr [% td_style %]>
+                        <td>&nbsp;&nbsp;&nbsp;[% ship_id %]</td>
+                        <td>[% orders.$orderid.shipments.$ship_id.class %]</td>
+                        <td>[% orders.$orderid.shipments.$ship_id.date %]</td>
+                        <td>[% orders.$orderid.shipments.$ship_id.status %]</td>
+                        <td>[% orders.$orderid.shipments.$ship_id.num_items %]</td>
+                    </tr>
+                    <tr>
+                        <td colspan="8" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                    </tr>
+                [% END %]
+                <tr>
+                    <td colspan="8" class="blank"><img src="/images/blank.gif" width="1" height="20"></td>
+                </tr>
+            </table>
+        [% END %]
+    [% END %]
+    </div>
+
+
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" id="tbl_returns_history">
+        <tr>
+            <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="25"></td>
+        </tr>
+        <tr>
+            <td class="blank"><span class="title title-[% channel_config.$sales_channel %]">Returns History</span></td>
+            <td class="blank" align="right"><a href="javascript:toggle_view('returns_history');"><span id="lnkreturns_history">View</span></a></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    </table>
+
+    <div id="returns_history" style="display:none">
+
+    [% IF view_type != "Full" %]
+
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+            <tr>
+                <td class="tableHeader" width="17%">&nbsp;&nbsp;&nbsp;RMA Number</td>
+                <td class="tableHeader" width="17%">Shipment Number</td>
+                <td class="tableHeader" width="17%">Order Number</td>
+                <!--<td class="tableHeader" width="17%">Sales Channel</td>-->
+                <td class="tableHeader" width="17%">Date</td>
+                <td class="tableHeader" width="17%">Status</td>
+            </tr>
+            <tr>
+                <td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+
+            [% FOREACH orderid = orders.keys.nsort %]
+                [% FOREACH shipid = orders.$orderid.shipments.keys.nsort %]
+                    [% SET td_style = '' %]
+                    [% IF orders.$orderid.shipments.$shipid.shipment_type_id == db_constant('SHIPMENT_TYPE__PREMIER') %]
+                        [% SET td_style = 'class="highlight"' %]
+                    [% END %]
+                    [% FOREACH retid = orders.$orderid.shipments.$shipid.returns.keys.nsort %]
+                        <tr [% td_style %]>
+                            <td>&nbsp;&nbsp;&nbsp;<a href="[% short_url %]/EditReturn/[% orderid %]/[% shipid %]/[% retid %]">[% orders.$orderid.shipments.$shipid.returns.$retid.rma_number %]</a></td>
+                            <td>[% shipid %]</td>
+                            <td>&nbsp;&nbsp;&nbsp;<a href="[% short_url %]/OrderView?order_id=[% orderid %]">[% orders.$orderid.order_nr %]</a></td>
+                            <!--<td>[% orders.$orderid.shipments.$shipid.returns.$retid.sales_channel %]</td>-->
+                            <td>[% orders.$orderid.shipments.$shipid.returns.$retid.date_created %]</td>
+                            <td>[% orders.$orderid.shipments.$shipid.returns.$retid.status %]</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                        </tr>
+                    [% END %]
+                [% END %]
+            [% END %]
+            <tr>
+                <td colspan="5" class="blank"><img src="/images/blank.gif" width="1" height="20"></td>
+            </tr>
+        </table>
+        <br>
+        <br>
+
+
+    [% ELSE %]
+
+        [% FOREACH orderid = orders.keys.nsort %]
+                [% FOREACH shipid = orders.$orderid.shipments.keys.nsort %]
+                    [% FOREACH retid = orders.$orderid.shipments.$shipid.returns.keys.nsort %]
+
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+
+                            <tr>
+                                <td align="right" width="15%"><b>RMA Number:&nbsp;</td>
+                                <td><a href="[% short_url %]/EditReturn/[% orderid %]/[% shipid %]/[% retid %]">[% orders.$orderid.shipments.$shipid.returns.$retid.rma_number %]</a></td>
+                                <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                            </tr>
+                            <tr height="24">
+                                <td align="right" class="blank"><b>Date:&nbsp;</td>
+                                <td class="blank">[% orders.$orderid.shipments.$shipid.returns.$retid.date_created %]</td>
+                                <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                            </tr>
+                            <tr height="24">
+                                <td align="right" class="blank"><b>Status:&nbsp;</td>
+                                <td class="blank">[% orders.$orderid.shipments.$shipid.returns.$retid.status %]</td>
+                                <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+                            </tr>
+                        </table>
+
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+                            <tr>
+                                <td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+                            </tr>
+                            <tr>
+                                <td class="tableHeader">&nbsp;&nbsp;&nbsp;SKU</td>
+                                <td class="tableHeader">&nbsp;&nbsp;&nbsp;Type</td>
+                                <td class="tableHeader">&nbsp;&nbsp;&nbsp;Reason</td>
+                                <td class="tableHeader">&nbsp;&nbsp;&nbsp;Status</td>
+                                <td class="tableHeader">&nbsp;&nbsp;&nbsp;Date Received</td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+                            </tr>
+
+                            [% FOREACH returnitemid = orders.$orderid.shipments.$shipid.returns.$retid.return_items.keys %]
+                                [% SET td_style = '' %]
+                                [% IF orders.$orderid.shipments.$shipid.shipment_type_id == db_constant('SHIPMENT_TYPE__PREMIER') %]
+                                    [% SET td_style = 'class="highlight"' %]
+                                [% END %]
+
+                                [% tdclass = "" %]
+
+                                [% IF orders.$orderid.shipments.$shipid.returns.$retid.return_items.$returnitemid.status == "Cancelled" %]
+                                    [% tdclass = " class=\"light\"" %]
+                                [% END %]
+
+                                <tr [% td_style %]>
+                                    <td[% tdclass %]>&nbsp;&nbsp;&nbsp;[% orders.$orderid.shipments.$shipid.returns.$retid.return_items.$returnitemid.legacy_sku %]</td>
+                                    <td[% tdclass %]>&nbsp;&nbsp;&nbsp;[% orders.$orderid.shipments.$shipid.returns.$retid.return_items.$returnitemid.type %]</td>
+                                    <td[% tdclass %]>&nbsp;&nbsp;&nbsp;[% orders.$orderid.shipments.$shipid.returns.$retid.return_items.$returnitemid.reason %]</td>
+                                    <td[% tdclass %]>&nbsp;&nbsp;&nbsp;[% orders.$orderid.shipments.$shipid.returns.$retid.return_items.$returnitemid.status %]</td>
+                                    <td[% tdclass %]>&nbsp;&nbsp;&nbsp;[% orders.$orderid.shipments.$shipid.returns.$retid.return_items.$returnitemid.date_received %]</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+                                </tr>
+
+                            [% END %]
+                        </table>
+
+
+                        <br>
+                        <br>
+                [% END %]
+            [% END %]
+        [% END %]
+    [% END %]
+    </div>
+
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" id="tbl_inv_address_history">
+        <tr>
+            <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="25"></td>
+        </tr>
+        <tr>
+            <td class="blank"><span class="title title-[% channel_config.$sales_channel %]">Invoice Address History</span></td>
+            <td class="blank" align="right"><a href="javascript:toggle_view('inv_address_history');"><span id="lnkinv_address_history">View</span></a></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    </table>
+
+    <div id="inv_address_history" style="display:none">
+
+    [% FOREACH addressid = address_history.invoice.keys.nsort %]
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+            <tr>
+                <td width="25%" align="right"><b>Order Number:&nbsp;&nbsp;</td>
+                <td width="75%">&nbsp;[% address_history.invoice.$addressid.order_nr %]</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr height="22">
+                <td align="right"><b>Street Address:&nbsp;&nbsp;</td>
+                <td>&nbsp;[% address_history.invoice.$addressid.address.address_line_1 %]</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr height="22">
+                <td align="right"><b>Town/City:&nbsp;&nbsp;</td>
+                <td>&nbsp;[% address_history.invoice.$addressid.address.towncity %]</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr height="22">
+                <td align="right"><b>County/State:&nbsp;&nbsp;</td>
+                <td>&nbsp;[% address_history.invoice.$addressid.address.county %]</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td align="right"><b>Postcode:&nbsp;&nbsp;</td>
+                <td>&nbsp;[% address_history.invoice.$addressid.address.postcode %]</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td align="right"><b>Country:&nbsp;&nbsp;</td>
+                <td>&nbsp;[% address_history.invoice.$addressid.address.country %]</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        </table><br>
+        <br>
+    [% END %]
+    </div>
+
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" id="tbl_ship_address_history">
+        <tr>
+            <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="25"></td>
+        </tr>
+        <tr>
+            <td class="blank"><span class="title title-[% channel_config.$sales_channel %]">Shipping Address History</span></td>
+            <td class="blank" align="right"><a href="javascript:toggle_view('ship_address_history');"><span id="lnkship_address_history">View</span></a></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    </table>
+
+    <div id="ship_address_history" style="display:none">
+
+    [% FOREACH addressid = address_history.shipment.keys.nsort %]
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+            <tr>
+                <td width="25%" align="right"><b>Order Number:&nbsp;&nbsp;</td>
+                <td width="75%">&nbsp;[% address_history.shipment.$addressid.order_nr %]</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td width="25%" align="right"><b>Shipment Number:&nbsp;&nbsp;</td>
+                <td width="75%">&nbsp;[% address_history.shipment.$addressid.shipment_nr %]</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr height="22">
+                <td align="right"><b>Street Address:&nbsp;&nbsp;</td>
+                <td>&nbsp;[% address_history.shipment.$addressid.address.address_line_1 %]</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr height="22">
+                <td align="right"><b>Town/City:&nbsp;&nbsp;</td>
+                <td>&nbsp;[% address_history.shipment.$addressid.address.towncity %]</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr height="22">
+                <td align="right"><b>County/State:&nbsp;&nbsp;</td>
+                <td>&nbsp;[% address_history.shipment.$addressid.address.county %]</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td align="right"><b>Postcode:&nbsp;&nbsp;</td>
+                <td>&nbsp;[% address_history.shipment.$addressid.address.postcode %]</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td align="right"><b>Country:&nbsp;&nbsp;</td>
+                <td>&nbsp;[% address_history.shipment.$addressid.address.country %]</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        </table><br>
+        <br>
+    [% END %]
+    </div>
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" id="tbl_subscriptions">
+        <tr>
+            <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="25"></td>
+        </tr>
+        <tr>
+            <td class="blank"><span class="title title-[% channel_config.$sales_channel %]">Subscriptions</span></td>
+            <td class="blank" align="right"><a href="javascript:toggle_view('subscriptions');"><span id="lnksubscriptions">View</span></a></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    </table>
+
+    <div id="subscriptions" style="display:none">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+          <tr>
+            <td class="tableHeader" width="50%">&nbsp;&nbsp;&nbsp;Publication</td>
+            <td class="tableHeader" width="50%">Subscribed</td>
+          </tr>
+
+          <tr>
+            <td width="50%" align="left">&nbsp;&nbsp;&nbsp;Porter</td>
+            <td width="50%">[% customer_info.porter_subscriber ? 'Yes' : 'No' %]</td>
+          </tr>
+          </table>
+    </div>
+
+    <br />
+    <br />
+    <br />
+
+    <script language="Javascript" type="text/javascript">
+    <!--
+        var ajax_loaded = new Array();
+        var ajax_funcs  = new Array();
+
+        var channel_config  = new Array();
+        [% FOREACH channel_name = channel_config.keys -%]
+        channel_config['[% channel_name %]'] = '[% channel_config.$channel_name %]';
+        [% END %]
+
+
+        [% IF can_edit_order_contact %]
+        toggle_view('contact_options');
+        [% END %]
+        toggle_view('customer_options');
+        toggle_view('order_history');
+        toggle_view('returns_history');
+        toggle_view('subscriptions');
+
+        var ajax_error_process  = function ( obj, textStatus, errorThrown ) {
+                var msg = textStatus;
+                if ( typeof(errorThrown) == 'string' ) {
+                    if ( errorThrown.match(/error message set in session to: Login/i) ) {
+                        alert("Couldn't get Data because your session has timed out.\nPlease Login again.");
+                        return;
+                    }
+                    else {
+                        msg += "\n" + errorThrown;
+                    }
+                }
+                alert("Error Requesting Data:\n"+msg);
+            };
+
+        ajax_funcs["customer_value"] = function () {
+                $.ajax( {
+                    url: "/customercare/customer/customer_value",
+                    type: "POST",
+                    // https://metacpan.org/module/Plack::Middleware::CSRFBlock#javascript
+                    headers: { "X-CSRF-Token": $("meta[name='csrf_token']").attr("content") },
+                    data: {
+                        "customer_id"      : "[% customer_id %]",
+                        "format"           : "json"
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        /* denote that Customer Value has been loaded */
+                        ajax_loaded['customer_value']   = 'LOADED';
+
+                        var cv_div  = $("#customer_value");
+
+                        /*
+                           array to store a table of data for each channel
+                           indexed by channel id so that it can be displayed
+                           in the same order everytime, not ideal way of sorting
+                        */
+                        var channel = new Array();
+
+                        /* see if there is an error */
+                        if ( data == null || typeof(data) != 'object' || data.error ) {
+                            var msg = "";
+                            if ( data != null && typeof(data) == 'object' )
+                                msg = data.error;
+                            alert("Error with Request:\n"+msg);
+                            cv_div.empty();
+                            ajax_loaded['customer_value'] = '';
+                            return;
+                        }
+
+                        /* no error so build up the data to be displayed in the div */
+                        $.each( data, function (channel_id,data) {
+                            /* first set up the table heading */
+                            var channel_name = $("<span>").addClass("title")
+                                                            .addClass("title-"+channel_config[data.sales_channel])
+                                                            .text( data.sales_channel );
+
+                            /* set-up table */
+                            var table = $("<table>").addClass("wide-data")
+                                                    .addClass("data")
+                                                    .addClass("divided-data")
+                                                    .css("margin-bottom","5px");
+
+                            /*
+                               if this is the first time through then draw
+                               the Date Period heading and put it in element
+                               zero of the channel array
+                            */
+                            if ( channel[0] == null ) {
+                                var date_table  = $(table).clone();
+                                var thead       = $("<thead>");
+                                var row         = $("<tr>");
+                                $("<th>").attr("colspan",5).text("Period: "+data.period.fancy).appendTo(row);
+                                row.appendTo(thead);
+                                thead.appendTo(date_table);
+                                date_table.css("margin-top","5px");
+                                channel[0]  = date_table;
+                            }
+
+                            /* draw headings */
+                            var thead       = $("<thead>");
+                            var head_row    = $("<tr>");
+                            $("<th>").attr("width","20%").text("Currency").appendTo(head_row);
+                            $("<th>").attr("width","20%").text("GROSS Spend").appendTo(head_row);
+                            $("<th>").attr("width","20%").text("NET Spend").appendTo(head_row);
+                            $("<th>").attr("width","20%").css("text-align","center").text("Unit Return Rate").appendTo(head_row);
+                            $("<th>").attr("width","20%").css("text-align","center").text("Number of Orders").appendTo(head_row);
+                            head_row.appendTo(thead);
+
+                            /* draw data rows */
+                            var tbody   = $("<tbody>");
+                            if ( data.spend.length > 0 ) {
+                                for ( var i = 0; i < data.spend.length; i++ ) {
+                                    var rec = data.spend[i];
+                                    var data_row    = $("<tr>");
+                                    $("<td>").html( rec.currency + " ("+rec.html_entity+")" ).appendTo(data_row);
+                                    $("<td>").text( rec.gross.formatted ).appendTo(data_row);
+                                    $("<td>").text( rec.net.formatted ).appendTo(data_row);
+
+                                    /* only do the following on the first pass */
+                                    if ( i == 0 ) {
+                                        var cell1 = $("<td>").attr("align","center").text( data.return_rate.unit_return_rate );
+                                        var cell2 = $("<td>").attr("align","center").text( data.number_of_orders );
+                                        if ( data.spend.length > 1 ) {
+                                            cell1.attr("rowspan",data.spend.length);
+                                            cell2.attr("rowspan",data.spend.length);
+                                        }
+                                        cell1.appendTo(data_row);
+                                        cell2.appendTo(data_row);
+                                    }
+                                    data_row.appendTo(tbody);
+                                }
+                            }
+                            else {
+                                var data_row    = $("<tr>");
+                                $("<td>").attr("colspan",5).text("No data available for the date period").appendTo(data_row);
+                                data_row.appendTo(tbody);
+                            }
+
+                            /* add rows to the table */
+                            thead.appendTo(table);
+                            tbody.appendTo(table);
+
+                            /* store all the nodes */
+                            channel[channel_id] = channel_name.add(table);
+                        } );
+
+                        /* insert disclaimer */
+                        channel.push( $("<span>").css("font-weight","bold")
+                                                    .css("display","block")
+                                                    .css("padding-top","5px")
+                                                    .text("All values are indicative") );
+
+                        /* add to the customer value div */
+                        cv_div.empty();
+                        for ( var i = 0; i < channel.length; i++ ) {
+                            if ( channel[i] != null ) {
+                                cv_div.append( channel[i] );
+                            }
+                        }
+                    },
+                    error: function ( obj, textStatus, errorThrown ) {
+                        $("#customer_value").empty();
+                        ajax_loaded['customer_value'] = '';
+                        ajax_error_process( obj, textStatus, errorThrown );
+                    }
+                } );
+            };
+
+        var call_ajax_data_request  = function () {
+                var label   = this.id.replace(/^lnk/,'');
+                if ( ajax_loaded[label] != 'LOADED' ) {
+                    show_ajax_loading_img(label);
+                    if ( ajax_loaded[label] != 'LOADING' ) {
+                        ajax_loaded[label]  = 'LOADING';
+                        ajax_funcs[label]();
+                    }
+                }
+            };
+
+        function show_ajax_loading_img (div_id) {
+            var div = $("#"+div_id);
+            div.empty();
+            var img = $("<img>").attr("src","/images/ajax-loader.gif").css("padding","5px");
+            div.append(img);
+        }
+
+        $("#lnkcustomer_value").click( call_ajax_data_request );
+
+    //-->
+    </script>
+[% END %]
+

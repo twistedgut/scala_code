@@ -1,0 +1,137 @@
+[% IF ! is_manager %]
+    [% # Normals don't get to see or do much of interest %]
+    [% IF promotion.status_id > 0 %]
+    <div class="promotion_status">
+        [% promotion.status.name %]
+    </div>
+    [% ELSE %]
+    &nbsp;
+    [% END %]
+[% ELSE %]
+    [% # The array of options for a manager are mind-blowing %]
+    [% # There must be some way to simplify this %]
+
+    [% # if there's a job queued, that's all we care about for this entry %]
+    [% # have we exported it? we shouldn't really be doing anything to it if we have %]
+    [% # if it's failed, that's all we care about %]
+    [% IF promotion.status_job_queued || promotion.status_exported || promotion.status_job_failed %]
+    <div class="promotion_status">
+        [% promotion.status.name %]
+    </div>
+
+    [% # GENERIC COUPONS # %]
+    [% ELSIF promotion.is_generic_coupon %]
+        [% IF promotion.has_coupon_codes %]
+            [% IF promotion.requires_customer_freeze %]
+                [% IF is_manager %]
+                    [% IF promotion.status_in_progress %]
+                        [% INCLUDE promotion/summary_button.tt
+                            action_label='Freeze Customers'
+                            action_value='freeze_customers' %]
+                    [% ELSE %]
+                        <div class="promotion_status">
+                            [% promotion.status.name %]
+                        </div>
+                    [% END %]
+                [% ELSE %]
+                    Awaiting Group Freeze
+                [% END %]
+            [% ELSE %]
+                <div class="generic_coupon">
+                    [% promotion.generic_coupon.code || '*MISSING*' %]
+                </div>
+            [% END %]
+        [% ELSE %]
+            [% INCLUDE promotion/summary_button.tt
+                action_label='Generate Coupon'
+                action_value='generate_coupon' %]
+        [% END %]
+
+
+
+
+    [% # SPECIFIC COUPONS # %]
+    [% ELSIF promotion.is_specific_coupon %]
+        [% IF promotion.requires_customer_freeze %]
+            [% INCLUDE promotion/summary_button.tt
+                action_label='Freeze Customers'
+                action_value='freeze_customers' %]
+        [% ELSIF ! promotion.has_coupon_codes && !promotion.status_coupons_generating %]
+            [% INCLUDE promotion/summary_button.tt
+                action_label='Generate Coupons'
+                action_value='generate_coupons' %]
+        [% ELSIF promotion.requires_emails && !promotion.status_exported_to_lyris && !promotion.status_exporting_to_lyris %]
+            [% # List frozen AND we have coupons %]
+            [% INCLUDE promotion/summary_button.tt
+                action_label='Send To Lyris'
+                action_value='send_to_lyris' %]
+        [% ELSE %]
+            <div class="promotion_status">
+                [% promotion.status.name %]
+            </div>
+        [% END %]
+
+
+
+
+    [% # NO COUPONS # %]
+    [% ELSE %]
+        [% IF promotion.requires_customer_freeze %]
+            [% INCLUDE promotion/summary_button.tt
+                action_label='Freeze Customers'
+                action_value='freeze_customers' %]
+        [% ELSE %]
+            <div class="promotion_status">
+                [% promotion.status.name %]
+            </div>
+        [% END %]
+    [% END %]
+[% END %]
+
+[% IF 1 %]
+
+[% ELSIF promotion.is_specific_coupon %]
+    [% IF promotion.requires_customer_freeze %]
+        [% IF is_manager %]
+            [% IF promotion.status_in_progress %]
+                [% INCLUDE promotion/summary_button.tt
+                    action_label='Freeze Customers'
+                    action_value='freeze_customers' %]
+            [% ELSE %]
+            #2
+                <div class="promotion_status">
+                    [% promotion.status.name %]
+                </div>
+            [% END %]
+        [% ELSE %]
+            Awaiting Group Freeze
+        [% END %]
+    [% ELSIF is_manager %]
+        [% IF promotion.status_in_progress %]
+            [% INCLUDE promotion/summary_button.tt
+                action_label='Generate Coupons'
+                action_value='generate_coupons' %]
+        [% ELSIF promotion.has_coupon_codes %]
+            [% IF promotion.requires_emails and !promotion.status_exported_to_lyris %]
+            [% INCLUDE promotion/summary_button.tt
+                action_label='Send To Lyris'
+                action_value='send_to_lyris' %]
+            [% ELSE %]
+            #3
+            <div class="promotion_status">
+                [% promotion.status.name %]
+            </div>
+            [% END %]
+        [% ELSE %]
+        #4
+        <div class="promotion_status">
+            [% promotion.status.name %]
+        </div>
+        [% END %]
+    [% ELSE %]
+    #5
+    <div class="promotion_status">
+        [% promotion.status.name %]
+    </div>
+    [% END %]
+[% END %]

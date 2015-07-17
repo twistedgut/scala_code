@@ -1,0 +1,13 @@
+-- Description:
+--   adds relevant authorisation option to the sub-section table
+
+BEGIN;
+
+INSERT INTO authorisation_sub_section
+(authorisation_section_id, sub_section)
+    SELECT id, 'Email'
+    FROM public.authorisation_section
+    WHERE section='Customer Care'
+;
+
+COMMIT;

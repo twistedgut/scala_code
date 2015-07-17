@@ -1,0 +1,202 @@
+
+[% IF instances %]
+
+	[% SET got_current = 0 %]
+	[% SET got_draft = 0 %]
+	[% SET got_archive = 0 %]
+
+	[% WHILE (instance = instances.next) %]
+		[% IF instance.get_column('status') == 'Publish' %]
+			[% SET got_current = 1 %]
+		[% END %]
+
+		[% IF instance.get_column('status') == 'Draft' %]
+			[% SET got_draft = 1 %]
+		[% END %]
+
+		[% IF instance.get_column('status') == 'Archived' %]
+			[% SET got_archive = 1 %]
+		[% END %]
+
+	[% END %]
+
+	[% dummy = instances.reset %]
+
+	<br />
+	<br />
+	<br />
+	<span class="title">Current Version</span><br />
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+		<tr>
+			<td colspan="6" class="divider"></td>
+		</tr>
+
+		[% IF got_current == 1 %]
+			<tr> 
+				<td width="26%" class="tableHeader">&nbsp;&nbsp;Name</td>
+				<td width="16%" class="tableHeader">Created</td>
+				<td width="16%" class="tableHeader">Created By</td>
+				<td width="16%" class="tableHeader">Last Updated</td>
+				<td width="16%" class="tableHeader">Last Updated By</td>
+				<td width="10%" class="tableHeader"></td>
+			</tr>
+			<tr>
+				<td colspan="6" class="divider"></td>
+			</tr>
+
+			[% WHILE (instance = instances.next) %]
+				[% IF instance.get_column('status') == 'Publish' %]
+					<tr> 
+						<td>&nbsp;&nbsp;[% instance.label %]</td>
+						<td>[% instance.created.dmy %] [% instance.created.hour %]:[% instance.created.minute %]</td>
+						<td>[% instance.get_column('created_by_name') %]</td>
+						<td>[% instance.last_updated.dmy %] [% instance.last_updated.hour %]:[% instance.last_updated.minute %]</td>
+						<td>[% instance.get_column('updated_by_name') %]</td>
+						<td align="center">
+							<a href="SearchResults/Instance?page_id=[% page_id %]&instance_id=[% instance.id %]">
+							[% IF is_operator %]
+								<img src="/images/icons/page_white_edit.png" border="0" alt="Edit Version">
+							[% ELSE %]
+								<img src="/images/icons/page_white_magnify.png" border="0" alt="View Version">
+							[% END %]
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6" class="divider"></td>
+					</tr>
+				[% END %]
+			[% END %]
+		[% ELSE %]
+			<tr> 
+				<td>&nbsp;&nbsp;None</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td colspan="6" class="divider"></td>
+			</tr>
+
+		[% END %]
+	</table>
+
+	[% dummy = instances.reset %]
+
+	<br />
+	<br />
+	<span class="title">Draft Versions</span><br />
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+		<tr>
+			<td colspan="6" class="divider"></td>
+		</tr>
+
+		[% IF got_draft == 1 %]
+			<tr> 
+				<td width="26%" class="tableHeader">&nbsp;&nbsp;Name</td>
+				<td width="16%" class="tableHeader">Created</td>
+				<td width="16%" class="tableHeader">Created By</td>
+				<td width="16%" class="tableHeader">Last Updated</td>
+				<td width="16%" class="tableHeader">Last Updated By</td>
+				<td width="10%" class="tableHeader"></td>
+			</tr>
+			<tr>
+				<td colspan="6" class="divider"></td>
+			</tr>
+
+			[% WHILE (instance = instances.next) %]
+				[% IF instance.get_column('status') == 'Draft' %]
+					<tr> 
+						<td>&nbsp;&nbsp;[% instance.label %]</td>
+						<td>[% instance.created.dmy %] [% instance.created.hour %]:[% instance.created.minute %]</td>
+						<td>[% instance.get_column('created_by_name') %]</td>
+						<td>[% instance.last_updated.dmy %] [% instance.last_updated.hour %]:[% instance.last_updated.minute %]</td>
+						<td>[% instance.get_column('updated_by_name') %]</td>
+						<td align="center"><a href="SearchResults/Instance?page_id=[% page_id %]&instance_id=[% instance.id %]">
+							[% IF is_operator %]
+								<img src="/images/icons/page_white_edit.png" border="0" alt="Edit Version">
+							[% ELSE %]
+								<img src="/images/icons/page_white_magnify.png" border="0" alt="View Version">
+							[% END %]
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6" class="divider"></td>
+					</tr>
+				[% END %]
+			[% END %]
+		[% ELSE %]
+			<tr> 
+				<td>&nbsp;&nbsp;None</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td colspan="6" class="divider"></td>
+			</tr>
+
+		[% END %]
+	</table>
+
+	[% dummy = instances.reset %]
+
+	<br />
+	<br />
+	<span class="title">Archived Versions</span><br />
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+		<tr>
+			<td colspan="6" class="divider"></td>
+		</tr>
+
+		[% IF got_archive == 1 %]
+			<tr> 
+				<td width="26%" class="tableHeader">&nbsp;&nbsp;Name</td>
+				<td width="16%" class="tableHeader">Created</td>
+				<td width="16%" class="tableHeader">Created By</td>
+				<td width="16%" class="tableHeader">Last Updated</td>
+				<td width="16%" class="tableHeader">Last Updated By</td>
+				<td width="10%" class="tableHeader"></td>
+			</tr>
+			<tr>
+				<td colspan="6" class="divider"></td>
+			</tr>
+
+			[% WHILE (instance = instances.next) %]
+				[% IF instance.get_column('status') == 'Archived' %]
+					<tr> 
+						<td>&nbsp;&nbsp;[% instance.label %]</td>
+						<td>[% instance.created.dmy %] [% instance.created.hour %]:[% instance.created.minute %]</td>
+						<td>[% instance.get_column('created_by_name') %]</td>
+						<td>[% instance.last_updated.dmy %] [% instance.last_updated.hour %]:[% instance.last_updated.minute %]</td>
+						<td>[% instance.get_column('updated_by_name') %]</td>
+						<td align="center"><a href="SearchResults/Instance?page_id=[% page_id %]&instance_id=[% instance.id %]">
+							[% IF is_operator %]
+								<img src="/images/icons/page_white_edit.png" border="0" alt="Edit Version">
+							[% ELSE %]
+								<img src="/images/icons/page_white_magnify.png" border="0" alt="View Version">
+							[% END %]
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6" class="divider"></td>
+					</tr>
+				[% END %]
+			[% END %]
+		[% ELSE %]
+			<tr> 
+				<td>&nbsp;&nbsp;None</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td colspan="6" class="divider"></td>
+			</tr>
+
+		[% END %]
+	</table>
+
+[% END %]

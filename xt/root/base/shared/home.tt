@@ -1,0 +1,124 @@
+[% IF show_graph %]
+    [% USE Utilities("subkeysrt") %]
+
+    [% graph_title = "All Orders" %]
+
+    [% SET local_currency_glyph = currency_glyph_map.$local_currency_id %]
+    <br/>
+    <form name="f_homepage" method="post" action="/Home">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <table style="width:100%; margin-top: 7px" class="data">
+        <tr>
+            <td class="blank" width="55%"><span class="title title-[% channel_config.$sales_channel %]">Order Overview</span></td>
+            <td class="blank" width="15%" align="right"><strong>Sales Channel:</strong>&nbsp;&nbsp;&nbsp;</td>
+            <td class="blank" align="left">
+                <select name="channel_toview" onchange="javascript:document.forms['f_homepage'].submit();">
+                    <option value="0">All Channels</option>
+                    [% FOREACH channel = channels.subkeysrt('name') %]
+                        <option value="[% channel %]"[% IF sales_channel == channels.$channel.name %] selected="selected"[% END %]>[% channels.$channel.name %]</option>
+                    [% END %]
+                </select>
+            </td>
+            <td class="blank" align="right">
+                <select name="view_type" onchange="javascript:document.forms['f_homepage'].submit();">
+                    <option value="all">All Orders</option>
+                    <option value="premier" [% IF view_type == 'premier' %] selected="selected"[% graph_title="Premier Orders" %][% END %]>Premier Orders</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="divider" colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="4"><img src="[% graph_path %]order_overview[% IF view_type == 'premier' %]_premier[% END %][% graph_img_suffix %].png?id=[% random_id %]" border="0" width="819" height="260" alt="[% graph_title %]" title="[% graph_title %]" /></td>
+        <tr>
+            <td class="divider" colspan="4"></td>
+        </tr>
+    </table>
+    <br/><br/>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="3" class="blank"><span class="title title-[% channel_config.$sales_channel %]">Today</span></td>
+            <td colspan="3" class="blank"><span class="title title-[% channel_config.$sales_channel %]">Yesterday</span></td>
+        </tr>
+        <tr>
+            <td colspan="6" class="divider"></td>
+        </tr>
+        <tr>
+        </tr>
+            <tr>
+            <td align="right" width="20%"><strong>Total Orders Received:</strong>&nbsp;</td>
+            <td width="14%"> [% local_currency_total.today.count %] - [% local_currency_glyph %][% local_currency_total.today.value %]</td>
+            <td width="16%"><!--a href="#" onclick="javascript:launchMap('[% date_today %]');" title="Interactive Order Map"><img src="/images/icons/map.png" alt="Interactive Order Map"></a--></td>
+            <td align="right" width="20%"><strong>Total Orders Received:</strong>&nbsp;</td>
+            <td width="14%"> [% local_currency_total.yesterday.count %] - [% local_currency_glyph %][% local_currency_total.yesterday.value %] </td>
+            <td width="16%"><!--a href="#" onclick="javascript:launchMap('[% date_yesterday %]');" title="Interactive Order Map"><img src="/images/icons/map.png" alt="Interactive Order Map"></a--></td>
+        </tr>
+            <tr>
+            <td colspan="6" class="divider"></td>
+        </tr>
+
+        [% FOREACH currency = order_totals.keys.sort %]
+        [% SET glyph = currency_glyph_map.$currency %]
+            <tr>
+                <td align="right" width="20%"><strong>Orders Received:</strong>&nbsp;</td>
+                <td colspan="2" width="30%"> [% order_totals.$currency.today.count %]&nbsp;&nbsp; - [% glyph %][% order_totals.$currency.today.value %]  </td>
+                <td align="right" width="20%"><strong>Orders Received:</strong>&nbsp; </td>
+                <td colspan="2" width="30%"> [% order_totals.$currency.yesterday.count %]&nbsp;&nbsp; - [% glyph %][% order_totals.$currency.yesterday.value %]  </td>
+            </tr>
+
+                <tr>
+                <td colspan="6" class="divider"></td>
+            </tr>
+        [% END %]
+
+            <tr>
+            <td align="right"><strong>Shipments Dispatched:</strong>&nbsp;</td>
+            <td colspan="2">[% dispatched.today %]</td>
+            <td align="right"><strong>Shipments Dispatched:</strong>&nbsp;</td>
+            <td colspan="2">[% dispatched.yesterday %]</td>
+        </tr>
+        <tr>
+            <td colspan="6" class="divider"></td>
+        </tr>
+    </table>
+    </form>
+    <br/><br/>
+    <br/><br/>
+    [% PROCESS page_elements/front_page_notices.tt %]
+
+    <script type="text/javascript">
+
+    function launchMap( date ) {
+
+        window.open('/Home/OrderMap?date='+date+'&sales_channel='+escape("[% sales_channel %]"), 'MapPop', 'location=0,status=0,toolbar=0,resizable=0,width=800,height=489,scrollbars=0');
+        return false;
+
+    }
+
+    </script>
+
+[% ELSE %]
+<style type="text/css">
+    .replacement-image {
+        border: 1px solid #ddd;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+
+<!-- yes, we shouldn't use a table for layout, but using divs turned an area
+larger than the image into the clickable area, and was upsetting people
+We are linking to the original site as a way of crediting them for the image
+we 'stole'.
+    -->
+    <table width="240px" class="replacement-image">
+        <tr><td>
+            <a href="http://www.buzzfeed.com/anteater/30-funny-graphs"><img class="replacement-image"
+                src="/images/infinite-loop.jpg"
+                width="233" height="223" /></a>
+        </td></tr>
+    </table>
+
+[% END %]
+

@@ -1,0 +1,115 @@
+
+/* Make sure that containers are not wider then XTracker page's content */
+@media (min-width: 960px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+.debug {
+    border : 1px solid;
+}
+
+/*
+ *  Rules to setup navigation and page title block
+ * */
+.navigation-container .collapse {
+    padding: 0px;
+}
+.navigation-container .navbar-collapse {
+  text-align: center;
+}
+
+/*
+ *  Block with SKU groups (e.g. rail content or tote content)
+ *  is implemented based on collapsible panel (as it appears
+ *  that only panels support collapsible accordion like behaviour
+ *  in the current version of bootstrap). So we have to
+ *  tweak presentation for panels that are inside SKU container.
+ *
+ *  Changes are:
+ *      - panel corners are not rounded unless it is edge of
+ *        panel group;
+ *      - default color for panel headers is white;
+ *
+ * */
+.sku-container {
+    margin-bottom: 20px;
+}
+.sku-container .panel {
+    border-radius: 0px !important;
+    margin : 0px !important;
+    border-bottom : none;
+}
+.sku-container .panel-last {
+    border-bottom: 1px solid #ddd;
+    border-bottom-left-radius: 4px !important;
+    border-bottom-right-radius: 4px !important;
+}
+.sku-container .panel-first {
+    border-top-left-radius: 4px !important;
+    border-top-right-radius: 4px !important;
+    border-top: 0px !important;
+}
+
+.top-buffer {
+    margin-top:20px;
+}
+.sku-collection{
+    border: black 3px solid;
+}
+/*
+ * Make sure Bootstrap plays safely with existing XT CSS.
+ * Following rule is needed to make font size on XT born
+ * layout stay the same when Booistrap CSS is present on a page.
+ */
+html {
+    font-size: 100% !important;
+}
+
+/*
+ * Define look and feel of panel groups with header
+ * */
+div.headed-panel-group.panel > .panel-body {
+    padding: 0px;
+}
+div.headed-panel-group.panel {
+    border: 0px;
+    margin: 0px;
+}
+div.headed-panel-group.panel > .panel-heading {
+    border-top: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-bottom: none;
+    background-color : #fff;
+    text-align: center;
+    font: 24px;
+}
+div.headed-panel-group.panel .sku-container .panel-first {
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+}
+
+/* Define sizes for images */
+.sku-container img.image-xs {
+    width: 25px;
+    height: auto;
+}
+.sku-container img.image-l {
+    width: 150px;
+    height: auto;
+}
+
+.even {
+    background: #FFF !important;
+}
+.panel-title span{
+    color: black;
+}
+.odd {
+    background: rgb(111, 195, 215) !important;
+}
+.change-group {
+    border-top: 3px solid black !important;
+}

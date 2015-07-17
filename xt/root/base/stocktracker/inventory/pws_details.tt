@@ -1,0 +1,117 @@
+<!-- TT BEGIN - stocktracker/inventory/pws_details.tt -->
+
+[% PROCESS page_elements/display_status.tt %]
+
+<div id='display_product'>
+    [% PROCESS page_elements/display_product.tt %]
+</div>
+
+<div id='subhead'>
+    <h2>[% type %]</h2>
+</div>
+
+[% IF dc_name == 'DC2' %]
+	[% SET sync_background_color = '#FAE1C8' %]	
+[% ELSE %]
+	[% SET sync_background_color = '#CAE0E7' %]
+[% END %]
+
+<div id='product_content'>
+
+    <form name ='update_pws_details' action='SetAttributeFCP' method='post'>
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <thead>
+        </thead>
+        <tbody>
+            <tr>
+                  <td colspan="3" class="divider"></td>
+            </tr>
+            <tr style="height: 25">
+                <td style="width: 25%; text-align: right; border-right: 5px solid #efefef">[% INCLUDE page_elements/tablespacer.tt %]<b>Disable Scheduled Update:</td>
+                <td style="width: 3%; background-color: [% sync_background_color %]; text-align: center">&nbsp;</td>
+                <td style="border: 5px solid #efefef">
+                    <input type="hidden" id="edit_disableupdate" name="edit_disableupdate" value="off">&nbsp;
+                    <input [% IF department_id != 7 %]disabled[% END %] type="checkbox" name="disableupdate" [% IF attributes.disableupdate %]checked [% END %] onChange="editField( this )">
+                </td>
+            </tr>
+            <tr>
+                  <td colspan="3" class="divider"></td>
+            </tr>
+            <tr style="height: 25">
+                <td style="width: 20%; text-align: right; border-right: 5px solid #efefef">[% INCLUDE page_elements/tablespacer.tt %]<b>Visible:</td>
+                <td style="width: 3%; background-color: [% sync_background_color %]; text-align: center">&nbsp;</td>
+                <td style="border: 5px solid #efefef">
+                    <input type="hidden" id="edit_visible" name="edit_visible" value="off">&nbsp;
+                    <input [% IF department_id != 7 %]disabled[% END %] type="checkbox" name="visible" [% IF attributes.visible %]checked [% END %] onChange="editField( this )">
+                </td>
+            </tr>
+            <tr>
+                  <td colspan="3" class="divider"></td>
+            </tr>
+            <tr style="">
+                <td valign="middle" style="text-align: right; border-right: 5px solid #efefef; border-top: 10px solid #efefef">[% INCLUDE page_elements/tablespacer.tt %]<b>PWS List Position:</b><br /><br /></td>
+                <td style="width: 3%; background-color: [% sync_background_color %]; text-align: center">&nbsp;</td>
+                <td valign="middle" style="border: 5px solid #efefef">
+                    [%# SET select_sort_adjust_disabled = (department_id == 7 || department_id == 10 || department_id == 22 || department_id == 14) ? 0 : 1 %]
+                    [%  INCLUDE page_elements/forms/select_list.tt
+    		            name                = 'select_sort_adjust',
+    		            options             = pws_sort_adjust,
+    		            option_value_key    = 'id',
+    		            option_entry_key    = 'action',
+    		            selected            = attributes.pws_sort_adjust_id,
+    		            first_entry         = '',
+    		            disabled            = (department_id == 7 || department_id == 10 || department_id == 22 || department_id == 14) ? 0 : 1,
+		            %]
+		            &nbsp;&nbsp;<span style="color: darkred;">N.B. Changes are not immediate, but will take effect overnight.</span>
+                </td>
+            </tr>
+            <tr>
+                  <td colspan="3" class="divider"></td>
+            </tr>
+            <tr style="height: 100">
+                <td valign="top" style="text-align: right; border-right: 5px solid #efefef; border-top: 10px solid #efefef"><span style="cursor: pointer; font-weight: bold;" onclick="solo_syncfield(document.forms['update_pws_details'].sync__xtpws__custom_lists);">Custom Lists:</span></td>
+                <td style="width: 3%; background-color: [% sync_background_color %]; text-align: center;"><input type="checkbox" name="sync__xtpws__custom_lists" /></td>
+                <td valign="top" style="border: 5px solid #efefef">
+                    <input type="hidden" id="edit_custom_lists" name="edit_custom_lists" value="off">
+                    <textarea class="xlarge" name="custom_lists" cols="75" rows="5" onChange="editField( this )">[% attributes.custom_lists %]</textarea>
+                </td>
+            </tr>
+            <tr>
+                  <td colspan="3" class="divider"></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td class="blank" colspan="2" style="height: 40; text-align: center; background-color: [% sync_background_color %];"><input type="submit" name="submit_sync" class="button" style="cursor: pointer" value="Save & Sync [% IF dc_name == 'DC2' %]DC1[% ELSE %]DC2[% END %] &raquo;"></td>
+                <td class="blank" colspan="2" style="text-align: right;"><input type="submit" name="submit" class="button" style="cursor: pointer" value="Save &raquo;"></td>
+            </tr>
+        </tfoot>
+    </table>
+    <input type="hidden" name="product_id" value="[% product.id %]">
+    </form>
+
+</div>
+
+<script type="text/javascript">
+<!--
+
+    function solo_syncfield(field) {
+    
+        var re = new RegExp("^sync__\\w+__\\w+$");
+
+        for (i = 0; i < field.form.length; i++) {
+            if (field.form[i].name.match(re)) {
+                if (field.form[i].name == field.name) {
+                    field.form[i].checked = true;
+                }
+                else {
+                    field.form[i].checked = false;
+                }
+            }
+        }
+    }
+
+//-->
+</script>
+

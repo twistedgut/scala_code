@@ -1,0 +1,15 @@
+<div id="api__payment__refund_history__popup">
+    <h2>Historical Refunds:</h2>
+    <table class="data wide-data">
+        <thead>
+            <tr class="dividebelow divideabove">
+                <td>&nbsp;</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

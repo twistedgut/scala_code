@@ -1,0 +1,35 @@
+<form name="move_customer" method="POST" action="/NAPEvents/Manage/CustomerGroups">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <table cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td width="20%">
+                <label for="cg_select"><b>Customer Groups:</b></label><br />
+                <i>
+                    Please specify a customer group and enter a comma
+                    separated list of customer IDs that you would like to
+                    remove (eg. 1234, 2345, 3456) 
+                </i>
+            <td width="20%">
+                [% reset = cg_rs.reset %]
+                <select name="cg_select" id="cg_select" size="10">
+                    [% WHILE ( cg = cg_rs.next ) %]
+                        <option value="[% cg.id %]">
+                            [% cg.name %]
+                        </option>
+                    [% END %]
+                </select>
+            </td>
+            <td style="vertical-align:middle" width="15%">
+                <label for="remove_customers"><b>Customer ID list:</b></label>
+            </td>
+            <td>
+                <textarea name="remove_customers" id="remove_customers" cols="30" rows="4"></textarea>
+            </td>
+        </tr>
+    </table>
+    </br>
+    <div align="right">
+        <input type="submit" class="button" name="remove_customer"
+        id="remove_customer" value="Submit &raquo;"/>
+    </div>
+</form>

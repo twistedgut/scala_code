@@ -1,0 +1,356 @@
+[% IF list.size > 0 %]
+
+        [% IF action == 'displaycreateform' %]
+
+<script type="text/javascript" language="javascript">
+
+function validate()
+{
+
+	if (0)
+	{
+		alert('Shipping Window should be in form: 2006-10-26');
+		return false;
+	}
+
+	return true;
+}
+
+</script>
+
+
+<form name="rock" method="post" onsubmit="return validate()" action="/StockControl/Sample/CreateSamplePurchaseOrder">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+<span class="title">Create Purchase Order for Vendor Sample</span><br>
+<br>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+
+	<tr>
+		<td colspan="2" class="dividerHeader"></td>
+	</tr>
+	<tr> 
+		<td width="50%" class="tableHeader">&nbsp;&nbsp;&nbsp;Purchase Order from stock PO [% list.0.purchase_order_number %]</td>
+		<td>&nbsp;&nbsp;&nbsp;<input type="text" name="sample_purchase_order" value="PH[% list.0.purchase_order_number %]" size="50" /></td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider"></td>
+	</tr>
+	<tr>
+		<td colspan="2" class="dividerHeader"></td>
+	</tr>
+	<tr> 
+		<td width="50%" class="tableHeader">&nbsp;&nbsp;&nbsp;Designer</td>
+                <td>&nbsp;&nbsp;&nbsp;<input type="text" name="sample_designer" value="[% list.0.designer %]" size="50" readonly /></td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider"></td>
+        </tr>
+	<tr> 
+		<td colspan="2" class="dividerHeader"></td>
+	</tr>
+	<tr> 
+		<td width="50%" class="tableHeader">&nbsp;&nbsp;&nbsp;Season</td>
+		<td>&nbsp;&nbsp;&nbsp;<input type="text" name="sample_season" value="[% list.0.season %]" size="50" readonly /></td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider"></td>
+        </tr>
+	<tr>
+		<td colspan="2" class="dividerHeader"></td>
+	</tr>
+	<tr> 
+		<td width="50%" class="tableHeader">&nbsp;&nbsp;&nbsp;Type</td>
+		<td>&nbsp;&nbsp;&nbsp;<input type="text" name="sample_type" value="Sample" size="50" readonly /></td>
+        </tr>
+	<tr>
+		<td colspan="2" class="divider"></td>
+        </tr>
+	<tr>
+		<td colspan="2" class="dividerHeader"></td>
+	</tr>
+	<tr> 
+		<td width="50%" class="tableHeader">&nbsp;&nbsp;&nbsp;Currency</td>
+		<td>&nbsp;&nbsp;&nbsp;<input type="text" name="sample_po" value="[% list.0.currency %]" size="50" readonly /></td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider"></td>
+        </tr>
+	<tr>
+		<td colspan="2" class="dividerHeader"></td>
+	</tr>
+	<tr> 
+		<td width="50%" class="tableHeader">&nbsp;&nbsp;&nbsp;Exchange Rate</td>
+		<td>&nbsp;&nbsp;&nbsp;<input type="text" name="sample_po" value="[% list.0.exchange_rate %]" size="50" readonly /></td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider"></td>
+        </tr>
+	<tr>
+		<td colspan="2" class="dividerHeader"></td>
+	</tr>
+	<tr> 
+		<td width="50%" class="tableHeader">&nbsp;&nbsp;&nbsp;Comment</td>
+		<td>&nbsp;&nbsp;&nbsp;<input type="text" name="sample_po" value="[% list.0.comment %]" size="50" readonly /></td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider"></td>
+	</tr>
+</table>
+<br/>
+[% FOREACH product = products.nsort('product_id') %]
+	<br/>
+	<table border="0" cellpadding="0" cellspacing="0" class="data" width="100%">
+		<thead>
+			<tr>
+				<td colspan="4" class="dividerHeader"></td>
+			</tr>
+			<tr>
+				<td class="tableHeader" width="20%">&nbsp;&nbsp;&nbsp;&nbsp;Product Id</td>
+				<td class="tableHeader" width="20%">Style Ref</td>
+				<td class="tableHeader" width="40%">Shipping Window</td>
+				<td class="tableHeader" width="20%">Status</td>
+			</tr>
+			<tr>
+				<td colspan="4" class="dividerHeader"></td>
+			</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% product.product_id %]</td>
+			<td>[% product.style_number %]</td>
+			<td>
+<!--
+				<select name='year' class='date' onchange='adj_date(this.form)'></select>
+				<select name='month' class='date' onchange='adj_date(this.form)'></select>
+				<select name='day' class='date'></select>
+				-
+				<select name='year' class='date' onchange='adj_date(this.form)'></select>
+				<select name='month' class='date' onchange='adj_date(this.form)'></select>
+				<select name='day' class='date'></select>
+-->
+				<input type="text" name="sample_[% product.product_id %]-date_start_ship" value="[% IF product.date_start_ship %][% product.date_start_ship %][% ELSE %][% defaultdate %][% END %]" size="12" /> 
+				- 
+				<input type="text" name="sample_[% product.product_id %]-date_cancel_ship" value="[% IF product.date_start_ship %][% product.date_cancel_ship %][% ELSE %][% defaultdate %][% END %]" size="12" />
+			</td>
+			<td>
+				[% FOREACH status = purchase_order_status %]
+					[% IF status.status == 'On Order' %]
+						<input type="hidden" name="sample_[% product.product_id %]-status" value="[% status.id %]" />[% status.status %]
+					[% END %]
+				[% END %]
+			</td>
+		</tr>
+		<tr>
+			<td colspan="4" class="divider"></td>
+		</tr>
+		<tr><td colspan="4">&nbsp;</td>
+		<tr>
+			<td colspan="4" class="dividerHeader"></td>
+		</tr>
+		<tr>
+			<td class="tableHeader" width="20%">&nbsp;&nbsp;&nbsp;&nbsp;SKU</td>
+			<td class="tableHeader" width="20%">Type</td>
+			<td class="tableHeader" width="40%">Size</td>
+			<td class="tableHeader" width="20%">Ord</td>
+		</tr>
+		<tr>
+			<td colspan="4" class="dividerHeader"> </td>
+		</tr>
+
+		[% FOREACH variant_id = product.variants.keys.nsort %]
+			<tr>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% product.product_id %]-[% product.variants.$variant_id.size_id %] ([% product.variants.$variant_id.legacy_sku %])</td>
+				<td>[% product.stock_order_type %]</td>
+				<td>[% product.variants.$variant_id.size %]</td>
+				<td><input type="text" name="sample_[% product.product_id %]_[% variant_id %]-ord" value="0" size="3" /></td>
+			</tr>
+			<tr>
+				<td colspan="4" class="divider"></td>
+			</tr>
+		[% END %]
+
+		</tbody>
+	</table>
+
+[% END %]
+
+<input type="hidden" name="po_id" value="[% list.0.id %]">
+<input type="hidden" name="type" value="reallycreatesamplepo">
+[% IF orig_product_id %]<input type="hidden" name="orig_product_id" value="[% orig_product_id %]" />[% END %]
+[% IF orig_variant_id %]<input type="hidden" name="orig_variant_id" value="[% orig_variant_id %]" />[% END %]
+
+<br />
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tbody>
+        <tr height="24">
+            <td align="right">[% PROCESS page_elements/forms/submit_button.tt %]</td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+</form>
+
+        [% ELSIF action == 'displaypolist' %]
+[% PROCESS page_elements/display_product.tt %]
+<span class="title">Purchase Order List</span><br>
+<br>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+	<tr>
+		<td colspan="8" class="dividerHeader"></td>
+	</tr>
+	<tr> 
+		<td width="4%" class="tableHeader">&nbsp;&nbsp;&nbsp;</td>
+		<td width="10%" class="tableHeader">Purchase Order</td>
+		<td width="10%" class="tableHeader">Sales Channel</td>
+		<td width="16%" class="tableHeader">Designer</td>
+		<td width="10%" class="tableHeader">Season</td>
+		<td width="10%" class="tableHeader">Status</td>
+		<td width="10%" class="tableHeader">Type</td>
+		<td width="10%" class="tableHeader">Sample PO</td>
+	</tr>
+	<tr>
+		<td colspan="8" class="dividerHeader"></td>
+	</tr>
+
+	[% FOREACH poid = list.nsort('id') %]
+		[% channel = poid.sales_channel %]
+		[% products = poid.products %]
+		<tr>
+			<td id="open_[% poid.id %]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% IF products.size > 0 %]<a href="javascript:showPO('[% poid.id %]')" class="zoom">[+]</a>[% ELSE %][-][% END %]</td>
+			<td>[% poid.purchase_order_number %]</td>
+			<td><span class="title-[% channel_config.$channel %]">[% channel %]</span></td>
+			<td>[% poid.designer %]</td>
+			<td>[% poid.season %]</td>
+			<td>[% poid.status %]</td>
+			<td>[% poid.type %]</td>
+			<td>[% IF poid.type != 'Sample' %]<a href="?action=create&po_id=[% poid.id %][% IF orig_product_id %]&orig_product_id=[% orig_product_id %][% END %][% IF orig_variant_id %]&orig_variant_id=[% orig_variant_id %][% END %]">create</a>[% ELSE %]<a href="?action=edit&po_id=[% poid.id %]">edit</a>[% END %]</td>
+		</tr>
+		<tr>
+			<td colspan="8" class="divider"></td>
+		</tr>
+
+            <tr><td class="none"></td><td colspan="6" class="none">
+            <div id="so[% poid.id %]" style="display:none">
+                <br />
+
+                <table border="0" cellpadding="0" cellspacing="0" class="data" width="100%">
+                    <thead>
+                        <tr>
+                            <td colspan="7" class="dividerHeader"></td>
+                        </tr>
+                        <tr>
+                            <td class="tableHeader" width="18%">&nbsp;&nbsp;&nbsp;&nbsp;Product Id</td>
+                            <td class="tableHeader" width="12%">Style Ref</td>
+                            <td class="tableHeader" width="40%">Shipping Window</td>
+                            <td class="tableHeader" width="5%">Ord</td>
+                            <td class="tableHeader" width="5%">Del</td>
+                            <td class="tableHeader" width="10%">Type</td>
+                            <td class="tableHeader" width="10%">Status</td>
+                        </tr>
+                        <tr>
+                            <td colspan="7" class="dividerHeader"></td>
+                        </tr>
+                    </thead>
+                    <tbody>                       
+
+					[% FOREACH product = products.nsort('product_id') %]
+						<tr>                          
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% product.product_id %] ([% product.legacy_sku %])</td>
+							<td>[% product.style_number %]</td>
+							<td>[% product.date_start_ship %] - [% product.date_cancel_ship %]</td>
+							<td>[% product.ordered %]</td>
+							<td>[% product.delivered %]</td>
+							<td>[% product.stock_order_type %]</td>
+							<td>[% product.status %]</td>
+						</tr>
+						<tr>
+							<td colspan="7" class="divider"></td>
+						</tr>
+					[% END %]
+
+                    </tbody>                       
+
+                </table>
+
+                <br />
+            </div></td></tr>
+	[% END %]
+</table>
+
+	[% END %]
+
+[% END %]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" language="javascript">
+
+function init_upload_date( fobj,incl_last_year,y,m,d ) {
+	var today = new Date();
+
+	var dd = d || today.getDate();
+	var mm = m!=null?m-1:today.getMonth();
+	var yy = y || today.getFullYear();
+	var nday = num_day(yy,mm);
+
+	var obj = fobj.day;
+	obj.options.length=0;
+	for( var n=1;n<=nday;n++ ) 
+		obj.options[n-1] = new Option(n);
+	obj.selectedIndex = dd-1;
+
+	obj = fobj.month;
+	obj.options.length=0;
+	for( var n=1;n<=12;n++ ) 
+		obj.options[n-1] = new Option(n);
+	obj.selectedIndex = mm;
+
+	var this_year = today.getFullYear();
+	obj = fobj.year;
+	obj.options.length=0;
+	if (incl_last_year)
+		obj.options[0] = new Option(this_year-1);
+	obj.options[obj.options.length] = new Option(this_year);
+	obj.options[obj.options.length] = new Option(this_year+1);
+	obj.selectedIndex = yy - this_year + (incl_last_year?1:0);
+}
+
+function adj_date(form) {
+	var d = form.day.options.selectedIndex+1;
+	var m = form.month.options.selectedIndex;
+	var y = form.year.options[form.year.options.selectedIndex].text;	
+	
+	var nday = num_day(y,m);
+	
+	var obj = form.day;
+	if( d!=nday ) {
+		obj.options.length=0;
+		for( var n=1;n<=nday;n++ ) 
+			obj.options[n-1] = new Option(n);
+	}
+	obj.selectedIndex = d>nday?nday-1:d-1;
+}
+
+function num_day( y, m ) {
+    var next_m = new Date( y, m+1, 1);
+    next_m.setHours(next_m.getHours() - 3);
+    return next_m.getDate();
+} 
+
+init_upload_date(document.rock, "1", "2006", "10", "26");
+
+</script>

@@ -1,0 +1,132 @@
+=====================================
+XT 2011.15.07 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               : 2011-12-01
+Cherwell           : 
+Release Manager    : Shamir Raniga
+Build Manager      : Rich Moore
+TechOps            : Luis Buriloa
+Backend Developer  : 
+Frontend Developer : 
+QA                 : 
+PCI Authorised by  : 
+
+2 - CHANGELOG
+-------------
+https://gitosis.net-a-porter.com/cgit/xt/tree/CHANGES/2011.15.07?h=release/2011.15
+
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2011.15/xt-2011.15.07-0.noarch.rpm
+
+Do this both for DC1 and DC2.
+
+4 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+Prior to the deployment, add the following *new* values to nap.properties:
+
+For DAVE boxes:
+
+    ROUTING_PRE_SHARE_NAME_DC1        //iws01-flexdev.dave/DBSData/Gateway/Export/Pre Delivery/
+    ROUTING_PRE_PROCESSED_NAME_DC1    //iws01-flexdev.dave/DBSData/Gateway/Export/Pre Delivery/Processed
+    ROUTING_POST_SHARE_NAME_DC1       //iws01-flexdev.dave/DBSData/Gateway/Export/Post Delivery/
+    ROUTING_POST_PROCESSED_NAME_DC1   //iws01-flexdev.dave/DBSData/Gateway/Export/Post Delivery/Processed
+
+    ROUTING_SHARE_USERNAME_DC1   dev_xtroutemonkey
+    ROUTING_SHARE_PASSWORD_DC1   L1ttl3l0ng
+    ROUTING_SHARE_WORKGROUP_DC1  LONDON
+
+    ROUTING_PRE_SHARE_NAME_DC2        //127.0.0.1/DBSData/Gateway/TEST SYSTEM/Export/Pre Delivery/
+    ROUTING_PRE_PROCESSED_NAME_DC2    //127.0.0.1/DBSData/Gateway/TEST SYSTEM/Export/Pre Delivery/Processed
+    ROUTING_POST_SHARE_NAME_DC2       //127.0.0.1/DBSData/Gateway/TEST SYSTEM/Export/Post Delivery/
+    ROUTING_POST_PROCESSED_NAME_DC2   //127.0.0.1/DBSData/Gateway/TEST SYSTEM/Export/Post Delivery/Processed
+
+    ROUTING_SHARE_USERNAME_DC2   xtroutemonkey
+    ROUTING_SHARE_PASSWORD_DC2   ""
+    ROUTING_SHARE_WORKGROUP_DC2  ""
+
+    ROUTING_SHARE_READ_SIZE      131072
+    ROUTING_SHARE_CREATE_MASK    0775
+    ROUTING_DIR_CREATE_MASK      0775
+
+    ROUTING_REPORT_EMAIL_DC1     perl@net-a-porter.com
+    ROUTING_REPORT_EMAIL_DC2     perl@net-a-porter.com
+
+For live boxes:
+
+    ROUTING_PRE_SHARE_NAME_DC1        //dbs-routing/DBSData/Gateway/Export/Pre Delivery/
+    ROUTING_PRE_PROCESSED_NAME_DC1    //dbs-routing/DBSData/Gateway/Export/Pre Delivery/Processed
+    ROUTING_POST_SHARE_NAME_DC1       //dbs-routing/DBSData/Gateway/Export/Post Delivery/
+    ROUTING_POST_PROCESSED_NAME_DC1   //dbs-routing/DBSData/Gateway/Export/Post Delivery/Processed
+
+    ROUTING_SHARE_USERNAME_DC1   xtroutemonkey
+    ROUTING_SHARE_PASSWORD_DC1   wu55justeruTuqu
+    ROUTING_SHARE_WORKGROUP_DC1  LONDON
+
+    ROUTING_PRE_SHARE_NAME_DC2        //dbs-routing-dc2/dbsrouting/Gateway/Export/Pre Delivery/
+    ROUTING_PRE_PROCESSED_NAME_DC2    //dbs-routing-dc2/dbsrouting/Gateway/Export/Pre Delivery/Processed
+    ROUTING_POST_SHARE_NAME_DC2       //dbs-routing-dc2/dbsrouting/Gateway/Export/Post Delivery/
+    ROUTING_POST_PROCESSED_NAME_DC2   //dbs-routing-dc2/dbsrouting/Gateway/Export/Post Delivery/Processed
+
+    ROUTING_SHARE_USERNAME_DC2   xtroutemonkey
+    ROUTING_SHARE_PASSWORD_DC2   ""
+    ROUTING_SHARE_WORKGROUP_DC2  ""
+
+    ROUTING_SHARE_READ_SIZE      131072
+    ROUTING_SHARE_CREATE_MASK    0775
+    ROUTING_DIR_CREATE_MASK      0775
+
+    ROUTING_REPORT_EMAIL_DC1     dc1-premier-routing@net-a-porter.com
+    ROUTING_REPORT_EMAIL_DC2     dc2-premier-routing@net-a-porter.com
+
+Note that the empty password value for DC2 sets the service up as disabled,
+and the service will not be enabled until at least the first January release.
+
+Note also that the email addresses are not yet used, but will be by the end
+of March 2012.
+
+5 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+sudo yum install xt
+
+6 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+On live boxes only, add the following to /etc/cron.d/xt-common:
+
+    # fetch premier routing information for XT
+    * 7-23 * * * root XTDC_BASE_DIR=/opt/xt /opt/xt/deploy/xtracker/script/routing/process_routing_files.pl >> /tmp/process_routing.log 2>&1
+
+A similar entry is already deployed in the DAVE crontab for XT.
+
+Note that a new log file will appear once the premier routing software is enabled and runs.
+
+    07-routing-schedule.log in the usual XTDC_LOGS_DIR
+
+The log file is configured in XT's conf/log4perl.conf.tt file.
+
+7 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

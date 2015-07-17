@@ -1,0 +1,36 @@
+New additions:
+==============
+
+HACKING
+Vagrantfile
+vagrant/*
+
+DIFFS to pre-exisiting files:
+=============================
+
+> Makefile.PL
+ DIFF:
+-	$(NOECHO) sudo -E -u $(XTDC_USER) mx-run NAP::Config::Frontend \
++	$(NOECHO) sudo -E -u $(XTDC_USER) /opt/xt/xt-perl/bin/mx-run \
++        NAP::Config::Frontend \
+ 
+> Makefile-uni.PL
+ DIFF:
+-	$(NOECHO) sudo -E -u $(XTDC_USER) mx-run NAP::Config::Frontend \
++	$(NOECHO) sudo -E -u $(XTDC_USER) /opt/xt/xt-perl/bin/mx-run \
++        NAP::Config::Frontend \
+
+> xt.spec.in
+ DIFF:
++Requires: lsof
+-Requires: postgresql90 >= 9.0.13
++Requires: postgresql93 >= 9.3.13
+
+> script/update_test_config_noddy.pl
+ DIFF:
+-        = catfile( $ENV{HOME}, 'nap_dev.properties.' . $config_section );
++        = catfile( $ENV{HOME}, 'nap_dev.properties' );
+
+> .gitignore
+ DIFF:
++.vagrant/*

@@ -1,0 +1,104 @@
+[% USE Utilities("subkeysrt") %]
+[% IF customer %]
+[% INCLUDE stocktracker/reservation/common/customerhead.tt %]
+[% END %]
+<div id="select_products__strap_area">
+    <div id="select_products__product_search_block" class="faint_bordered_box">
+        <h3 class="title-[% channel_config.$sales_channel %]">Product Search</h3>
+        <form name="pid_search" method="post" id="select_products__search_form" action="SelectProducts">
+            [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+            <input type="hidden" name="customer_id" value="[% customer.id %]">
+            <textarea name="pids" id="select_products_product_textarea">[% pids %]</textarea>
+            <br>
+            <br>
+            <input name="button" class="button" type="submit" value="Search">
+        </form>
+    </div>
+</div>
+[% IF products.size %]
+<div id="select_products__search_results_area">
+    <hr>
+
+    <form name="variant_select_products" id="select_products__variants_form" method="post" action="Basket">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+        <input type="hidden" name="customer_id" value="[% customer.id %]">
+
+        <input type="hidden" name="shipment_option_id" value="[% params.shipment_option_id %]">
+
+        <input type="hidden" name="pids" value="[% pids %]">
+
+        <div id="select_products__reservation_source_selection">
+            Select Reservation Source:
+            <select name="reservation_source_id" id="select_products__reservation_source_dropdown">
+                <option value="0">-------------------</option>
+                [% FOREACH option = reservation_source_list %]
+                <option value="[% option.id %]" [% IF option.id == reservation_source_id %]selected="selected"[% END %]>[% option.source %]</option>
+                [% END %]
+            </select>
+            Select Reservation Type:
+            <select name="reservation_type_id" id="select_products__reservation_type_dropdown">
+                <option value="0">-------------------</option>
+                [% FOREACH option = reservation_type_list %]
+                <option value="[% option.id %]" [% IF option.id == reservation_type_id %]selected="selected"[% END %]>[% option.type %]</option>
+                [% END %]
+            </select>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <div id="select_products__variants_list">
+        [% FOREACH product_id = products.keys.sort %]
+            <div class="select_products__variant_selection_box faint_bordered_box">
+                <div class="select_products__variant_data" id="select_products__variant_data_[% product_id %]">
+                    <div class="select_products__product_image">
+                        <img width="50" src="[% products.$product_id.images.0 %]">
+                    </div>
+                    <div class="select_products__product_details">
+                        <p class="select_products__description">[% products.$product_id.data.description %]</p>
+                    </div>
+                </div>
+                <div class="select_products__variant_table" id="select_products__variant_table_[% product_id %]">
+                    <table class="data wide-data select_products__product_variants_table" id="select_products__product_table_[% product_id %]">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;&nbsp;&nbsp;SKU</th>
+                                <th>Designer<br>Size</th>
+                                <th>Freestock</th>
+                                <th>Ordered</th>
+                                <th>Total<br>Reservations</th>
+                                <th>Reservations<br>by Customer</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            [% FOREACH variant_id = products.$product_id.variants.subkeysrt('sku') %]
+                            <tr class="dividebelow">
+                                <td>&nbsp;&nbsp;&nbsp;[% products.$product_id.variants.$variant_id.sku %]&nbsp;&nbsp;</td>
+                                <td>[% products.$product_id.variants.$variant_id.designer_size %]</td>
+                                <td>[% products.$product_id.variants.$variant_id.freestock %]</td>
+                                <td>[% products.$product_id.variants.$variant_id.on_order %]</td>
+                                <td>[% products.$product_id.variants.$variant_id.reserved_qty %]</td>
+                                <td>[% products.$product_id.variants.$variant_id.customer_rsv %]</td>
+                                <td>
+                                    [%# IF products.$product_id.variants.$variant_id.freestock == 0 %]
+                                    <input class="select_products__product_table_[% product_id %]_checkbox select_products__variants_checkbox" name="variants" [% IF checked_variants.$variant_id %]checked="checked"[% END %] value="[% variant_id %]" type="checkbox">
+                                    [%# END %]
+                                </td>
+                            </tr>
+                            [% END %]
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        [% END %]
+        </div>
+        <div id="select_products__variant_form_buttons">
+            <input type="button" class="button" name="button" id="select_products__reset_variants_button" value="Clear Selection">
+            <input type="button" class="button" name="button" id="select_products__submit_variants_button" value="Select Items">
+        </div>
+    </form>
+</div>
+[% END %]

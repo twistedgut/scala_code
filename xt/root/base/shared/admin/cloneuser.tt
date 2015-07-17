@@ -1,0 +1,86 @@
+<h2>Clone An Existing User</h2>
+
+<p>&nbsp;</p>
+
+<form name="clone_user" method="POST">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <table border="0">
+        <tr>
+            <td>
+                <label for="full_name">Name:</label>
+            </td>
+            <td>
+                <input type="text" id="full_name" name="full_name" size="30" onBlur="populateOtherFields()"/>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label for="username">Username:</label>
+            </td>
+            <td>
+                <input type="text" id="username" name="username" size="30" />
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label for="email_address">Email Address:</label>
+            </td>
+            <td>
+                <input type="text" id="email_address" name="email_address" size="30" />
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label for="clone_from">Clone permissions from:</label>
+            </td>
+            <td>
+                <div id="ac_search">
+                    <input id="ac_input" type="text" size="20" value="">
+                    <input id="ac_input_id" type="hidden" name="clone_from_id" value=""/>
+                    <div id="ac_container"></div>
+                </div>
+            </td>
+        </tr>
+        <tr><td colspan="2">&nbsp;</td></tr>
+
+
+        <tr>
+            <td colspan="2" align="center">
+                <input type="submit" name="form_submit" value="Initiate Cloning">
+            </td>
+        </tr>
+    </table>
+</form>
+
+<script type="text/javascript">
+    function populateOtherFields() {
+        // the name entered
+        var full_name = document.getElementById('full_name').value;
+        var names = full_name.split(' ');
+
+        // if we only have one name ... leave the use to fill everything in
+        // themself
+        if (names.length < 2) { return; }
+
+        // prepare useful name-parts
+        var first_name = names[0];
+        var rest_of_name = names.splice(1, names.length - 1).join('.');
+        var initial = first_name.charAt(0);
+
+        // username is (usually) initial.surname
+        if ('' == document.getElementById('username').value) {
+            document.getElementById('username').value = initial + '.' + rest_of_name;
+        }
+
+        // email is (usually) first.last@
+        if ('' == document.getElementById('email_address').value) {
+            document.getElementById('email_address').value = first_name + '.' + rest_of_name + '@net-a-porter.com';
+        }
+    }
+
+    // put the focus into the first form field
+    document.getElementById('full_name').focus();
+</script>

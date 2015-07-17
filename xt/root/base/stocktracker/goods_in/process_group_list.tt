@@ -1,0 +1,73 @@
+<div id="tabContainer" class="yui-navset">
+    [% PROCESS page_elements/channel_tabs.tt channel_list=process_groups %]
+    <div class="yui-content">
+
+        [% channel_count = 1 %]
+
+        [% FOREACH channel = process_groups.keys.sort %]
+
+        <div id="tab[% channel_count %]" class="tabWrapper-[% channel_config.$channel %]">
+            <div class="tabInsideWrapper">
+                <h3 class='title-[% channel_config.$channel %]'>[% title %]</h3>
+
+                <table class="data wide-data divided-data">
+                    <thead>
+                        <tr>
+                            <th>Group</th>
+                            <th>Type</th>
+                            <th>Delivery</th>
+                            <th>PID</th>
+                            <th>Designer</th>
+                            <th>Delivery Date</th>
+                            <th>Upload Date</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        [% FOREACH group_id = process_groups.$channel.keys.nsort %]
+
+                            [% pg = process_groups.$channel.$group_id %]
+
+                            [% td_class = pg.on_hold                   ? ' class="light"'
+                                        : pg.live && pg.type == 'Main' ? ' class="warn"'
+                                        : '' %]
+
+                            <tr[% td_class %]>
+                                <td>
+                                    [% IF pg.on_hold %]
+                                        [% pg.group_id %] (On Hold)
+                                    [% ELSE %]
+                                        <a href='[% scan.action %]?process_group_id=[% pg.group_id %]'>[% pg.group_id %]</a>
+                                    [% END %]
+                                </td>
+                                <td>[% pg.type %]</td>
+                                <td>[% pg.delivery_id %]</td>
+                                <td>[% pg.product_id %]</td>
+                                <td>[% pg.designer %]</td>
+                                <td>[% pg.date %]</td>
+                                <td>
+                                    [% IF pg.type == 'Main' %]
+                                        [% BLOCK bold_red %]<span style="font-weight: bold; color:#ff0000">[% content %]</span>[% END %]
+                                        [% pg.live ? 'Live' : pg.upload_date WRAPPER bold_red %]
+                                    [% ELSE %]
+                                        [% pg.upload_date %]
+                                    [% END %]
+                                </td>
+                                <td>[% pg.quantity %]</td>
+
+                                [% IF scan.action == 'DeliveryCancel/Update' %]
+                                    <td><input type='checkbox' name='cancel_[% del.id %]'></td>
+                                [% END %]
+                            </tr>
+                        [% END %]
+                    <tbody>
+                </table>
+
+                <br><b>Total:</b> [% process_groups.$channel.size %] process group[% 's' IF process_groups.$channel.size != 1 %]
+            </div>
+        </div>
+        [% channel_count = channel_count + 1 %]
+        [% END %]
+    </div>
+</div>
+[% PROCESS page_elements/tab_script.tt %]

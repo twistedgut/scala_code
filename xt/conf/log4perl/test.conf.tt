@@ -1,0 +1,18 @@
+log4perl.oneMessagePerAppender                      = 1
+
+log4perl.logger                                     = [% LOGLEVEL_DEFAULT %], File
+
+log4perl.appender.File                              = Log::Dispatch::File
+log4perl.appender.File.filename                     = sub { use File::Basename; return('[%XTDC_LOGS_DIR%]/test.log'); }
+log4perl.appender.File.mode                         = append
+log4perl.appender.File.umask                        = 002
+log4perl.appender.File.autoflush                    = 1
+log4perl.appender.File.syswrite                     = 1
+log4perl.appender.File.layout                       = Log::Log4perl::Layout::PatternLayout
+log4perl.appender.File.layout.ConversionPattern     = [% LOGGING_FORMAT %]
+log4perl.appender.File.utf8                         = 1
+log4perl.appender.File.binmode                      = :utf8
+
+# NOTE: Don't define any appenders that use a specific filename in here, because all sorts
+# of processes running as different users use this config, so you'll create the risk of
+# permissions problems.

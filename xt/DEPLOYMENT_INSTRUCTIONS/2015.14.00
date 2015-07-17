@@ -1,0 +1,185 @@
+=====================================
+XT 2015.14.00 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               :
+Cherwell           :
+Release Manager    : Kaushal Patel
+Build Manager      : Bernard Gould
+TechOps            :
+Backend Developer  :
+Frontend Developer :
+QA                 :
+PCI Authorised by  :
+
+2 - CHANGELOG
+-------------
+http://stash.vm.wtf.nap/projects/BAK/repos/xt/browse/CHANGES/2015.14.00?at=refs/heads/release/2015.14
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2015.14/xt-2015.14.00-0.noarch.rpm
+
+Unless otherwise stated, do the following for DC1, DC2 and DC3.
+
+4 - NEW PROPERTIES:
+-------------------
+
+AMQ_BROKER_WEB_USERNAME         admin
+AMQ_BROKER_WEB_PASSWORD         admin
+Set ENABLE_SIDE_PANEL to 0
+
+5 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+No action needs to be performed before the deployment
+
+6 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+
+SHIP-975 Update /etc/cups/printers.conf on all DCs. Make sure you do this on
+*both* web servers. Also, before updating the files make sure you stop cups, you
+can do this by running the following command:
+
+sudo service cups stop
+
+Once you've made the changes, make sure you restart cups, which you can do by
+executing
+
+sudo service cups start
+
+DC1
+---
+
+Remove the following printer definitions:
+
+shipping
+radqapac1-doc
+
+Copy/paste the following printers into /etc/cups/printers.conf on *BOTH* web
+servers:
+
+<Printer shipping>
+    Info shipping
+    XTLocation Airwaybill Station 01
+    XTSection airwaybill
+    XTType document
+    Location dc1
+    DeviceURI lpd://shipping/auto
+    State Idle
+    StateTime 1323718642
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer radqapac1-doc>
+    Info radqapac1-doc
+    XTLocation RAD Packing QA Station
+    XTSection airwaybill
+    XTType document
+    Location dc1
+    DeviceURI lpd://radqapac1-doc/auto
+    State Idle
+    StateTime 1323718642
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+DC2
+---
+
+Remove the following printer definitions:
+
+shipping-dc2
+
+Copy/paste the following printers into /etc/cups/printers.conf on *BOTH* web
+servers:
+
+<Printer shipping-dc2>
+    Info shipping-dc2
+    XTLocation Airwaybill Station 01
+    XTSection airwaybill
+    XTType document
+    Location DC2
+    DeviceURI lpd://shipping-dc2/auto
+    State Idle
+    StateTime 1299517222
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+DC3
+---
+
+Remove the following printer definitions:
+
+shipping-dc3
+
+Copy/paste the following printers into /etc/cups/printers.conf on *BOTH* web
+servers:
+
+<Printer shipping-dc3>
+    Info shipping-dc3
+    XTLocation Airwaybill Station 01
+    XTSection airwaybill
+    XTType document
+    Location DC3
+    DeviceURI lpd://shipping-dc3/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+sudo yum install xt
+
+7 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+No action needs to be performed after the deployment
+
+8 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

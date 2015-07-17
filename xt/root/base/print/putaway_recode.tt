@@ -1,0 +1,104 @@
+[% USE PrintDocs -%]
+<html>
+<head>
+<!-- Template name: [% template.name %] -->
+<title></title>
+[% INCLUDE shared/show_print_images.tt %]
+<style type="text/css">
+<!--
+body { margin-top: 1cm; margin-left: 0.5cm; }
+//-->
+</style>
+<meta http-equiv=content-type content="text/html; charset=utf8">
+</head>
+<body>
+<font face="arial">
+<table cellspacing="0" cellpadding="0" width="650" border="0">
+	<tbody>
+	<tr valign="top">
+		<td><h1>Putaway Sheet</h1><h4>Printed: [% print_date %]</h4><br></td>
+		<td align="right">
+			<table width="200" border="3" cellpadding="5" cellspacing="0" bordercolor="#000000" style="border-style:solid">
+				<tr>
+					<td align="center"><h1>Goods In</h1></td>
+				</tr>
+				<tr>
+					<td align="center"><h1>Recode</h1></td>
+				</tr>
+                <tr>
+                    <td align="center"><h1>[% variant.product.storage_type.name %]</h1></td>
+                </tr>
+			</table>		
+		</td>
+	</tr>
+	<tr>
+		<td align="left"><br><h2><b>Delivery Number: N/A (recode)</b></h2></p></td>
+	</tr>
+	<tr>
+		<td align="left"><br><br></td>
+	</tr>
+	<tr>
+		<td align="right"><br><h2><b>Recode ID: [% recode.id %]</b></h2></p></td>
+	</tr>
+	<tr>
+		<td align="right"><img src="[% 'recode-' _ recode.id _ '.png' %]"><br><br></td>
+	</tr>
+	</tbody>
+</table>
+<br><br>
+
+  
+<table width="650" border="2" cellpadding="10" cellspacing="0" bordercolor="#000000" style="border-style:solid">
+	<tbody>
+	<tr>
+		<td>
+            <b>Sales Channel:</b> [% sales_channel %]
+		</td>
+	</tr>
+    <tr>
+		<td>
+            <b>Designer:</b> [% variant.product.designer.designer %]
+		</td>
+	</tr>
+	<tr>
+		<td>
+            <b>Description:</b> [% variant.product.product_attribute.description %]
+		</td>
+	</tr>
+	<tr>
+		<td>
+            <b>Colour:</b> [% variant.product.colour.colour %]
+		</td>
+	</tr>
+</table>
+
+<br />
+<br />
+
+<table cellspacing="0" cellpadding="0" width="650" bgcolor="#f2f2f2" border="0">
+	<tbody>
+	<tr height="24" bgcolor="#c5c5c5">
+		<td><b>&nbsp;&nbsp;SKU&nbsp;&nbsp;</b></td>
+		<td><b>&nbsp;&nbsp;Size&nbsp;&nbsp;</b></td>
+		<td><b>&nbsp;&nbsp;Quantity&nbsp;&nbsp;</b></td>
+	</tr>
+	
+	<tr>
+		<td bgcolor="#f2f2f2" colspan="6" height=10>&nbsp;</td>
+	</tr>
+	<tr>
+		<td>&nbsp;&nbsp;<font size="3">[% variant.product_id %]-[% variant.size_id %]&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+		<td><font size="2">[% variant.designer_size.size %]</font></td>
+		<td><font size="2">[% recode.quantity %]</font></td>
+	</tr>
+	<tr>
+		<td bgcolor="#f2f2f2" colspan="6" height=10>&nbsp;</td>
+	</tr>
+	<tr>
+		<td colspan="6" bgcolor="#c2c2c2" height=1></td>
+	</tr> 
+	</tbody>
+</table>
+</body>
+</html>
+

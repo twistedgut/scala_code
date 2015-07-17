@@ -1,0 +1,127 @@
+
+<div id="tabContainer" class="yui-navset">
+	[% PROCESS page_elements/channel_tabs.tt channel_list=channels,multi_hashes=['notify','reply'] %]
+    <div class="yui-content">
+        
+        [% SET channel_count = 1 %]
+
+        [% FOREACH channel = channels.keys.sort %]
+
+            <div id="tab[% channel_count %]" class="tabWrapper-[% channel_config.$channel %]">
+			<div class="tabInsideWrapper">
+
+                <form name="dduForm_[% channel_config.$channel %]" action="/Fulfilment/DDU/SendDduEmail" method="post" onSubmit="return double_submit()" id="dduForm_[% channel_config.$channel %]">
+                [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                <span class="title title-[% channel_config.$channel %]">Shipments Awaiting Email Notification</span><br>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data" id="ddu_awaiting_sending_notification_[% channel_config.$channel %]">
+                    <thead>
+                    <tr>
+                        <td colspan="7" class="dividerHeader"></td>
+                    </tr>
+                    <tr height="24">
+                        <td width="12%" class="tableHeader">&nbsp;&nbsp;&nbsp;&nbsp;Shipment Nr.</td>
+                        <td width="12%" class="tableHeader">Order Nr.</td>
+                        <td width="8%" class="tableHeader"><span title="Customer's Preferred Language">CPL</span></td>
+                        <td width="20%" class="tableHeader">Customer</td>
+                        <td width="15%" class="tableHeader">Date Received</td>
+                        <td class="tableHeader">Destination</td>
+                        <td class="tableHeader" style="text-align: center;">Send Email</td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" class="dividerHeader"></td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    [% FOREACH shipment_id = notify.$channel.keys.nsort %]
+
+                    <tr>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/Fulfilment/DDU/SetDDUStatus?shipment_id=[% shipment_id %]">[% shipment_id %]</a></td>
+                        <td><a href="/Fulfilment/DDU/OrderView?order_id=[% notify.$channel.$shipment_id.orders_id %]">[% notify.$channel.$shipment_id.order_nr %]</a></td>
+                        <td>[% notify.$channel.$shipment_id.cpl.description %]</td>
+                        <td>[% notify.$channel.$shipment_id.first_name %]&nbsp;[% notify.$channel.$shipment_id.last_name %]</td>
+                        <td>[% notify.$channel.$shipment_id.date %]</td>
+                        <td>[% notify.$channel.$shipment_id.destination %]</td>
+                        <td align="center">
+                            [% IF auth_level > 1 %]<input name="[% shipment_id %]" value="notify" type="checkbox">[% END %]
+                            <input type="hidden" name="order_nr-[% shipment_id %]" value="[% notify.$channel.$shipment_id.order_nr %]">
+                            <input type="hidden" name="email_to-[% shipment_id %]" value="[% notify.$channel.$shipment_id.email %]">
+                            <input type="hidden" name="first_name-[% shipment_id %]" value="[% notify.$channel.$shipment_id.first_name %]">
+                            <input type="hidden" name="country-[% shipment_id %]" value="[% notify.$channel.$shipment_id.destination %]">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" class="divider"></td>
+                    </tr>
+                    [% END %]
+                    <tr>
+                        <td colspan="7" class="blank"><img src="/images/blank.gif" width="1" height="15"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" class="blank" align="right">[% INCLUDE page_elements/forms/submit_button.tt %]</td>
+                    </tr>
+                </table>
+
+                <br><br><br>
+
+                <span class="title title-[% channel_config.$channel %]">Shipments Awaiting Customer Reply</span><br>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data" id="ddu_awaiting_reply_[% channel_config.$channel %]">
+                    <thead>
+                    <tr>
+                        <td colspan="8" class="dividerHeader"></td>
+                    </tr>
+                    <tr height="24">
+                        <td width="12%" class="tableHeader">&nbsp;&nbsp;&nbsp;&nbsp;Shipment Nr.</td>
+                        <td width="12%" class="tableHeader">Order Nr.</td>
+                        <td width="8%" class="tableHeader"><span title="Customer's Preferred Language">CPL</span></td>
+                        <td width="20%" class="tableHeader">Customer</td>
+                        <td width="13%" class="tableHeader">Date Received</td>
+                        <td class="tableHeader">Destination</td>
+                        <td class="tableHeader">Last Email Sent</td>
+                        <td class="tableHeader" style="text-align: center;">Send Email</td>
+                    </tr>
+                    <tr>
+                        <td colspan="8" class="dividerHeader"></td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    [% FOREACH shipment_id = reply.$channel.keys.nsort %]
+
+                    <tr>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/Fulfilment/DDU/SetDDUStatus?shipment_id=[% shipment_id %]">[% shipment_id %]</a></td>
+                        <td><a href="/Fulfilment/DDU/OrderView?order_id=[% reply.$channel.$shipment_id.orders_id %]">[% reply.$channel.$shipment_id.order_nr %]</a></td>
+                        <td>[% reply.$channel.$shipment_id.cpl.description %]</td>
+                        <td>[% reply.$channel.$shipment_id.first_name %]&nbsp;[% reply.$channel.$shipment_id.last_name %]</td>
+                        <td>[% reply.$channel.$shipment_id.date %]</td>
+                        <td>[% reply.$channel.$shipment_id.destination %]</td>
+                        <td>[% reply.$channel.$shipment_id.notified %]</td>
+                        <td align="center">
+                            [% IF auth_level > 1 %]<input name="[% shipment_id %]" value="followup" type="checkbox">[% END %]
+                            <input type="hidden" name="order_nr-[% shipment_id %]" value="[% reply.$channel.$shipment_id.order_nr %]">
+                            <input type="hidden" name="email_to-[% shipment_id %]" value="[% reply.$channel.$shipment_id.email %]">
+                            <input type="hidden" name="first_name-[% shipment_id %]" value="[% reply.$channel.$shipment_id.first_name %]">
+                            <input type="hidden" name="country-[% shipment_id %]" value="[% reply.$channel.$shipment_id.destination %]">
+                            <input type="hidden" name="last_email-[% shipment_id %]" value="[% reply.$channel.$shipment_id.notified %]">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="8" class="divider"></td>
+                    </tr>
+                    [% END %]
+                    <tr>
+                        <td colspan="8" class="blank"><img src="/images/blank.gif" width="1" height="15"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="8" class="blank" align="right">[% INCLUDE page_elements/forms/submit_button.tt %]</td>
+                    </tr>
+                </table>
+                </form>
+
+			</div>
+			</div>
+
+            [% SET channel_count = channel_count + 1 %]
+        [% END %]
+    </div>
+</div>
+
+[% PROCESS page_elements/tab_script.tt %]

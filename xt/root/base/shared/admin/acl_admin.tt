@@ -1,0 +1,16 @@
+<h3 class="title">ACL Settings</h3>
+<form id="acl_admin_setting" name="acl_admin_setting" method="post" action="/Admin/ACLAdmin">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+    <p class="spaced">
+        This is a <strong>System Wide</strong> setting which will control whether the Main Navigation is built using an Operator's LDAP Roles or the values in the 'operator_authorisation' table for the Operator. If '<strong>On</strong>' then an attempt to build the Main Navigation will be done for an Operator if they have been assigned Roles else it will fall back to using the 'operator_authorisation' table. If '<strong>Off</strong>' then no attempt will be made to build the Main Navigation using an Operator's LDAP Roles.
+    </p>
+    <div class="formrow divideabove dividebelow">
+        <label for="setting_build_main_nav">Build Main Nav using LDAP:</label>
+        <input id="setting_build_main_nav" name="setting_build_main_nav" type="checkbox" value="1" [% 'checked="checked"' IF settings.build_main_nav == 1 %] />
+    </div>
+
+    <div class="formrow aftertable buttons formend">
+        <input class="button" name="submit" type="submit" value="Submit &raquo;" />
+    </div>
+</form>

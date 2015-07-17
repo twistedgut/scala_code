@@ -1,0 +1,158 @@
+[%- USE Utilities('subkeysrt') -%]
+[% USE HTTPDate %]
+
+<script type="text/javascript">
+var countrysubdivision = [% country_subdivision %];
+var current_country = "[% current_address.country %]";
+var current_county  = "[% current_address.county %]";
+<!--
+    function validateAddress(){
+
+        // get the country for the address
+        var country = document.use_address.country.options[document.use_address.country.selectedIndex].value;
+
+        /*
+           the 'county/state' will be in one of two fields both called 'county'
+           but with different Id's, only one can be 'enabled' at any one-time
+           so use the Value of the one that is.
+        */
+        var state_drop_down_field = document.getElementById('stateDropdown');
+        var state_text_box_field  = document.getElementById('stateTextbox');
+        var state = (
+            state_drop_down_field.disabled
+            ? state_text_box_field.value
+            : state_drop_down_field.value
+        ) || '';    // should the value be 'null' make it an empty string
+
+        if ( country == 'United States' && state == '' ){
+            alert("Please enter a State for all United States addresses to allow for the calculation of shipping costs.");
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+//-->
+</script>
+
+[% IF no_edit %]
+    [% PROCESS ordertracker/shared/no_edit_address_message.tt %]
+[% ELSE %]
+
+    [% IF shipments.size %]
+
+    [% ELSE # shipments.size %]
+
+        <span class="title title-[% channel_config.$sales_channel %]">Edit Address</span><br>
+
+        <h3>Amend address</h3>
+
+        <form name="use_address" action="[% short_url %]/ConfirmAddress" method="post" onSubmit="return validateAddress()">
+            [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+            <input type="hidden" name ="address_type" value ="[% address_type %]">
+            <input type="hidden" name ="order_id" value ="[% order_id %]">
+            <input type="hidden" name="base_address" value="[% base_address %]">
+            <input type="hidden" name="select_shipping_option" value="1">
+            [% IF shipment_id %]<input type="hidden" name ="shipment_id" value ="[% shipment_id %]">[% END %]
+
+            [%# Seaview: If the address has an associated urn/last-modified then we include those %]
+            [% IF current_address.urn.defined && current_address.last_modified.defined %]
+                <input type="hidden" name="urn" value="[% current_address.urn %]">
+                <input type="hidden" name="last_modified" value="[% HTTPDate.from_zulu(current_address.last_modified) %]">
+            [% END %]
+
+            <input type="hidden" name="can_show_force_address" value="[% can_show_force_address %]" />
+
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr>
+                    <td width="20%" align="right"><b>First Name:&nbsp;&nbsp;</td>
+                    <td width="80%">&nbsp;<input type="text" size="30" name="first_name" value="[% current_address.first_name %]"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr>
+                    <td width="20%" align="right"><b>Surname:&nbsp;&nbsp;</td>
+                    <td width="80%">&nbsp;<input type="text" size="30" name="last_name" value="[% current_address.last_name %]"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr>
+                    <td width="20%" align="right"><b>Address Line 1:&nbsp;&nbsp;</td>
+                    <td width="80%">&nbsp;<input type="text" size="30" name="address_line_1" value="[% current_address.address_line_1 %]"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr>
+                    <td width="20%" align="right"><b>Address Line 2:&nbsp;&nbsp;</td>
+                    <td width="80%">&nbsp;<input type="text" size="30" name="address_line_2" value="[% current_address.address_line_2 %]"></td>
+                    <input type="hidden" size="30" name="address_line_3" value="[% current_address.address_line_3 %]">
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr>
+                    <td width="20%" align="right"><b>Town/City:&nbsp;&nbsp;</td>
+                    <td width="80%">&nbsp;<input type="text" size="30" name="towncity" value="[% current_address.towncity %]"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr>
+                    <td width="20%" align="right"><b>State/County:&nbsp;&nbsp;</td>
+                    <td width="80%">&nbsp;
+                        <select id="stateDropdown" name="county"> </select>
+                        <input id="stateTextbox" type="text" size="30" name="county" value="[% current_address.county %]">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr>
+                    <td width="20%" align="right"><b>Postcode:&nbsp;&nbsp;</td>
+                    <td width="80%">&nbsp;<input type="text" size="30" name="postcode" value="[% current_address.postcode %]"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr>
+                    <td width="20%" align="right"><b>Country:&nbsp;&nbsp;</td>
+                    <td width="80%">&nbsp;
+                        [% IF channel.fulfilment_only %]
+                            [% current_address.country %] <input type="hidden" name="country" value="[ current_address.country %]">
+                        [% ELSE %]
+                            <select name="country" id="select_country_selection">
+                                <option value="0">------------</option>
+                                [%#
+                                    The 'data-' prefixed attributes in each 'option' below are jQuery magic which
+                                    are automatically imported into the .data() method without the 'data-' prefix.
+                                    See root/static/javascript/editaddress_dropdown.js for usage.
+                                %]
+                                [% FOREACH country = countries %]
+                                    [% messages = country.address_formatting_messages %]
+                                    <option [% FOREACH message IN messages.pairs %]data-[% message.key %]="[% message.value %]"[% END %] value="[% country.country %]" [% IF country.country == current_address.country %]selected[% END %]>[% country.country %]</option>
+                                [% END %]
+                            </select>
+                        [% END %]
+                        <input type="hidden" name="nomatch_country" value="[% current_address.country %]">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+            </table>
+            <br><br>
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td align="right">[% INCLUDE page_elements/forms/submit_button.tt submit = 'Continue &raquo;' %]</td>
+                </tr>
+            </table>
+        </form>
+    [% END %]
+[% END %]

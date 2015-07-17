@@ -1,0 +1,9 @@
+<pre>
+
+h1. DC2A
+  * DCA-2896: Better error message during allocation for missing storage type
+
+h1. WHM
+  * REL-14484: [Expedited Shipping] : ensure UPS are informed of the 3 Day Air shipping option + conflict resolved
+
+</pre>

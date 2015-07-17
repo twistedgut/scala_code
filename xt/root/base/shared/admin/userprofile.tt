@@ -1,0 +1,531 @@
+[% USE Utilities('subkeysrt') %]
+
+<style type="text/css">
+	#clone_user_div {
+		display: none;
+		background-color: #CCFFCC;
+		padding: 3px 5px;
+		border-top: 1px dotted #006600;
+		border-bottom: 1px dotted #006600;
+		margin-bottom: 5px;
+	}
+
+	#clone_wait {
+		display: none;
+		text-align: center;
+		padding-top: 4px;
+		padding-bottom: 4px;
+	}
+
+	#clone_revert {
+		display: none;
+		text-align: center;
+		padding-top: 4px;
+		padding-bottom: 4px;
+	}
+
+	#clone_got {
+		display: none;
+		text-align: center;
+	}
+
+	#ac_search { text-align:left; }
+	#ac_input { position:static;width:16em; } /* to center, set static and explicit width: */
+	#ac_container { text-align:left;width:20em; } /* to center, set left-align and explicit width: */
+</style>
+
+<script type="text/javascript" language="javascript">
+
+<!--
+
+function checkSelect( dep_id, name, username ) {
+
+    if ( username == '' ) {
+        alert('No username has been selected. Please select a username for this user');
+        return false;
+    }
+    if ( name == '' ) {
+        alert('No name has been selected. Please select a name for this user');
+        return false;
+    }
+    if ( dep_id == '' ) {
+        alert('No department has been selected. Please select a department for this user');
+        return false;
+    }
+    return true;
+
+}
+
+function populateOtherFields() {
+	// the name entered
+	var full_name = document.getElementById('form_name').value;
+	var names = full_name.split(' ');
+
+	// if we only have one name ... leave the user to fill everything in
+	// themself
+	if (names.length < 2) { return; }
+
+	// prepare useful name-parts
+	var first_name = names[0];
+	var rest_of_name = names.splice(1, names.length - 1).join('.');
+	var initial = first_name.charAt(0);
+
+	// username is (usually) initial.surname
+	if ('' == document.getElementById('form_username').value) {
+		document.getElementById('form_username').value = initial + '.' + rest_of_name;
+	}
+
+	// email is (usually) first.last@
+	if ('' == document.getElementById('form_email_address').value) {
+		document.getElementById('form_email_address').value = first_name + '.' + rest_of_name + '@net-a-porter.com';
+	}
+}
+
+function clear_home_page () {
+	var def_home_page	= document.forms['useprofile'].default_home_page;
+
+	for (var n=0; n<def_home_page.length; n++) {
+		if (def_home_page[n].checked) {
+			def_home_page[n].checked	= false;
+			document.getElementById('clear_home_page').checked	= true;
+			break;
+		}
+	}
+}
+
+function toggle_clone_user () {
+	if ( document.getElementById('clone_user_div').style.display == '' ) {
+		document.getElementById('clone_user_div').style.display	= 'block';
+		document.getElementById('toggle_clone_user_img').alt	= 'Click to Hide';
+		document.getElementById('toggle_clone_user_img').title	= 'Click to Hide';
+		document.getElementById('toggle_clone_user_img').src	= '/images/minus.gif';
+	}
+	else {
+		document.getElementById('clone_got').style.display		= '';
+		document.getElementById('clone_wait').style.display		= '';
+		document.getElementById('clone_revert').style.display	= '';
+		document.getElementById('ac_search').style.display		= 'block';
+		document.getElementById('clone_user_div').style.display	= '';
+		document.getElementById('toggle_clone_user_img').alt	= 'Click to Show';
+		document.getElementById('toggle_clone_user_img').title	= 'Click to Show';
+		document.getElementById('toggle_clone_user_img').src	= '/images/plus.gif';
+	}
+}
+
+//-->
+
+</script>
+
+
+<span class="title">Account Details</span><br/>
+<form name="useprofile" action="[% form_submit %]" method="post" onsubmit="javascript:return checkSelect(useprofile.department_id.value, useprofile.name.value[% IF !user_info.id %], useprofile.username.value[% END %]);">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+	<input type="hidden" id="user_id" name="user_id" value="[% user_id %]" />
+<table width="100%" cellpadding="0" cellspacing="0" border="0" id="user_account_details">
+	<tr>
+		<td colspan="2" class="divider" class="white"></td>
+	</tr>
+	<tr height="25">
+		<td class="white" width="20%" align="right"><strong>Name:&nbsp;&nbsp;</strong></td>
+		<td class="white" width="80%"><input type="text" id="form_name" name="name" value="[% user_info.name %]" [% IF form_submit == "/Admin/UserAdmin/Profile" %]onBlur="populateOtherFields()"[% END %]></td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider" class="white"></td>
+	</tr>
+	<tr height="25">
+		<td height="36" class="white" align="right"><strong>Department:&nbsp;&nbsp;</strong></td>
+		<td class="white">
+			<select name="department_id">
+				<option value="">---------</option>
+				[% FOREACH depid = departments.sort('$depid') %]
+					[% IF auth_level > 2 %]
+						<option value="[% depid %]"[% IF user_info.department_id == depid %] selected="selected"[% END %]>[% departments.$depid %]</option>
+					[% ELSE %]
+						[% IF departments.$depid == "Distribution" || departments.$depid == "Distribution Management" || departments.$depid == "Goods In" || departments.$depid == "Returns" %]
+							<option value="[% depid %]"[% IF user_info.department_id == depid %] selected="selected"[% END %]>[% departments.$depid %]</option>
+						[% END %]
+					[% END %]
+				[% END %]
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider" class="white"></td>
+	</tr>
+	<tr>
+		<td height="36" class="white" align="right"><strong>Preferred Sales Channel:&nbsp;&nbsp;</strong></td>
+		<td class="white">
+			<select name="pref_channel_id">
+				<option value="0">No Preferred Channel</option>
+				[% FOREACH channel_id = channels.subkeysrt('name') %]
+					<option value="[% channel_id %]"[% IF user_pref.pref_channel_id == channel_id %] selected="selected"[% END %]>[% channels.$channel_id.name %]</option>
+				[% END %]
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider" class="white"></td>
+	</tr>
+	<tr height="25">
+		<td class="white" align="right"><strong>Disabled:&nbsp;&nbsp;</strong></td>
+		<td class="white"><input type="checkbox" name="disabled" value="1" [% IF user_info.disabled == 1 %]checked[% END %] ></td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider" class="white"></td>
+	</tr>
+	<tr height="25">
+		<td class="white" align="right"><strong>Username:&nbsp;&nbsp;</strong></td>
+		<td class="white">
+			[% IF user_info.id %]
+				[% user_info.username %]
+			[% ELSE %]
+				<input type="text" id="form_username" name="username" value="[% user_info.username %]">
+			[% END %]
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider"></td>
+	</tr>
+	<tr height="25">
+		<td class="white" align="right"><strong>e-mail:&nbsp;&nbsp;</strong></td>
+		<td class="white"><input type="text" id="form_email_address" name="email_address" value="[% user_info.email_address %]" size="30"></td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider"></td>
+	</tr>
+	<tr height="25">
+		<td class="white" align="right"><strong>Phone:&nbsp;&nbsp;</strong></td>
+		<td class="white"><input type="text" id="form_phone_ddi" name="phone_ddi" value="[% user_info.phone_ddi %]" size="30" maxlength="30"></td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider"></td>
+	</tr>
+
+    [% IF user_info.name %]
+	<tr height="25">
+        <td class="white" align="right"><strong>Print Barcode:&nbsp;&nbsp;</strong></td>
+            <td class="white"><input type="checkbox" name="print_barcode" value="1" /></td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider"></td>
+	</tr>
+    [% END %]
+
+    <tr>
+        <td class="white" align="right"><strong>Use LDAP to build Main Nav:&nbsp;&nbsp;</strong></td>
+        <td class="white">
+            <input type="checkbox" name="use_acl_for_main_nav" value="1" [% IF user_info.use_acl_for_main_nav == 1 %]checked="checked"[% END %] />
+            &nbsp;&nbsp;&nbsp;
+            (If you are unsure about this option then please leave it as is.)
+        </td>
+    </tr>
+    <tr><td colspan="2" class="divider"></td></tr>
+
+	[% IF auth_level > 1 %]
+	<tr>
+		<td colspan="2"><img src="/images/blank.gif" width="1" height="10"></td>
+	</tr>
+	<tr>
+		<td><!--[% IF user_info.name %]
+			<input type="hidden" name="print_barcode" value="1">
+            <input type="submit" name="submit" value="Print Barcode &raquo;" class="button">[% END %]--></td>
+		<td align="right"><input type="submit" name="submit" value="Submit &raquo;" class="button"></td>
+	</tr>
+	[% END %]
+</table>
+<br><br>
+
+<div>Sub Sections with this <img class="inline" src="/images/icons/lock.png" /> next to them are granted access using <strong>LDAP</strong> and no longer by this page.</div>
+<div>
+	<span class="title" style="display: block; float: left; width: 50%;">Authorisation</span>
+	<div style="float: right; text-align: right; padding-top: 5px;"><a href="javascript:toggle_clone_user();"><img id="toggle_clone_user_img" src="/images/plus.gif" alt="Click to Show" title="Click to Show" align="left" style="margin-top: 4px;" /></a>&nbsp;<a href="javascript:toggle_clone_user();">clone from another user</a></div>
+	<br clear="all" />
+</div>
+<div id="clone_user_div">
+	<div id="ac_search">
+		<label for="ac_input"><strong>Type the name of the user you'd like to clone Authorisations from, then click 'Clone User':</strong></label>
+		<input id="ac_input" type="text" size="30" value="" />
+		<input id="ac_input_id" type="hidden" name="clone_operator_id" value="" />
+		<input type="button" value="Clone User" onclick="javascript:cloneAuths('clone');" />
+		<div id="ac_container"></div>
+	</div>
+	<div id="clone_wait">
+		<span>Getting user authorisations for <span id="clonee_name" style="font-weight: bold;"></span>, please wait</span>
+	</div>
+	<div id="clone_revert">
+		<span>Reverting back to user <span id="clonee_revert" style="font-weight: bold;"></span> authorisations, please wait</span>
+	</div>
+	<div id="clone_got">
+		<span><input type="button" value="Accept" onclick="javascript:acceptAuths();"/>&nbsp;&nbsp;&nbsp;<strong>Click 'Accept' to keep these Authorisations <span style="font-weight: normal !important; font-style: italic;">(you will still need to 'Submit' to save them)</span> or 'Reject' to revert back</strong>&nbsp;&nbsp;&nbsp;<input type="button" value="Reject" onclick="javascript:restore_current();" /></span>
+	</div>
+</div>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data" id="user_profile_authorisation">
+	<thead>
+	<tr>
+		<td colspan="5" class="dividerHeader"></td>
+	</tr>
+	<tr height="24">
+		<td class="tableHeader" width="150">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Section</td>
+		<td class="tableHeader">Sub Section</td>
+		<td class="tableHeader" align="center">Authorised</td>
+		<td class="tableHeader" align="center">Authorisation Level</td>
+		<td class="tableHeader" align="center">Default Home Page</td>
+	</tr>
+	<tr>
+		<td colspan="5" class="dividerHeader"></td>
+	</tr>
+	</thead>
+	<tbody>
+
+	[% IF auth_level > 2 %]
+		[% FOREACH sec = user_auth %]
+			<tr height="20">
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>[% sec.key %]</strong></td>
+				[% IF loop.count != 1 %]
+					<td colspan="4">&nbsp;</td>
+				[% ELSE %]
+					<td colspan="3">&nbsp;</td>
+					<td align="center">[ <a href="javascript:clear_home_page();">clear home page</a> ]</td>
+				[% END %]
+			</tr>
+			<tr>
+				<td colspan="5" class="divider"></td>
+			</tr>
+			[% FOREACH subsec = sec.value %]
+                [%-
+                    SET acl_controlled = subsec.value.acl_controlled;
+                -%]
+				<tr height="20">
+					<td></td>
+					<td>[% subsec.key %][% IF acl_controlled %]<img class="inline" src="/images/icons/lock.png" alt="Access granted by LDAP" title="Access granted by LDAP" />[% END %]</td>
+					<td align="center"><input type="checkbox" id="auth_[% subsec.value.id %]" name="auth_[% subsec.value.id %]" value="1"[% IF subsec.value.auth > 0 %] checked="checked"[% END %] [% 'disabled="disabled"' IF acl_controlled %]></td>
+					<td align="center">
+						<select id="level_[% subsec.value.id %]" name="level_[% subsec.value.id %]" [% 'disabled="disabled"' IF acl_controlled %]>
+							<option value="1"></option>
+							<option value="1"[% IF subsec.value.auth == 1 %] selected="selected"[% END %]>Read Only</option>
+							<option value="2"[% IF subsec.value.auth == 2 %] selected="selected"[% END %]>Operator</option>
+							<option value="3"[% IF subsec.value.auth == 3 %] selected="selected"[% END %]>Manager</option>
+						</select>
+					</td>
+					<td align="center">
+						<input type="radio" id="def_home_pge_[% subsec.value.id %]" name="default_home_page" value="[% subsec.value.id %]"[% IF user_pref.default_home_page == subsec.value.id %] checked="checked"[% END %] />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="5" class="divider"></td>
+				</tr>
+			[% END %]
+		[% END %]
+	[% ELSE %]
+		[% FOREACH sec = user_auth %]
+			[% IF sec.key == "Fulfilment" || sec.key == "Goods In" %]
+				<tr height="20">
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>[% sec.key %]</strong></td>
+					[% IF loop.count != 1 %]
+						<td colspan="4">&nbsp;</td>
+					[% ELSE %]
+						<td colspan="3">&nbsp;</td>
+						<td align="center">[ <a href="javascript:clear_home_page();">clear home page</a> ]</td>
+					[% END %]
+				</tr>
+				<tr>
+					<td colspan="5" class="divider"></td>
+				</tr>
+				[% FOREACH subsec = sec.value %]
+                    [%-
+                        SET acl_controlled = subsec.value.acl_controlled;
+                    -%]
+					<tr height="20">
+						<td></td>
+						<td>[% subsec.key %][% IF acl_controlled %]<img class="inline" src="/images/icons/lock.png" alt="Access granted by LDAP" title="Access granted by LDAP" />[% END %]</td>
+						<td align="center"><input type="checkbox" id="auth_[% subsec.value.id %]" name="auth_[% subsec.value.id %]" value="1"[% IF subsec.value.auth > 0 %] checked="checked"[% END %] [% 'disabled="disabled"' IF acl_controlled %]></td>
+						<td align="center">
+							<select id="level_[% subsec.value.id %]" name="level_[% subsec.value.id %]" [% 'disabled="disabled"' IF acl_controlled %]>
+								<option value="1"></option>
+								<option value="1"[% IF subsec.value.auth == 1 %] selected="selected"[% END %]>Read Only</option>
+								<option value="2"[% IF subsec.value.auth == 2 %] selected="selected"[% END %]>Operator</option>
+								<option value="3"[% IF subsec.value.auth == 3 %] selected="selected"[% END %]>Manager</option>
+							</select>
+						</td>
+						<td align="center">
+							<input type="radio" id="def_home_pge_[% subsec.value.id %]" name="default_home_page" value="[% subsec.value.id %]"[% IF user_pref.default_home_page == subsec.value.id %] checked="checked"[% END %] />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="5" class="divider"></td>
+					</tr>
+				[% END %]
+			[% END %]
+		[% END %]
+
+	[% END %]
+
+	[% IF auth_level > 1 %]
+	<tr>
+		<td colspan="5" class="white"><img src="/images/blank.gif" width="1" height="1" /></td>
+	</tr>
+	<tr>
+		<td colspan="5" class="white" align="right"><input type="submit" name="submit" value="Submit &raquo;" class="button" /></td>
+	</tr>
+	[% END %]
+</table>
+	<input id="clear_home_page" type="radio" name="default_home_page" value="0" style="display: none;" />
+</form>
+
+
+<script type="text/javascript" language="javascript">
+
+var store_auths	= new Array();
+var store_defpge= 0;
+
+function store_current () {
+
+	store_auths	= new Array();
+	store_defpge= 0;
+
+	xform	= document.forms['useprofile'].elements;
+
+	for ( var x=0; x<xform.length; x++ ) {
+		if ( xform[x].name.match(/^auth_/) ) {
+			var parts	= xform[x].name.split('_');
+			if ( xform[x].checked ) {
+				store_auths[store_auths.length]	= { 'id':parts[1], 'level':document.getElementById('level_'+parts[1]).value };
+			}
+			else {
+				store_auths[store_auths.length]	= { 'id':parts[1], 'level':0 };
+			}
+			if ( document.getElementById('def_home_pge_'+parts[1]).checked )
+				store_defpge	= parts[1];
+		}
+	}
+
+}
+
+function restore_current () {
+
+	for ( var x=0; x<store_auths.length; x++ ) {
+
+		var auth	= store_auths[x];
+
+		if ( auth.level ) {
+			document.getElementById('auth_'+auth.id).checked		= true;
+			document.getElementById('level_'+auth.id).selectedIndex	= auth.level;
+		}
+		else {
+			document.getElementById('auth_'+auth.id).checked		= false;
+			document.getElementById('level_'+auth.id).selectedIndex	= 0;
+		}
+
+	}
+
+	clear_home_page();
+	if ( store_defpge )
+		document.getElementById('def_home_pge_'+store_defpge).checked= true;
+
+	toggle_clone_user();
+
+}
+
+var handleCloneAuthsSuccess	= function(oResponse) {
+
+	var oResults	= eval("(" + oResponse.responseText + ")");
+
+	if ( oResults.status == 'OK' ) {
+		for (var x=0; x<oResults.auths.length; x++ ) {
+
+			var auth = oResults.auths[x];
+
+			if ( auth.auth_level ) {
+				document.getElementById('auth_'+auth.auth_id).checked			= true;
+				document.getElementById('level_'+auth.auth_id).selectedIndex	= auth.auth_level;
+			}
+			else {
+				document.getElementById('auth_'+auth.auth_id).checked			= false;
+				document.getElementById('level_'+auth.auth_id).selectedIndex	= 0;
+			}
+		}
+
+		clear_home_page();
+		if ( oResults.def_home_page )
+			document.getElementById('def_home_pge_'+oResults.def_home_page).checked	= true;
+
+		if ( !oResults.revert ) {
+			document.getElementById('clone_wait').style.display	= 'none';
+			document.getElementById('clone_got').style.display	= 'block';
+		}
+		else {
+			document.getElementById('clone_revert').style.display	= 'none';
+			document.getElementById('ac_search').style.display		= 'block';
+			toggle_clone_user();
+		}
+	}
+	else {
+		document.getElementById('clone_wait').style.display		= 'none';
+		document.getElementById('clone_revert').style.display	= 'none';
+		document.getElementById('ac_search').style.display		= 'block';
+		alert(oResults.msg);
+	}
+
+	document.getElementById('ac_input').value	= '';
+	document.getElementById('ac_input_id').value= '';
+};
+
+var handleFailure	= function(oResponse) {
+
+	document.getElementById('clone_got').style.display	= 'none';
+	document.getElementById('ac_search').style.display	= 'block';
+
+	if(oResponse.responseText !== undefined){
+		alert(oResponse.statusText);
+	}
+
+};
+
+var cloneAuthsCallback = {
+  success:handleCloneAuthsSuccess,
+  failure:handleFailure
+};
+
+function acceptAuths () {
+
+	document.getElementById('clone_wait').style.display	= 'none';
+	document.getElementById('ac_search').style.display	= 'block';
+	toggle_clone_user();
+
+}
+
+function cloneAuths (action) {
+
+	// show loading div
+//	showLoadingLayer();
+
+	var op_id	= 0;
+
+	if ( action == 'clone') {
+		op_id	= document.getElementById('ac_input_id').value;
+
+		document.getElementById('clonee_name').innerHTML	= document.getElementById('ac_input').value;
+		document.getElementById('ac_search').style.display	= 'none';
+		document.getElementById('clone_wait').style.display	= 'block';
+
+		store_current();
+	}
+
+	if ( action == 'revert') {
+		op_id	= document.getElementById('user_id').value + '&revert=1';
+
+		document.getElementById('clonee_revert').innerHTML		= document.getElementById('form_name').value;
+		document.getElementById('clone_got').style.display		= 'none';
+		document.getElementById('clone_revert').style.display	= 'block';
+	}
+
+	if ( !op_id ) {
+		alert("Please enter a valid User to clone");
+		return;
+	}
+
+	var request = YAHOO.util.Connect.asyncRequest('GET', '/Admin/UserAdmin/AJAX/CloneUserAuths?ms=' + new Date().getTime() + '&page_operator_id=[% user_id %]&clone_operator_id=' + op_id, cloneAuthsCallback);
+
+}
+
+</script>

@@ -1,0 +1,11 @@
+<pre>
+
+h1. Product Management
+
+    * PM-1975 - Strip unnecessary characters from description in linkshare feeds
+
+h1. DC2A
+
+    * DCA-3379 Add destination field to prepare message. Needs warehouse-common upgrade.
+
+</pre>

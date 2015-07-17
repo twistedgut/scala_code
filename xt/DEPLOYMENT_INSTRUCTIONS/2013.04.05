@@ -1,0 +1,86 @@
+=====================================
+XT 2013.04.05 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               : 2nd April 2013 
+Cherwell           : 
+Release Manager    : Kaushal Patel
+Build Manager      : Matt Davies
+TechOps            : 
+Backend Developer  : 
+Frontend Developer : 
+QA                 : 
+PCI Authorised by  : 
+
+2 - CHANGELOG
+-------------
+http://gitosis.net-a-porter.com/cgit/xt/tree/CHANGES/2013.04.05?h=release/2013.04
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2013.04/xt-2013.04.05-0.noarch.rpm
+
+Unless otherwise stated, do the following for DC1, DC2 and DC3.
+
+4 - NEW PROPERTIES:
+-------------------
+Add or update the following in "/etc/nap.properties" prior to release
+
+5 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+No action needs to be performed before the deployment
+
+6 - DEPLOYMENT RECIPE:
+----------------------
+
+* CVIEW-590: Configure XT to Use New Seaview Security
+  Need to create the following NEW Properties for SSL
+  client certificate support:
+
+    SEAVIEW_SSL              1
+    SEAVIEW_ADDRESS_UPDATES  0
+    XTDC_SSL_LOCATION        /ssl/
+    NAP_CA_CERT_FILE         ca.crt
+    XTDC1_CLIENT_CERT_FILE   xtdc1.crt
+    XTDC1_PRIVATE_KEY_FILE   xtdc1.key
+    XTDC2_CLIENT_CERT_FILE   xtdc2.crt
+    XTDC2_PRIVATE_KEY_FILE   xtdc2.key
+    XTDC3_CLIENT_CERT_FILE   xtdc3.crt
+    XTDC3_PRIVATE_KEY_FILE   xtdc3.key
+
+    In addition the Seaview protocol and port has changed.
+    This means the existing SEAVIEW_SERVICE_URL property value
+    needs to be updated with a new protocol and port. The
+    production seaview domain is currently unspecified:
+
+    SEAVIEW_SERVICE_URL  https://<production-seaview-domain>:8443
+
+sudo yum clean all
+sudo yum remove xt
+sudo yum install xt
+
+7 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+No action needs to be performed after the deployment
+
+8 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||

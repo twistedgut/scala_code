@@ -1,0 +1,156 @@
+{
+   "@type":"order",
+   "o_id":[% order.id %],
+   [% IF order.preorder_number %]"preorder_number":"[% order.preorder_number %]",[% END %]
+   "order_date":"[% order.date %]",
+   "channel":"[% channel || 'mrp-apac' %]",
+   "cust_id":[% customer.id %],
+   "cust_ip":"[% customer.ip || '10.5.1.46' %]",
+   [% IF customer.language_preference %]"language":"[% customer.language_preference %]",[% END %]
+   [% IF order.source_app_name.defined %]"source_app_name": "[% order.source_app_name %]",[% END %]
+   [% IF order.source_app_version.defined %]"source_app_version": "[% order.source_app_version %]",[% END %]
+   "used_stored_credit_card":"F",
+   "signature_required":true,
+   "user_agent":"Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)",
+   "accept_language":"en-gb",
+   "logged_in_username":"newauth@net-a-porter.com",
+   "tender_lines":[
+      {
+         "tl_id":1243091,
+         "type":"[% order.tender_type %]",
+         "rank":"1",
+         "value":{
+            "currency":"USD",
+            "amount":"[% order.tender_amount %]"
+         },
+         "payment_details":{
+            "pre_auth_code":"[% order.pre_auth_code %]"
+         }
+      }
+   ],
+   "billing_details":{
+      "name":{
+         "title":"Mr",
+         "first_name":"new",
+         "last_name":"authuser"
+      },
+      "address":{
+         "address_line_1":"8678686",
+         "address_line_2":"",
+         "address_line_3":"8678686",
+         "towncity":"Tsing Yi",
+         "county":"",
+         "state":"New Territories",
+         "postcode":"",
+         "country":"HK"
+      },
+      "contact_details":{
+         "telephone":[
+            {
+               "type":"HOME",
+               "number":"1212"
+            },
+            {
+               "type":"MOBILE",
+               "number":"574542545"
+            },
+            {
+               "type":"OFFICE",
+               "number":"5546546"
+            }
+         ],
+         "email":"newauth@net-a-porter.com"
+      }
+   },
+   "delivery_details":[
+      {
+         "name":{
+            "title":"Mr",
+            "first_name":"new",
+            "last_name":"authuser"
+         },
+         "address":{
+            "address_line_1":"8678686",
+            "address_line_2":"",
+            "address_line_3":"8678686",
+            "towncity":"Tsing Yi",
+            "county":"",
+            "state":"New Territories",
+            "postcode":"",
+            "country":"HK"
+         },
+         "order_lines":[
+            {
+               "ol_id":1859184,
+               "description":"Ground",
+               "sku":"9010207-001",
+               "quantity":1,
+               "ol_seq":1,
+               "unit_net_price":{
+                  "currency":"USD",
+                  "amount":"0.00"
+               },
+               "tax":{
+                  "currency":"USD",
+                  "amount":"0.00"
+               },
+               "duties":{
+                  "currency":"USD",
+                  "amount":"0.00"
+               }
+            },
+            {
+               "ol_id":1859185,
+               "description":"Signature Packaging",
+               "sku":"900006-001",
+               "quantity":1,
+               "ol_seq":2,
+               "unit_net_price":{
+                  "currency":"USD",
+                  "amount":"0.00"
+               },
+               "tax":{
+                  "currency":"USD",
+                  "amount":"0.00"
+               },
+               "duties":{
+                  "currency":"USD",
+                  "amount":"0.00"
+               }
+            },
+            [% FOREACH item IN order.items %]
+            {
+               "ol_id":[% item.ol_id %],
+               "description":"[% item.description %]",
+               "sku":"[% item.sku %]",
+               "quantity":[% item.qty || 1 %],
+               "ol_seq":[% loop.index + 2 %],
+               "unit_net_price":{
+                  "currency":"USD",
+                  "amount":"[% item.unit_price %]"
+               },
+               "tax":{
+                  "currency":"USD",
+                  "amount":"[% item.tax || 0 %]"
+               },
+               "duties":{
+                  "currency":"USD",
+                  "amount":"[% item.duty || 0 %]"
+               }
+               [% UNLESS order.with_no_returnable_state %],"returnable":"[% item.returnable || 'YES' %]"[% END %]
+               [% UNLESS order.with_no_sale_flag %],"sale":"[% item.sale || '' %]"[% END %]
+            },
+            [% END %]
+         ],
+         "sticker":"Mr authuser"
+      }
+   ],
+   "gross_total":{
+      "currency":"USD",
+      "amount":"[% order.tender_amount %]"
+   },
+   "postage":{
+      "currency":"USD",
+      "amount":"[% order.shipping_price %]"
+   }
+}

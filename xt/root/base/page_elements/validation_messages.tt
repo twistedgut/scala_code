@@ -1,0 +1,22 @@
+            [%# deal with validation errors %]
+            [% IF validation %]
+            <span class="warning">
+                [% IF validation.missing %]
+                    [% FOR msg_key IN validation.missing %]
+                    [% error_message.missing.$msg_key || "Missing form field: $msg_key" %]<br />
+                    [% END %]
+                [% END %]
+
+                [% IF validation.invalid %]
+                    [% FOR field_name IN validation.invalid.keys %]
+                        [% nice_field_name = error_message.name.$field_name || field_name%]
+                        [% invalid_keys = validation.invalid.$field_name %]
+                        [% FOR invalid_key IN invalid_keys %]
+                            [% nice_field_name %]:
+                            [% error_message.invalid.$invalid_key || invalid_key %]
+                            <br />
+                        [% END %]
+                    [% END %]
+                [% END %]
+            </span>
+            [% END %]

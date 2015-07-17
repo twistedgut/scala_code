@@ -1,0 +1,194 @@
+#!/opt/xt/xt-perl/bin/perl
+
+use NAP::policy "tt";
+
+use PPI;
+use Scalar::Util qw(blessed);
+use File::Find::Rule;
+use Data::Dump 'pp';
+
+# A quick and dirty script to identify and list all unused subs detected by PPI
+# in the codebase. It currently only runs against subs in the
+# XTracker::Database namespace. Still requires a lot of polish!
+my $base_dir = $ENV{XTDC_BASE_DIR};
+my $sub_path = "${base_dir}/lib/XTracker/Database";
+
+my %subs_to_check = get_named_subroutines($sub_path);
+for my $file ( keys %subs_to_check ) {
+    say "\nFile $file";
+    say "Package $subs_to_check{$file}{package}";
+    say "\t$_" for sort @{$subs_to_check{$file}{subs}};
+}
+
+my %called_subs = called_subs( $base_dir );
+say "\nAll used:";
+say $_ for keys %called_subs;
+
+my %unused_subs;
+for my $file ( keys %subs_to_check ) {
+    for my $sub ( sort @{$subs_to_check{$file}{subs}} ) {
+        next if $called_subs{$sub};
+        # Check fully qualified calls too
+        next if $called_subs{$subs_to_check{$file}{package} . q{::} . $sub};
+        # A quick hack to check template files too - we might well get false
+        # positives, but we'd rather err on that side
+        next if `git grep -w $sub root`; ## no critic(ProhibitBacktickOperators)
+        push @{$unused_subs{$file}}, $sub;
+    }
+}
+
+#my $filename = '/home/darius/xt/unused_subs';
+#open my $in, q{<}, $filename;
+#{
+#    local $/ = undef;
+#    my $file = <$in>;
+#    %unused_subs = %{eval $file};
+#}
+#close $in;
+say "\nAll unused:";
+say pp( \%unused_subs );
+#
+#for my $filename ( keys %unused_subs ) {
+#    my $file;
+#    open my $in, q{<}, $filename;
+#    { local $/ = undef; $file = <$in>; }
+#    close $in;
+#    for my $sub ( @{$unused_subs{$filename}} ) {
+#        say "Deleting sub $sub from file $filename";
+#        #$file =~ s!### Subroutine : $sub.*?^\};?\n*!!smg;
+#        $file =~ s!### Subroutine : $sub.*\n!!;
+#    }
+#    open my $out, q{>}, $filename;
+#    print $out $file;
+#    close $out;
+#}
+
+#my @unused = grep { !exists $called_subs{$_} } %subs_to_check;
+#say 'All unused:';
+#say $_ for @unused;
+
+sub get_named_subroutines {
+    my ( $path ) = @_;
+    my @modules = sort File::Find::Rule->file()->name('*.pm')->in($path);
+    say "Found module $_" for @modules;
+    return (map {
+        my $document = PPI::Document->new($_);
+        # Manually checked we only have one package per file in this namespace
+        my $package =  $document->find_first('PPI::Statement::Package')->namespace;
+        say sprintf "Reading subs from $package";
+        $_ => {
+            package => $package,
+            subs => [sort @{[
+                # Ignore anonymous subroutines
+                map { $_->name } @{$document->find(
+                    sub { $_[1]->isa('PPI::Statement::Sub') and $_[1]->name }
+                )||[]}
+            ]}],
+        },
+    } @modules);
+}
+
+# Stolen (and tweaked) from: http://blogs.perl.org/users/brian_d_foy/2012/07/finding-unused-subroutines-but-with-ppi.html
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# Create the PPI document, and add an isa method that takes a list
+sub PPI::Element::isa {
+    my ( $self, @classes ) = @_;
+    foreach my $class (@classes) {
+        return 1 if $self->UNIVERSAL::isa($class);
+    }
+    return 0;
+}
+
+sub called_subs {
+    # TODO: search for subroutine calls in scripts, .t files and templates
+    my @modules = sort File::Find::Rule
+        ->file()
+        ->name(qw/*.pm *.t *.pl/)
+        ->in(map { $base_dir . q{/} . $_ } qw/lib script t t_aggregate/);
+    say "Found module $_" for @modules;
+
+    my @documents = map { say "Parsing $_"; PPI::Document->new($_) } @modules;
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    # find the sub calls that use &
+    # &foo
+    # &foo()
+    # \&foo
+    my @symbols = map { $_->content =~ s{\A&}{}r; } map {
+        say sprintf 'Extracting symbol sub calls from %s',
+            map { $_ ? $_->namespace : 'no package name' }
+            $_->find_first('PPI::Statement::Package');
+        @{$_->find(
+            sub {
+                $_[1]->isa('PPI::Token::Symbol') && $_[1]->symbol_type eq '&';
+            }
+        )||[]}
+    } @documents;
+#    say "\nsymbol";
+#    say $_ for @symbols;
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    # find the sub calls that use parens
+    # foo()
+    # foo( @args )
+    my @list = map { $_->literal } map {
+        say sprintf 'Extracting parens sub calls from %s',
+            map { $_ ? $_->namespace : 'no package name' }
+            $_->find_first('PPI::Statement::Package');
+        @{$_->find(
+            sub {
+                $_[1]->isa('PPI::Token::Word')
+                # It looks like 'List' isn't a class? I couldn't get it working with blessed or ->isa
+                && ref $_[1]->snext_sibling eq 'PPI::Structure::List';
+            }
+        )||[]}
+    } @documents;
+#    say "\nlist";
+#    say $_ for @list;
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    # find the sub calls that are barewords
+    # foo
+    # foo + bar
+    # but not
+    # use vars qw( baz );
+    # sub quux { ... }
+    my %reserved = map { $_, $_ } qw( use vars sub my );
+    my @barewords = map { $_->literal } grep {
+
+        # Take out the Words that are preceded by 'sub'
+        # That is, take out the subroutine definitions
+        # I couldn't get this to work inside the find()
+        my $previous  = $_->previous_sibling;
+        my $sprevious = $_->sprevious_sibling;
+
+        !(     blessed($previous)
+            && blessed($sprevious)
+            && $previous->isa('PPI::Token::Whitespace')
+            && $sprevious->isa('PPI::Token::Word')
+            && $sprevious->literal eq 'sub' )
+    } map {
+        say sprintf 'Extracting bareword sub calls from %s',
+            map { $_ ? $_->namespace : 'no package name' }
+            $_->find_first('PPI::Statement::Package');
+        @{$_->find(
+            sub {
+                $_[1]->isa('PPI::Token::Word')
+                && ref $_[1]->next_sibling ~~ [
+                    qw(
+                    PPI::Structure::List
+                    PPI::Token::Operator
+                    PPI::Token::Structure
+                    PPI::Token::Whitespace
+                    )
+                ] && ( !exists $reserved{ $_[1]->literal } );
+            }
+        )||[]}
+    } @documents;
+#    say "\nbarewords";
+#    say $_ for @barewords;
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    # Combined the used subs
+    return ( map { $_ => 1 } ( @symbols, @list, @barewords ) );
+}

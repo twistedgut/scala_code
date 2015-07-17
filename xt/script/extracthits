@@ -1,0 +1,122 @@
+#!/opt/xt/xt-perl/bin/perl
+
+use strict;
+use warnings;
+
+exit;
+__END__
+
+#use Apache::ParseLog;
+use Data::Dumper;
+
+
+sub remove_irrelevant {
+    my($in) = @_;
+    my $out = {};
+
+    foreach my $key ( keys %{$in}) {
+        if ($key =~/^\/images/) {
+        } elsif ($key =~ /^\/barcodes/) {
+        } elsif ($key =~ /^\/print_docs/) {
+        } elsif ($key =~ /^\/routing/) {
+        } elsif ($key =~ /^\/export/) {
+        } elsif ($key =~ /^\/intl/) {
+        } elsif ($key =~ /^\/yui/) {
+        } elsif ($key =~ /^\/javascript/) {
+        } elsif ($key =~ /^\/css/) {
+        } elsif ($key =~ /^\/manifest/) {
+            
+        } else {
+            $out->{$key} = $in->{$key};
+        }
+    }
+
+    return $out;
+}
+
+sub summarise {
+    my($in) = @_;
+    my $out = {};
+
+    foreach my $key ( keys %{$in} ) {
+        if ($key =~ /^(\/\w+\/\w+)/) {
+            my $access = $1;
+
+            if (defined $out->{$access}) {
+                $out->{$access} += $in->{$key};
+
+            } else {
+                $out->{$1} = $in->{$key};
+
+            }
+        }
+    }
+
+    return $out;
+}
+
+sub save_stats {
+    my($file,$data) = @_;
+    open(FILE, ">${file}.summary") or die "Cannot write to summary file";
+
+    print FILE " \$VAR = {\n";
+
+    foreach my $key (sort { $data->{$a} <=> $data->{$b} } keys %{$data} ) {
+        print FILE "   '$key' => $data->{$key},\n";
+    }
+
+    print FILE " }\n";
+
+    close FILE;
+    return; 
+}
+
+sub main {
+
+    die "    $0 <file>" if (not defined $ARGV[0]);
+
+    die "    $ARGV[0] is not a file" if (not -f $ARGV[0]);
+
+    my $base = Apache::ParseLog->new;
+
+    $base = $base->config(
+        transferlog => $ARGV[0],
+    );
+
+    my $logdata = $base->getTransferLog;
+
+
+    my %file = $logdata->file;
+
+    my $summary = summarise( remove_irrelevant( \%file ) );
+
+    save_stats( $ARGV[0], $summary );
+
+    return;
+}
+
+main;
+
+__END__
+
+=pod
+
+=head1 NAME
+
+extracthits - processes an access log and spits out hits per path
+
+=head1 SYNOPSIS
+
+extracthits $file
+
+=head1 DESCRIPTION
+
+Returns a hash definition in a file named $file.summary with the key being
+the first two levels ie /Stock/RTV and the value is the number of hits.
+
+=head1 AUTHOR
+
+Jason Tang
+
+=cut
+

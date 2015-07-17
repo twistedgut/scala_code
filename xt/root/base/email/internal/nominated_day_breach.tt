@@ -1,0 +1,10 @@
+
+The shipments below have breached their SLA which will affect the nominated delivery day chosen by the customer:
+
+[% FOREACH shipment = shipments %]
+Shipment Number: [% shipment.id %]
+
+SLA Cut Off: [% shipment.sla_cutoff.strftime('%d-%m-%Y %H:%M') %]
+
+
+[% END %]

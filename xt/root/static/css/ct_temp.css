@@ -1,0 +1,74 @@
+body {
+	margin:0px;
+	font: normal 11px Arial;
+  }
+
+body, td {
+  font: normal 11px Arial; 
+  color:#333333; 
+}
+
+a {
+  color:#333333;
+  text-decoration:none;
+  }
+
+a.hover {
+  color:#333333;
+  text-decoration:none;
+  }
+
+a.visited {
+  color:#333333;
+  text-decoration:none;
+  }
+
+a.messageUnread {
+  color:#333333;
+  font: bold;
+  text-decoration:none;
+  }
+
+a.messageViewing {
+  color:#CC6600;
+  font: bold;
+  text-decoration:underline;
+  }
+
+a.messageRead {
+  color:#333333;
+  font:normal;
+  text-decoration:none;
+  }
+
+a.category {
+  color: #000000;
+  font:bold;
+  text-decoration:none;
+  
+  }
+
+a.category:active {
+  font:bold;
+  text-decoration:none;
+  color: #7F6E5C;
+  }
+
+a.category:hover {
+  font:bold;
+  text-decoration:none;
+  color: #7F6E5C;
+  }
+a.category:visited {
+  font:bold;
+  text-decoration:none;
+  color: #7F6E5C;
+  }
+
+
+.comments {
+	background-color:#ffff99;
+	font:italic;
+	padding-left:5px;
+	padding-right:5px;
+}

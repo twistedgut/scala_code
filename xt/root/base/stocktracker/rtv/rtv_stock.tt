@@ -1,0 +1,354 @@
+<!-- TT BEGIN - stocktracker/rtv/rtv_stock.tt -->
+[%# USE Dumper %]
+
+<a name="top"></a>
+
+[% IF tt_process_block; PROCESS $tt_process_block; END %]
+
+
+[% BLOCK rtv_stock %]
+    [% PROCESS page_elements/javascript/inventory.tt %]
+    [% PROCESS page_elements/javascript/columnsort.tt %]
+
+    <!-- Selection Criteria -->
+
+    <span class="title">Search Criteria</span><br />
+    <form name="frm_rtv_stock_select" action="RequestRMA" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <table width="100%" class="data" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr>
+            <td width="20%" align="right"><strong>Sales Channel:</strong>&nbsp;</td>
+            <td width="80%">
+                <select name="select_channel">
+                    [% WHILE (c = channels.next) %]
+                        <option value="[% c.id %]__[% c.name %]" [% IF sales_channel && sales_channel == c.name %]selected[% END %]>[% c.name %]</option>
+                    [% END %]
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr>
+            <td width="20%" align="right"><strong>Designer:</strong>&nbsp;</td>
+            <td width="80%">
+                [%  INCLUDE page_elements/forms/select_list.tt
+                        name                = 'select_designer_id'
+                        options             = rtv_designers
+                        option_value_key    = 'designer_id'
+                        option_entry_key    = 'designer'
+                %]
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr>
+            <td align="right"><strong>PID:</strong>&nbsp;</td>
+            <td><input type="text" name="select_product_id" maxlength="10" /></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="blank" align="right">[% INCLUDE page_elements/forms/submit_button.tt submit='Search &raquo;' %]</td>
+        </tr>
+    </table>
+	</form>
+    <br /><br />
+
+    [% IF rtv_stock_list %]
+
+        [% SET form_action = '/RTV/RequestRMA/SetRequest?select_channel=' _ search_params.select_channel_id _ '__' _ sales_channel %]
+        [%  IF search_params.select_product_id.match('\A\d+\z');
+             form_action = form_action _ '&select_product_id=' _ search_params.select_product_id;
+            ELSIF search_params.select_designer_id.match('\A\d+\z');
+             form_action = form_action _ '&select_designer_id=' _ search_params.select_designer_id;
+            END
+        %]
+
+
+        <span class="title title-[% channel_config.$sales_channel %]">Search Results</span><br />
+
+        [% IF rtv_stock_list.size == 0 OR !rtv_stock_list.0.defined('rtv_quantity_id') %]
+            <strong>No results found, please try again.</strong><br />
+            <img src="/images/blank.gif" width="1" height="300">
+            <br />
+        [% ELSE %]
+            <form name="frm_rtv_stock" id="frm_rtv_stock" action="[% form_action %]" method="post">
+                [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+				<input type="hidden" name="channel_id" value="[% search_params.select_channel_id %]">
+            <table width="100%" class="data" cellpadding="0" cellspacing="0" border="0">
+                <thead>
+                    <tr>
+                        <td colspan="11" class="dividerHeader"></td>
+                    </tr>
+                    <tr>
+                        <td class="tableHeader" style="width: 15%;">Designer<br />&nbsp;</td>
+                        <td class="tableHeader" style="width: 10%;">Origin<br />&nbsp;</td>
+                        <td class="tableHeader" style="width: 5%;">SKU<br /><span style="font-weight: normal;">(PID </span></td>
+                        <td class="tableHeader" style="width: 1%; font-weight: normal;"><br />-</td>
+                        <td class="tableHeader" style="width: 5%; font-weight: normal;"><br />Size&nbsp;ID)</td>
+                        <td class="tableHeader" style="width: 15%;">Type&nbsp;/<br />Colour</td>
+                        <td class="tableHeader" style="width: 10%;">Style Ref.<br />&nbsp;</td>
+                        <td class="tableHeader" style="width: 12%;">Date<br />&nbsp;</td>
+                        <td class="tableHeader" style="width: 12%;">Delivery<br />Date</td>
+                        <td class="tableHeader" style="width: 5%; text-align: right;">Qty.&nbsp;&nbsp;<br />&nbsp;</td>
+                        <td class="tableHeader" style="width: 20%;">Fault Type&nbsp;/<br />Description</td>
+                    </tr>
+                    <tr>
+                        <td colspan="11" class="dividerHeader"></td>
+                    </tr>
+                </thead>
+                <tbody>
+                [% SET group_designer_id = 0 %]
+                [% SET group_product_id = 0 %]
+                [% SET group_sku = 0 %]
+                [% SET show_submit = 1 %]
+
+                [%## Set up grouping dividers (designer, product, sku) %]
+                [% SET divider_grp_1    = ' border-top: solid 10px #cfcfcf;' %]
+                [% SET divider_grp_2    = ' border-top: 0;' %]
+                [% SET divider_grp_3    = ' border-top: 0;' %]
+                [% SET divider_grp_4    = ' border-top: 0;' %]
+                [% SET divider_none     = ' border-top: 0;' %]
+
+                [% FOREACH rtv_stock_item = rtv_stock_list %]
+                    [% SET restrict_edits = rtv_stock_item.defined('rma_request_id') ? 1 : 0 %]
+                    [% SET rtv_quantity_id = rtv_stock_item.rtv_quantity_id %]
+                    [% SET class = (rtv_quantity_id == search_params.highlight_row_id) ? ' class="highlight"' : '' %]
+
+
+                    [% IF (group_designer_id && rtv_stock_item.designer_id != group_designer_id) %]
+                        [% divider_designer = divider_grp_1 %]
+                        [% divider_product  = divider_grp_1 %]
+                        [% divider_sku      = divider_grp_1 %]
+                        [% divider          = divider_grp_1 %]
+                    [% ELSIF (group_product_id && rtv_stock_item.product_id != group_product_id) %]
+                        [% divider_designer = divider_none %]
+                        [% divider_product  = divider_grp_2 %]
+                        [% divider_sku      = divider_grp_2 %]
+                        [% divider          = divider_grp_2 %]
+                    [% ELSIF (group_sku && rtv_stock_item.sku != group_sku) %]
+                        [% divider_designer = divider_none %]
+                        [% divider_product  = divider_none %]
+                        [% divider_sku      = divider_grp_3 %]
+                        [% divider          = divider_grp_3 %]
+                    [% ELSE %]
+                        [% divider_designer = divider_none %]
+                        [% divider_product  = divider_none %]
+                        [% divider_sku      = divider_none %]
+                        [% divider          = divider_grp_4 %]
+                    [% END %]
+
+                    <tr style="margin-top:20px">
+                        <td[% class %] style="vertical-align: top;[% divider_designer %]"><a name="[% rtv_quantity_id %]"></a><a href="RequestRMA?select_designer_id=[% rtv_stock_item.designer_id %]&select_channel=[% search_params.select_channel_id _ '__' _ sales_channel %]" style="text-decoration: none;">[% rtv_stock_item.designer | html %]</a></td>
+                        <td[% class %] style="vertical-align: top; [% divider_designer %]">[% rtv_stock_item.origin %]</a></td>
+                        <td[% class %] style="vertical-align: top;[% divider_product %]"><a href="../StockControl/Inventory/Overview?product_id=[% rtv_stock_item.product_id %]">[% rtv_stock_item.product_id %]</a></td>
+                        <td[% class %] style="vertical-align: top;[% divider_sku %]">-</td>
+                        <td[% class %] style="vertical-align: top; text-align: left;[% divider_sku %]"><a href="../StockControl/Inventory/Overview?variant_id=[% rtv_stock_item.variant_id %]">[% rtv_stock_item.size_id FILTER format('%03d') %]</a>&nbsp;&nbsp;&nbsp;</td>
+                        <td[% class %] style="vertical-align: top;[% divider_sku %]">[% rtv_stock_item.product_type %]&nbsp;/<br />[% rtv_stock_item.colour %]<br /><br />[% rtv_stock_item.season %]</td>
+                        <td[% class %] style="vertical-align: top;[% divider_sku %]">[% rtv_stock_item.style_number %]</td>
+                        <td[% class %] style="vertical-align: top;[% divider_sku %]">[% rtv_stock_item.txt_rtv_quantity_date || '&nbsp;' %]</td>
+                        <td[% class %] style="vertical-align: top;[% divider_sku %]">[% rtv_stock_item.txt_delivery_date || '&nbsp;' %]</td>
+                        <td[% class %] style="vertical-align: top; text-align: right;[% divider %]">
+                            <span style="font-size: 120%; font-weight: bold;">[% rtv_stock_item.quantity %]</span>&nbsp;&nbsp;&nbsp;&nbsp;<br />
+                            [% IF rtv_stock_item.quantity >= 2 AND !restrict_edits %]
+                            [ <a href="javascript:#" onClick="return expand('split_line_[% rtv_quantity_id %]')">Split</a> ]
+                            <div id="expand_split_line_[% rtv_quantity_id %]" style="display: none">
+                                <table class="data" style="width: 99%; border: 0px solid lightgrey;" cellpadding="2" cellspacing="0" border="0">
+                                    <tr style="height: 2px;"><td style="height: 2px;"></td></tr>
+                                    <tr>
+                                        <td[% class %] style="border: 0; text-align: right;">
+                                            <input type="hidden" id="edit_split_qty_[% rtv_quantity_id %]" name="edit_split_qty_[% rtv_quantity_id %]" value="off" />
+                                            <input type="text" style="width:25px" id="split_qty_[% rtv_quantity_id %]" name="split_qty_[% rtv_quantity_id %]" maxlength="2" onchange="editField(this);" /><br />
+                                            <input type="submit" name="submit_split_line" value="Submit &raquo;" class="button" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            [% ELSE %]
+                                &nbsp;
+                            [% END ## (IF rtv_stock_item.quantity...) %]
+                            <br /><br />
+                            [% IF rtv_stock_item.defined('rma_request_id') %]
+                                RMA&nbsp;Requested (ref.&nbsp;[% rtv_stock_item.rma_request_id FILTER format('%05d') %])
+                            [% END %]
+                        </td>
+                        <td[% class %] style="vertical-align: top;[% divider %]">
+                            <table class="data" style="width: 100%;" cellpadding="2" cellspacing="0" border="0">
+                                <tr>
+                                    <td[% class %]>
+                                        [%  INCLUDE page_elements/forms/select_list.tt
+                                                id                  = rtv_quantity_id
+                                                name                = "ddl_item_fault_type"
+                                                options             = item_fault_types
+                                                selected            = rtv_stock_item.fault_type_id
+                                                first_entry         = ''
+                                                disabled            = restrict_edits
+                                                option_value_key    = 'id'
+                                                option_entry_key    = 'fault_type'
+                                                onchange            = "editFaultFields($rtv_quantity_id);"
+                                        %]
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td[% class %]>
+                                        <input type="hidden" id="edit_fault_description_[% rtv_quantity_id %]" name="edit_fault_description_[% rtv_quantity_id %]" value="off" />
+                                        <textarea rows="2" name="fault_description_[% rtv_quantity_id %]" style="width: 100%; border: 1px solid grey; text-align: justify"[% IF restrict_edits %] disabled="disabled"[% END %] onchange="editFaultFields([% rtv_quantity_id %]);">[% rtv_stock_item.fault_description | html %]</textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td[% class %] style="border: 0; text-align: right;">
+                                        [% IF !restrict_edits %]
+                                        <input type="submit" name="submit_update_fault_type" class="button" value="Update &raquo;" />
+                                        [% ELSE %]
+                                        &nbsp;
+                                        [% END %]
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    [% IF !restrict_edits AND search_params.select_designer_id.match('\A\d+\z') %]
+                        <tr>
+                            <td[% class %] colspan="11" align="right">
+                                <table class="data" width="50%">
+                                    <tr>
+                                    <td[% class %] colspan="11" class="dividerHeader"></td>
+                                </tr>
+                                    <tr>
+                                        <td[% class %] align="right"><strong>Request:</strong>&nbsp;</td>
+                                        <td[% class %]>
+                                            <input type="checkbox" name="include_id_[% rtv_quantity_id %]" value="1" />
+                                        </td>
+                                        <td[% class %] align="right"><strong>Reason:</strong>&nbsp;</td>
+                                        <td[% class %]>
+
+                                            [% SET selected_type_id = 0 %]
+                                            [% IF rtv_stock_item.origin == 'REP'; selected_type_id = rtv_constants.RMA_REQUEST_DETAIL_TYPE__CUSTOMER_REPAIR; END %]
+
+                                            [%  INCLUDE page_elements/forms/select_list.tt
+                                                    id                  = "$rtv_quantity_id"
+                                                    name                = 'request_detail_type'
+                                                    options             = request_detail_type
+                                                    selected            = 0
+                                                    first_entry         = ''
+                                                    disabled            = 0
+                                                    option_value_key    = 'id'
+                                                    option_entry_key    = 'type'
+                                            %]
+                                        </td>
+                                    </tr>
+                                </table>
+                            <td>
+                        </tr>
+                    [% END %]
+                    <tr>
+                        <td colspan="11" class="divider"></td>
+                    </tr>
+                    [% SET group_sku = rtv_stock_item.sku %]
+                    [% SET group_product_id = rtv_stock_item.product_id %]
+                    [% SET group_designer_id = rtv_stock_item.designer_id %]
+                [% END ## (FOREACH rtv_stock_item) %]
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td class="blank" style="height: 3; font-size: 10%;">&nbsp;</td>
+                        <td class="blank" align="right" colspan="10">
+                        [% IF show_submit AND !restrict_edits AND search_params.select_designer_id.match('\A\d+\z') %]
+                            <table cellpadding="5" cellspacing="0" border="0">
+                                <tr valign="top">
+                                    <td class="blank"><strong>RMA&nbsp;Request&nbsp;Comments:</strong></td>
+                                    <td class="blank"><textarea rows="3" cols="45" name="rma_request_comments"></textarea>
+                                </tr>
+                                <tr>
+                                    <td class="blank" colspan="2" align="right">
+                                        <input type="submit" name="submit_rma_request" class="button" style="cursor: pointer" value="Create RMA Request &raquo;" />
+                                    </td>
+                                </tr>
+                            </table>
+                        [% ELSE %]
+                            &nbsp;
+                        [% END %]
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+            </form>
+
+            <script type="text/javascript">
+            <!--
+
+                document.forms.frm_rtv_stock_select.select_product_id.focus();
+
+
+            [% IF search_params.defined('highlight_row_id') && search_params.highlight_row_id %]
+                // jump to appropriate anchor
+                window.location.hash="[% search_params.highlight_row_id %]";
+            [% END ## (IF search_params.defined...) %]
+
+
+                function editFaultFields(id) {
+
+                    var fname_fault_type_id     = 'edit_ddl_item_fault_type_' + id;
+                    var fname_fault_description = 'edit_fault_description_' + id;
+
+                    document.getElementById(fname_fault_type_id).value      = 'on';
+                    document.getElementById(fname_fault_description).value  = 'on';
+
+                }
+
+
+                function includeRow (checkbox) {
+
+                    var id      = checkbox.value;
+                    var checked = checkbox.checked;
+
+                    var include_id      = document.getElementById('edit_include_id_' + id);
+                    include_id.disabled = !checked;
+                    include_id.value    = checked ? 'on' : 'off';
+                    var list            = document.getElementById('request_detail_type_' + id);
+                    var list_edit       = document.getElementById('edit_request_detail_type_' + id);
+
+                    list.disabled       = !checked;
+                    list_edit.disabled  = !checked;
+
+                    list_edit.value     = checked ? 'on' : 'off';
+
+                }
+
+
+                // Enable "include" checkboxes
+                var frm_rtv_stock = document.getElementById('frm_rtv_stock');
+
+                for (var i = 0; i < frm_rtv_stock.length; i++) {
+                    if (frm_rtv_stock[i].name == "include") {
+                        frm_rtv_stock[i].disabled = false;
+                    }
+                }
+
+            //-->
+            </script>
+
+        [% END %]
+
+
+    [% ELSE %]
+
+            <img src="/images/blank.gif" width="1" height="330">
+            <br />
+    [% END %]
+
+[% END ## (BLOCK rtv_stock) %]
+
+
+
+<!-- TT END - stocktracker/rtv/rtv_stock.tt -->

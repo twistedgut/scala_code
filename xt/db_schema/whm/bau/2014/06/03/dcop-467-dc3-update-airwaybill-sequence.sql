@@ -1,0 +1,11 @@
+BEGIN;
+
+DROP SEQUENCE waybill_nr;
+
+CREATE SEQUENCE waybill_nr MINVALUE 233086000 MAXVALUE 233185999 START 233086000;
+
+GRANT ALL ON waybill_nr TO www;
+
+GRANT SELECT ON waybill_nr TO airwaybillcheck;
+
+COMMIT;

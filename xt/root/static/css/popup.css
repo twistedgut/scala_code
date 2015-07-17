@@ -1,0 +1,124 @@
+	
+
+/*  General rules */
+	
+img	{
+	display: block;
+	border: 0;
+	}
+
+
+/*  Establish general layout parameters */
+
+body	{
+	background: #fff;
+	color: #333;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-family: Arial, Avenir, "Lucida Grande", Verdana, "Bitstream Vera Sans", Helvetica, sans-serif
+	}
+	
+
+#header	{
+	background: #fff;
+	color: #333;
+	border: 0;
+	margin: 0;
+	padding: 0;
+	text-align: left;
+	height:106px;
+	}
+
+#header img	{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	}
+
+#pagebody	{
+	padding: 0;
+	margin: 0;
+	border: 0;
+	text-align: left;
+	color: #444;
+	background: transparent;
+	clear: both;
+	}
+
+#footer {
+	border: 0;
+	color: #fff;
+	background: #000;
+	padding: 5px 7px 7px 10px;
+	text-align: right;
+	clear: both;
+	font-size: 0.7em;	
+	margin-bottom: 25px;
+	}
+
+html>#footer	{
+	font-size: x-small;
+	} 
+
+h1	{
+	margin: 0 10px 0 0;
+	display: inline;
+	padding: 0;
+	background: transparent;
+	color: #CC6600;
+	text-transform: none;
+	font-family: Arial, Avenir, "Lucida Grande", Verdana, "Bitstream Vera Sans", Helvetica, sans-serif;
+	font-weight: bold;
+	font-size:    14px;      
+  	font-size: 1.6em;
+	}
+
+h2	{
+	margin: 0 10px 0 0;
+	display: inline;
+	padding: 0;
+	background: transparent;
+	color: #CC6600;
+	text-transform: none;
+	font-family: Arial, Avenir, "Lucida Grande", Verdana, "Bitstream Vera Sans", Helvetica, sans-serif;
+	font-weight: bold;
+	font-size:    12px;      
+  	font-size: 1.3em;
+	}
+
+h3	{
+	margin: 0 10px 0 0;
+	display: inline;
+	padding: 0;
+	background: transparent;
+	color: #CC6600;
+	text-transform: none;
+	font-family: Arial, Avenir, "Lucida Grande", Verdana, "Bitstream Vera Sans", Helvetica, sans-serif;
+	font-weight: bold;   
+  	font-size: 1.1em;
+	}
+
+h4	{
+	margin: 0 10px 0 0;
+	display: inline;
+	padding: 0;
+	background: transparent;
+	color: #444;
+	text-transform: none;
+	font-family: Arial, Avenir, "Lucida Grande", Verdana, "Bitstream Vera Sans", Helvetica, sans-serif;
+	font-weight: bold;     
+  	font-size: 1.1em;
+	}
+
+h5	{
+	margin: 0 10px 0 0;
+	display: inline;
+	padding: 0;
+	background: transparent;
+	color: #bbb;
+	text-transform: none;
+	font-family: Arial, Avenir, "Lucida Grande", Verdana, "Bitstream Vera Sans", Helvetica, sans-serif;
+	font-weight: bold;     
+  	font-size: 1.1em;
+	}

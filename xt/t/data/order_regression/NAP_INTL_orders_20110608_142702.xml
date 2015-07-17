@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ORDERS>
+  <ORDER O_ID="1533712" ORDER_DATE="2011-06-08 14:25" CHANNEL="NAP-INTL" CUST_ID="1120174" CUST_IP="10.5.0.174" USED_STORED_CREDIT_CARD="F" LOGGED_IN_USERNAME="adam.taylor@net-a-porter.com">
+    <TENDER_LINE TL_ID="1570159" TYPE="Card" RANK="1">
+      <VALUE CURRENCY="GBP">496.50</VALUE>
+      <PAYMENT_DETAILS>
+        <PRE_AUTH_CODE>20000187</PRE_AUTH_CODE>
+      </PAYMENT_DETAILS>
+    </TENDER_LINE>
+    <BILLING_DETAILS>
+      <NAME>
+        <TITLE>Mr</TITLE>
+        <FIRST_NAME>Adam</FIRST_NAME>
+        <LAST_NAME>Taylor</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>Flat 9</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2>62 Sinclair Road</ADDRESS_LINE_2>
+        <ADDRESS_LINE_3>Flat 9</ADDRESS_LINE_3>
+        <TOWNCITY>London</TOWNCITY>
+        <COUNTY />
+        <STATE />
+        <POSTCODE>W14 0NH</POSTCODE>
+        <COUNTRY>GB</COUNTRY>
+      </ADDRESS>
+      <CONTACT_DETAILS>
+        <TELEPHONE TYPE="HOME" />
+        <TELEPHONE TYPE="MOBILE" />
+        <TELEPHONE TYPE="OFFICE">07882166643</TELEPHONE>
+        <EMAIL>adam.taylor@net-a-porter.com</EMAIL>
+      </CONTACT_DETAILS>
+    </BILLING_DETAILS>
+    <DELIVERY_DETAILS>
+      <NAME>
+        <TITLE>Mr</TITLE>
+        <FIRST_NAME>Adam</FIRST_NAME>
+        <LAST_NAME>Taylor</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>Flat 9</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2>62 Sinclair Road</ADDRESS_LINE_2>
+        <ADDRESS_LINE_3>Flat 9</ADDRESS_LINE_3>
+        <TOWNCITY>London</TOWNCITY>
+        <COUNTY />
+        <STATE />
+        <POSTCODE>W14 0NH</POSTCODE>
+        <COUNTRY>GB</COUNTRY>
+      </ADDRESS>
+      <ORDER_LINE OL_ID="6501473" DESCRIPTION="London Premier 1" SKU="900005-001" QUANTITY="1" OL_SEQ="1">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">9.58</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">1.92</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      <ORDER_LINE OL_ID="6501474" DESCRIPTION="Signature Packaging" SKU="900006-001" QUANTITY="1" OL_SEQ="2">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      <ORDER_LINE OL_ID="6501475" DESCRIPTION="Studded leather gloves" SKU="98594-034" QUANTITY="1" OL_SEQ="3">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">229.17</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">45.83</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      <ORDER_LINE OL_ID="6501476" DESCRIPTION="Snake-effect leather iPad case" SKU="106134-005" QUANTITY="2" OL_SEQ="4">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">87.50</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">17.50</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+    </DELIVERY_DETAILS>
+    <GROSS_TOTAL>
+      <VALUE CURRENCY="GBP">496.50</VALUE>
+    </GROSS_TOTAL>
+    <POSTAGE>
+      <VALUE CURRENCY="GBP">11.50</VALUE>
+    </POSTAGE>
+  </ORDER>
+</ORDERS>
+

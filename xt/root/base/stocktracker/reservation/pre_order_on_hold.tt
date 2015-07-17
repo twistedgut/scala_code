@@ -1,0 +1,128 @@
+[% USE Utilities("subkeysrt") %]
+[% PROCESS page_elements/javascript/showhide.tt %]
+<br>
+<span class="title">PreOrders OnHold</span>
+<span class="span_right">
+    <form id="select_alternative_operator" name="select_alternative_operator" action="/StockControl/Reservation/PreOrder/PreOrderOnhold" method="POST">
+        <input type="hidden" name="show_single_operator" value="1">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+        Show Preorders on hold for:
+        <select id="operator_dropdown" name="alt_operator_id" onchange="this.form.submit()">
+            <option value="">Please Choose another operator</option>
+            [% FOREACH an_operator IN all_operators %]
+            <option value="[% an_operator.id %]" [% "SELECTED" IF an_operator.id == current_operator.id %]>[% an_operator.name %]</option>
+            [% END %]
+        </select>
+    </form>
+</span>
+
+<br />
+<br />
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tbody>
+        <tr height="24">
+            <td align="right">
+                <input type="submit" id="order_update__cancel" class="button" value="Cancel" style="display: none">
+                <input type="submit" id="order_update__start" class="button" value="Release Selected Orders">
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div id="order_update_progress_bar"></div>
+
+<br />
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="wide-data data" id="pre_order_list">
+
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th width="4%"></th>
+            <th width="10%">Order</th>
+            <th width="10%">PreOrder</th>
+            <th width="20%">Customer</th>
+            <th width="10%">Total Value</th>
+            <th width="15%">Pre-Order Status</th>
+            <th width="15%">Hold Reason</th>
+            <th width="10%">Date</th>
+            <th width="3%"><input type="checkbox" id="select_all_orders" title="Click to select/deselect all orders." autocomplete="off" /><span style="display:none">SELECT_ALL</span></th>
+            <th width="3%"><span style="display:none">RESULT</span></th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        [% FOREACH pre_order IN pre_orders %]
+            [% FOREACH link_orders__pre_order IN pre_order.link_orders__pre_orders %]
+                [% SET order = link_orders__pre_order.order %]
+
+                <tr class="dividebelow">
+                    <td>&nbsp;</td>
+                    <td><a href="#" onclick="showhide('shipment_items_for_order_[% order.id %]'); return(false);" title="Click to view/hide the list of items in this order."><img src="/images/icons/application_put.png"></a></td>
+                    <td>[% INCLUDE page_elements/links/order.tt %]</td>
+                    <td>[% INCLUDE page_elements/links/pre_order.tt %]</td>
+                    <td>[% INCLUDE page_elements/links/customer.tt customer=pre_order.customer %]</td>
+                    <td>[% pre_order.total_value%]</td>
+                    <td>[% pre_order.pre_order_status.status %]</td>
+                    <td>[% order.get_standard_class_shipment.shipment_general_hold_description %]</td>
+                    <td>[% pre_order.created.dmy('-') %]</td>
+                    <td>[% IF order.get_standard_class_shipment.is_on_hold_for_pre_order_hold_reason %]<input order_id="[% order.id %]" name="order_[% order.id %]" type="checkbox" title="Click to select/deselect this order." autocomplete="off" />[% END %]</td>
+                    <td style="padding-right: 5px"></td>
+                </tr>
+
+                <tr style="display: none" id="shipment_items_for_order_[% order.id %]">
+                    <td colspan="11">
+
+                        <table cellpadding="0" cellspacing="0" border="0" class="wide-data data" style="padding: 10px; width: 90%">
+
+                            <thead>
+                                <tr>
+                                    <th>&nbsp;</th>
+                                    <th width="10%">&nbsp;&nbsp;&nbsp;Shipment</th>
+                                    <th width="30%">Designer</th>
+                                    <th width="30%">SKU</th>
+                                    <th width="30%">Product</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                [% FOREACH shipment IN order.shipments %]
+                                    [% FOREACH shipment_item IN shipment.shipment_items %]
+                                        <tr class="dividebelow">
+                                            <td />
+                                            <td>&nbsp;&nbsp;&nbsp;[% shipment.id %]</td>
+                                            <td>[% shipment_item.product.designer.designer %]</td>
+                                            <td>[% shipment_item.variant.sku %]</td>
+                                            <td>[% shipment_item.product.product_attribute.name %]</td>
+                                        </tr>
+                                    [% END %]
+                                [% END %]
+
+                            </tbody>
+
+                        </table>
+
+                    </td>
+                </tr>
+
+            [% END %]
+
+        [% END %]
+
+    </tbody>
+
+</table>
+
+[% IF pre_orders.size == 0 %]
+    <div align="center">
+        <br />
+        <span>There are currently no orders on hold.</span>
+    </div>
+[% END %]
+
+<div id="dialog-confirm" title="Release Pre-Orders" style="display: none">
+    <p><span>Are you sure you want to release all the selected Pre-Orders?</span></p>
+</div>

@@ -1,0 +1,8 @@
+<pre>
+
+h1. WHM - Warehouse Management
+     * WHM-614: fixed multiple simultaneous submits to the QC page
+     * WHM-618: dc2 goods in qc docs should go to goodsin-qc-dc2
+     * WHM-619: dc2 stock sheets should go to goodsin-dc2
+
+</pre>

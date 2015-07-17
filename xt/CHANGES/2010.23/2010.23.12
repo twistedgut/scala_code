@@ -1,0 +1,8 @@
+<pre>
+    h2. Bugs
+	
+	* EN-1666: Fixed Stock Consistency Report to cope with Gift Vouchers
+	* Copy both the AM and INTL product feed for criteo
+    * EN-1262 - Die on coverting processed refunds to avoid double refunds
+
+</pre>

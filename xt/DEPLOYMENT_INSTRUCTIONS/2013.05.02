@@ -1,0 +1,107 @@
+=====================================
+XT 2013.05.02 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               : 21st May 2013 
+Cherwell           : 
+Release Manager    : Kaushal Patel
+Build Manager      : Matt Davies
+TechOps            : 
+Backend Developer  : 
+Frontend Developer : 
+QA                 : 
+PCI Authorised by  : 
+
+2 - CHANGELOG
+-------------
+http://gitosis.net-a-porter.com/cgit/xt/tree/CHANGES/2013.05.02?h=release/2013.05
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2013.05/xt-2013.05.02-0.noarch.rpm
+
+Unless otherwise stated, do the following for DC1, DC2 and DC3.
+
+4 - NEW PROPERTIES:
+-------------------
+Add or update the following in "/etc/nap.properties" prior to release
+
+   LOG_CONF_DIR            conf/log4perl
+
+   LOGLEVEL_DEFAULT        INFO
+   LOGLEVEL_XTRACKER       INFO
+   LOGLEVEL_JOBQUEUE       INFO
+   LOGLEVEL_AMQ_CONSUMER   INFO
+
+
+5 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+
+Remove the following non-puppetised crons on live XT boxes:
+* * * * * chown nobody:napapp /var/log/nap/xt/*  &> /dev/null
+* * * * * chown nobody:napapp /var/log/nap/xt/.* &> /dev/null
+
+
+6 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+sudo yum install xt
+
+7 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+PLEASE RUN THE FOLLOWING SCRIPT:
+
+    * CANDO-2013: Show order location
+        Please run the following Script on ALL DCs:
+
+            sudo -u xt-web /opt/xt/deploy/xtracker/script/housekeeping/geolocation_update.pl
+
+        This will download a file from 'http://geolite.maxmind.com/download/geoip/database/'
+        and write it to the following path:
+
+            /var/data/geoloc/GeoIP
+
+
+PLEASE SET-UP the FOLLOWING CRON:
+
+    * CANDO-2013: Show order location
+
+        Please set-up the following cron on ALL DCs to run the script on the first Wednesday of every month:
+
+            # download GeoIP DB file
+            43 5 * * 3 xt-cron [`date +\%d` -le 7] && /opt/xt/deploy/xtracker/script/housekeeping/geolocation_update.pl
+
+
+8 - ROLLBACK PLAN:
+------------------
+
+
+XT Logging changes (rolling back)
+
+stop all apps manually, xt, jobqueue, amq_consumer
+
+chmod -R nobody:nobody /tmp/ttcache
+chmod -R nobody:nobody /var/log/nap
+rm /var/log/nap/*.LCK
+
+sudo yum downgrade xt
+sudo yum downgrade apache-config-nap
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

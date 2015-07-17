@@ -1,0 +1,42 @@
+
+[% PROCESS page_elements/display_product.tt %]
+
+<h2>View Delivery</h2>
+<br />
+<br />
+
+<div id="main_form">
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <thead>
+            <tr>
+                <td colspan="7" class="dividerHeader"></td>
+            </tr>
+            <tr height="24"> 
+                <td width="20%" class="tableHeader">[% INCLUDE page_elements/headerspacer.tt %]Sku</td>
+                <td width="15%" class="tableHeader">Size</td>
+                <td width="15%" class="tableHeader">Designer Size</td>
+                <td width="10%" class="tableHeader">Packing Slip</td>
+                <td width="10%" class="tableHeader">Counted</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="dividerHeader"></td>
+            </tr>
+        </thead>
+        <tbody>
+            [% FOREACH del = delivery_items %]
+                <tr height="20">
+                 <td>[% INCLUDE page_elements/tablespacer.tt %][% product.id %]-[% del.size_id %]</td>
+                    <td>[% del.size %]</td>
+                    <td>Unknown</td>
+                    <td>[% del.packing_slip %]</td>
+                    <td>[% del.delivered %]</td>
+                </tr>
+                <tr>
+                    <td colspan="7" class="divider"></td>
+                </tr>
+            [% END %]
+    </table>
+    <br />
+    
+</div>

@@ -1,0 +1,27 @@
+<pre>
+
+h1. CANDO - Customer & Order Management
+    * CANDO-490: Credit Check Rules - Disable credit hold exception #24 for Mr P
+    * CANDO-557: Premier Fixes
+    * CANDO-109: Auto expiration of RMAs - a Script
+    * CANDO-569: Don't allow wildcard characters to be acted upon in searches
+
+h1. Product Serivce
+    * PS-641: Notify product service on product upload (disabled)
+    * PS-615: Notify product service on product generation
+    * PS-562: Refactor markup processing and expose as webservice
+    * PS-468: Fix measurement syncing and send to product service
+
+h1. Warehouse Management
+    * WHM-207: Don't allow cancellation of a Goods In delivery after a 'pre_advice' has been sent and before a 'stock_received' has been received
+    * WHM-398: Add SKU information to sample cancel email
+    * WHM-512: stock_received message for recode doesn't update web stock
+    * WHM-530: Sticky Page for packing screen (disabled)
+    * WHM-562: Sticky Admin
+    * WHM-583: DHL manifest should include ALL shipments ready to ship
+
+h1. Web Merchandising
+    * MERCH-74 Attribute Management moves to Fulcrum
+      (BAUs like TOS-665 and already appropriately denoted RES pages become obsolete)
+
+</pre>

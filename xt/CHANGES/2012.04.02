@@ -1,0 +1,22 @@
+<pre>
+
+h1. CANDO - Customer & Order Management
+    * CANDO-645: Incorrectly Auto Refunding the Customer for Returns
+    * CANDO-578: Auto upgrading of delayed orders
+    * CANDO-435: Cope with duplicate orders being handed to Order Importer
+    * CANDO-663: Extra source reservation values
+
+h1. FLEX - Flexible Shipping
+    * FLEX-235: Select Nominated Day Orders
+        * Add Shipment Nominated Selection Time (FLEX-286, FLEX-287, FLEX-288)
+    * FLEX-210: /Finance/CreditCheck - Add Nominated Day priority
+    * FLEX-284: /Finance/CreditCheck - Highlight Urgent Shipments
+    * FLEX-301: Set SLA to Nominated Dispatch Time (minus buffer time)
+
+h1. Product Service
+
+    * PS-488: Propgate sort order data to the product service
+    * PS-408: Handle channel transfers in the product service
+    * PS-641: Support uploads
+
+</pre>

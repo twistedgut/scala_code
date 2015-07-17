@@ -1,0 +1,30 @@
+<style type="text/css" media="screen">@import "/css/xtracker.css";</style>
+<style type="text/css" media="screen">@import "/css/xtracker_static.css";</style>
+<style type="text/css" media="print">@import "/css/print.css";</style>
+
+
+<div style="font-size: 0.8em; text-align: left; padding: 10px">
+    <span class="title">Key to Icons</span><br>
+    <table width="95%" cellpadding="0" cellspacing="0" border="0" class="data">	
+        <tr>
+            <td colspan="2" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td class="tableHeader" width="8%">&nbsp;&nbsp;&nbsp;Icon</td>
+            <td class="tableHeader" width="10%">Description</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    [% FOREACH description = icons.keys.sort %]	
+        <tr>
+            <td style="padding-left:10px">[% icons.$description %]</td>
+            <td>[% description %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    [% END %]
+    </table>
+    <br><br>
+</div>

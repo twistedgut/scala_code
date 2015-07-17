@@ -1,0 +1,42 @@
+[% PROCESS reporting/distribution/report_filter.tt form_action="/Reporting/DistributionReports/LabellingReport", show_display=1 %]
+<br />
+[% IF results.size %]
+
+    [% total = 0 %]
+
+[% IF search_params.size %]
+<strong>From:</strong> [% search_params.start.strftime('%F %H:%M') %] <strong>To:</strong> [% search_params.end.strftime('%F %H:%M') %]
+[% END %]
+
+<table class="data wide-data divided-data">
+    <thead>
+        <tr>
+            <th>Period Starts</th>
+            [% IF form.display == "operator" %]
+                <th>Operator</th>
+            [% END %]
+            <th colspan="2">Number of Labelled Boxes</th>
+        </tr>
+    </thead>
+    <tbody>
+    [% FOREACH row = results %]
+        <tr>
+            <td>[% row.start %]</td>
+            [% IF form.display == "operator" %]
+                <td>[% row.operator %]</td>
+            [% END %]
+            <td>[% row.total_labelled_boxes %]</td>
+        [% bar_width = (row.total_labelled_boxes * scale_by) | format('%i') %]
+            <td><img src="/images/dark_grey.gif" width="[% bar_width || 1 %]" height="15"></td>
+        </tr>
+        [% total = total + row.total_labelled_boxes %]
+    [% END %]
+    </tbody>
+</table>
+
+<br /><br />
+<strong>Total: [% total %]</strong>
+
+[% ELSE %]
+    <span class="title">No Results</span>
+[% END %]

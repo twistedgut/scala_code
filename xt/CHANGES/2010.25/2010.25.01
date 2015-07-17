@@ -1,0 +1,8 @@
+<pre>
+
+h1. Fixes
+
+ * Fix the %pre hook so XT is deployable                              (8988940)
+
+</pre>
+

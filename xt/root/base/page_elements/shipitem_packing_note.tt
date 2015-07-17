@@ -1,0 +1,16 @@
+[%# 'sitem_info' should contain a 'shipment_item_info' structure for a single shipment item; cols should contain the totl columns %]
+[%- IF sitem_info.voucher -%]
+<td colspan="[% cols - 3 %]">&nbsp;</td>
+<td colspan="3" align="left" valign="top">
+    <span class="highlight">
+        <ul>
+            <li>Check for gift message</li>
+            <li>Pack in Gift Voucher box</li>
+        </ul>
+    </span>
+</td>
+[%- ELSE -%]
+<td colspan="[% cols %]" align="center">
+    <span class="highlight">[% sitem_info.ship_att.packing_note ? sitem_info.ship_att.packing_note : '&nbsp;' %]</span>
+</td>
+[%- END -%]

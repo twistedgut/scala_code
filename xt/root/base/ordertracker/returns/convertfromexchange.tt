@@ -1,0 +1,414 @@
+
+[% IF display_msg || error_msg %]
+
+
+[% ELSE %]
+	
+	[% IF reasons && reasons.size > 0 %]
+	
+	<form name="cancelForm" action="[% short_url %]/ConvertFromExchange?order_id=[% order_id %]&shipment_id=[% shipment_id %]&return_id=[% return_id %]" method="post">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+        <input type="hidden" name="select_item" value="1">
+	<span class="title">Select Item(s)</span><br>
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+		<tr>
+			<td colspan="7" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+		<tr height="24">
+			<td class="tableHeader" width="10%">&nbsp;&nbsp;&nbsp;SKU</td>
+			<td class="tableHeader" width="33%">Description</td>
+			<td class="tableHeader" width="10%">Type</td>
+			<td class="tableHeader" width="15%">Reason</td>
+			<td class="tableHeader" width="15%">Status</td>
+			<td class="tableHeader" width="8%">Select</td>
+		</tr>
+		<tr>
+			<td colspan="7" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+	
+		[% FOREACH retitemid = return_items.keys %]
+		
+			[% SET itemid = return_items.$retitemid.shipment_item_id %]
+			
+			<tr height="24">
+				<td>&nbsp;&nbsp;&nbsp;[% shipment_items.$itemid.sku %]</td>
+				<td>[% shipment_items.$itemid.designer %] - [% shipment_items.$itemid.name %]</td>
+				<td>[% return_items.$retitemid.type %]</td>
+				<td>[% return_items.$retitemid.reason %]</td>
+				<td>[% return_items.$retitemid.status %]</td>
+				[% IF return_items.$retitemid.return_type_id == 2 && return_items.$retitemid.return_item_status_id != 9 && exchange_shipment.packed_items == 0 %]
+					<td><input type="checkbox" name="item-[% retitemid %]" value="1"></td>
+				[% ELSE %]
+					<td></td>
+				[% END %]
+			</tr>
+			<tr>
+				<td colspan="7" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+			</tr>
+		[% END %]	
+	</table>
+	<br>
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+		<tr>
+			<td class="blank" colspan="2"><img src="/images/blank.gif" width="1" height="15"></td>
+		</tr>
+		<tr>
+			<td class="blank" colspan="2" align="right"><input class="button" type="submit" name="subbutton" value="Continue &raquo;"></td>
+		</tr>		
+	</table>
+	</form>
+	
+	[% ELSE %]
+	
+		[% IF num_changed_items == 0 %]
+			<span class="warning">You haven't selected any of the items in the return for conversion, please try again.</span>
+			<br>
+			<img src="/images/blank.gif" width="1" height="400">
+		[% ELSE %]
+			
+			<form name="createRetForm" action="[% short_url %]/ConvertFromExchange?order_id=[% order_id %]&shipment_id=[% shipment_id %]&return_id=[% return_id %]" method="post">
+                [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                <input type="hidden" name="select_item" value="1">
+                <input type="hidden" name="completed" value="1">
+			<span class="title">Converted Item(s)</span><br>
+			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+				<tr>
+					<td colspan="6" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+				</tr>
+				<tr height="24">
+					<td class="tableHeader" width="10%">&nbsp;&nbsp;&nbsp;SKU</td>
+					<td class="tableHeader" width="33%">Description</td>
+					<td class="tableHeader" width="20%">Type</td>
+					<td class="tableHeader" width="20%">Reason</td>
+					<td class="tableHeader" width="20%">Status</td>
+				</tr>
+				<tr>
+					<td colspan="6" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+				</tr>
+			
+				[% FOREACH retitemid = return_items.keys %]
+				
+					[% SET itemid = return_items.$retitemid.shipment_item_id %]
+			
+					[% IF return_items.$retitemid.change == 1 %]
+						<tr height="24">
+							<td>&nbsp;&nbsp;&nbsp;[% shipment_items.$itemid.sku %]</td>
+							<td>[% shipment_items.$itemid.designer %] - [% shipment_items.$itemid.name %]</td>
+							<td>[% return_items.$retitemid.type %]</td>
+							<td>[% return_items.$retitemid.reason %]</td>
+							<td>[% return_items.$retitemid.status %]</td>							
+						</tr>
+						<tr>
+							<td colspan="6" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+						</tr>
+						<input type="hidden" name="item-[% retitemid %]" value="1">
+					[% END %]
+				[% END %]	
+			</table>
+			
+			<br><br>
+			
+			<span class="title">Refund/Debit</span><br>
+			<br>
+			
+			[% IF current_invoice.id != "" && current_invoice.renumeration_status_id < 4 %]
+			
+			
+				<b>Current Refund</b>
+				<br>
+				<br>
+				<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+					<tr>
+						<td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+					</tr>
+					<tr height="24">
+						<td class="tableHeader" width="15%">&nbsp;&nbsp;&nbsp;SKU</td>
+						<td class="tableHeader" width="15%">Unit Price</td>
+						<td class="tableHeader" width="15%">Tax</td>
+						<td class="tableHeader" width="27%">Duty</td>
+						<td class="tableHeader" width="28%">Sub_Total</td>
+					</tr>
+					<tr>
+						<td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+					</tr>
+					
+					[% SET total = 0 %]
+				
+					[% FOREACH inv_itemid = current_invoice_items.keys %]
+						[% SET ship_item_id = current_invoice_items.$inv_itemid.shipment_item_id %]
+						<tr>
+							<td>&nbsp;&nbsp;&nbsp;[% shipment_items.$ship_item_id.sku %]</td>
+							<td>[% current_invoice_items.$inv_itemid.unit_price %]</td>
+							<td>[% current_invoice_items.$inv_itemid.tax %]</td>
+							<td>[% current_invoice_items.$inv_itemid.duty %]</td>
+							<td>[% current_invoice_items.$inv_itemid.unit_price + current_invoice_items.$inv_itemid.tax + current_invoice_items.$inv_itemid.duty %]</td>
+						</tr>
+						<tr>
+							<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+						</tr>
+											
+						[% total = total + current_invoice_items.$inv_itemid.unit_price + current_invoice_items.$inv_itemid.tax + current_invoice_items.$inv_itemid.duty %]
+						
+					[% END %]
+
+					<tr>
+						<td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+						<td class="blank" colspan="3" align="right"><b>Current Total:&nbsp;&nbsp;</b></td>
+						<td class="blank">[% total %]</td>
+					</tr>
+					<tr>
+						<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+					</tr>
+				</table>
+				<br>
+				<br>
+				
+				<b>New Refund</b>
+				<br>
+				<br>
+				<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+					<tr>
+						<td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+					</tr>
+					<tr height="24">
+						<td class="tableHeader" width="15%">&nbsp;&nbsp;&nbsp;SKU</td>
+						<td class="tableHeader" width="15%">Unit Price</td>
+						<td class="tableHeader" width="15%">Tax</td>
+						<td class="tableHeader" width="27%">Duty</td>
+						<td class="tableHeader" width="28%">Sub_Total</td>
+					</tr>
+					<tr>
+						<td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+					</tr>
+					
+					[% SET total = 0 %]
+				
+					[% FOREACH inv_itemid = current_invoice_items.keys %]
+						[% SET new = 0 %]
+						[% SET ship_item_id = current_invoice_items.$inv_itemid.shipment_item_id %]
+						
+						[% FOREACH retitemid = return_items.keys %]				
+							[% SET shipitemid = return_items.$retitemid.shipment_item_id %]						
+							[% IF shipitemid == ship_item_id %]
+								[% IF return_items.$retitemid.change == 1 %]
+									[% current_invoice_items.$inv_itemid.unit_price = return_items.$retitemid.refund_unit %]
+									[% current_invoice_items.$inv_itemid.tax = return_items.$retitemid.refund_tax %]
+									[% current_invoice_items.$inv_itemid.duty = return_items.$retitemid.refund_duty %]
+								[% END %]
+							[% END %]						
+						[% END %]
+						<tr>
+							<td>&nbsp;&nbsp;&nbsp;[% shipment_items.$ship_item_id.sku %]</td>
+							<td>[% current_invoice_items.$inv_itemid.unit_price %]</td>
+							<td>[% current_invoice_items.$inv_itemid.tax %]</td>
+							<td>[% current_invoice_items.$inv_itemid.duty %]</td>
+							<td>[% current_invoice_items.$inv_itemid.unit_price + current_invoice_items.$inv_itemid.tax + current_invoice_items.$inv_itemid.duty %]</td>
+						</tr>
+						<tr>
+							<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+						</tr>
+						[% total = total + current_invoice_items.$inv_itemid.unit_price + current_invoice_items.$inv_itemid.tax + current_invoice_items.$inv_itemid.duty %]
+						
+					[% END %]
+					
+					[% FOREACH retitemid = return_items.keys %]				
+						[% SET shipitemid = return_items.$retitemid.shipment_item_id %]						
+						
+						[% IF return_items.$retitemid.current_invoice_item == "" && return_items.$retitemid.change == 1 %]
+							<tr>
+								<td>&nbsp;&nbsp;&nbsp;[% shipment_items.$shipitemid.sku %]</td>
+								<td>[% return_items.$retitemid.refund_unit %]</td>
+								<td>[% return_items.$retitemid.refund_tax %]</td>
+								<td>[% return_items.$retitemid.refund_duty %]</td>
+								<td>[% return_items.$retitemid.refund_unit + return_items.$retitemid.refund_tax + return_items.$retitemid.refund_duty %]</td>
+							</tr>
+							<tr>
+								<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+							</tr>
+							[% total = total + return_items.$retitemid.refund_unit + return_items.$retitemid.refund_tax + return_items.$retitemid.refund_duty %]
+						[% END %]	
+					[% END %]
+
+
+					<tr>
+						<td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+						<td class="blank" colspan="3" align="right"><b>New Total:&nbsp;&nbsp;</b></td>
+						<td class="blank">[% total %]</td>
+					</tr>
+					<tr>
+						<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+					</tr>
+					
+					[% IF change_refund_type == 1 %]
+						<tr>
+							<td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+							<td class="blank" colspan="3" align="right"><b>Credit/Debit Type:&nbsp;&nbsp;</b></td>
+							<td class="blank">
+								<input type="radio" name="new_refund_type" value="2" checked>&nbsp;Card Refund&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="new_refund_type" value="1">&nbsp;Store Credit</td>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+						</tr>
+					[% END %]
+				</table>
+				<br>
+				<br>
+			
+			[% ELSE %]
+			
+				<b>New Refund</b>
+				<br>
+				<br>
+				<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+					<tr>
+						<td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+					</tr>
+					<tr height="24">
+						<td class="tableHeader" width="15%">&nbsp;&nbsp;&nbsp;SKU</td>
+						<td class="tableHeader" width="15%">Unit Price</td>
+						<td class="tableHeader" width="15%">Tax</td>
+						<td class="tableHeader" width="27%">Duty</td>
+						<td class="tableHeader" width="28%">Sub_Total</td>
+					</tr>
+					<tr>
+						<td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+					</tr>
+					
+					[% SET total = 0 %]
+				
+					[% FOREACH retitemid = return_items.keys %]				
+						[% SET shipitemid = return_items.$retitemid.shipment_item_id %]						
+						
+						[% IF return_items.$retitemid.change == 1 %]
+							<tr>
+								<td>&nbsp;&nbsp;&nbsp;[% shipment_items.$shipitemid.sku %]</td>
+								<td>[% return_items.$retitemid.refund_unit %]</td>
+								<td>[% return_items.$retitemid.refund_tax %]</td>
+								<td>[% return_items.$retitemid.refund_duty %]</td>
+								<td>[% return_items.$retitemid.refund_unit + return_items.$retitemid.refund_tax + return_items.$retitemid.refund_duty %]</td>
+							</tr>
+							<tr>
+								<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+							</tr>
+							[% total = total + return_items.$retitemid.refund_unit + return_items.$retitemid.refund_tax + return_items.$retitemid.refund_duty %]
+						[% END %]	
+					[% END %]
+
+					<tr>
+						<td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+						<td class="blank" colspan="3" align="right"><b>New Total:&nbsp;&nbsp;</b></td>
+						<td class="blank">[% total %]</td>
+					</tr>
+					<tr>
+						<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+					</tr>
+					
+					[% IF change_refund_type == 1 %]
+						<tr>
+							<td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+							<td class="blank" colspan="3" align="right"><b>Credit/Debit Type:&nbsp;&nbsp;</b></td>
+							<td class="blank">
+								<input type="radio" name="new_refund_type" value="2" checked>&nbsp;Card Refund&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="new_refund_type" value="1">&nbsp;Store Credit</td>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+						</tr>
+					[% END %]
+				</table>
+				<br>
+				<br>
+			
+			
+			[% END %]
+
+			<br><br>
+			
+			<span class="title">Customer Email</span><br>
+			
+			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+				<tr>
+					<td colspan="2" class="divider"></td>
+				</tr>
+				[% IF email_info %]
+					<tr height="24">
+						<td width="149" align="right"><b>Send Email:</b>&nbsp;&nbsp;</td>
+						<td width="570"><input type="radio" name="send_email" value="yes" checked>&nbsp;&nbsp;Yes&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="send_email" value="no">&nbsp;&nbsp;No</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="divider"></td>
+					</tr>
+					<tr height="30">
+						<td align="right"><b>To:</b>&nbsp;&nbsp;</td>
+						<td><input type="text" size="35" name="email_to" value="[% email_info.email_to %]"></td>
+					</tr>
+					<tr>
+						<td colspan="2" class="divider"></td>
+					</tr>
+					<tr height="30">
+						<td align="right"><b>From:</b>&nbsp;&nbsp;</td>
+						<td><input type="text" size="35" name="email_from" value="[% email_info.email_from %]"></td>
+					</tr>
+					<tr>
+						<td colspan="2" class="divider"></td>
+					</tr>
+					<tr height="30">
+						<td align="right"><b>Reply-To:</b>&nbsp;&nbsp;</td>
+						<td><input type="text" size="35" name="email_replyto" value="[% email_info.email_from %]"></td>
+					</tr>
+					<tr>
+						<td colspan="2" class="divider"></td>
+					</tr>
+					<tr height="30">
+						<td align="right"><b>Subject:</b>&nbsp;&nbsp;</td>
+						<td><input type="text" size="35" name="email_subject" value="[% email_info.email_subject %]"></td>
+					</tr>
+					<tr>
+						<td colspan="2" class="divider"></td>
+					</tr>
+					<tr>
+						<td colspan="2" height="10"></td>
+					</tr>
+					<tr valign="top">
+						<td align="right"><b>Email Text:&nbsp;&nbsp;</b></td>
+						<td>
+                            <textarea name="email_body" rows="15" cols="80">[% email_info.email_body %]</textarea>
+                            <input type="hidden" name ="email_content_type" value="[% email_info.email_content_type %]" >
+                        </td>
+					</tr>
+					<tr>
+						<td colspan="2" height="10"></td>
+					</tr>
+				[% ELSE %]
+					<tr>
+						<td width="149" align="right"><b>Select Email Template:</b>&nbsp;&nbsp;</td>
+						<td width="570">					
+								<select name="email_template">
+									<option value="17">Select...</option>
+									<option value="0">------------------------</option>
+								</select>											
+						</td>
+					</tr>			
+				[% END %]
+				<tr>
+					<td colspan="2" class="divider"></td>
+				</tr>	
+			</table>
+			
+			
+			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+				<tr>
+					<td class="blank" colspan="2"><img src="/images/blank.gif" width="1" height="10"></td>
+				</tr>
+				<tr>
+					<td class="blank" colspan="2" align="right"><input class="button" type="submit" name="subbutton" value="Complete &raquo;"></td>
+				</tr>		
+			</table>
+			</form>		
+		[% END %]
+	[% END %]
+[% END %]
+
+<br><br><br><br>
+

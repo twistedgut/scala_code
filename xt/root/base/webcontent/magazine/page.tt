@@ -1,0 +1,450 @@
+[% INCLUDE scope %]
+
+
+[% BLOCK scope; # wrap page content in a block and then INCLUDE it so as not to overwrite global variables %]
+
+
+[% USE Utilities('subkeysrt') %]
+<br />
+
+[% SET page_name		= '' %]
+[% SET page_key			= '' %]
+[% SET page_type		= '' %]
+[% SET page_template	= '' %]
+[% SET form_submit		= '/WebContent/Magazine/CreatePage' %]
+[% SET staging_url		= 'http://' _ channel_info.staging_url _ '/' %]
+[% SET live_url			= 'http://' _ channel_info.url _ '/' %]
+
+[% IF page_id %]
+
+	[% SET page_name		= page.get_column('name') %]
+	[% SET page_key			= page.get_column('page_key') %]
+	[% SET page_type		= page.get_column('page_type') %]
+	[% SET page_template	= page.get_column('page_template') %]
+	[% SET form_submit		= '/WebContent/Magazine/UpdatePage' %]
+
+[% END %]
+
+[% IF page_type == 'Magazine Contents' || page_type == 'Magazine Issue' %]
+    [% staging_url	= staging_url _ 'Content/' %]
+    [% live_url		= live_url _ 'Content/' %]
+[% END %]
+
+<form name="createPage" action="[% form_submit %]" method="post" onSubmit="return validateForm(this)">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+	<input type="hidden" name="redirect" value ="/WebContent/Magazine/Page">
+	<input type="hidden" name="page_id" value ="[% page_id %]">
+
+	<table width="100%" cellpadding="0" cellspacing="0" border="0">
+		<tr>		
+			<td width="75%"><span class="title[% IF !newpage %] title-[% channel_config.$sales_channel %][% END %]">Page Details</span></td>
+			[% IF !newpage %]
+				<td width="20"><a href="[% staging_url %][% page.get_column('page_key') %]" target="_blank"><img src="/images/icons/monitor.png"></a></td>
+				<td><a href="[% staging_url %][% page.get_column('page_key') %]" style="text-decoration:none" target="_blank">View Staging</a>&nbsp;&nbsp;&nbsp;</td>
+				<td width="20"><a href="[% live_url %][% page.get_column('page_key') %]" target="_blank"><img src="/images/icons/monitor.png"></a></td>
+				<td><a href="[% live_url %][% page.get_column('page_key') %]" style="text-decoration:none" target="_blank">View Live</a></td>
+			[% END %]
+		</tr>
+		<tr>
+			<td [% IF !newpage %]colspan="5"[% END %]><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+	</table>
+
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+		<tr height="24"> 
+			<td width="15%" align="right"><strong>Name:</strong>&nbsp;&nbsp;</td>
+			<td width="85%">
+				<input type="text" size="44" name="page_name" value="[% page_name %]">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+		<tr height="24"> 
+			<td width="15%" align="right"><strong>Page Key:</strong>&nbsp;&nbsp;</td>
+			<td width="85%">
+				<input type="text" size="44" name="page_key" value="[% page_key %]">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+		<tr height="24"> 
+			<td width="15%" align="right"><strong>Type:</strong>&nbsp;&nbsp;</td>
+			<td width="85%">
+				
+				<select name="page_type" style="width:250px">
+					[% WHILE (type = page_types.next) %]
+						<option value="[% type.id %]" [% IF type.name == page_type %]selected="selected"[% END %]>[% type.name %]</option>
+					[% END %]
+				</select>
+				
+				<!--
+				Magazine Contents
+
+				<input type="hidden" name="page_type" value="10">
+				-->
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+
+		<tr height="24"> 
+			<td width="15%" align="right"><strong>Template:</strong>&nbsp;&nbsp;</td>
+			<td width="85%">
+				
+				<select name="page_template" style="width:250px">
+					[% WHILE (template = page_templates.next) %]
+						<option value="[% template.id %]" [% IF template.name == page_template %]selected="selected"[% END %]>[% template.name %]</option>
+					[% END %]
+				</select>	
+
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+		<tr>
+			<td align="right"><strong>Sales Channel:</strong>&nbsp;&nbsp;</td>
+			<td>
+				[% IF newpage %]
+					<select name="page_channel_id">
+						[% FOREACH channel = channels.subkeysrt('name') %]
+							<option value="[% channel %]">[% channels.$channel.name %]</option>
+						[% END %]
+					</select>
+				[% ELSE %]
+					<span class="title-[% channel_config.$sales_channel %]">&nbsp;[% sales_channel %]</span>
+					<input type="hidden" name="page_channel_id" value="[% channel_id %]" />
+				[% END %]
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+	</table>
+
+	<table width="100%" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td><img src="/images/blank.gif" width="1" height="10"></td>
+		</tr>
+		<tr>
+			<td align="right"><input type="submit" class="button" name="status" value="[% IF page_id %]Update[% ELSE %]Create[% END %] Page &raquo;"></td>
+		</tr>
+		[% IF page_id == '' %]
+		<tr>
+			<td><img src="/images/blank.gif" width="1" height="350"></td>
+		</tr>
+		[% END %]
+	</table>
+</form>
+
+
+[% IF instances.size > 0 %]
+
+	[%-
+        IF got.current > 0;
+        THEN;
+            SET got_current	= 1;
+        END;
+        IF got.draft > 0;
+        THEN;
+            SET got_draft	= 1;
+        END;
+        IF got.archive > 0;
+        THEN;
+            SET got_archive	= 1;
+        END;
+    -%]
+
+	<br /><br />
+	<span class="title title-[% channel_config.$sales_channel %]">Current Version</span><br />
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+		<tr>
+			<td colspan="6" class="divider"></td>
+		</tr>
+
+		[% IF got_current == 1 %]
+			<tr> 
+				<td width="26%" class="tableHeader">&nbsp;&nbsp;Name</td>
+				<td width="16%" class="tableHeader">Created</td>
+				<td width="16%" class="tableHeader">Created By</td>
+				<td width="16%" class="tableHeader">Last Updated</td>
+				<td width="16%" class="tableHeader">Last Updated By</td>
+				<td width="10%" class="tableHeader"></td>
+			</tr>
+			<tr>
+				<td colspan="6" class="divider"></td>
+			</tr>
+
+			[%~ FOREACH instance = instances ~%]
+				[%~ IF instance.get_column('status') == 'Publish' ~%]
+					<tr> 
+						<td>&nbsp;&nbsp;[% instance.label %]</td>
+						<td>[% instance.created.dmy %] [% instance.created.hour %]:[% instance.created.minute %]</td>
+						<td>[% instance.get_column('created_by_name') %]</td>
+						<td>[% instance.last_updated.dmy %] [% instance.last_updated.hour FILTER format('%0.2d') %]:[% instance.last_updated.minute FILTER format('%0.2d') %]</td>
+						<td>[% instance.get_column('updated_by_name') %]</td>
+						<td align="center">
+							<a href="/WebContent/Magazine/Instance?page_id=[% page_id %]&instance_id=[% instance.id %]">
+							[% IF is_operator %]
+								<img src="/images/icons/page_white_edit.png" border="0" alt="Edit Version" title="Edit Version">
+							[% ELSE %]
+								<img src="/images/icons/page_white_magnify.png" border="0" alt="View Version" title="View Version">
+							[% END %]
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6" class="divider"></td>
+					</tr>
+				[%~ END ~%]
+			[%~ END ~%]
+		[% ELSE %]
+			<tr> 
+				<td>&nbsp;&nbsp;None</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td colspan="6" class="divider"></td>
+			</tr>
+
+		[% END %]
+	</table>
+
+	<br /><br />
+	<span class="title title-[% channel_config.$sales_channel %]">Draft Versions</span><br />
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+		<tr>
+			<td colspan="6" class="divider"></td>
+		</tr>
+
+		[% IF got_draft == 1 %]
+			<tr> 
+				<td width="26%" class="tableHeader">&nbsp;&nbsp;Name</td>
+				<td width="16%" class="tableHeader">Created</td>
+				<td width="16%" class="tableHeader">Created By</td>
+				<td width="16%" class="tableHeader">Last Updated</td>
+				<td width="16%" class="tableHeader">Last Updated By</td>
+				<td width="10%" class="tableHeader"></td>
+			</tr>
+			<tr>
+				<td colspan="6" class="divider"></td>
+			</tr>
+
+			[%~ FOREACH instance = instances ~%]
+				[%~ IF instance.get_column('status') == 'Draft' ~%]
+					<tr> 
+						<td>&nbsp;&nbsp;[% instance.label %]</td>
+						<td>[% instance.created.dmy %] [% instance.created.hour %]:[% instance.created.minute %]</td>
+						<td>[% instance.get_column('created_by_name') %]</td>
+						<td>[% instance.last_updated.dmy %] [% instance.last_updated.hour FILTER format('%0.2d') %]:[% instance.last_updated.minute FILTER format('%0.2d') %]</td>
+						<td>[% instance.get_column('updated_by_name') %]</td>
+						<td align="center"><a href="/WebContent/Magazine/Instance?page_id=[% page_id %]&instance_id=[% instance.id %]">
+							[% IF is_operator %]
+								<img src="/images/icons/page_white_edit.png" border="0" alt="Edit Version" title="Edit Version">
+							[% ELSE %]
+								<img src="/images/icons/page_white_magnify.png" border="0" alt="View Version" title="View Version">
+							[% END %]
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6" class="divider"></td>
+					</tr>
+				[%~ END ~%]
+			[%~ END ~%]
+		[% ELSE %]
+			<tr> 
+				<td>&nbsp;&nbsp;None</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td colspan="6" class="divider"></td>
+			</tr>
+
+		[% END %]
+	</table>
+
+	<br /><br />
+	<table width="100%" cellpadding="0" cellspacing="0" border="0">	
+		<tr>
+			<td class="blank"><span class="title title-[% channel_config.$sales_channel %]">Archived Versions</span></td>
+			<td class="blank" align="right">[% IF got_archive == 1 %]<a href="javascript:toggle_view('archive');"><span id="lnkarchive">View</span></a>[% END %]</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+	</table>
+
+	[% IF got_archive == 1 %]
+		<div id="archive" style="display:none">
+			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+				<tr> 
+					<td width="26%" class="tableHeader">&nbsp;&nbsp;Name</td>
+					<td width="16%" class="tableHeader">Created</td>
+					<td width="16%" class="tableHeader">Created By</td>
+					<td width="16%" class="tableHeader">Last Updated</td>
+					<td width="16%" class="tableHeader">Last Updated By</td>
+					<td width="10%" class="tableHeader"></td>
+				</tr>
+				<tr>
+					<td colspan="6" class="divider"></td>
+				</tr>
+
+				[%~ FOREACH instance = instances ~%]
+					[%~ IF instance.get_column('status') == 'Archived' ~%]
+						<tr> 
+							<td>&nbsp;&nbsp;[% instance.label %]</td>
+							<td>[% instance.created.dmy %] [% instance.created.hour %]:[% instance.created.minute %]</td>
+							<td>[% instance.get_column('created_by_name') %]</td>
+							<td>[% instance.last_updated.dmy %] [% instance.last_updated.hour FILTER format('%0.2d') %]:[% instance.last_updated.minute FILTER format('%0.2d') %]</td>
+							<td>[% instance.get_column('updated_by_name') %]</td>
+							<td align="center"><a href="/WebContent/Magazine/Instance?page_id=[% page_id %]&instance_id=[% instance.id %]">
+								[% IF is_operator %]
+									<img src="/images/icons/page_white_edit.png" border="0" alt="Edit Version" title="Edit Version">
+								[% ELSE %]
+									<img src="/images/icons/page_white_magnify.png" border="0" alt="View Version" title="View Version">
+								[% END %]
+								</a>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" class="divider"></td>
+						</tr>
+					[%~ END ~%]
+				[%~ END ~%]
+			</table>
+		</div>
+	[% ELSE %]
+
+		<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+			<tr> 
+				<td>&nbsp;&nbsp;None</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td colspan="6" class="divider"></td>
+			</tr>
+		</table>
+
+	[% END %]
+
+
+	<br /><br />
+	[%-
+        SET got_history = 0;
+        IF publish_history.size > 0;
+        THEN;
+            got_history = 1;
+        END;
+    -%]
+
+	<table width="100%" cellpadding="0" cellspacing="0" border="0">	
+		<tr>
+			<td class="blank"><span class="title title-[% channel_config.$sales_channel %]">Publish History</span></td>
+			<td class="blank" align="right">[% IF got_history == 1 %]<a href="javascript:toggle_view('history');"><span id="lnkhistory">View</span></a>[% END %]</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+	</table>
+
+	[% IF got_history == 1 %]
+		<div id="history" style="display:none">
+			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+				<tr> 
+					<td width="30%" class="tableHeader">&nbsp;&nbsp;Version Name</td>
+					<td width="30%" class="tableHeader">Date Published</td>
+					<td width="30%" class="tableHeader">Publish By</td>
+				</tr>
+				<tr>
+					<td colspan="3" class="divider"></td>
+				</tr>
+
+				[% FOREACH record = publish_history %]
+					<tr> 
+						<td>&nbsp;&nbsp;[% record.get_column('label') %]</td>
+						<td>[% record.date.dmy %] [% record.date.hour FILTER format('%0.2d') %]:[% record.date.minute FILTER format('%0.2d') %]</td>
+						<td>[% record.get_column('operator_name') %]</td>
+					</tr>
+					<tr>
+						<td colspan="3" class="divider"></td>
+					</tr>
+				[% END %]
+			</table>
+		</div>
+	[% ELSE %]
+
+		<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+			<tr> 
+				<td>&nbsp;&nbsp;None</td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td colspan="3" class="divider"></td>
+			</tr>
+		</table>
+
+	[% END %]
+
+[% END %]
+
+
+<script type="text/javascript" language="Javascript">
+<!--
+	var form_submit	= 0;
+
+	function toggle_view( section ) {
+	    
+	    var elem = document.getElementById( section );
+	    var link = document.getElementById("lnk"+section);
+
+	    
+	    if (elem.style.display=='none' || !elem.style.display){
+			elem.style.display = "block";
+			if (link.style){
+				link.innerHTML="Hide";
+			}
+	    }
+	    else {
+			elem.style.display = "none";
+			if (link.style){
+				link.innerHTML="View";
+			}
+	    }
+	}
+
+
+	function validateForm(theForm){
+
+		if (theForm.page_name.value != '' || theForm.page_key.value != '' ){
+			if ( !form_submit ) {
+				form_submit	= 1;
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			alert("Please complete all fields before proceeding");	
+			return false;
+		}
+	}
+
+-->
+</script>
+
+[% END; # end scope %]

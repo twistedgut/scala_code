@@ -1,0 +1,247 @@
+[%
+    USE XTConfig;
+    SET dc_city = XTConfig.config_var('DistributionCentre', 'city');
+-%]
+<html>
+<head>
+<meta http-equiv=content-type content="text/html; charset=utf8">
+<title></title>
+[% INCLUDE shared/show_print_images.tt %]
+</head>
+<body>
+
+<table border="1" cellspacing="0" cellpadding="0" width="980">
+<tr>
+    <td colspan="7" align="center">
+        <div style="font-family: Arial,Helvetica;font-size: 26px;font-weight: bold">MULTIMODAL DANGEROUS GOODS FORM</div>
+	    <div [% INCLUDE dgn_standard_font_style.tt %]>This form may be used as a dangerous goods declaration as it meets the requirements of SOLAS 74, chapter VII, regulation 4; MARPOL 73/78, Annex III, regulation 4</div>
+    </td>
+</tr>
+<tr>
+    <td colspan="2" rowspan="3" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        1.Shipper/Consignor/Sender<br />
+        [% channel_branding.${db_constant('BRANDING__PF_NAME')} %]
+    </td>
+    <td colspan="5" [% INCLUDE dgn_standard_font_style.tt %]>
+        2.Transport document number 1
+    </td>
+</tr>
+<tr>
+    <td colspan="2" rowspan="2" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        3.Page 1 of 1 pages
+    </td>
+    <td colspan="3" [% INCLUDE dgn_standard_font_style.tt %]>
+        4.Shipper's reference<br />
+        Order No: [% order.order_nr %]
+    </td>
+</tr>
+<tr>
+    <td colspan="3" [% INCLUDE dgn_standard_font_style.tt %]>
+        5.Freight Forwarder's referance<br />
+        AWB# [% outward_airway_bill %]
+    </td>
+</tr>
+<tr>
+    <td rowspan="2" valign="top" colspan="2" [% INCLUDE dgn_standard_font_style.tt %]>
+        Consignee<br />
+        [%
+            shipping_address.address_line_1            IF shipping_address.address_line_1 != "";
+            '<br />' _ shipping_address.address_line_2 IF shipping_address.address_line_2 != "";
+            '<br />' _ shipping_address.address_line_3 IF shipping_address.address_line_3 != "";
+            '<br />' _ shipping_address.towncity       IF shipping_address.towncity != "";
+            '<br />' _ shipping_address.county         IF shipping_address.county != "";
+            '<br />' _ shipping_address.country        IF shipping_address.country != "";
+        %]
+    </td>
+    <td colspan="2" [% INCLUDE dgn_standard_font_style.tt %]>
+        7.Carrier (to be completed by the carrier)<br />
+        &nbsp;
+    </td>
+    <td colspan="3" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        <img src="file://[% XTConfig.config_var('SystemPaths', 'image_logo_dir') %]/dhl_logo.jpg" height="35px">
+    </td>
+</tr>
+<tr>
+    <td colspan="5" [% INCLUDE dgn_standard_font_style.tt %]>
+        <b>SHIPPER'S DECLARATION</b><br />
+        I hereby declare that the contents of this consignment are fully and accurately described below by the proper shipping name, and are classified,packaged,marked and labelled/placarded and are in all respects in proper condition for transport according to the applicable international and governmental regulations.
+    </td>
+</tr>
+<tr>
+    <td colspan="2" [% INCLUDE dgn_standard_font_style.tt %]>
+        8.This shipment is within the limitations prescribed for: (Delete non-applicable)
+    </td>
+    <td rowspan="4" colspan="5" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        9.Additional handling information<br />
+    </td>
+</tr>
+<tr>
+    <td [% INCLUDE dgn_standard_font_style.tt %]>
+        PASSANGER AND CARGO AIRCRAFT
+    </td>
+    <td [% INCLUDE dgn_standard_font_style.tt %]>
+        CARGO AIRCRAFT ONLY
+    </td>
+</tr>
+<tr>
+    <td [% INCLUDE dgn_standard_font_style.tt %]>
+        10.Vessel/flight no. and date<br />&nbsp;
+        <br />&nbsp;
+    </td>
+    <td [% INCLUDE dgn_standard_font_style.tt %]>
+        11.Port/ place of loading<br />
+        &nbsp;
+    </td>
+</tr>
+<tr>
+    <td [% INCLUDE dgn_standard_font_style.tt %]>
+        12.Port/place of discharge<br />&nbsp;
+        <br />&nbsp;
+    </td>
+    <td valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        13.Destination<br />
+        &nbsp;
+    </td>
+</tr>
+<tr>
+    <td valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        14.Shipping marks
+    </td>
+    <td valign="top" colspan="3" [% INCLUDE dgn_standard_font_style.tt %]>
+        *Number and kind of packages; description of goods
+    </td>
+    <td valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        Gross mass (kg)<br />
+        &nbsp;
+    </td>
+    <td valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        Net mass (kg)
+    </td>
+    <td valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        Cube (m3)
+    </td>
+</tr>
+[% FOR hazmat_lq_attribute = hazmat_lq_attributes %]
+    <tr>
+        [% IF loop.first %]
+            <td rowspan="[% loop.size + 4 %]" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+                As addressed
+            </td>
+        [% END %]
+        <td colspan="6" [% INCLUDE dgn_standard_font_style.tt %]>
+            [% hazmat_lq_attribute %]
+        </td>
+    </tr>
+[% END %]
+<tr>
+    <td colspan="6">
+        &nbsp;
+    </td>
+</tr>
+<tr>
+    <td colspan="3" [% INCLUDE dgn_standard_font_style.tt %]>
+        [% total_hazmat_lq_boxes %] x Box
+    </td>
+    <td [% INCLUDE dgn_standard_font_style.tt %]>
+        [% total_hazmat_lq_item_gross_weight %] kg
+    </td>
+    <td [% INCLUDE dgn_standard_font_style.tt %]>
+        [% total_hazmat_lq_item_net_weight %] kg
+    </td>
+    <td [% INCLUDE dgn_standard_font_style.tt %]>
+        [% hazmat_lq_boxes_cubic_volume %]
+    </td>
+</tr>
+<tr>
+    <td colspan="6">
+        &nbsp;
+    </td>
+</tr>
+<tr>
+    <td colspan="6" [% INCLUDE dgn_standard_font_style.tt %]>
+        "Dangerous Goods in Limited Quantity"
+    </td>
+</tr>
+<tr>
+    <td colspan="2" [% INCLUDE dgn_standard_font_style.tt %]>
+        15 Container identification No. /<br />
+        vehicle registration no.<br />
+        &nbsp;
+    </td>
+    <td valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        16. Seal number(s)
+    </td>
+    <td valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        17. Container/vehicle size &amp; type
+    </td>
+    <td valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        18. Tare mass (kg)
+    </td>
+    <td colspan="2" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        19. Total gross mass (including tare) (kg)
+    </td>
+</tr>
+<tr>
+    <td colspan="2" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        <b>CONTAINER/VEHICLE PACKING CERTIFICATE</b><br />
+        I hereby declare that the goods described above have been packed/loaded into the container/vehicle identified above in accordance with the applicable provisions. **<br />
+        <b>MUST BE COMPLETED AND SIGNED FOR ALL CONTAINER/VEHICLE LOADS BY PERSON RESPONSIBLE FOR PACKING/LOADING.</b>
+    </td>
+    <td colspan="5" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        21. RECEIVING ORGANISATION RECEIPT<br />
+        Received the above number of packages/containers/trailers in apparent good order and condition unless stated hereon: RECEIVING ORGANISATION REMARKS:<br />&nbsp;
+        <br />&nbsp;
+    </td>
+</tr>
+<tr>
+    <td colspan="2" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        20. Name of company
+    </td>
+    <td colspan="2" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        Haulier's name
+    </td>
+    <td colspan="3" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        22. Name of company (OF SHIPPER PREPARING THIS NOTE)<br />
+        [% order.sales_channel %]
+    </td>
+</tr>
+<tr>
+    <td colspan="2" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        Name/Status of declarant
+    </td>
+    <td colspan="2" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        Vehicle reg no.
+    </td>
+    <td colspan="3" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        Name/status of declarant<br />
+        [% operator_name %]
+    </td>
+</tr>
+<tr>
+    <td colspan="2" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        Place and date<br />&nbsp;
+        <br />&nbsp;
+    </td>
+    <td colspan="2" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        Signature and date
+    </td>
+    <td colspan="3" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        Place and date<br />
+        [% dc_city %] [% branded_date %]
+    </td>
+</tr>
+<tr>
+    <td colspan="2" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        Signature of declarant<br />&nbsp;
+        <br />&nbsp;
+    </td>
+    <td colspan="2" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        DRIVER'S SIGNATURE
+    </td>
+    <td colspan="3" valign="top" [% INCLUDE dgn_standard_font_style.tt %]>
+        Signature of declarant
+    </td>
+</tr>
+</table>
+</body>
+</html>

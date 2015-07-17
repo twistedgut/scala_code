@@ -1,0 +1,38 @@
+    .customerid {
+        padding-right: 5px;
+    }
+
+    #success_table, #failure_table{
+        margin: 10px 0 0 0;
+    }
+
+    .results {
+        max-width: 75%;
+        float: left;
+    }
+
+    .feedback {
+        min-width: 20%;
+        float: left;
+        padding-left: 10%
+    }
+
+    h2 {
+        padding-bottom: 5px;
+        padding-top: 10px;
+        font-size: 16px;
+    }
+
+    .total {
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .data {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    #failure_table .button, #success_table button {
+        margin-top: 5px;
+    }

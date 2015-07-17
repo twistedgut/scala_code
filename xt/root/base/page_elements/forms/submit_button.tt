@@ -1,0 +1,1 @@
+<input type="submit"[% UNLESS no_name %] name="[% btn_name || 'submit' %]"[% END %] class="button[% ' ' _ extraclass IF extraclass %]" value="[% submit || 'Submit &raquo;' %]">

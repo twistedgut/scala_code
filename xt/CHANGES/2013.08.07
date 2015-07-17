@@ -1,0 +1,8 @@
+<pre>
+
+h1. DC2A
+ * DCA-1399: Re-send allocate message
+ * DCA-2520: Handle different stock status format from DCD
+ * DCA-2529: Reconciliation script counts post picking as allocated
+
+</pre>

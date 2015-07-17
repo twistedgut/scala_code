@@ -1,0 +1,50 @@
+
+<span class="title title-[% channel_config.$sales_channel %]">Order Details</span><br>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+<form name="editOrder" action="[% short_url %]/UpdateOrder" method="post">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+<input type="hidden" name="order_id" value="[% orders_id %]">
+        <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+                <td width="20%" align="right"><b>Order Number:&nbsp;&nbsp;</td>
+                <td width="80%">&nbsp;[% order.order_nr %]</td>
+        </tr>
+        <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+         <tr>
+                <td width="20%" align="right"><b>Email:&nbsp;&nbsp;</td>
+                <td width="80%">&nbsp;<input type="text" size="30" name="email" value="[% order.email %]"></td>
+        </tr>
+        <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+         <tr>
+                <td width="20%" align="right"><b>Telephone:&nbsp;&nbsp;</td>
+                <td width="80%">&nbsp;<input type="text" size="30" name="telephone" value="[% order.telephone %]"></td>
+        </tr>
+        <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+         <tr>
+                <td width="20%" align="right"><b>Mobile Telephone:&nbsp;&nbsp;</td>
+                <td width="80%">&nbsp;<input type="text" size="30" name="mobile_telephone" value="[% order.mobile_telephone %]"></td>
+        </tr>
+        <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+</table>
+<br>
+
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+	<tr>
+		<td align="right">[% INCLUDE page_elements/forms/submit_button.tt %]</td>
+	</tr>
+</table>
+<br><br>
+
+</form>

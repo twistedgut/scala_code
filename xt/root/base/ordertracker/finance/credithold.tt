@@ -1,0 +1,116 @@
+[%- USE URLRoleFilter -%]
+[%-
+    SET restriction_hash = {
+        restrict_class = {
+            aclprotect_bulk_release = [ 'app_canBulkReleaseCreditHold' ],
+        },
+    };
+-%]
+
+[% IF orders.size > 0 %]
+<script language="javascript">
+    var bulk_order_actions = {
+        hold_to_accept : [% db_constant('BULK_ORDER_ACTION__CREDIT_HOLD_TO_ACCEPT') %],
+        accept_to_hold : [% db_constant('BULK_ORDER_ACTION__ACCEPT_TO_CREDIT_HOLD') %]
+    }
+    var order_status = {
+        accept      : [% db_constant('ORDER_STATUS__ACCEPTED') %],
+        credit_hold : [% db_constant('ORDER_STATUS__CREDIT_HOLD') %]
+    }
+</script>
+
+<div id="release_orders_popup">
+    <div id="release_orders_popup_content"></div>
+    <br>
+    <div id="progressbar">
+    </div>
+    <br>
+    <button id="release_orders_cancel_button" class="button" style="float:right">Cancel</button>
+</div>
+
+[%- FILTER $URLRoleFilter acl_obj restriction_hash -%]
+
+<div id="tabContainer" class="yui-navset">
+    [% PROCESS page_elements/channel_tabs.tt channel_list=orders %]
+    <div class="yui-content">
+
+        [% FOREACH channel = orders.keys.sort %]
+
+            <div id="tab[% loop.count %]" class="tabWrapper-[% channel_config.$channel %]">
+            <div class="tabInsideWrapper">
+
+                <span class="title title-[% channel_config.$channel %]">Orders on Credit Hold</span><br>
+                <div id="release_orders_wrapper_[% channel_config.$channel %]">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data tablesorter" id="credit_hold_list_[% channel_config.$channel %]">
+                        <thead>
+                            <tr height="24" class="divideabove dividebelow">
+                                <th class="tableHeader sortable" width="9%">&nbsp;&nbsp;Order No.</td>
+                                <th width="0" class="followingValueColumn">&nbsp;&nbsp;Order No.</td>
+                                <th class="tableHeader" width="9%" align="center">Category</td>
+                                <th class="tableHeader" width="18%">Customer</td>
+                                <th class="tableHeader sortable" nowrap>Shipping&nbsp;&nbsp;<br>Country</td>
+                                <th class="followingValueColumn" width="0">Shipping&nbsp;&nbsp;<br>Country</td>
+                                <th class="tableHeader sortable" width="16%">Date</td>
+                                <th width="0" class="followingValueColumn">Date</td>
+                                <th class="tableHeader sortable" width="14%">Value</td>
+                                <th width="0" class="followingValueColumn">Value</td>
+                                <th class="tableHeader" width="18%">Warnings</td>
+                                <th class="tableHeader" width="16%">CV2/AVS</td>
+                                <th class="tableHeader aclprotect_bulk_release" width="16%">Release&nbsp;&nbsp;</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        [% FOREACH order = orders.$channel.keys.nsort %]
+
+                            [% SET row_styles = [] %]
+                            [% PROCESS page_elements/finance_high_priority.tt financepriority=orders.$channel.$order.priority %]
+                            [% SET row_style = 'class="' _ row_styles.join(' ') _ '"'; %]
+                            [% SET release_col_style = 'class="' _ row_styles.join(' ') _ ' aclprotect_bulk_release"'; %]
+
+                            [% IF orders.$channel.$order.pre_order != 1 %]
+                                <tr height="20" id="order_table_row_[% order %]" class="dividebelow">
+                                    <td [% row_style %]>&nbsp;&nbsp;<a href="/Finance/CreditHold/OrderView?order_id=[% order %]">[% orders.$channel.$order.number %]</a></td>
+                                    <td class="followingValueColumn">[% orders.$channel.$order.number %]</td>
+                                    <td [% row_style %] align="center">[% PROCESS page_elements/show_customer_category.tt row=orders.$channel.$order %]</td>
+                                    <td [% row_style %]>[% orders.$channel.$order.name %]</td>
+                                    <td [% row_style %]>[% orders.$channel.$order.shipment_country %]&nbsp;&nbsp;</td>
+                                    <td class="followingValueColumn">[% orders.$channel.$order.shipment_country %]&nbsp;&nbsp;</td>
+                                    <td [% row_style %]>[% orders.$channel.$order.date %]</td>
+                                    [%-# make the Date Sortable by turning 'DD-MM-YYYY  HH:MM' into 'YYYYMMDDHHMM' %]
+                                    <td class="followingValueColumn">[% orders.$channel.$order.date.replace('(\d\d)-(\d\d)-(\d{4})  (\d\d):(\d\d)','$3$2$1$4$5') %]</td>
+                                    <td [% row_style %]>[% currency_glyph.${orders.$channel.$order.currency} %]&nbsp;[% orders.$channel.$order.value %]</td>
+                                    <td class="followingValueColumn">[% orders.$channel.$order.value %]</td>
+                                    <td [% row_style %]>
+                                    [% FOREACH warning = orders.$channel.$order.warningFlags %]
+                                        [% warning %]
+                                    [% END %]
+                                    </td>
+                                    <td [% row_style %]>[% orders.$channel.$order.cv2_avs || 'NOT CHECKED' %]</td>
+                                    <td [% release_col_style %]><span class="centred"><input type="checkbox" class="release_orders_for_[% channel_config.$channel %]" value="[% orders.$channel.$order.number %]" id="[% order %]"></span></td>
+                                </tr>
+                            [% END %]
+                        [% END %]
+                    </table>
+                    <div class="aclprotect_bulk_release">
+                        <br><br>
+                        <button style="float:right" class="button release_orders_button" id="release_orders_button_[% channel_config.$channel %]">
+                            Release Selected Orders
+                        </button>
+                        <br>
+                    </div>
+                </div>
+            </div>
+            </div>
+        [% END %]
+    </div>
+</div>
+
+[% PROCESS page_elements/tab_script.tt %]
+
+[%- END # FILTER -%]
+
+[% ELSE %]
+<br>
+<br>
+<center>There are no orders on credit hold.</center>
+[% END %]

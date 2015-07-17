@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ORDERS>
+  <ORDER O_ID="[% order.id #742372 %]" ORDER_DATE="[% order.date || '2009-09-15 12:42' %]" CHANNEL="NAP-INTL" CUST_ID="[% customer.id || 27016 #368566 %]" CUST_IP="10.3.3.239" LOGGED_IN_USERNAME="michael.martins@net-a-porter.com" USED_STORED_CREDIT_CARD="T">
+    <TENDER_LINE TL_ID="757100" TYPE="Store Credit" RANK="1">
+      <VALUE CURRENCY="GBP">1605.00</VALUE>
+    </TENDER_LINE>
+    <BILLING_DETAILS>
+      <NAME>
+        <TITLE>Miss</TITLE>
+        <FIRST_NAME>英国驻华大使吴思田</FIRST_NAME>
+        <LAST_NAME>英国驻华大使吴思田</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>英国驻华大使馆</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2>光华路11号</ADDRESS_LINE_2>
+        <ADDRESS_LINE_3>建国门外</ADDRESS_LINE_3>
+        <TOWNCITY>北京</TOWNCITY>
+        <COUNTY />
+        <STATE />
+        <POSTCODE>100600</POSTCODE>
+        <COUNTRY>CN</COUNTRY>
+      </ADDRESS>
+      <CONTACT_DETAILS>
+        <TELEPHONE TYPE="HOME" />
+        <TELEPHONE TYPE="MOBILE" />
+        <TELEPHONE TYPE="OFFICE">111</TELEPHONE>
+        <EMAIL>michael.martins@net-a-porter.com</EMAIL>
+      </CONTACT_DETAILS>
+    </BILLING_DETAILS>
+    <DELIVERY_DETAILS>
+      <NAME>
+        <TITLE>Miss</TITLE>
+        <FIRST_NAME>英国驻华大使吴思田</FIRST_NAME>
+        <LAST_NAME>英国驻华大使吴思田</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>英国驻华大使馆</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2>光华路11号</ADDRESS_LINE_2>
+        <ADDRESS_LINE_3>建国门外</ADDRESS_LINE_3>
+        <TOWNCITY>北京</TOWNCITY>
+        <COUNTY></COUNTY>
+        <STATE />
+        <POSTCODE>100600</POSTCODE>
+        <COUNTRY>CN</COUNTRY>
+      </ADDRESS>
+      <ORDER_LINE OL_ID="3106358" DESCRIPTION="Signature Packaging" SKU="900006-001" QUANTITY="1" OL_SEQ="1">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      <ORDER_LINE OL_ID="3106359" DESCRIPTION="International" SKU="900000-001" QUANTITY="1" OL_SEQ="2">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">8.70</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">1.30</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      <ORDER_LINE OL_ID="3106357" DESCRIPTION="Henry ponyskin clutch" SKU="[% order.items.0.sku || '48655-005' %]" QUANTITY="1" OL_SEQ="3">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">1386.96</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">208.04</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+    </DELIVERY_DETAILS>
+    <GROSS_TOTAL>
+      <VALUE CURRENCY="GBP">1605.00</VALUE>
+    </GROSS_TOTAL>
+    <POSTAGE>
+      <VALUE CURRENCY="GBP">0.00</VALUE>
+    </POSTAGE>
+  </ORDER>
+</ORDERS>
+

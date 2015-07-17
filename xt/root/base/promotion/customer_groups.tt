@@ -1,0 +1,33 @@
+<div id="bd">
+    <div id="promotion_customer_groups">
+        <div class="yui-navset">
+            <ul class="yui-nav">
+                <li class="selected"><a href="#tab1"><em>Add Customers</em></a></li>
+                <li><a href="#tab2"><em>Remove Customers</em></a></li>
+            </ul>            
+            <div class="yui-content">
+                <div id="tab1">
+                    [% PROCESS promotion/tab_customer_groups_add.tt %]
+                </div>
+                <div id="tab2">
+                    [% PROCESS promotion/tab_customer_groups_remove.tt %]
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    (function() {
+        YAHOO.namespace("xtracker.promotions");
+
+        var tabView = new YAHOO.widget.TabView(
+            'promotion_customer_groups', {
+                activeIndex: [% tab_index || 0 %],
+                orientation: 'top'
+            }
+        );
+
+    })();
+</script>
+

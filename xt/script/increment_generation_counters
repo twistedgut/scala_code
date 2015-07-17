@@ -1,0 +1,24 @@
+#!/usr/bin/env perl
+use NAP::policy "tt";
+use FindBin::libs;
+use FindBin::libs qw( base=lib_dynamic );
+use XTracker::Database 'schema_handle';
+
+my $schema = schema_handle;
+
+if ((not @ARGV) or (grep {/^-/} @ARGV)) {
+    print <<"USAGE";
+$0 <counter name> ...
+
+Increments the generation counters specified on the command line.
+
+Example:
+
+  $0 season_conversion_rate product_type_tax_rate
+USAGE
+    exit 0;
+}
+
+$schema->txn_do(sub {
+    $schema->source("Public::GenerationCounter")->increment_counters(@ARGV);
+});

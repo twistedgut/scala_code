@@ -1,0 +1,61 @@
+<h3 class="title-[% channel_data.channel_config.$channel %]">Edit Outer Box</h3>
+<div id="outer_box_form">
+    <form name="edit_outer_box" action="/Admin/PackingBoxAdmin" method="POST">
+        <input type="hidden" name="box_type" id="box_type" value = "[% form_box_type %]">
+        <input type="hidden" name="channel_id" id="channel_id" value = "[% edit_box.channel_id %]">
+        <input type="hidden" name="current_sort_order" id="current_sort_order" value="[% edit_box.sort_order %]">
+        <input type="hidden" name="box_id" id="box_id" value = "[% edit_box.id %]">
+        <div class="formrow formstart divideabove dividebelow">
+            <label for="sort_order">Sort Order:</label>
+            <input type="text" name="sort_order" id="sort_order" value="[% edit_box.sort_order %]">
+        </div>
+        <div class="formrow dividebelow">
+            <label for="box_name">Box Name:</label>
+            <input type="text" name="box_name" id="box_name" value="[% edit_box.box %]">
+        </div>
+        <div class="formrow dividebelow">
+            <label for="">Weight ([% weight_unit %]):</label>
+            <input type="text" name="weight" id="weight" value="[% edit_box.weight %]">
+        </div>
+        <div class="formrow dividebelow">
+            <label for="">Length ([% dimensions_unit %]):</label>
+            <input type="text" name="length" id="length" value="[% edit_box.length %]">
+        </div>
+        <div class="formrow dividebelow">
+            <label for="">Width ([% dimensions_unit %]):</label>
+            <input type="text" name="width" id="width" value="[% edit_box.width %]">
+        </div>
+        <div class="formrow dividebelow">
+            <label for="">Height ([% dimensions_unit %]):</label>
+            <input type="text" name="height" id="height" value="[% edit_box.height %]">
+        </div>
+        <div class="formrow dividebelow">
+            <label for="">Label ID:</label>
+            <input type="text" name="label_id" id="label_id" value="[% edit_box.label_id %]">
+        </div>
+        <div class="formrow dividebelow">
+            <label for="">Is conveyable:</label>
+            <input type="radio" name="is_conveyable" id="conveyable-yes" value="1" [% IF edit_box.is_conveyable %]checked="checked"[% END %]/>
+            <label class="for-radio" for="conveyable-yes">Yes</label>
+            <input type="radio" name="is_conveyable" id="conveyable-no" value="0" [% IF !edit_box.is_conveyable %]checked="checked"[% END %]/>
+            <label class="for-radio" for="conveyable-no">No</label>
+        </div>
+        <div class="formrow dividebelow">
+            <label for="">Requires tote:</label>
+            <input type="radio" name="requires_tote" id="require-yes" value="1" [% IF edit_box.requires_tote %]checked="checked"[% END %]/>
+            <label class="for-radio" for="require-yes">Yes</label>
+            <input type="radio" name="requires_tote" id="require-no" value="0" [% IF !edit_box.requires_tote %]checked="checked"[% END %]/>
+            <label class="for-radio" for="require-no">No</label>
+        </div>
+        <div class="formrow dividebelow">
+            <label for="">Is active:</label>
+            <input type="radio" name="active" id="active-yes" value="1" [% IF edit_box.active %]checked="checked"[% END %]/>
+            <label class="for-radio" for="active-yes">Yes</label>
+            <input type="radio" name="active" id="active-no" value="0" [% IF !edit_box.active %]checked="checked"[% END %]/>
+            <label class="for-radio" for="active-no">No</label>
+        </div>
+        <div class="formrow buttons formend aftertable">
+            [% INCLUDE page_elements/forms/submit_button.tt %]
+        </div>
+    </form>
+</div>

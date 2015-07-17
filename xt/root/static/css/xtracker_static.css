@@ -1,0 +1,1980 @@
+/* xtracker_static.css contains styles for XTracker webapp page layout and design.
+ * Other css files exist, but the intention is that this will be the central
+ * place for all xtracker-specific styling
+ *
+ * All work copyright net-a-porter.com.
+ *
+ * The following describes the intended layout of this CSS file. Depending
+ * on time spent refactoring, it probably won't actually resemble the file
+ * layout, but it's what we should be moving towards
+ *
+ *
+ * The file is organised into broad sections as follows:
+ *  * General styles
+ *    - Reset declarations
+ *    - base element styles
+ *
+ *  * Helper styles
+ *    - Generic helper classes eg notifications and errors
+ *    - Normally just one class which affecting one element.
+ *
+ *  * Page structure
+ *    - Skeleton inc page furniture
+ *    - Header, footer, navigation elements and related styling
+ *
+ *  * Page components
+ *    - Will be reusable components and widgets
+ *    - Probably most styles will be here
+ *
+ *  * Page/Section specific styling
+ *    - Such as widths for tables in certain sections of the site
+ *
+ *  * Overrides
+ *    - Override general cases with specific non-standard behaviour here
+ */
+
+/*********************************************
+ * General Styles
+ *********************************************/
+html,body,div,form,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,th,td {
+    margin:               0;
+    padding:              0;
+    background:           transparent;
+}
+
+body {
+    font : 100.01% Arial, "Nimbus Sans L", Avenir, "Lucida Grande", Verdana, "Bitstream Vera Sans", Helvetica, sans-serif;
+    background: #fff;
+    color: #333;
+    text-align: left;
+    margin-bottom: 10px;
+    min-width: 960px;
+}
+
+img {
+    display: block;
+    border: 0px;
+}
+/* This is for the datepicker jq plugin */
+img.ui-datepicker-trigger {
+    display: inline;
+}
+img.center {
+  margin-left:  auto;
+  margin-right: auto;
+}
+
+h1, h2, h3, h4, h5 {
+    margin: 0 10px 0 0;
+    padding: 0;
+    color: #777;
+    font-weight: bold;
+        clear: both;
+}
+
+h1 {
+    font-size: 1.4em;
+}
+
+h2 {
+    font-size: 1.2em;
+}
+
+h3 {
+    font-size: 1.1em;
+    line-height: 2.2em
+}
+
+h4 {
+    color: #444;
+    font-size: 1.1em;
+}
+
+h5 {
+    color: #bbb;
+    font-size: 1.1em;
+}
+
+a {
+    text-decoration: underline;
+    color: #444;
+}
+a:hover {
+    text-decoration: none;
+    color: #000;
+}
+
+/* default form styling */
+input, select, textarea {
+    font-family : inherit;
+}
+input[type="checkbox"], input[type="radio"] {
+    vertical-align: middle;
+}
+
+
+li {
+    list-style-position:  inside;
+    margin-left: 10px;
+}
+
+
+/*********************************************
+ * Helper styles
+ *********************************************/
+
+img.product {
+    display: inline;
+    border: 1px solid #999999;
+    float: left;
+    margin-right: 4px;
+}
+
+img.inline {
+    display: inline;
+    vertical-align: bottom;
+    margin: 0 5px;
+}
+
+a.highlight {
+    text-decoration: underline;
+    color: #000;
+}
+a.pagenum {
+    text-decoration: none;
+    color: #666;
+}
+a.pagenum:hover {
+    text-decoration: none;
+    color: #000;
+}
+
+.postclear:after {
+    content:        ".";
+    display:        block;
+    clear:          both;
+    visibility:     hidden;
+    height:         0;
+    line-height:    0;
+}
+
+.title {
+    line-height: 2.2em;
+    padding: 0;
+    color: #777;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.showicon {
+    padding-left: 15px;
+    background: transparent url(/images/icons/extlink.gif) no-repeat center left;
+}
+
+.info, .message, .display_msg, .warning, .error_msg, .debug, .highlight_info {
+    display:            block;
+    line-height:        1.7em;
+    padding:            5px 5px 5px 30px;
+    margin-bottom:      0 0 10px 0;
+}
+.info, .message {
+    background: url(/images/icons/information.png) #EEE 10px 7px no-repeat;
+    color:      #000;
+    font-weight:normal;
+    border:     1px dashed #999;
+}
+.highlight_info {
+    background: url(/images/icons/information.png) #FBB117 10px 7px no-repeat;
+    color:      #000;
+    font-weight:normal;
+    border:     1px dashed #999;
+}
+.debug {
+    background: url(/images/icons/information.png) #EA6 10px 7px no-repeat;
+    color:      #000;
+    font-weight:normal;
+    border:     1px dashed #999;
+    font-family:monospace, fixed;
+    white-space:pre;
+    overflow:   scroll;
+    height:     20em;
+    font-size:  0.9em;
+    line-height:1.2em;
+}
+.message {
+    background-image : url(/images/icons/email.png);
+}
+.display_msg {
+    background: url(/images/icons/accept.png) #CFC 10px 7px no-repeat;
+    color:      #006600;
+    font-weight:bold;
+    border:     1px dashed #060;
+}
+.warning {
+    background: url(/images/icons/cancel.png) #930 10px 7px no-repeat;
+    color:      #FFF;
+    font-weight:bold;
+}
+.error_msg {
+    background: url(/images/icons/cancel.png) #FCC 10px 7px no-repeat;
+    color:      #C00;
+    font-weight:bold;
+    border:     1px dashed #C00;
+    white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;                 /* Opera 4-6 */
+    white-space: -o-pre-wrap;               /* Opera 7 */
+    white-space: pre-wrap;                  /* css-3 */
+    word-wrap: break-word;                  /* Internet Explorer 5.5+ */
+}
+.error_msg span {
+    width: 100%;
+}
+
+.good {
+    color : #090;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.spaced {
+    margin: 10px 0;
+}
+.spaced_above {
+    margin-top: 10px;
+}
+.spaced_under {
+    margin-bottom: 20px;
+}
+
+.centred {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.formrow select.no-min-width { min-width: 0; }
+
+/* smaller form elements */
+#content input.smaller {
+  width:            100px;
+  min-width:        100px;
+}
+#content input.small {
+  width:            60px;
+  min-width:        60px;
+}
+#content input.smallest {
+  min-width:        0px;
+  width:            auto;
+}
+#content input.larger {
+  min-width:        212px;
+  width:            212px;
+}
+
+/* Highlight success or error actions on inputs */
+input.error, input.bad {
+    background : #F99;
+    margin: 5px;
+}
+input.success, input.good {
+    background : #9F9;
+    margin: 5px;
+}
+
+input.large_button {
+  min-width:        212px;
+  width:            212px;
+  padding:          1em;
+}
+
+
+.divideabove, .formrow.formstart, tr.divideabove td, tr.divideabove th, table.wide-data th, table.padded th, table.divided-data td {
+  border-top:       1px dotted #999;
+}
+table.divided-data td.no-border-top,
+table.divided-data tr.no-border-top td,
+table.divided-data tr.no-border-top th {
+    border-top: 0;
+}
+
+.dividebelow, .formrow.formend, tr.dividebelow td, tr.dividebelow th, table.wide-data th, table.padded th, table.divided-data td {
+  border-bottom:    1px dotted #999;
+}
+table.divided-data td.no-border-bottom,
+table.divided-data tr.no-border-bottom td,
+table.divided-data tr.no-border-bottom th {
+    border-bottom: 0;
+}
+
+.divideright {
+  border-right:     1px dotted #999;
+}
+.divideleft {
+  border-left:      1px dotted #999;
+}
+
+table.divided-data tr.separator td{
+    border-bottom: 1px solid #999999;
+}
+
+.nodividebelow, tr.nodividebelow td, tr.nodividebelow th {
+  border-bottom:    0px;
+}
+
+/* Adds space above element, equal to 1 or 2 lines */
+.with-1-line-above {
+    margin: 1em 0 0 0;
+}
+
+.with-2-line-above {
+    margin: 2em 0 0 0;
+}
+
+/*********************************************
+ * Page structure
+ *********************************************/
+
+#container  {
+    width: 960px;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#header {
+    padding-bottom:1px;
+    border-bottom: 1px dotted #666;
+}
+
+#headerTop  {
+    position: relative;
+    height: 41px;
+    z-index: 2;
+}
+
+#headerTop #headerLogo {
+    float: left;
+    font-weight: bold;
+    font-size: 10px;
+    margin:0;
+}
+#headerTop #headerLogo span {
+    color: #999;
+    border-right: 1px solid #CCC;
+    padding: 0 7px 0 40px;
+}
+#headerTop #headerLogo span.dc {
+    color: #333;
+    border: 0;
+    padding: 0 0 0 7px;
+}
+
+#anchorTitle {
+border-radius: 8px;
+box-shadow: 2px 2px 3px #e6e6e6;
+background-color: #fff;
+border: solid 3px #d6d6d6;
+color: #333;
+display: none;
+font-size: 11px;
+line-height: 1.3;
+max-width: 200px;
+padding: 5px 7px;
+position: absolute;
+}
+
+#headerTop #headerControls {
+    position: absolute;
+    right: 17em;
+    top: 10px;
+    font-size: 11px;
+}
+#headerTop #headerControls form.quick_search {
+    display: inline;
+    margin: 0 20px;
+    font-size: 11px;
+}
+#headerTop #headerControls form.quick_search input {
+    font-size: 11px;
+}
+
+#quick_search_ext_help_content {
+    display: none;
+}
+
+#headerTop #headerControls .operator_name {
+    padding: 0 10px;
+    color: #777;
+}
+#headerTop #headerControls img {
+    display: inline;
+}
+#headerTop #headerControls .messages {
+    padding: 0 10px;
+    border: solid #CCC;
+    border-width: 0 1px;
+}
+#headerTop #headerControls a {
+    padding: 0 5px;
+    text-decoration: none;
+    color: #000;
+}
+#headerTop select {
+    position: absolute;
+    right: 0;
+    top: 10px;
+    font-size: 11px;
+}
+
+#headerBottom   {
+    position: relative;
+    height: 65px;
+    background-image: url(/images/header_bg.gif);
+    margin-bottom: 1px;
+}
+#headerBottom img {
+    position: absolute;
+    right: 5em;
+    bottom: 0;
+}
+
+#nav1 {
+    background: #494949;
+    font-size: 0.7em;
+    min-height: 21px;
+}
+#nav1 li {
+    list-style-image:     none;
+    list-style-position:  outside;
+    list-style-type:      none;
+}
+#nav1 li, #nav1 li a, #nav1 span {
+    border-color: #B0B1AC;
+    color: #B0B1AC;
+}
+#nav1 span {
+    display: block;
+    text-align: center;
+    font-weight: bold;
+    color : #FFFF55;
+    padding-left: 5px;
+}
+#nav1 li a {
+    border-top:0;
+    padding: 0 5px;
+}
+#nav1 li a.yuimenubaritemlabel-hassubmenu {
+    padding-right: 16px;
+}
+#nav1 .yuimenuitem-selected,
+#nav1 .yuimenubaritem-selected {
+    background: #666;
+}
+#nav1 li ul {
+    padding: 5px 0;
+}
+#nav1 li ul li a {
+    color: #777;
+    padding: 0 15px 0 10px;
+}
+#nav1 li ul li.yuimenuitem-selected,
+#nav1 li ul li.yuimenubaritem-selected {
+    background: #EEE;
+}
+#nav1 li ul li.yuimenuitem-selected a,
+#nav1 li ul li.yuimenubaritem-selected a {
+    color: #000;
+}
+#nav1 .yuimenubaritemlabel-hassubmenu {
+    background-image : url(/images/menubaritem_submenuindicator.png);
+}
+
+#content {
+    position: relative;
+    font-size: 0.7em;
+    margin: 20px 0;
+}
+
+#contentLeftCol {
+    float: left;
+    padding: 0 1px 0 0;
+    width: 119px;
+    border-right: 1px dotted #bbb;
+    /* 1px top margin makes dots of border align with
+       dots on lhs of contentRight!  */
+    margin: 1px -1px 0 0;
+    text-align: right;
+}
+#contentLeftCol ul li {
+    list-style-image:     none;
+    list-style-position:  outside;
+    list-style-type:      none;
+    margin: 0;
+}
+#contentLeftCol ul li * {
+    font-weight: bold;
+    border-bottom: 1px dotted #bbb;
+    padding: 5px 5px 2px 0;
+    clear: right;
+    float: right;
+}
+#contentLeftCol ul li .last {
+    margin-bottom: 10px;
+}
+#contentLeftCol ul li a {
+    text-decoration: none;
+    font-weight: normal;
+    color: #777;
+}
+#contentLeftCol ul li a:hover {
+    color: #000;
+}
+
+#channelTitle {
+    position: absolute;
+    top: -15px;
+    right: 0;
+}
+
+#contentRight {
+    float: left;
+    width: 820px;
+    border-left: 1px dotted #bbb;
+    padding-left: 19px;
+    margin-bottom: 25px;
+    min-height: 300px;
+}
+
+#contentRight.noleftcol {
+    float: none;
+    margin-left: 120px;
+}
+
+#contentLeftCol.fullWidthContent {
+    display:none;
+}
+
+#contentRight.fullWidthContent {
+    float: none;
+    margin-left: 0;
+    width: auto;
+    border-left: none;
+    padding-left: 0;
+}
+
+#pageTitle {
+    margin: 0 250px 5px 0;
+}
+
+#pageTitle h1,
+#pageTitle h2,
+#pageTitle h3,
+#pageTitle h4,
+#pageTitle h5 {
+    display: inline;
+}
+
+#footer {
+    clear: both;
+    background-color: #494949;
+    color: #fff;
+    font-size: 0.7em;
+    margin: 0;
+    padding: 5px;
+    text-align: right;
+}
+
+
+/*********************************************
+ * Page components
+ *********************************************/
+
+/********* Form Components */
+/* formrow group is a widget to align form elements */
+.formrow {
+    clear:            both;
+    padding:          3px 0 3px 160px;
+    background-color: #F2F2F2;
+}
+.formrow:after {
+    content:        ".";
+    display:        block;
+    clear:          both;
+    visibility:     hidden;
+    height:         0;
+    line-height:    0;
+}
+.formrow.formstart {
+    margin-top:     7px;
+}
+.formrow.formend {
+    margin-bottom:  25px;
+}
+.formrow.buttons {
+    padding-top:    13px;
+    margin-bottom:  10px;
+}
+.formrow.aftertable,
+.formrow.beforetable {
+    background-color: #FFF;
+    text-align:       right;
+}
+.formrow.aftertable {
+    margin-top:     0;
+}
+.formrow.beforetable {
+    margin-bottom:  0;
+}
+.formrow.aftertable label {
+    float:          none;
+    display:        inline;
+}
+
+table.data td label {
+    text-align: right;
+    font-weight: bold;
+}
+
+.formrow label, .formrow .fakelabel {
+    float:          left;
+    text-align:     right;
+    width:          150px;
+    margin-left:    -160px;
+    padding:        3px 0;
+    color:          #333;
+    font-weight:    bold;
+}
+.formrow p {
+    padding:        3px 0;
+    margin:         0;
+}
+.formrow input {
+    width: 155px;
+}
+.formrow select, .formrow input[type="button"], .formrow input[type="submit"] {
+    width: auto;
+    min-width: 161px;
+}
+
+.formrow input[type="checkbox"], .formrow input[type="radio"] {
+  width:            auto;
+}
+
+.formrow label.for-radio, .formrow label.for-checkbox {
+  color:            #000;
+  font-size:        100%;
+  font-weight:      400;
+  float:            none;
+  margin-left:      0 !important;
+  margin-right:     10px;
+  width:            auto;
+  line-height:      100%;
+}
+
+.formrow.narrowlabel, .narrowlabels .formrow {
+    padding-left: 80px;
+}
+.formrow.narrowlabel input, .narrowlabels .formrow input{
+    width: 120px;
+}
+.formrow.narrowlabel input[type="button"],
+.formrow.narrowlabel input[type="submit"],
+.narrowlabels .formrow input[type="button"],
+.narrowlabels .formrow input[type="submit"] {
+    min-width: 126px;
+    width: 126px;
+}
+
+.formrow_left-aligned {
+    padding-left: 3px !important;
+}
+.formrow_left-aligned label {
+    text-align: left !important;
+    width: 100px !important;
+    margin-left: 0px !important;
+}
+
+.formrow_input-under-label {
+    padding-left: 3px !important;
+    padding-right: 3px !important;
+}
+.formrow_input-under-label label {
+    display: block !important;
+    width: 100% !important;
+    margin-left: 0px !important;
+    text-align: left !important;
+}
+.formrow_input-under-label textarea {
+    display: block !important;
+    width: 100% !important;
+    text-align: left !important;
+}
+
+td div.bottom-half {
+  padding: 0.5em 0 0 0;
+}
+
+table.wide-data {
+  width: 100%;
+  border-collapse: collapse;
+}
+table.padded {
+  border-collapse: collapse;
+}
+table.wide-data td, table.wide-data th {
+  padding: 0.5em 0 0.5em 1em;
+}
+table.padded td, table.padded th {
+  padding: 0.5em 1em 0.5em 1em;
+  vertical-align: text-top;
+}
+td div.bottom-half {
+  padding: 0.5em 0 0 0;
+}
+
+/* # tableHeader is the old class and should NOT be used! */
+table.wide-data th,
+table.padded th,
+table.data th,
+#content table.data td.tableHeader
+{
+    color: #333;
+    font-weight: bold;
+    background-color: #dddddd;
+    text-align: left;
+}
+#content table.data td.tableHeader{
+    height:24px;
+}
+
+img.nofloat {
+    float: none;
+}
+
+.fakelink {
+  float:            left;
+  cursor:           pointer;
+  text-decoration:  underline;
+  color:            #444 !important;
+}
+.fakelink:hover {
+  color:            #000 !important;
+}
+.fakelink_last {
+  cursor:           pointer;
+  text-decoration:  underline;
+  color:            #000 !important;
+}
+
+.reprint_button {
+    display: block;
+    border: 2px outset black;
+    margin: 5px;
+    padding: 2px 2px 2px 23px;
+    text-decoration: none;
+    background: url(/images/stock-print.png) 3px 4px no-repeat;
+}
+
+/*********************************************
+ * Page/Section specific Style
+ *********************************************/
+
+table.customer_credit_log tr>th
+{ width: 20% }
+table.customer_credit_log tr>th+th
+{ width: 25% }
+table.customer_credit_log tr>th+th+th
+{ width: 25% }
+table.customer_credit_log tr>th+th+th+th
+{ width: 10% }
+table.customer_credit_log tr>th+th+th+th+th
+{ width: 10% }
+table.customer_credit_log tr>th+th+th+th+th+th
+{ width: 10% }
+
+div.qc_reason {
+    margin-top: 15px;
+}
+table .packing_qc {
+    width: 21%;
+}
+
+td.thin-width {
+    width: 1%;
+    text-align: right;
+}
+
+.marketing_promotion_packer_msg SPAN {
+    background:         url(/images/icons/information.png) #EEE 10px 7px no-repeat;
+    display:            block;
+    line-height:        1.7em;
+    padding:            5px 5px 5px 30px;
+    margin-bottom:      0 0 10px 0;
+    color:              #000;
+    font-weight:        normal;
+    border:             1px dashed #999;
+}
+
+/* Classes used on Putaway problem resolution page */
+.putaway-problem-resolution-error-date {
+    font-style: italic
+}
+
+.putaway-problem-resolution-re-putaway-block {
+    border: 1px dotted #999999;
+    padding: 1.5em;
+}
+
+.report-migration-dublicated-message-row {
+    font-style: italic
+}
+
+/*********************************************
+ * Overrides
+ *********************************************/
+
+/* handheld element overrides */
+
+.handheld input,
+.handheld input[type="button"],
+.handheld input[type="submit"] {
+    width: auto;
+    min-width: 0;
+}
+
+/* handheld layout overrides */
+
+.handheld #container {
+    width: 210px;
+    height: 100%;
+    margin-left: 3px;
+}
+
+.handheld #header {
+    width:210px;
+    padding-bottom: 3px;
+    border-bottom: 7px solid #494949;
+}
+
+.handheld #header img {
+    display: inline;
+    vertical-align: -2px;
+}
+
+.handheld #header span {
+    color: #999;
+    border-right: 1px solid #CCC;
+    padding: 0 7px;
+    font-weight: bold;
+    font-size: 10px;
+    margin:0;
+}
+.handheld #header span.dc {
+    color: #333;
+    border: 0;
+    padding: 0 0 0 7px;
+}
+
+.handheld #content {
+    margin: 0;
+    padding-bottom: 20px;
+    border-bottom: 12px solid #494949;
+}
+
+.handheld #contentLeftCol {
+    float: none;
+    width: auto;
+    text-align: left;
+    color: #666;
+    border-bottom: 1px dotted #bbb;
+}
+.handheld #contentLeftCol li {
+    display: inline;
+    margin: 0;
+    padding: 0 5px;
+    border-right: 1px solid #CCC;
+}
+.handheld #contentLeftCol li a {
+    border-bottom: 0;
+}
+
+.handheld #channelTitle {
+    position: relative;
+    top: 0;
+    left: 0;
+    margin: 5px 0;
+}
+
+.handheld #contentRightCol {
+    float: none;
+    padding: 0px;
+    margin: 10px 0 0px 0px;
+    padding-left: 0px;
+}
+
+
+
+/* other handheld overrides */
+
+.handheld ul.homemenu li {
+    list-style-image:     none;
+    list-style-type:      none;
+    margin: 7px 0;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+.handheld ul.homemenu li.isaction {
+    list-style-type:      disc;
+    margin-top: 20px;
+}
+.handheld ul.homemenu li ul li {
+    list-style-type:      disc;
+    font-weight: normal;
+    margin-left: 20px;
+    font-size: 0.9em;
+}
+
+
+.handheld .narrowlabels .formrow {
+    padding: 3px 0;
+}
+.handheld .narrowlabels .formrow label,
+.handheld .narrowlabels .formrow .fakelabel {
+    float: none; /* shouldn't have to do this, but, well, as we all know IE mobile sucks */
+    margin-left: 0;
+    padding-right: 10px;
+    width: 70px;
+}
+.handheld .narrowlabels .formrow input {
+    width: 80px;
+}
+
+.handheld .narrowlabels .formrow.buttons {
+    padding-left: 80px;
+}
+.handheld .narrowlabels .formrow.buttons input {
+    width: auto;
+}
+
+
+#barcode_scan {
+    margin: 15px 0;
+}
+
+
+/*********************************************
+ * leftovers - still need sorting
+ *********************************************/
+
+
+
+/* form classes */
+
+#content input,
+#content select,
+#content textarea {
+    color: #333;
+    font-weight: normal;
+    font-size: 1em;
+}
+
+#content input.xlarge,
+#content textarea.xlarge {
+    font-size: 1.2em;
+}
+
+
+#content input.button, #content button.button {
+    padding-left: 4px;
+    padding-right: 3px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.9em;
+    border:0px;
+    background-color: #494949;
+    cursor: pointer;
+}
+
+#content input.enormousbutton {
+    font-size: 1.5em;
+    background: green;
+}
+
+#content table td {
+    color: #333;
+    font-weight: normal;
+}
+
+#content table td.divider {
+    background-image: url("/images/dots.gif");
+    height:1px;
+}
+
+#content table.data tr {
+    color: #333;
+    font-weight: normal;
+    background-color: #f2f2f2;
+}
+
+#content table.tablesorter thead th {
+    border-top: 1px solid #aaaaaa;
+    border-bottom: 1px solid #aaaaaa;
+}
+
+#content table.tablesorter thead th.followingValueColumn {
+    display: none;
+    /* background: #ff0000; */
+}
+
+#content table.tablesorter thead th.sortable {
+    cursor: pointer;
+
+    padding-right: 12px;
+    background-image: url("/images/tablesorter/bg.gif");
+    background-position: right center;
+    background-repeat: no-repeat;
+}
+
+#content table.tablesorter thead th.sortable.headerSortUp {
+    background-image: url("/images/tablesorter/asc.gif");
+}
+
+#content table.tablesorter thead th.sortable.headerSortDown {
+    background-image: url("/images/tablesorter/desc.gif");
+}
+
+#content table.tablesorter td {
+    border-bottom: 1px solid #bbbbbb;
+}
+/* Disable bottom borders in nested tables */
+#content table.tablesorter table td {
+    border-bottom: none;
+}
+#content table.tablesorter td.followingValueColumn {
+    display: none;
+    /* background: #ff0000; */
+}
+
+#content table.data td {
+    height:24px;
+}
+#content table.wide-data td, table.padded td {
+    /*
+       need this to overide the above
+       while we still need to maintain
+       backward compatibility
+    */
+    height:auto !important;
+}
+
+#content table.data td.light,
+#content table.data tr.light td {
+    color: #999;
+}
+
+#content table.data td.light a,
+#content table.data tr.light a {
+    color: #999;
+    text-decoration: underline;
+}
+
+#content table.data td.light a:hover,
+#content table.data tr.light a:hover {
+    text-decoration: none;
+}
+
+#content table.data td.light .highlight,
+#content table.data tr.light .highlight {
+    color: #999;
+}
+
+#content table.data td.divider {
+    background-image: url("/images/dots.gif");
+    height:1px;
+}
+
+#content table.data td.dividerHeader {
+    background-image: url("/images/dots.gif");
+    background-color:#e5e5e5;
+    height:1px;
+}
+
+#content table.data td.tableHeader {
+    color: #333;
+    font-weight: bold;
+    background-color: #dddddd;
+    height:24px;
+}
+
+#content table.data td.tableHeader .highlight {
+    color: #000;
+    font-weight: bold;
+}
+
+#content table.data td.blank {
+    background-color:#FFF;
+    height:1px;
+}
+
+#content table.data tr.totals td {
+    background-color:#FFF;
+    font-weight: bold;
+}
+
+#content table.data td.numbers, #content table.data th.numbers {
+    text-align: right;
+    padding-right: 1em;
+}
+
+#content table.data tr.expand td {
+    border: none;
+}
+
+#content table.data td.spacer {
+         background-color:#FFF;
+         height:20px;
+}
+
+#content table.data td.none {
+         background-color:#FFF;
+         height:0px;
+}
+
+#content table.data td.warn,
+#content table.data tr.warn,
+#content table.data tr.warn td {
+         background-color:#F0B9B9;
+}
+
+#content table.data td.refund_warn {
+         background-color:#808080;
+}
+
+#content table.data td.highlight {
+         background-color: #CCFFCC;
+}
+
+#content table.data tr.highlight {
+         background-color: #CCFFCC;
+}
+
+#content table.data tr.highlight td {
+         background-color: #CCFFCC;
+}
+
+#content table.data td.highlight2 {
+         background-color: #DDA0DD;
+}
+
+#content table.data tr.highlight2 {
+         background-color: #DDA0DD;
+}
+
+#content table.data tr.highlight2 td {
+         background-color: #DDA0DD;
+}
+
+#content table.data td.highlight3 {
+         background-color: #88D6EA;
+}
+
+#content table.data td.highlight4 {
+         background-color: #edc06a;
+}
+
+#content table.data td.highlight5 {
+         background-color: #B8E6B8;
+}
+
+.red-bold,
+#content table.data td.red-bold,
+#content table.data tr.red-bold td {
+    color: #f00;
+    font-weight: bold;
+}
+
+#content table.data cite.packerName {
+    color:      #666;
+    font-style: italic;
+    text-align: right;
+    margin-top: 5px;
+    display:    inline;
+}
+
+#content table.data cite.packerMissing {
+    color:      #966;
+    font-style: italic;
+    text-align: right;
+    margin-top: 5px;
+    display:    inline;
+}
+
+
+
+
+
+.highlight {
+    color: #000;
+    font-weight: bold;
+}
+
+.lowlight {
+    color: #888;
+}
+
+.greyed      {
+        color: #AAAAAA;
+        }
+
+
+.notice {
+        display: inline;
+        line-height: 1.7em;
+        padding: 3px;
+        background-color: #FF9933;
+        color: #ffffff;
+        text-transform: none;
+        font-weight: bold;
+        font-size: 1.0em;
+}
+
+.warning_msg, .info_msg {
+        display: block;
+        line-height: 1.7em;
+        padding: 5px;
+        color: #333;
+        text-transform: none;
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.5em;
+        border: 1px dashed #333;
+}
+
+.warning_msg {
+        background-color: #CCC;
+}
+
+.info_msg {
+        background-color: #FF9933;
+}
+
+#upload_summary .summaryHeader {
+    color:              #333;
+    font-weight:        bold;
+    background-color:   #aaa;
+    height:             1.8em;
+    padding-right:      5px;
+    text-align:         center;
+}
+#upload_summary .summaryKey {
+    color:              #333;
+    font-weight:        bold;
+    background-color:   #dddddd;
+    height:             1.8em;
+    padding-right:      5px;
+    text-align:         right;
+}
+#upload_summary .summaryValue {
+    background-color:   #f2f2f2;
+    height:             1.8em;
+    padding-left:       5px;
+    text-align:         left;
+}
+
+#upload_summary .action_bar {
+    float:              right;
+}
+#upload_summary .action_bar td {
+    padding-bottom:     5px;
+}
+#upload_summary .action_bar img {
+    padding-top:        2px;
+    padding-left:       5px;
+    display:            inline;
+}
+#upload_summary .action_bar a {
+    text-decoration:    none;
+}
+#upload_summary .action_bar a:hover {
+    text-decoration:    none;
+    color:              #999999;
+}
+
+.generate_coupon {
+    line-height:        20px;
+    margin-top:         4px;
+    margin-bottom:      4px;
+}
+
+input[readonly], textarea[readonly]
+{
+    background-color: #f2f2f2;
+    border: #000 2px inset;
+    color: #000000;
+    cursor: default;
+}
+.disabled_label {
+    color:              #999;
+    font-style:         italic;
+}
+
+
+.inline {
+    display: inline;
+}
+
+.span_right {
+    float: right;
+}
+
+div #promotion_summary {
+    margin-top:             15px;
+    /*margin-left:            100px;*/
+    width: auto;
+    min-height:             80px;
+    border:                 none;
+}
+
+#promotion_details .yui-navset .yui-nav,
+#promotion_customer_groups .yui-navset .yui-nav {
+    border-bottom-color: #000
+}
+
+#promotion_details .yui-navset .yui-nav a,
+#promotion_customer_groups .yui-navset .yui-nav a {
+    text-decoration: none;
+}
+
+#promotion_details .yui-navset .yui-nav .selected a,
+#promotion_customer_groups .yui-navset .yui-nav .selected a {
+    text-decoration:  none;
+    background-color: #000;
+    color:            white;
+    background-image: none;
+}
+
+#promotion_details .yui-content {
+    min-height: 325px;
+}
+
+#promotion_details table,
+#promotion_customer_groups table {
+    padding: 5px;
+}
+
+#promotion_details td,
+#promotion_customer_groups td {
+    padding: 5px;
+}
+
+#promotion_details div {
+}
+
+table .payment_details_display {
+    border:                 1px solid #999;
+    background-color:       #eee;
+    width:                  100%;
+}
+
+.left_action_button {
+    float:left;
+    margin-left:10px;
+    padding: 0;
+}
+.right_action_button {
+    float:right;
+    margin-right:10px;
+    padding: 0;
+}
+
+#promotion_details .product_group_list {
+    background:             transparent;
+    border:                 1px solid #666;
+    overflow:               auto;
+    height:                 175px;
+}
+#promotion_details .product_pid_list {
+    background:             transparent;
+    border:                 1px solid #666;
+    overflow:               auto;
+    height:                 75px;
+}
+
+/* DCS-615 */
+#promotion_details .event_product_pid_list {
+    background:             transparent;
+    border:                 1px solid #666;
+    overflow:               auto;
+    min-height:                 175px;
+}
+
+#maincontent .increasefont {
+    font-size:              1.5em;
+}
+#maincontent .topalign, #maincontent .topalign td  {
+    vertical-align:         top;
+}
+
+/* PACKING STATION CSS */
+
+#packing_station {
+    float: right;
+    background-color: #dddddd;
+    border: 1px dotted #666;
+    padding: 5px;
+}
+#packing_station .station_icon {
+    float:left;
+    padding-right: 5px;
+    padding-left: 2px;
+}
+#packing_station .station_name {
+    float: left;
+    padding-top: 1px;
+    padding-right: 2px;
+}
+#packing_station .station_name SPAN {
+    font-weight: bold;
+}
+
+/* PRINTER STATION CSS */
+#printer_station {
+    float: right;
+    background-color: #dddddd;
+    border: 1px dotted #666;
+    padding: 5px;
+}
+#printer_station .station_icon {
+    float:left;
+    padding-right: 5px;
+    padding-left: 2px;
+}
+#printer_station .station_name {
+    float: left;
+    padding-top: 1px;
+    padding-right: 2px;
+}
+#printer_station .station_name SPAN {
+    font-weight: bold;
+}
+
+/* CALENDAR CSS */
+.nap_calendar {
+    font-size: 100%;
+    position: absolute;
+    display: none;
+    z-index: 500;
+}
+
+
+.show-cal-icon {
+    padding-right:      18px;
+    background:         transparent url(/images/icons/calendar_view_month.png) no-repeat center right;
+}
+.generic_coupon {
+    padding-right:      18px;
+    background:         transparent url(/images/icons/tag_purple.png) no-repeat center right;
+    line-height:        20px; /* so we see all of the icon */
+    background-color:   #fff;
+    border:             1px solid #666;
+    font-family:        monospace, fixed;
+}
+.promotion_status {
+    padding-right:      18px;
+    background:         transparent url(/images/icons/cog.png) no-repeat center right;
+    line-height:        20px; /* so we see all of the icon */
+    background-color:   #CCCCFF;
+    border:             1px solid #666;
+    font-family:        monospace, fixed;
+}
+
+#priorityCalContainer {
+    font-size: 100%;
+    position: absolute;
+    display: block;
+    z-index: 500;
+}
+
+#calendar_start_date, #calendar_end_date {
+    font-size: 100%;
+    position: absolute;
+    display: block;
+    z-index: 500;
+}
+
+#calendar_start_date a, #calendar_end_date a {
+    font-size: 100%;
+    text-decoration: none;
+}
+
+/* CALENDAR SELECTED DATE */
+.yui-skin-sam .yui-calendar td.calcell.selected {
+    background-color:#000;
+    color:#fff;
+}
+
+.yui-skin-sam .yui-calendar td.calcell.selected a {
+    background-color:#000;
+    color:#fff;
+}
+
+/* CALENDAR HOVER DATE */
+.yui-skin-sam .yui-calendar td.calcell.calcellhover {
+    background-color:#999;
+    color:#fff;
+    cursor:pointer;
+}
+
+.yui-skin-sam .yui-calendar td.calcell.calcellhover a {
+    background-color:#999;
+    color:#fff;
+}
+
+
+/* Channel Selection */
+
+TABLE.channel_selection { width: 100%; padding-top: 10px; }
+TABLE.channel_selection TD {
+    vertical-align: middle;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+TABLE.channel_selection TD.channel_img { padding-right: 20px; width: 270px; }
+TABLE.channel_selection TD.divider { padding: 0px; }
+
+TABLE.channel_selection A { text-decoration: none !important; }
+TABLE.channel_selection SPAN { font-size: 12px; font-weight: bold; }
+
+/* END Channel Selection */
+
+
+/* CUSTOM YUI TABS */
+
+.tab-label {
+    font: bold 12px Arial;
+    color: #333
+}
+
+/* default space between tabs */
+.yui-navset .yui-nav li,
+.yui-navset .yui-navset-top .yui-nav li,
+.yui-navset .yui-navset-bottom .yui-nav li {
+    margin:0 0.5em 0 0; /* horizontal tabs */
+}
+.yui-navset-left .yui-nav li,
+.yui-navset-right .yui-nav li {
+    margin:0 0 0.5em; /* vertical tabs */
+}
+
+/* default width for side tabs */
+.yui-navset .yui-navset-left .yui-nav,
+.yui-navset .yui-navset-right .yui-nav,
+.yui-navset-left .yui-nav,
+.yui-navset-right .yui-nav { width:6em; }
+
+.yui-navset-top .yui-nav,
+.yui-navset-bottom .yui-nav {
+    width:auto;
+}
+.yui-navset .yui-navset-left,
+.yui-navset-left { padding:0 0 0 6em; } /* map to nav width */
+.yui-navset-right { padding:0 6em 0 0; } /* ditto */
+
+
+
+
+/* .yui-navset defaults to .yui-navset-top */
+
+.yui-skin-sam .yui-navset .yui-nav,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-nav { /* protect nested tabviews from other orientations */
+    border-width:0px;
+    Xposition:relative;
+    zoom:1;
+}
+
+.yui-skin-sam .yui-navset .yui-nav li,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-nav li {
+    margin:0 0.16em 0 0; /* space between tabs */
+    padding:1px 0 0; /* gecko: make room for overflow */
+    zoom:1;
+}
+
+.yui-skin-sam .yui-navset .yui-nav .selected,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-nav .selected {
+    margin:0 0.16em -1px 0; /* for overlap */
+}
+
+
+
+.yui-skin-sam .yui-navset .yui-nav .selected a em {
+    padding:0.35em 0.75em; /* raise selected tab */
+}
+
+.yui-skin-sam .yui-navset .yui-nav .selected a,
+.yui-skin-sam .yui-navset .yui-nav .selected a em {
+    border-color:#494949; /* selected tab border color */
+}
+
+.yui-skin-sam .yui-navset .yui-content {
+    background:#edf5ff; /* content background color */
+    border: 0px;
+    padding: 0px;
+/*  margin-top: -3px; */
+    margin: 0px;
+/*  width: 802px; */
+    width: 100%;
+}
+
+
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-NAP,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-nav a.contentTab-NAP {
+    background:#eee url(/yui/assets/skins/sam/sprite.png) repeat-x; /* tab background */
+    border:solid #bbb;
+    border-width:0 1px;
+    text-decoration:none;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-NAP em,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-nav a.contentTab-NAP em {
+    color:#999;
+    border:solid #bbb;
+    border-width:1px 0 0;
+    cursor:hand;
+    padding:0.35em 3em;
+    left:0; right: 0; bottom: 0; /* protect from other orientations */
+    top:-1px; /* for 1px rounded corners */
+    position:relative;
+}
+
+
+
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-OUTNET,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-nav a.contentTab-OUTNET {
+    background:#eee url(/yui/assets/skins/sam/sprite.png) repeat-x; /* tab background */
+    border:solid #bbb;
+    border-width:0 1px;
+    text-decoration:none;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-OUTNET em,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-nav a.contentTab-OUTNET em {
+    color:#999;
+    border:solid #bbb;
+    border-width:1px 0 0;
+    cursor:hand;
+    padding:0.35em 3em;
+    left:0; right: 0; bottom: 0; /* protect from other orientations */
+    top:-1px; /* for 1px rounded corners */
+    position:relative;
+}
+
+
+
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-MRP,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-nav a.contentTab-MRP {
+    background:#eee url(/yui/assets/skins/sam/sprite.png) repeat-x; /* tab background */
+    border:solid #bbb;
+    border-width:0 1px;
+    text-decoration:none;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-MRP em,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-nav a.contentTab-MRP em {
+    color:#999;
+    border:solid #bbb;
+    border-width:1px 0 0;
+    cursor:hand;
+    padding:0.35em 3em;
+    left:0; right: 0; bottom: 0; /* protect from other orientations */
+    top:-1px; /* for 1px rounded corners */
+    position:relative;
+}
+
+
+
+
+
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-JC,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-nav a.contentTab-JC {
+    background:#eee url(/yui/assets/skins/sam/sprite.png) repeat-x; /* tab background */
+    border:solid #bbb;
+    border-width:0 1px;
+    text-decoration:none;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.yui-skin-sam .yui-navset .yui-nav a.contentTab-JC em,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-nav a.contentTab-JC em {
+    color:#999;
+    border:solid #bbb;
+    border-width:1px 0 0;
+    cursor:hand;
+    padding:0.35em 3em;
+    left:0; right: 0; bottom: 0; /* protect from other orientations */
+    top:-1px; /* for 1px rounded corners */
+    position:relative;
+}
+
+/* Inner DIV wrapper for TABS to make IE work properly */
+
+.tabInsideWrapper {
+    width: 100%;
+}
+
+/******************************/
+
+
+.yui-skin-sam .yui-navset .yui-nav .disabledTab,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-nav .disabledTab {
+    background:#eee url(/yui/assets/skins/sam/sprite.png) repeat-x; /* tab background */
+    border:solid #666;
+    border-width:0 1px;
+    color:#ccc;
+    text-decoration:none;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+
+.tfvHighlight {
+    color: #FF0000;
+    font-size: larger;
+    font-weight: bold;
+}
+
+.tfvNormal {
+    color: #FFFFFF;
+    visibility: hidden;
+}
+
+
+/* Tab Styles for SampleTransfer Location Tabs */
+
+.yui-skin-sam .yui-navset .yui-content .tabLocationWrapper,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-content .tabLocationWrapper {
+    background-color: #fff;
+    border: 0px;
+    padding: 0.5em 0 0 0; /* content padding */
+    margin: 0;
+}
+
+.yui-skin-sam .yui-navset .yui-nav a.tabLocation,
+.yui-skin-sam .yui-navset .yui-nav a.tabLocation em {
+    text-decoration: none !important;
+}
+
+.yui-skin-sam .yui-navset .yui-nav .selected a.tabLocation,
+.yui-skin-sam .yui-navset .yui-nav .selected a.tabLocation em,
+.yui-skin-sam .yui-navset .yui-nav .selected a.tabLocation:focus, /* no focus effect for selected */
+.yui-skin-sam .yui-navset .yui-nav .selected a.tabLocation:hover,
+.yui-skin-sam .yui-navset .yui-nav .selected a.tabLocation:hover em { /* no hover effect for selected */
+    color:#fff;
+    background: #494949; /* selected tab background */
+    font-weight: normal;
+    text-decoration: none !important;
+}
+
+/* This overrides the standard 'yui-navset' needs to have '!important' for each bit to stick */
+.location-override {
+    background: #FFFFFF !important; /* content background color */
+    border-top: 1px solid #494949 !important;
+    border-left: 0px !important;
+    border-right: 0px !important;
+    border-bottom: 0px !important;
+    padding: 0px !important;
+    margin-top: 0px !important;
+    width: 100% !important;
+}
+
+/* floating tooltip type layers
+ * Taken from Fulcrum's css file */
+div.floating_layer {
+      display:                  none;
+      position:                 absolute !important;
+      left:                     0;
+      top:                      0;
+      z-index:                  1000;
+      padding:                  0 0 3px 3px;
+      background-color:         #CCC
+    }
+div.floating_layer > div {
+      border:                   1px solid #666;
+      background-color:         #FFF;
+      padding:                  10px;
+      z-index:                  1001;
+    }
+div.floating_layer h4 {
+        font-size: 100%;
+        margin-bottom: 5px;
+        white-space: nowrap;
+    }
+div.floating_layer table {
+        margin-bottom:  0;
+        width: 10px;
+    }
+
+/* END Tab Styles for SampleTransfer Location Tabs */
+
+/* This style is for the Google Maps Icon on the Order View Page */
+img.gmaps {
+    display: inline;
+    margin: 0px 5px 0px 0px;
+    padding: 0px;
+    width: 11px;
+    height: 18px;
+}
+
+
+/* Website API error response */
+
+div.website_api_error {
+    display: block;
+    float: right;
+    width: 80%;
+    margin-right: 3%;
+    white-space: normal;
+    height: 28px;
+    margin-top: -10px;
+    padding-top: 0px;
+}
+
+img.website_api_error_icon {
+    display: block;
+    float: left;
+    margin-left: 12px;
+    padding-right: 6px;
+    padding-top: 4px;
+    padding-bottom: 8px;
+    vertical-align: text-top;
+}
+
+div.website_api_error_message {
+  vertical-align: middle;
+}
+
+/* css for distribution report table chart things */
+table.chart td {
+    padding: 0;
+    border-bottom: 0;
+    border-top: 0;
+}
+
+.progressBar img {
+    display: inline;
+}
+
+/* css for divs to wrap around formrow divs in two columns */
+div.leftcol {
+    float: left;
+    width: 400px;
+}
+div.rightcol {
+    float: right;
+    width: 400px;
+}
+
+/* For emphasizing text in tables */
+.standout {
+    color: purple;
+}
+
+.non-ascii-message {
+    font-weight: bold;
+    color: red;
+    float: left;
+}
+
+/* admin DAVE roles setting page */
+#userroles #available_roles select {
+    width: 300px;
+}
+
+#userroles #new_roles select {
+    width: 300px;
+}
+
+#content table.data td.expired_sla {
+    color: red;
+}
+
+#content table.data td.valid_sla {
+    color: green;
+}
+
+#content table.data td.staff_sla {
+    color: red;
+}
+
+#content table.no-top-bottom-padding tr td, #content table tr.no-top-bottom-padding td {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+div.qc_audit_log {
+    position:absolute;
+    width:400px;
+    left:370px;
+    top:10px;
+    z-index:1000;
+    padding-left:3px;
+    padding-bottom:3px;
+    background-color: #CCC;
+    display:none;
+}
+
+.relative { position:relative; }
+
+
+/*********************************************
+ AJAX Related Styles - such as different flags
+ to use based on the Response received from a
+ Server.
+ *********************************************/
+
+.ajax_img_waiting {
+    background-image: url("/images/ajax-loader.gif");
+}
+.ajax_img_bad_request {
+    background-image: url("/images/icons/flag_orange.png");
+}
+.ajax_img_not_found {
+    background-image: url("/images/icons/flag_blue.png");
+}
+.ajax_img_unauthorised {
+    background-image: url("/images/icons/flag_red.png");
+}
+.ajax_img_server_error {
+    background-image: url("/images/icons/flag_pink.png");
+}
+.ajax_img_server_unknown_exception {
+    background-image: url("/images/icons/error.png");
+}
+
+.ajax_img_none_appropriate {
+    background-image: url("/images/icons/flag_purple.png");
+}
+
+/* to be used in conjunction with the above background images */
+.ajax_status_message {
+    display: block;
+    background-position: top left;
+    background-repeat  : no-repeat;
+    height     : 16px;
+    color      : #888;
+    font-weight: normal;
+    padding    : 1px 0px 3px 21px;
+}
+

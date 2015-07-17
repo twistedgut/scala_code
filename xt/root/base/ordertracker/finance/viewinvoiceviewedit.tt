@@ -1,0 +1,302 @@
+[% SET status_check = 0 %]
+[% SET edit_shipping = 0 %]
+
+[% IF action == "Edit" && auth_edit == 1 && (invoice.status == 'Pending' || invoice.status == 'Awaiting Authorisation' || invoice.status == 'Awaiting Action') %]
+    [% status_check = 1 %]
+[% END %]
+
+[% IF invoice.class == 'Return' && action == "Edit" && (auth_edit == 1 || auth_amend == 1) && (invoice.status == 'Pending' || invoice.status == 'Awaiting Authorisation') %]
+    [% edit_shipping = 1 %]
+[% END %]
+
+<span class="title title-[% channel_config.$sales_channel %]">Invoice Items</span>
+<br>
+
+[% IF invoice_item.size > 0 %]
+
+    <table id="invoice_items" width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="9" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="24">
+            <td class="tableHeader" width="12%">&nbsp;&nbsp;&nbsp;SKU</td>
+            <td class="tableHeader" width="29%">Product Name</td>
+            <td class="tableHeader" width="20%">Designer</td>
+            <td class="tableHeader" width="10%">Unit Price&nbsp;&nbsp;&nbsp;</td>
+            <td class="tableHeader" width="10%">Tax&nbsp;</td>
+            <td class="tableHeader" width="10%">Duties&nbsp;</td>
+            <td class="tableHeader" width="12%">Sub-Total&nbsp;&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="9" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+        [% FOREACH id = invoice_item.keys %]
+
+            <tr height="24">
+                <td>&nbsp;&nbsp;&nbsp;[% invoice_item.$id.sku %]</td>
+                <td>[% invoice_item.$id.name %]</td>
+                <td>[% invoice_item.$id.designer %]</td>
+
+                <td>
+                    [% IF status_check == 0 %]
+                        [% invoice_item.$id.unit_price %]
+                    [% ELSE %]
+                        <input type="text" name="price-[% id %]" size="5" value="[% invoice_item.$id.unit_price %]">
+                    [% END %]
+                </td>
+                <td>
+                    [% IF status_check == 0 %]
+                        [% invoice_item.$id.tax %]
+                    [% ELSE %]
+                        <input type="text" name="tax-[% id %]" size="5" value="[% invoice_item.$id.tax %]">
+                    [% END %]
+                </td>
+                <td>
+                    [% IF status_check == 0 %]
+                        [% invoice_item.$id.duty %]
+                    [% ELSE %]
+                        <input type="text" name="duty-[% id %]" size="5" value="[% invoice_item.$id.duty %]">
+                    [% END %]
+                </td>
+                <td>[% invoice_item.$id.sub_total %]</td>
+            </tr>
+            <tr>
+                <td colspan="9" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+
+        [% END %]
+
+        <tr height="24" bgcolor="#ffffff">
+            <td class="blank" colspan="5"><img src="/images/blank.gif" width="1" height="24"></td>
+            <td class="blank"><b>Shipping&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="blank"><b>
+            [% IF status_check == 0 && edit_shipping == 0 %]
+                [% invoice.shipping %]
+                <input type="hidden" name="shipping" size="5" value="[% invoice.shipping %]">
+            [% ELSE %]
+                <input type="text" name="shipping" size="5" value="[% invoice.shipping %]">
+            [% END %]
+            &nbsp;&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="9" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="24" bgcolor="#ffffff">
+            <td class="blank" colspan="5"><img src="/images/blank.gif" width="1" height="24"></td>
+            <td class="blank"><b>Miscellaneous&nbsp;<span id="misc_refund_short_err"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="blank"><b>
+            [% IF status_check == 0 && edit_shipping == 0 %]
+                [% invoice.misc_refund %]
+                <input type="hidden" name="misc_refund" size="5" value="[% invoice.misc_refund %]">
+            [% ELSE %]
+                <input type="text" name="misc_refund" size="5" value="[% invoice.misc_refund %]">
+            [% END %]
+            &nbsp;&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="9" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td colspan="9" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="24" bgcolor="#ffffff">
+            <td class="blank" colspan="5"><img src="/images/blank.gif" width="1" height="24"></td>
+            <td class="blank"><b>Store Credit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="blank"><b>
+            [% IF status_check == 0 %]
+                [% invoice.store_credit %]
+                <input type="hidden" name="store_credit" size="5" value="[% invoice.store_credit %]">
+            [% ELSE %]
+                <input type="text" name="store_credit" size="5" value="[% invoice.store_credit %]">
+            [% END %]
+            &nbsp;&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="9" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        [% IF renumeration.renumeration_class.class == 'Order' %]
+            <tr height="24" bgcolor="#ffffff">
+                <td class="blank" colspan="5"><img src="/images/blank.gif" width="1" height="24"></td>
+                <td class="blank"><b>Gift Voucher&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td class="blank"><b>[% renumeration.gift_voucher | format('%.2f') %]</b>&nbsp;&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="9" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        [% END %]
+        <tr height="24" bgcolor="#ffffff">
+            <td class="blank" colspan="5"><img src="/images/blank.gif" width="1" height="24"></td>
+            <td class="blank"><b>Grand Total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="blank"><b>&nbsp;[% renumeration.grand_total | format('%.2f') %]&nbsp;&nbsp;[% invoice.currency %]</b></td>
+        </tr>
+        <tr>
+            <td colspan="9" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td colspan="9" class="blank"><img src="/images/blank.gif" width="1" height="15"></td>
+        </tr>
+        <tr>
+            <td colspan="9" class="blank" align="right">
+            [% IF action == "Edit" %]
+                <input class="button" type="submit" name="" value="Update Invoice &raquo;">
+            [% END %]
+            </td>
+        </tr>
+    </table>
+
+[% ELSE %]
+
+    <table id="invoice_items" width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="24" bgcolor="#ffffff">
+            <td class="blank" width="20%" align="right"><b>Shipping&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="blank" width="80%"><b>
+            [% IF action == "View" %]
+                [% invoice.shipping %]
+            [% ELSE %]
+                <input type="text" name="shipping" size="5" value="[% invoice.shipping %]">
+            [% END %]
+            </td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="24" bgcolor="#ffffff">
+            <td class="blank" align="right"><b>Miscellaneous&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="blank"><b>
+            [% IF action == "View" %]
+                [% invoice.misc_refund %]
+            [% ELSE %]
+                <input type="text" name="misc_refund" size="5" value="[% invoice.misc_refund %]">
+            [% END %]
+            <span id="misc_refund_short_err"></span>
+            </td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="24" bgcolor="#ffffff">
+            <td class="blank" align="right"><b>Grand Total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="blank"><b>[% invoice.renum_total %]&nbsp;[% invoice.currency %]</td>
+            <td><img src="/images/blank.gif" width="1" height="24"></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="blank"><img src="/images/blank.gif" width="1" height="15"></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="blank" align="right">
+            [% IF action == "Edit" %]
+                <input class="button" type="submit" name="" value="Update Invoice &raquo;">
+            [% END %]
+            </td>
+        </tr>
+    </table>
+[% END %]
+<br />
+<br />
+
+</form>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<form action="[% short_url %]/Invoice?order_id=[% order_id %]&shipment_id=[% shipment_id %]&action=View&invoice_id=[% invoice.id %]" method="post">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+<input type="hidden" name="print" value="1">
+    <tr>
+        <td align="right"><input class="button" type="submit" name="" value="Print Refund Form &raquo;"></td>
+    </tr>
+    </form>
+</table>
+
+[% IF invoice.renumeration_status_id == 5 && invoice.renumeration_type_id < 3 %]
+    <br><br>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <form action="[% short_url %]/Invoice?order_id=[% order_id %]&shipment_id=[% shipment_id %]&action=View&invoice_id=[% invoice.id %]" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="print_invoice" value="1">
+        <tr>
+            <td align="right"><input class="button" type="submit" name="" value="Print Invoice &raquo;"></td>
+        </tr>
+        </form>
+    </table>
+    <br><br>
+[% END %]
+
+<span class="title title-[% channel_config.$sales_channel %]">Invoice Status Log</span>
+<br>
+<table id="invoice_status_log" width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <tr>
+        <td colspan="3" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr height="24">
+        <td class="tableHeader">&nbsp;&nbsp;&nbsp;Status</td>
+        <td class="tableHeader">Date</td>
+        <td class="tableHeader">Operator</td>
+    </tr>
+    <tr>
+        <td colspan="3" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+
+    [% FOREACH id = invoice_log.keys.nsort %]
+
+        <tr height="24">
+            <td>&nbsp;&nbsp;&nbsp;[% PROCESS page_elements/show_printed_as_manual.tt status=invoice_log.$id.status %]</td>
+            <td>[% invoice_log.$id.date %]</td>
+            <td>[% invoice_log.$id.name %]</td>
+        </tr>
+        <tr>
+            <td colspan="9" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+    [% END %]
+
+
+
+</table>
+
+
+[% IF invoice_change_log.size > 0 %]
+
+    <br>
+    <br>
+    <br>
+    <span class="title title-[% channel_config.$sales_channel %]">Invoice Change Log</span>
+    <br>
+    <table id="invoice_change_log" width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="24">
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Pre-Value</td>
+            <td class="tableHeader">Post-Value</td>
+            <td class="tableHeader">Date</td>
+            <td class="tableHeader">Operator</td>
+        </tr>
+        <tr>
+            <td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+        [% FOREACH id = invoice_change_log.keys.nsort %]
+
+            <tr height="24">
+                <td>&nbsp;&nbsp;&nbsp;[% invoice_change_log.$id.pre_value %]</td>
+                <td>[% invoice_change_log.$id.post_value %]</td>
+                <td>[% invoice_change_log.$id.date %]</td>
+                <td>[% invoice_change_log.$id.name %]</td>
+            </tr>
+            <tr>
+                <td colspan="9" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+
+        [% END %]
+
+    </table>
+
+[% END %]

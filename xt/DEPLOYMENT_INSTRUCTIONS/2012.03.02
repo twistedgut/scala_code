@@ -1,0 +1,85 @@
+=====================================
+XT 2012.03.02 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               : 2012-03-08
+Cherwell           : 
+Release Manager    : Shamir Raniga
+Build Manager      : Rich Moore
+TechOps            : Luis Buriola
+Backend Developer  : 
+Frontend Developer : 
+QA                 : 
+PCI Authorised by  : 
+
+2 - CHANGELOG
+-------------
+http://gitosis.net-a-porter.com/cgit/xt/tree/CHANGES/2012.03.02?h=release/2012.03
+
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2012.03/xt-2012.03.02-0.noarch.rpm
+
+Do this both for DC1 and DC2.
+
+4 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+
+TECH-OPS:
+
+Add settings for Web05 to Web08 in nap.properties 
+and test DLP images upload 
+
+Ensure that ENABLE_STICKY_PAGES_DC1 is set to 'yes' in nap.properties
+on xtdc1 and xtdc2:
+
+ENABLE_STICKY_PAGES_DC1                 yes
+
+- Delete the following keys:
+IWS_RECONCILIATION_SHARE_NAME_DC1
+IWS_RECONCILIATION_PROCESSED_NAME_DC1
+
+- Add the following key to the live properties file:
+IWS_RECONCILIATION_HOSTNAME_DC1         10.3.37.11 10.3.37.13
+IWS_RECONCILIATION_SHARE_PATH_DC1       /recondump/exports
+IWS_RECONCILIATION_PROCESSED_PATH_DC1   /recondump/exports/processed
+
+- Update the following keys for the live properties file:
+IWS_RECONCILIATION_SHARE_USERNAME_DC1   Reconcile_svc
+IWS_RECONCILIATION_SHARE_PASSWORD_DC1   r3c0nc1l3
+IWS_RECONCILIATION_SHARE_WORKGROUP_DC1  LONDON
+IWS_RECONCILIATION_REPORT_EMAIL_DC1     dl_iws_reconciliation_report@net-a-porter.com
+
+5 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+sudo yum install xt
+
+6 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+No action needs to be performed after the deployment
+
+7 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

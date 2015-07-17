@@ -1,0 +1,153 @@
+<div id="fraudscreen__edit_rule_window">
+    <input type="hidden" id="fraudscreen__edit_rule_id" value="">
+    <input type="hidden" id="fraudscreen__edit_rule_idx" value="">
+    <input type="hidden" id="fraudscreen__edit_rule_sequence" value="">
+    <div id="fraudscreen__edit_rule_table">
+        <h2>New Rule</h2>
+        <br>
+        <table class="data wide-data" border="0">
+            <thead>
+                <tr class="dividebelow divideabove dividebelow">
+                    <td class="tableHeader" width="35%">Rule Name</td>
+                    <td class="tableHeader" width="15%">Start Date</td>
+                    <td class="tableHeader" width="15%">End Date</td>
+                    <td class="tableHeader" width="15%">Channel</td>
+                    <td class="tableHeader" width="10%">Enabled</td>
+                    <td class="tableHeader" width="10%">Action</td>
+                </tr>
+            </thead>
+            <tbody id="fraudrules">
+                <tr id="rule_[% rule.id %]" class="fraudrule dividebelow">
+                    <td class="fraudscreen__rule_data">
+                        <input id="fraudscreen__edit_rule_name" type="text" class="fraudscreen__edit_rule_text_input">
+                        <br>
+                        <span id="fraudscreen__edit_rule_error_msg"></span>
+                    </td>
+                    <td class="fraudscreen__rule_data">
+                        <input type="text" id="fraudscreen__edit_rule_start_date" class="fraudscreen__edit_rule_text_input">
+                        <br>
+                        <select id="fraudscreen__edit_rule_start_hour" class="fraudscreen__timeboxes">
+                            [% hour = 0 %]
+                            [% WHILE hour < 24 %]
+                            [% USE String(hour) %]
+                            <option value="[% String.format("%02d") %]">[% String.format("%02d") %]</option>
+                            [% hour = hour + 1 %]
+                            [% END %]
+                        </select>
+                        <select id="fraudscreen__edit_rule_start_minute" class="fraudscreen__timeboxes">
+                            [% minute = 0 %]
+                            [% WHILE minute < 60 %]
+                            [% USE String(minute) %]
+                            <option value="[% String.format("%02d") %]">[% String.format("%02d") %]</option>
+                            [% minute = minute + 5 %]
+                            [% END %]
+                            <option value="59">59</option>
+                        </select>
+                    </td>
+                    <td class="fraudscreen__rule_data">
+                        <input type="text" id="fraudscreen__edit_rule_end_date" class="fraudscreen__edit_rule_text_input">
+                        <br>
+                        <select id="fraudscreen__edit_rule_end_hour" class="fraudscreen__timeboxes">
+                            [% hour = 0 %]
+                            [% WHILE hour < 24 %]
+                            [% USE String(hour) %]
+                            <option value="[% String.format("%02d") %]">[% String.format("%02d") %]</option>
+                            [% hour = hour + 1 %]
+                            [% END %]
+                        </select>
+                        <select id="fraudscreen__edit_rule_end_minute" class="fraudscreen__timeboxes">
+                            [% minute = 0 %]
+                            [% WHILE minute < 60 %]
+                            [% USE String(minute) %]
+                            <option value="[% String.format("%02d") %]">[% String.format("%02d") %]</option>
+                            [% minute = minute + 5 %]
+                            [% END %]
+                            <option value="59">59</option>
+                        </select>
+                    </td>
+                    <td class="fraudscreen__rule_data">
+                        <select id="fraudscreen__edit_rule_channel">
+                            <option value="">All</option>
+                            [% FOREACH channel IN channels %]
+                            <option value="[% channel.id %]">[% channel.business.config_section %]</option>
+                            [% END %]
+                        </select>
+                    </td>
+                    <td class="fraudscreen__rule_data">
+                        <input id="fraudscreen__edit_rule_enabled" disabled type="checkbox">
+                    </td>
+                    <td class="fraudscreen__rule_data">
+                        <select id="fraudscreen__edit_rule_action">
+                        [% FOREACH action IN actions %]
+                            <option value="[% action.id %]">[% action.status %]</option>
+                        [% END %]
+                        </select>
+                    </td>
+                </tr>
+                <tr class="dividebelow">
+                    <td colspan="6" >
+                        <b>TAGS:</b>
+                        <ul id="fraudscreen__edit_rule_tags">
+                            <!-- Existing list items will be pre-added to the tags -->
+                            <li><input class="fraudscreen__edit_rule_tag_input" type="text" ></li>
+                      </ul>
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+    </div>
+    <br>
+    <br>
+    <div id="fraudscreen__conditions_table">
+        <table class="data wide-data" border="0">
+            <thead>
+                <tr class="divideabove dividebelow">
+                    <td class="tableHeader" width="5%">&nbsp;</td>
+                    <td class="tableHeader" width="50%">Condition</td>
+                    <td class="tableHeader" width="20%">&nbsp;</td>
+                    <td class="tableHeader" width="20%">&nbsp;</td>
+                    <td class="tableHeader" width="5%">Enabled</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="dividebelow" id="fraudscreen__blank_condition_row" class="fraudscreen__edit_condition_row">
+                    <td width="5%">
+                        <input type="hidden" class="fraudscreen__edit_condition_id" value="">
+                        <input class="fraudscreen__edit_rule_remove_condition_button" type="image" src="/images/icons/delete.png">
+                    </td>
+                    <td width="50%">
+                        <select class="fraudscreen__edit_condition_method_list">
+                            <option value=''>Select a method...</option>
+                            [% FOREACH method IN methods %]
+                            <option value="[% method.id %]">[% method.description %]</option>
+                            [% END %]
+                        </select>
+                        <br>
+                        <span class="fraudscreen__edit_condition_error_msg"></span>
+                    </td>
+                    <td width="20%">
+                        <select class="fraudscreen__edit_condition_operator_list">
+                        </select>
+                    </td>
+                    <td width="20%" class="fraudscreen__edit_condition_value_cell"></td>
+                    <td width="5%"><input type="checkbox" class="fraudscreen__edit_condition_enabled"></td>
+                </tr>
+                <tr id="fraudscreen__edit_rule_add_condition">
+                    <td><input type="image" id="fraudscreen__edit_rule_add_condition_button" src="/images/icons/add.png"></td>
+                    <td colspan="4">&nbsp;</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <br>
+    <div id="fraudscreen__popup_buttons" class="fraudscreen__page_buttons">
+        <button class="button" id="fraudscreen__edit_rule_add_button">Add</button>
+        <button class="button" id="fraudscreen__edit_rule_update_button">Update</button>
+        <button class="button" id="fraudscreen__edit_rule_saveasnew_button">Save as New</button>
+        <button class="button" id="fraudscreen__edit_rule_delete_button">Delete</button>
+        <button class="button" id="fraudscreen__edit_rule_cancel_button">Cancel</button>
+    </div>
+</div>

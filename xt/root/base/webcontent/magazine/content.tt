@@ -1,0 +1,106 @@
+[% SET submit_url	= '/WebContent/Magazine/CreateContent' %]
+[% SET field_id		= 0 %]
+[% SET contents		= '' %]
+[% SET category_id	= '' %]
+
+[% IF page_content %]
+
+	[% SET submit_url	= '/WebContent/Magazine/UpdateContent' %]
+	[% SET field_id		= page_content.field_id %]
+	[% SET contents		= page_content.content %]
+	[% SET category_id	= page_content.category_id %]
+
+[% END %]
+
+<form name="contentForm" action="[% submit_url %]" method="post" onsubmit="javascript:return validateForm(this);">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+	<input type="hidden" name="redirect" value ="/WebContent/Magazine/Instance">
+	<input type="hidden" name="page_id" value ="[% page_id %]">
+	<input type="hidden" name="instance_id" value ="[% instance_id %]">
+	<input type="hidden" name="content_id" value ="[% content_id %]">
+
+	<input type="hidden" name="remote_image_path" value="images/issues/">
+
+	<span class="title title-[% channel_config.$sales_channel %]">Content</span><br/>
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+		<tr height="24"> 
+			<td width="10%" align="right"><strong>Field:</strong>&nbsp;&nbsp;</td>
+			<td width="90%">
+				[% IF is_operator %]
+					<select name="field_id">
+						[% WHILE (field = fields.next) %]
+							<option value="[% field.id %]"[% IF field.id == field_id %] selected="selected"[% END %]>[% field.name %]</option>
+						[% END %]
+					</select>
+				[% ELSE %]
+					[% field_name %]
+				[% END %]
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+		<tr height="24" valign="top">
+			<td align="right" style="padding-top:8px"><strong>Content:</strong>&nbsp;&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr height="24" valign="top"> 
+			<td colspan="2" style="padding-top:0px; padding-bottom:8px">
+				<textarea name="content" rows="30" [% IF !is_operator %]disabled="disabled "[% END %]style="width: 100%; font-size:12px">[% contents %]</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+		<tr height="24"> 
+			<td align="right"><strong>Category ID:</strong>&nbsp;&nbsp;</td>
+			<td style="padding-top:8px; padding-bottom:8px">
+				[% IF is_operator %]
+					<input type="text" name="category_id" size="30" style="font-size:12px" value="[% category_id %]">
+				[% ELSE %]
+					[% category_id %]
+				[% END %]
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+	</table>
+
+	[% IF is_operator %]
+		<table width="100%" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td><img src="/images/blank.gif" width="1" height="15"></td>
+			</tr>
+			<tr>
+				<td align="right">[% PROCESS page_elements/forms/submit_button.tt btn_name="status", submit="Save Content &raquo" %]</td>
+			</tr>
+			<tr>
+				<td><img src="/images/blank.gif" width="1" height="10"></td>
+			</tr>
+		</table>
+	[% END %]
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+	var form_submit		= 0;
+
+    function validateForm(theForm) {
+
+		if ( !form_submit ) {
+			form_submit = 1;
+			return true;
+		}
+		else {
+			return false;
+		}
+
+    }
+-->
+</script>

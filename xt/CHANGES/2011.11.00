@@ -1,0 +1,27 @@
+<pre>
+
+h1. Customer and Order Management (CANDO)
+    * CANDO-101: Invoice/Returns Paperwork - Date format
+    * CANDO-324: Amending permissions for delivery signature opt out
+    * CANDO-327: The Outnet new packaging: Garment bags
+    * CANDO-216: Turning On Delivery Signature Opt Out for DC2
+    * CANDO-55 : Pending Reservation automated upload
+    * CANDO-325: XT Stock Updates for NAP Wish Lists
+    * CANDO-326: Free Gift - Outnet Canvas Bag (THE OUTNET tote)
+    * CANDO-85 : Bulk Reimbursements
+
+h1. Double Submit Protection (APS-101, APS-329)
+
+h1. Flexible Shipping (FLEX)
+    * FLEX-39: European Road Migration (TON)
+      * Move shipments using "DHL Ground/Europlus International" to
+        DHL "Express/International Road" (DHL product name: Economy
+        Select).
+    * FLEX-82, FLEX-104: Make MRP use itw own SKUs for shipping
+      charges.
+
+h1. Sold out slug displaying incorrectly when sizes are not shown as available [MERCH-82]
+    * Update variant visibility in web DB when stock is added
+    * Added script that will fix current examples of this on live DB (to be run once)
+
+</pre>

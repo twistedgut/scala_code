@@ -1,0 +1,54 @@
+=====================================
+XT 2011.05.10 Deployment Instructions
+=====================================
+
+
+1 - RELEASE DETAILS
+-------------------
+Date               : 2011-05-19
+Cherwell           : 
+Release Manager    : 
+Build Manager      : Shabe Razvi
+TechOps            : 
+Backend Developer  : 
+Frontend Developer : 
+QA                 : 
+PCI Authorised by  : 
+
+
+2 - CHANGELOG
+-------------
+http://gitosis.net-a-porter.com/cgit/xt/tree/CHANGES/2011.05.10?h=release/2011.05
+
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/x86_64/xt-2011.05.10-0.x86_64.rpm
+
+Do this both for DC1 and DC2.
+
+4 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+No action needs to be performed after the deployment
+
+5 - DEPLOYMENT RECIPE:
+----------------------
+
+sudo yum clean all
+sudo yum remove xt
+sudo yum install xt
+
+6 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+No action needs to be performed after the deployment
+
+7 - ROLLBACK PLAN:
+------------------
+sudo yum remove xt
+sudo yum install xt-2011.05.08-0.x86_64.rpm
+
+
+=====================================
+End of Deployment Instructions
+=====================================

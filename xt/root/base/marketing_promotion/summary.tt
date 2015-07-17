@@ -1,0 +1,119 @@
+[% USE Department %]
+[%-
+    SET can_view = 0;
+    IF department_id == db_constant('DEPARTMENT__MARKETING') ||  department_id == db_constant('DEPARTMENT__SHIPPING_MANAGER');
+    THEN;
+        can_view   = 1;
+    END;
+-%]
+
+[% IF can_view %]
+
+[%-
+    SET channel_name_list = {};
+    FOREACH channel_id = channels.keys.sort;
+        SET channel_name = channels.$channel_id.name;
+        channel_name_list.$channel_name.id = channel_id;
+        channel_name_list.$channel_name.count = promotion.$channel_name.active.size;
+    END;
+-%]
+<div id="tabContainer" class="yui-navset">
+    [% PROCESS page_elements/channel_tabs.tt channel_list=channel_name_list,use_channel_list_counts=1 %]
+    <div class="yui-content">
+
+        [% FOREACH channel_name = channel_name_list.keys.sort %]
+            [% channel_id = channel_name_list.$channel_name.id %]
+
+            [% SET channel = channels.$channel_id.name %]
+
+            <div id="tab[% loop.count %]" class="tabWrapper-[% channel_config.$channel %]">
+            <div class="tabInsideWrapper">
+
+                [% IF promotion %]
+                    [% FOREACH flag IN ['active','disabled'] %]
+
+                            <span class="title title-[% channel_config.$channel %]">[% flag | ucfirst %] Promotion List</span><br />
+                        [% IF promotion.$channel.$flag.size %]
+
+
+
+
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+                        <tr>
+                            <td colspan="6" class="dividerHeader"></td>
+                        </tr>
+                        <tr>
+                            <td width="10%" class="tableHeader">Promotion Title</td>
+                            <td width="10%" class="tableHeader">Start Date</td>
+                            <td width="10%" class="tableHeader">End Date</td>
+                            <td width="10%" class="tableHeader">Weighted</td>
+                            <td width="10%" class="tableHeader" colspan="2">Action</td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" class="dividerHeader"></td>
+                        </tr>
+
+                            [% FOREACH promotion_row = promotion.$channel.$flag %]
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;
+                                        <a href="/NAPEvents/InTheBox/Edit?promotion_id=[% promotion_row.id %]&action=edit_promotion">[% promotion_row.title %] </a>
+                                    </td>
+                                    <td>[% promotion_row.start_date.dmy %]</td>
+                                    <td>[% promotion_row.end_date.dmy %]</td>
+                                    <td>[% promotion_row.is_weighted ? 'Yes' : 'No' %]</td>
+                                    <td>
+                                        [% IF flag == 'active' %]
+                                            <form method="POST" action="/NAPEvents/InTheBox/Edit" name="edit_promo_[% promotion_row.id %]">
+                                                [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                                                <input type="hidden" name="action" value="edit_promotion" />
+                                                <input type="hidden" name="promotion_id" value="[% promotion_row.id %]" />
+                                                <input type="image" value="[% edit_promotion %]"
+                                                    class="top_padded" src="/images/icons/pencil.png" alt="Edit Promotion" title="Edit Promotion" />
+                                            </form>
+                                        [% ELSE %]
+                                            &nbsp;
+                                        [% END %]
+
+                                    </td>
+                                    <td>
+                                         <form method="POST" action="/NAPEvents/InTheBox/ManagePromotion" name="toggle_promo_[% promotion_row.id %]">
+                                            [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                                            <input type="hidden" name="promotion_id" value="[% promotion_row.id %]" />
+                                            [% IF flag == 'active' %]
+                                                <input type="hidden" name="action_name" value="disable_promotion" />
+                                                <input type="image" value="[% delete_promotion %]"
+                                                    class="top_padded" src="/images/icons/cross.png" alt="Disable Promotion" title="Disable Promotion" />
+                                            [% ELSE %]
+                                                 <input type="hidden" name="action_name" value="enable_promotion" />
+                                                <input type="image" value="[% enable_promotion %]"
+                                                    class="top_padded" src="/images/icons/tick.png" alt="Disable Promotion" title="Enable Promotion" />
+                                            [% END %]
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="6" class="divider"></td>
+                                </tr>
+                        [% END %]
+                    </table>
+                    [% ELSE %]
+                        [% flag | ucfirst %] Promotion List is Empty.
+                    [% END %]
+                    <br><br>
+                [% END %]
+                [% END %]
+
+            </div>
+            </div>
+        [% END %]
+    </div>
+</div>
+
+[% PROCESS page_elements/tab_script.tt %]
+
+[% ELSE %]
+    <p class="error_msg">You do not have permission to view this page, please contact marketing department.</p>
+[% END %]
+

@@ -1,0 +1,1 @@
+<a href="/StockControl/Reservation/PreOrder/Summary?pre_order_id=[% pre_order.id %]">P[% pre_order.id %]</a>

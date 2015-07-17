@@ -1,0 +1,158 @@
+=====================================
+XT 201x.yy Deployment Instructions
+=====================================
+
+Release Date:       201x-mm-dd
+
+PACKAGES TO INSTALL:
+
+XTracker:
+
+* Package: xt
+* Version: 201x.yy.zz
+* Location: cfmaster.dave:/var/www/html/netaporter/dev_releases/x86_64/xt-201x.yy.zz-0.x86_64.rpm
+
+DEPENDENCIES:
+The following package dependencies need to be installed, however should be resolved automatically during 
+installation of XTracker.
+
+Perl-NAP:
+
+* Package: perl-nap
+* Version: 2011.04.02
+* Location: cfmaster.dave:/var/www/html/netaporter/dev_releases/x86_64/perl-nap-5.12.3-2011.04.02.x86_64.rpm
+
+jQuery:
+
+* Package: jquery-nap
+* Version: 1.4.2-4
+* Location: cfmaster.dave:/var/www/html/netaporter/dev_releases/noarch/jquery-nap-1.4.2-4.noarch.rpm
+
+DEPLOYMENT RECIPE:
+These instructions assume the packages are in a repo the box can see.
+
+* sudo yum clean all
+* sudo yum erase xt
+* sudo yum update xt
+
+Installing the XT package _should_ apply the DB patches and restart 
+all the required services. 
+
+However, if this is on a new box, part of the install will fail due
+to log file permission errors. If this happens, remove and install
+the app again, and that should fix it.
+
+
+201x.yy.xx.yy: Initial Release
+
+1. No extra actions required
+
+Do this both for dc1 and dc2.
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+
+WARNINGS
+=========
+Warning 1: If the deployment fails, it's likely to be that the following
+DB patch has not yet been run as a BAU. Please run it.
+
+$ perl /opt/xt/deploy/xtracker/script/patches/remove-duplicate-promotion-type.pl
+
+
+Warning 2: If /etc/init.d/xt_amq_consumer_ctl 
+fails to start or stop run
+
+    $ chown nobody:napapp /var/log/nap/xt/job_queue.log
+
+cross your fingers and try again.
+
+1. New printers at Dispatch
+=============================
+
+* premiershipping01 (A4)
+* premiershipping02 (A4)
+* premiercard01 (A5)
+* premiercard02 (A5)
+
+2. Update /etc/nap.properties
+=============================
+
+Please add the following to the /etc/nap.properties file for XT:
+ 
+PAYMENT_SERVICE_JC_MERCHANT_URL		http://www.jimmychoo.com
+
+UPS_API_JC_PASSWORD                     Toosh9GieR
+UPS_API_JC_USER                         nap_dc2ca_live
+UPS_API_JC_XML_ACCESS_KEY		FC4EDDED86DDDF68
+UPS_API_JC_XML_BASE_URL			https://wwwcie.ups.com/ups.app/xml
+
+# third party/fulfilment only/JC
+INTEGRATION_JC_STOCK_UPDATE_AMQ       integration/jc/stock-update
+ORDERIMPORT_FAILURE_EMAIL             servicedesk@net-a-porter.com
+
+This needs to be done for xtdc1 and xtdc2.
+
+3. Navigation Category Updates
+===============================
+
+Please run
+    perl -I /opt/xt/deploy/xtracker/lib \
+        /opt/xt/deploy/xtracker/script/navigation_category/insert_web_product_types.pl
+on xtdc1 and xtdc2.
+ 
+Do this both for dc1 and dc2.
+
+4. AMQ Order Queue Directories
+==============================
+
+AMQ Orders are stored in directories while being processed so that 
+they can be re-processed on failure.
+
+$ mkdir -p /var/data/amq_orders/problem \
+    /var/data/amq_orders/proc \
+    /var/data/amq_orders/waiting
+
+$ chown nobody:napapp /var/data/amq_orders/problem \
+    /var/data/amq_orders/proc \
+    /var/data/amq_orders/waiting
+
+$ chmod 775 /var/data/amq_orders/problem \
+    /var/data/amq_orders/proc \
+    /var/data/amq_orders/waiting
+
+5.  Update  nap.properties
+==============================
+
+Change the following parameters (it's the stuff after 8086 whch changes)
+
+PAYMENT_WDSL_IMPORT_LOCATION          http://<FIXME I DONT KNOW WHICH MACHINE!>:8086/psp/cxfservlet/psp?wsdl=Gateway.wsdl
+PAYMENT_WDSL_SOAP_ADDRESS_LOCATION    http://<FIXME I DONT KNOW WHICH MACHINE!>:8086/psp/cxfservlet/psp
+
+Add the following parameter:
+
+IWS_RECONCILIATION_REPORT_EMAIL_DC1     reconciliation-dc1@net-a-porter.com
+
+Note that the e-mail address above isn't in use yet, and won't
+be until a further Tech Ops-controlled action is performed.
+The above is suggested as a place-holder name, and need not exist.
+Once the feature is enabled, this address can be replaced with the
+actual address.
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+
+

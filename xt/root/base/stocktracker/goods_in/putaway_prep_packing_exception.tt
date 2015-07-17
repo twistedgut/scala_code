@@ -1,0 +1,109 @@
+<!-- TT BEGIN : root/base/stocktracker/goods_in/putaway_problem_resolution.tt -->
+
+[%#
+    Following block is responsible for presenting content of "Cancelled" location.
+    It relies on "cancelled_location_content" array ref.
+%]
+[% BLOCK cancelled_location_part %]
+
+    <div class="title with-1-line-above">Cancelled Items</div>
+    [% IF cancelled_location_content %]
+    <table class="data wide-data divided-data" id="cancelled_items">
+        <thead>
+            <tr>
+                <th>SKU</th>
+                <th>Designer</th>
+                <th>Name</th>
+                <th>Size</th>
+                <th>Storage type</th>
+            </tr>
+        </thead>
+        <tbody>
+            [% FOREACH item = cancelled_location_content %]
+            <tr>
+                <td width="15%">
+                    <a a href="/StockControl/Inventory/Overview?product_id=[% item.product_id %]">
+                    [% item.sku %]
+                    </a>
+                </td>
+                <td width="30%">[% item.designer %]</td>
+                <td width="30%">[% item.name %]</td>
+                <td width="10%">[% item.size %]</td>
+                <td width="15%">[% item.storage_type.name %]</td>
+            </tr>
+            [% END %]
+        </tbody>
+    </table>
+    [% ELSE %]
+        <p>Location is empty</p>
+    [% END %]
+
+[% END %]
+
+
+[% UNLESS container_id %]
+    <div class="with-1-line-above">
+        <form name="putaway_prep_packing_exception" method="post" action="/GoodsIn/PutawayPrepPackingException">
+            [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+            <div class="formrow divideabove dividebelow">
+                <label for="scan_value">Container ID</label>
+                <input class="scanable" type="text" name="container_id" value="" />
+                <input type="hidden" name="scan_container" value=1 />
+                <input class="button" type="submit" name="scan" value="Go!" />
+            </div>
+        </form>
+    </div>
+
+    [% PROCESS cancelled_location_part %]
+
+[% ELSE %]
+
+<div>
+    <form name="putaway_prep_packing_exception" method="post" action="/GoodsIn/PutawayPrepPackingException">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+        <div class="formrow divideabove">
+            <label>Container ID</label><p>[% container_id %]</p>
+            <input type="hidden" name="container_id" value="[% container_id %]">
+        </div>
+
+        <input type="hidden" name="group_id" value="[% group_id %]" >
+
+        <div class="formrow dividebelow">
+            <label for="scan_value">[% IF remove_sku %]SKU to be removed[% ELSE %]SKU[% END %]</label>
+            <input class="scanable" type="text" name="sku" value="" />
+            <input type="hidden" name="scan_sku" value=1 />
+            <input class="button" type="submit" name="scan" value="Go!" />
+        </div>
+
+        [% IF container_content.size %]
+            <div class="with-1-line-above">
+                [% INCLUDE page_elements/putaway_prep_container_content.tt
+                    content=container_content
+                    table_id = 'container_content'
+                %]
+            </div>
+
+            [% INCLUDE page_elements/putaway_prep_prl_specific_questions.tt
+                prl_questions = prl_questions
+                container_complete_selector = 'input[name=container_complete]'
+            %]
+
+            <div class="formrow buttons formend aftertable">
+                <input class="button" type="submit" name="toggle_scan_mode" value="[% IF remove_sku %]Cancel[% ELSE %]Remove SKU[% END %]">
+                <input type="hidden" name="remove_sku" value="[% remove_sku %]">
+
+                <input class="button" type="submit" name="container_complete"  value="Complete container">
+            </div>
+
+        [% END %]
+
+    </form>
+</div>
+
+[% PROCESS cancelled_location_part %]
+
+[% END %]
+
+<!-- TT END : root/base/stocktracker/goods_in/putaway_problem_resolution.tt -->

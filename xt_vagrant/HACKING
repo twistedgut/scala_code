@@ -1,0 +1,73 @@
+SET UP YOUR DEVELOPMENT MACHINE USING VAGRANT
+=============================================
+
+1. First, install vagrant + virtual box on your host machine
+
+2. Add Net-a-porter's CentOS 6.6 image if you don't have it.
+   Check with: vagrant box list
+   Add with: vagrant box add nap-centos-66 http://pulp.wtf.nap/pulp/repos/vagrant/vagrant-centos-66-1427729137.box
+   This only needs to be done once.
+
+2. Clone this XT source code repo like this:
+
+    git clone ssh://git@stash.vm.wtf.nap:7999/bak/xt.git
+    cd xt
+
+4. commission and start your own xtracker dev machine and blank database instance:
+
+   vagrant up
+
+5. connect to the app box
+
+   vagrant ssh app
+
+You'll be prompted for a valid database hostname/password on your first login.
+Speak to someone temporarily about getting one. If you use the vagrant
+style database below, it uses port-forwarding, so the application's
+database server would be the ip of your host machine and you can use
+"xtracker" to connect to a goh database you will make shortly..
+
+Other vagrant commands that are good to know:
+    - vagrant halt (shutdown your vm)
+    - vagrant destroy (destroy a vm so you can recommission it)
+
+SET UP YOUR DEVELOPMENT DATABASE
+================================
+
+The XTracker keeps data in a postgres sql database (current version 9.1+).
+
+This project:
+    http://stash.vm.wtf.nap:7990/projects/WHM/repos/ffm-postgresql/browse
+
+Will give you a vagrant file and a VM running postgresql server. You
+can alternatively install postgres on your desktop machine (generally
+recommended because it's quicker) or alternatively spin up a database
+in OpenStack and point your application there.
+
+
+CREATING AN EMPTY DATABASE
+==========================
+
+Once you have a database instance you need to install a valid empty
+database as well as run recent database patches and so forth. Run
+the commands below to bridge this gap:
+
+cd /vagrant     # or root of prl source code tree
+                # in vagrant your ~/.bashrc sources the env.
+                # if you don't use vagrant you should do this
+
+# db_schema/hostname the same as above ^
+./script/download_blank_db.pl -d 1 -t <db_schema> -T <db_hostname>
+./script/deploy/apply_db_patches.pl
+
+STARTING THE APPS ON A DEV MACHINE
+===================================
+
+This command will start the XTracker User Interface:
+
+  ./t/TEST -start
+
+To run tests:
+
+  prove -lr t
+

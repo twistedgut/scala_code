@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ORDERS>
+  <ORDER O_ID="1473328" ORDER_DATE="2011-05-13 16:55" CHANNEL="NAP-INTL" CUST_ID="1097621" CUST_IP="10.5.2.33" USED_STORED_CREDIT_CARD="T" LOGGED_IN_USERNAME="suma.binger@net-a-porter.com">
+    <TENDER_LINE TL_ID="1505917" TYPE="Card" RANK="1">
+      <VALUE CURRENCY="GBP">500.00</VALUE>
+      <PAYMENT_DETAILS>
+        <PRE_AUTH_CODE>30002754</PRE_AUTH_CODE>
+      </PAYMENT_DETAILS>
+    </TENDER_LINE>
+    <BILLING_DETAILS>
+      <NAME>
+        <TITLE>Miss</TITLE>
+        <FIRST_NAME>suma</FIRST_NAME>
+        <LAST_NAME>binger</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>36, swabey road</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2>Langley</ADDRESS_LINE_2>
+        <ADDRESS_LINE_3>36, swabey road</ADDRESS_LINE_3>
+        <TOWNCITY>Slough</TOWNCITY>
+        <COUNTY>Berkshire</COUNTY>
+        <STATE />
+        <POSTCODE>SL3 8NP</POSTCODE>
+        <COUNTRY>GB</COUNTRY>
+      </ADDRESS>
+      <CONTACT_DETAILS>
+        <TELEPHONE TYPE="HOME" />
+        <TELEPHONE TYPE="MOBILE">(NULL)</TELEPHONE>
+        <TELEPHONE TYPE="OFFICE">07849043880</TELEPHONE>
+        <EMAIL>suma.binger@net-a-porter.com</EMAIL>
+      </CONTACT_DETAILS>
+    </BILLING_DETAILS>
+    <VIRTUAL_DELIVERY_DETAILS>
+      <EMAIL>suma.binger@net-a-porter.com</EMAIL>
+      <ORDER_LINE_VIRTUAL_VOUCHER OL_ID="6247060" DESCRIPTION="500 GBP - VIRTUAL GIFT CARD" SKU="1900040-999" QUANTITY="1" OL_SEQ="1">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">500.00</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+        <TO>suma</TO>
+        <FROM>Suman Bing</FROM>
+        <GIFT_MESSAGE>bing</GIFT_MESSAGE>
+      </ORDER_LINE_VIRTUAL_VOUCHER>
+    </VIRTUAL_DELIVERY_DETAILS>
+    <GROSS_TOTAL>
+      <VALUE CURRENCY="GBP">500.00</VALUE>
+    </GROSS_TOTAL>
+    <POSTAGE>
+      <VALUE CURRENCY="GBP">0.00</VALUE>
+    </POSTAGE>
+  </ORDER>
+</ORDERS>
+

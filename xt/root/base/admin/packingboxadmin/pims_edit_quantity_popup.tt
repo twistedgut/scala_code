@@ -1,0 +1,27 @@
+    <a href="javascript:void(0)" rel="popup-[% box.id %]" class="topopup">[+]</a>
+
+    <div id="popup-[% box.id %]" class="toPopup">
+        <div class="close"></div>
+            <span class="ecs_tooltip">Press Esc to close <span class="arrow"></span></span>
+            <div id="popup_content">
+                <form id="quantityAdjustForm">
+                    <label>Quantity adjustment for [% box.box %] in [% channel_data.dc_name %]</label>
+                    <table>
+                        <tr>
+                            <td>Quantity:</td>
+                            <td><input id="tribble" name="tribble" type="text" value="Boo"></td>
+                        </tr>
+                        <tr>
+                            <td>Reason:</td>
+                            <td><input id="reason" name="reason" type="text" value="Drop down goes here"></td>
+                        </tr>
+                        <tr>
+                            <td valign="top">Comment:</td>
+                            <td><textarea id="comment" name="comment" cols="32" rows="3"></textarea></td>
+                        </tr>
+                    </table>
+                    <input id="submitform" name="submit" type="button" value="Submit">
+                </form>
+            </div>
+        </div>
+    </div>

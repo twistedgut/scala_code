@@ -1,0 +1,199 @@
+#!/usr/bin/env perl
+## no critic(ProhibitExcessMainComplexity,ProhibitUselessNoCritic)
+use NAP::policy "tt";
+use autodie ':default';
+use Getopt::Long;
+use Pod::Usage;
+use FindBin::libs;
+use FindBin::libs qw( base=lib_dynamic );
+use XTracker::Image;
+use XTracker::Config::Local qw( config_var );
+use XTracker::Database qw/get_database_handle/;
+use XTracker::Role::WithAMQMessageFactory;
+use XT::DC::Messaging::Producer::WMS::PreAdvice;
+use JSON::XS;
+use List::MoreUtils 'uniq';
+use Data::Dump 'pp';
+
+my (@skus,$sku_file,$fake,$batch_size,$batch_delay);
+my $schema = get_database_handle( {
+    name => 'xtracker_schema',
+} );
+my $var_rs = $schema->resultset('Public::Variant');
+my $vvar_rs = $schema->resultset('Voucher::Variant');
+my $prod_rs = $schema->resultset('Public::Product');
+my $vprod_rs = $schema->resultset('Voucher::Product');
+
+my %product;
+
+sub handle_sku_or_pid {
+    my ($sku) = @_;
+
+    my $prod;my @skus;
+    if ($sku =~ /-/) {
+        my $var= $var_rs->find_by_sku($sku,undef,1)
+            || $vvar_rs->find_by_sku($sku,undef,1);
+        return unless $var;
+
+        $prod = $var->product;
+        @skus= $var->sku;
+    }
+    else {
+        if ($prod = $prod_rs->find({id => $sku })) {
+            @skus = map { $_->sku } $prod->variants;
+        }
+        elsif ($prod = $vprod_rs->find({id => $sku })) {
+            @skus = $prod->sku;
+        }
+        return unless $prod;
+
+    }
+    my $channel = eval { $prod->get_product_channel->channel->name };
+    if (!$channel) { # we may get products that are inactive in all channels
+        warn $@;
+        return;
+    }
+    my $p=$product{$prod->id}||={
+        product => $prod,
+        skus => [],
+        channel => $channel,
+    };
+    push @{$p->{skus}},@skus;
+    return 1;
+}
+
+my $p=Getopt::Long::Parser->new(
+    config => [qw(
+        no_auto_abbrev
+        no_getopt_compat
+        no_gnu_compat
+        no_permute
+        no_bundling
+        no_ignore_case
+        no_auto_version
+        no_auto_help
+             )],
+);
+my $help;
+$p->getoptions(
+    'file|f=s' => \$sku_file,
+    'batch|b=i' => \$batch_size,
+    'delay|d=i' => \$batch_delay,
+    'fake' => \$fake,
+    'help|h' => \$help,
+) or pod2usage(2);
+
+pod2usage(1) if $help;
+
+@skus=@ARGV;
+
+my @wrong_skus = grep {! handle_sku_or_pid($_) } @skus;
+if (@wrong_skus) {
+    warn "These are not valid SKUs/PIDs: @wrong_skus\n";
+}
+
+if ($sku_file) {
+    open my $f,'<',$sku_file;
+    while (my $s=<$f>) {
+        chomp $s;
+        if (handle_sku_or_pid($s)) {
+            push @skus,$s;
+        }
+        else {
+            push @wrong_skus,$s;
+            warn "Invalid SKU/PID $s at line $. of $sku_file\n";
+        }
+    }
+}
+
+warn "Ignoring wrong SKUs/PIDs, working on the rest.\n" if @wrong_skus && @skus;
+if (!@skus) {
+    warn "No valid SKU/PID, exiting\n";
+    exit 1;
+}
+
+my $factory = XTracker::Role::WithAMQMessageFactory->build_msg_factory;
+
+$batch_size ||= keys %product; # default: send them all
+
+my $uniq=time();my $to_send_before_delay=$batch_size;
+for my $pid (sort { $a <=> $b } keys %product) {
+    if ($to_send_before_delay <=0) {
+        $to_send_before_delay=$batch_size;
+        print "* sleeping $batch_delay seconds before next batch\n";
+        sleep $batch_delay;
+    }
+
+    my $prod=$product{$pid}->{product};
+    my @skus=sort {$a cmp $b} uniq(@{$product{$pid}->{skus}});
+    my $channel=$product{$pid}->{channel};
+
+    my $description = $prod->wms_presentation_name;
+
+    my $live;
+    if ($prod->can('live')) {
+        # these are vouchers, which are not channelized
+        $live=$prod->live;
+    } else {
+        my $product_channel = $prod->get_product_channel;
+        $live=$product_channel->live;
+    }
+    my $images = get_images({
+        product_id => $prod->id,
+        live => $live,
+        size => 'm',
+        schema => $schema,
+    });
+    my $image_url=$images->[0];
+    if ($image_url !~ m{^http://}) {
+        $image_url = "http://xtracker.net-a-porter.com/$image_url";
+    }
+
+    my $pgid = "f-$pid$uniq";
+    my $payload = {
+        version => '1.0',
+        pgid => $pgid,
+        stock_status => 'main',
+        channel => $channel,
+        destination => 'main',
+        is_return => JSON::XS::false,
+        items => [ {
+            pid => $pid,
+            description => $description,
+            storage_type => ( eval { lc $prod->storage_type->iws_name } || 'flat' ),
+            skus => [
+                map {
+                    +{
+                        sku => $_,
+                        quantity => 0,
+                    }
+                } @skus,
+            ],
+        } ],
+    };
+    # stupid hack to not slow live IWS down (due to firewall, they
+    # time-out when trying to talk to the XT web server)
+    if ($image_url !~ m{/blank\.\w+$} && $image_url !~ m{//xtracker\.}) {
+        $payload->{items}[0]{photo_url} = $image_url;
+    }
+
+    my $header = {
+        type => 'pre_advice',
+    };
+    XT::DC::Messaging::Producer::WMS::PreAdvice->validate($header,$payload);
+
+    $payload->{'@type'} = 'pre_advice';
+
+    if ($fake) {
+        print pp($header),"\n";
+        print pp($payload),"\n";
+    }
+    else {
+        $factory->send(
+            config_var('Producer::WMS::PreAdvice','destination'),
+            $header,$payload
+        );
+        print "PID: $pid PGID: $pgid\n";
+    }
+    --$to_send_before_delay;
+};

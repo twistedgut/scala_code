@@ -1,0 +1,89 @@
+[%- IF template_type == 'csv' -%]
+"Product ID","Name","Description","Designer","Style no","Colour Code","Colour","Season","Type","Quantity",
+
+[%- FOREACH product = products.sort('id') -%]
+[%- SET id = product.id -%]
+"[% product.id %]","[% product.name || '[ Name Required ]' %]","[% product.description %]","[% product.designer %]","[% product.style_number %]","[% product.designer_colour_code %]","[% IF product.colour && product.colour != 'Unknown' %][% product.colour %][% ELSIF product.designer_colour %][% product.designer_colour %] (des)[% ELSE %]None[% END %]","[% product.season %]","[% product.product_type %]","[% product.quantity %]",
+
+[%- END -%]
+[%- ELSE -%]
+
+<div id='search_results'>
+
+	[% PROCESS shared/pager.tt url_suffix_params=search_terms,record_label='products',url_path=uri %]
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <thead>            
+            <tr>
+                <td colspan="11" class="dividerHeader"></td>
+            </tr>
+            <tr height="24"> 
+                <td width="7%" class="tableHeader">&nbsp;&nbsp;&nbsp;PID</td>
+                <td width="2%" class="tableHeader">&nbsp;</td>                
+                <td width="15%" class="tableHeader">Designer</td>
+                <td width="20%" class="tableHeader">Description</td>
+                <td width="9%" class="tableHeader">Style No</td>
+                <td width="9%" class="tableHeader">Colour</td>
+                <td width="10%" class="tableHeader">Season</td>
+                <td width="10%" class="tableHeader">Department</td>
+                <td width="10%" class="tableHeader">Type</td>
+                <td width="5%" class="tableHeader">Qty</td>
+            </tr>
+            <tr>
+                <td colspan="11" class="dividerHeader"></td>
+            </tr>
+        </thead>
+        <tbody>
+            [% FOREACH product = products %]
+            [% SET id = product.id %]
+                <tr>
+                    <td colspan="11" style="height: 10px"></td>
+                </tr>
+                <tr valign="top" height="20">
+                    <td align="center">
+                        [% IF images.$id %]
+                        <a href="[% IF department_id == 1 %]FinanceView[% ELSE %]Overview[% END %]?product_id=[% product.id %]"><img class="product" src="[% images.$id %]" width="70" border="0" hspace="3"></a><br />
+                        <a href="[% IF department_id == 1 %]FinanceView[% ELSE %]Overview[% END %]?product_id=[% product.id %]">[% product.id %]</a>
+                        [% ELSE %]
+                        <a href="[% IF department_id == 1 %]FinanceView[% ELSE %]Overview[% END %]?product_id=[% product.id %]"><img class="product" src="/images/blank.gif" height="105" width="75" hspace="3"></a><br />
+                        <a href="[% IF department_id == 1 %]FinanceView[% ELSE %]Overview[% END %]?product_id=[% product.id %]">[% product.id %]</a>
+                        [% END %]
+                    </td>
+                    <td>&nbsp;</td>
+                    <td style="padding-top: 10px">[% product.designer %]</td>
+                    <td style="padding-top: 10px"><b>[% product.name || '[ Name Required ]' %]</b><br /> [% product.description %]</td>                    
+                    <td style="padding-top: 10px">[% product.style_number %]</td>
+                    <td style="padding-top: 10px">
+                    [% IF product.colour && product.colour != 'Unknown' %]
+                        [% product.colour %]
+                    [% ELSIF product.designer_colour %]
+                        [% product.designer_colour %] (des)
+                    [% ELSE %]
+                        None
+                    [% END %]
+                    
+                    <!--[% IF product.designer_colour_code %]<br /><br /><b>Code:</b>&nbsp;[% product.designer_colour_code %][% END %]-->
+                    </td>
+                    <td style="padding-top: 10px">[% product.season %]<br /><br />[% product.act %]</td>
+                    <td style="padding-top: 10px">[% product.department %]</td>
+                    <td style="padding-top: 10px">[% product.product_type %]</td>
+                    <td style="padding-top: 10px">[% product.quantity %]</td>
+                </tr>
+                <tr>
+                    <td colspan="11" style="height: 15px"></td>
+                </tr>
+                <tr>
+                    <td colspan="11" class="divider"></td>
+                </tr>
+            [% END %]
+		</tbody>
+	</table>
+
+	[% PROCESS shared/pager.tt url_suffix_params=search_terms,record_label='products',url_path=uri %]
+
+</div>
+
+<br />
+<br />
+
+[%- END -%]

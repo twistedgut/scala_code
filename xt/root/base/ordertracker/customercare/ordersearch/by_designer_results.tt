@@ -1,0 +1,35 @@
+[%-
+    SET channel_class = "";
+    IF file_details.channel;
+    THEN;
+        channel_class = 'title-' _ file_details.channel.business.config_section;
+    END;
+-%]
+<a href="[% c.uri_for( c.controller.action_for('by_designer'), [] ) %]" title="Back to Search Results">Back to Search Results</a>
+<h1 class="title [% channel_class %]">Search Details</h1>
+<div id="search_result_details">
+    <div class="formrow divideabove dividebelow">
+        <label>Operator:</label>
+        <p>[% file_details.operator.name %]</p>
+    </div>
+    <div class="formrow dividebelow">
+        <label>Designer:</label>
+        <p>[% file_details.designer.designer %]</p>
+    </div>
+    <div class="formrow dividebelow">
+        <label>Channel:</label>
+        [% IF file_details.channel %]
+            <p class="[% channel_class %]">[% file_details.channel.name %]</p>
+        [% ELSE %]
+            <p>All</p>
+        [% END %]
+    </div>
+</div>
+
+<h1 class="title [% channel_class %]">Orders</h1>
+<form id="search_resulst_list" name="search_resulst_list">
+    <input type="hidden" name="search_results_title" id="search_results_title" value="[% file_details.number_of_records %] records found on [% file_details.datetime.format_cldr( 'yyyy-MM-dd @ HH:mm') %]" />
+    <input type="hidden" name="search_results_file" id="search_results_file" value="[% result_file %]" />
+    <input type="hidden" name="search_channel_id" id="search_channel_id" value="[% ( file_details.channel ? file_details.channel.id : 0 ) %]" />
+</form>
+<div id="results_list"></div>

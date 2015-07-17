@@ -1,0 +1,75 @@
+<h3 class="title-[% channel_data.channel_config.$channel %]">Outer Boxes</h3>
+<table class="wide-data divided-data data" id="outer-boxes">
+    <thead>
+        <tr>
+            <th>Sort Order</th>
+            <th>Box Name</th>
+            <th>Quantity</th>
+            <th>Weight</th>
+            <th>Length</th>
+            <th>Width</th>
+            <th>Height</th>
+            <th>Label ID</th>
+            <th>Is conveyable</th>
+            <th>Requires tote</th>
+            <th>Is Active</th>
+        </tr>
+    </thead>
+    <tbody>
+        [% FOREACH id = channel_data.channel_box_list.$channel.keys.nsort %]
+            [% box = channel_data.channel_box_list.$channel.$id %]
+            [% IF box.active %]
+                <tr>
+                    <td>[% box.sort_order %]</td>
+                    <td><a href="[% c.uri_for_action('/admin/packingboxadmin/edit_box', [ form_box_type , box.id ]) %]">
+                        [% box.box %]</a></td>
+                    <td>[% key = box.pims_code; channel_data.box_quantities.$key || '?' %][% INCLUDE admin/packingboxadmin/pimspopup.tt %]</td>
+                    <td>[% box.weight %]</td>
+                    <td>[% box.length %]</td>
+                    <td>[% box.width %]</td>
+                    <td>[% box.height %]</td>
+                    <td>[% box.label_id %]</td>
+                    <td>[% box.is_conveyable ? '<img src="/images/icons/tick.png" alt="y" border="0" />' : '<img src="/images/icons/cross.png" alt="n" border="0" />' %]</td>
+                    <td>[% box.requires_tote ? '<img src="/images/icons/tick.png" alt="y" border="0" />' : '<img src="/images/icons/cross.png" alt="n" border="0" />' %]</td>
+                    <td><img src="/images/icons/tick.png" alt="y" border="0" /></td>
+                </tr>
+            [% END %]
+        [% END %]
+    </tbody>
+</table>
+
+[% IF (channel_data.channel_box_inactive.$channel.keys.size) %]
+    <h3 class="title-[% channel_data.channel_config.$channel %]">Outer Boxes (inactive)</h3>
+    <table class="wide-data divided-data data" id="outer-inactive">
+        <thead>
+            <tr>
+                <th>Box Name</th>
+                <th>Weight</th>
+                <th>Length</th>
+                <th>Width</th>
+                <th>Height</th>
+                <th>Label ID</th>
+                <th>Is conveyable</th>
+                <th>Requires tote</th>
+                <th>Is Active</th>
+            </tr>
+        </thead>
+        <tbody>
+            [% FOREACH id = channel_data.channel_box_inactive.$channel.keys.nsort %]
+            [% box = channel_data.channel_box_inactive.$channel.$id %]
+                <tr>
+                    <td><a href="[% c.uri_for_action('/admin/packingboxadmin/edit_box', [ form_box_type , box.id ]) %]">
+                        [% box.box %]</a></td>
+                    <td>[% box.weight %]</td>
+                    <td>[% box.length %]</td>
+                    <td>[% box.width %]</td>
+                    <td>[% box.height %]</td>
+                    <td>[% box.label_id %]</td>
+                    <td>[% box.is_conveyable ? '<img src="/images/icons/tick.png" alt="y" border="0" />' : '<img src="/images/icons/cross.png" alt="n" border="0" />' %]</td>
+                    <td>[% box.requires_tote ? '<img src="/images/icons/tick.png" alt="y" border="0" />' : '<img src="/images/icons/cross.png" alt="n" border="0" />' %]</td>
+                    <td><img src="/images/icons/cross.png" alt="n" border="0" /></td>
+                </tr>
+            [% END %]
+        </tbody>
+    </table>
+[% END %]

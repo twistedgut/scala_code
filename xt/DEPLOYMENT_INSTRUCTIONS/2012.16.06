@@ -1,0 +1,89 @@
+=====================================
+XT 2012.16.06 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               : 08/01/2013
+Cherwell           : 
+Release Manager    : Kaushal
+Build Manager      : Tom
+TechOps            : Ozscar
+Backend Developer  : 
+Frontend Developer : 
+QA                 : 
+PCI Authorised by  : 
+
+2 - CHANGELOG
+-------------
+http://gitosis.net-a-porter.com/cgit/xt/tree/CHANGES/2012.16.06?h=release/2012.16
+
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2012.16/xt-2012.16.06-0.noarch.rpm
+
+Do this for DC1, DC2 and DC3.
+
+4 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+
+Please add the following keys to XT's live nap properties file:
+
+PS-1004
+
+SHIPPING_DESCRIPTION_DESTINATION                        /topic/product_info
+
+PS-1429
+
+PACKAGING_DESCRIPTION_DESTINATION                        /topic/product_info
+
+5 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+sudo yum install xt
+
+6 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+
+Please run the following scripts after the web patches have been deployed:
+
+PS-1004
+
+# connects to web db and copies down shipping information
+sudo -u nobody perl -I/opt/xt/deploy/xtracker/lib /opt/xt/deploy/xtracker/script/patches/PS-1004-migrate-shipping-skus.pl -v
+
+# sends shipping information to the product service
+sudo -u nobody perl -I/opt/xt/deploy/xtracker/lib /opt/xt/deploy/xtracker/script/BAU/send-all-shipping-products.pl -v
+
+PS-1429 
+
+# connects to the web db and copies down packaging information
+sudo -u nobody perl -I/opt/xt/deploy/xtracker/lib /opt/xt/deploy/xtracker/script/patches/PS-1429-migrate-packaging-skus.pl -v
+
+# sends packaging information to the product service
+sudo -u nobody perl -I/opt/xt/deploy/xtracker/lib /opt/xt/deploy/xtracker/script/BAU/send-all-packaging-products.pl -v
+
+All four should run in minutes at worst.
+
+7 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

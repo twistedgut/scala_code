@@ -1,0 +1,24 @@
+[% IF data_set.total > 0 %]
+	[% SET perc = 100 /  data_set.total %]
+[% ELSE %]
+	[% SET perc = 0 %]
+[% END %]
+
+[% SET not_done_perc =  data_set.not_done * perc %]
+
+<table cellpadding="0" cellspacing="0" border="0">
+	<tr>
+		[% SET counter = 1 %]
+		[% WHILE counter < ( not_done_perc + 1) %]
+		   <td><img src="/images/dark_grey.gif" width="1" height="15" alt="[% not_done_perc FILTER format('%02.2f') %]%"></td>
+		   <td><img src="/images/blank.gif" width="1" height="15" alt="[% not_done_perc FILTER format('%02.2f') %]%"></td>
+		   [% counter = counter + 1 %]
+		[% END %]
+
+		[% WHILE counter < 101 %]
+		   <td><img src="/images/grey.gif" width="1" height="15" alt="[% not_done_perc FILTER format('%02.2f') %]%"></td>
+		   <td><img src="/images/blank.gif" width="1" height="15" alt="[% not_done_perc FILTER format('%02.2f') %]%"></td>
+		   [% counter = counter + 1 %]
+		[% END %]
+	</tr>
+</table>

@@ -1,0 +1,210 @@
+=====================================
+XT 2012.10.00 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               : 02/08/2012
+Cherwell           : 
+Release Manager    : Sham
+Build Manager      : Tom/Maria
+TechOps            : Luis/Ana
+Backend Developer  : 
+Frontend Developer : 
+QA                 : 
+PCI Authorised by  : 
+
+2 - CHANGELOG
+-------------
+http://gitosis.net-a-porter.com/cgit/xt/tree/CHANGES/2012.10.00?h=release/2012.10
+
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2012.10/xt-2012.10.00-0.noarch.rpm
+
+Do this for DC1, DC2 and DC3.
+
+4 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+4.1 NEW PROPERTIES:
+-------------------
+
+Add the following lines to nap.properties:
+
+    # parallel order importer config
+    #
+    MAX_ORDERS_PER_IMPORTER_DC1     17
+    MAX_CONCURRENT_IMPORTERS_DC1    1
+    MAX_FILES_PER_SPLITTER_DC1      50
+    MAX_CONCURRENT_SPLITTERS_DC1    3
+    MAX_ORDERS_PER_IMPORTER_DC2     17
+    MAX_CONCURRENT_IMPORTERS_DC2    1
+    MAX_FILES_PER_SPLITTER_DC2      50
+    MAX_CONCURRENT_SPLITTERS_DC2    3
+    MAX_ORDERS_PER_IMPORTER_DC3     17
+    MAX_CONCURRENT_IMPORTERS_DC3    1
+    MAX_FILES_PER_SPLITTER_DC3      50
+    MAX_CONCURRENT_SPLITTERS_DC3    3
+
+These properties configure the default settings for the parallel order
+importer.
+
+5 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+sudo yum install xt
+
+6 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+Execute the following command on both DCs: perl /opt/xt/deploy/xtracker/script/oneoffs/whm/whm-441_replace_sample_with_main_stock_in_customer_orders.pl
+Email the output to whm-dev@net-a-porter.com
+
+Add the following lines to /etc/cups/printers.conf on both DCs:
+
+<Printer stock_in_01>
+Info stock_in_01
+Location dc1
+DeviceURI lpd://stock_in_01/auto
+State Idle
+StateTime 1304952817
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer stock_in_02>
+Info stock_in_02
+Location dc1
+DeviceURI lpd://stock_in_02/auto
+State Idle
+StateTime 1304952817
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer stock_in_03>
+Info stock_in_03
+Location dc1
+DeviceURI lpd://stock_in_03/auto
+State Idle
+StateTime 1304952817
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer stock_in_04>
+Info stock_in_04
+Location dc1
+DeviceURI lpd://stock_in_04/auto
+State Idle
+StateTime 1304952817
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+<Printer stock_in_05>
+Info stock_in_05
+Location dc1
+DeviceURI lpd://stock_in_05/auto
+State Idle
+StateTime 1304952817
+Accepting Yes
+Shared Yes
+JobSheets none none
+QuotaPeriod 0
+PageLimit 0
+KLimit 0
+OpPolicy default
+ErrorPolicy retry-job
+</Printer>
+
+Add the folowing IPs in /etc/hosts file on DC1:
+10.3.3.197 stock_in_01
+10.3.3.207 stock_in_02
+
+Add the folowing IPs in /etc/hosts file on DC2:
+10.7.7.51 stock_in_01
+10.7.7.66 stock_in_02
+
+
+
+If you wish to switch to the parallel order importer, make these
+changes to /etc/cron.d/xt-common (presumably via puppet):
+
++ comment out the existing entry for .../fcp_order_import.pl
++ add these entries:
+
+  ## parallel order importer tasks
+  #
+  # grab XML files and bust them into stream directories
+  */5 * * * * root XTDC_BASE_DIR=/opt/xt /opt/xt/deploy/xtracker/script/data_transfer/web_site/order_import/parallelize-inbound-files.pl >> /tmp/parallel_order_importer-inbound.log 2>&1
+  #
+  # launch order importer processes against input streams
+  4,9,14,19,24,29,34,39,44,49,54,59 * * * * root XTDC_BASE_DIR=/opt/xt /opt/xt/deploy/xtracker/script/data_transfer/web_site/order_import/process-import-streams-singleton.pl >> /tmp/parallel_order_importer-process.log 2>&1
+
+Note: the minutes settings on these are guesses that run order
+inhalation every five minutes, as before, and that run order
+processing four minutes after every five minute inhalation.  Feel free
+to twiddle with this until it seems to be working effectively, without
+accidentally running too much (which ought to be harmless, but will be
+somewhat wasteful of resources).
+
+To switch back to the old serial order importer, undo the above changes.
+
+
+To enable conversion of pre-orders to actual orders, add the following
+to /etc/cron.d/xt-common:
+
+  ## create orders from pre-orders as stock arrives
+  #
+  47 */2 * * * root XTDC_BASE_DIR=/opt/xt /opt/xt/deploy/xtracker/script/preorder/inform_website.pl >/tmp/inform_website.out 2>&1
+
+Note that the '47' above is merely a suggestion -- choose any
+reasonable time during the hour to run the script.
+
+NOTE: do not add the .../inform_website.pl script to cron until the
+webapp is updated, otherwise there will be no consumer for the
+messages.
+
+
+7 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

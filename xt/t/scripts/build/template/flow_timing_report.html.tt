@@ -1,0 +1,41 @@
+[%
+    page_title = 'Flow Method Timing Report';
+    USE decimal2 = format('%0.2f');
+-%]
+<html>
+    <head>
+        <title>[% page_title %]</title>
+        <style type="text/css">
+[% INCLUDE flow_timing_report.css.tt %]
+        </style>
+    </head>
+    <body>
+        <div id="content">
+            <h1>[% page_title %]</h1>
+            <table class="data">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th class="numeric">Count</th>
+                        <th class="numeric">Min</th>
+                        <th class="numeric">Max</th>
+                        <th class="numeric">Average</th>
+                        <th class="numeric">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                [%- FOREACH timing_row IN timing_rows %]
+                    <tr>
+                        <td>[% timing_row.method_name %]</td>
+                        <td class="numeric">[% timing_row.count %]</td>
+                        <td class="numeric">[% decimal2(timing_row.min) %]</td>
+                        <td class="numeric">[% decimal2(timing_row.max) %]</td>
+                        <td class="numeric">[% decimal2(timing_row.average) %]</td>
+                        <td class="numeric">[% decimal2(timing_row.total) %]</td>
+                    </tr>
+                [%- END %]
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,30 @@
+<pre>
+
+h1. CANDO - Customer & Order Management
+    * CANDO-583: Extra value to source reservations field
+    * CANDO-580: Premier Fix Part 2
+    * CANDO-604: Enable 'Release Exchange Shipment' Button
+    * CANDO-643: BUG FIX, Use a FOREACH instead of a WHILE TT Document
+    * CANDO-511: BUG FIX, Order Importer - Public Sale Data not being inserted into XTDC DB
+    * CANDO-577: Extract RMA emails into template format 
+    * CANDO-637: Enable stock level alerting for Mr Porter web app
+
+h1. WHM - Warehouse Management
+    * WHM-3: Cannot QC items
+    * WHM-26: Prevent QC failing a shipment after QC pass and payment taken
+    * WHM-27: Prevent Channel transfer when stock is booked out, in transit or transfer pending
+    * WHM-52: Run a daily stock reconciliation report
+    * WHM-59: Multi-shipment tote: cancelled & missing shipment is not marked as missing
+    * WHM-298: (Recodes page) Some of the 'Products in Transit' fail to recode (Channel Transfer items)
+    * WHM-304: Add 'Personal Shopping' to sample request type drop-down
+    * WHM-310: Prevent cancellation of a sample shipment after packing
+    * WHM-459: Invalid SKU link on the Set DDU status page
+    * WHM-462: Log in xTracker when a shipment is scanned at packing
+    * WHM-512: stock_received message for recode doesn't update web stock
+    * WHM-530: Enable sticky pages for packing in DC1
+    * WHM-574: Add XT inventory link to Check Shipment Exception item rows
+    * WHM-624: Enable sticky pages for PIPE in DC1
+    * WHM-641: Recode still doesn't update web stock
+    * WHM-694: Fix error on double submit for 'Complete Packing'
+
+</pre>

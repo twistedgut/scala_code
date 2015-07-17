@@ -1,0 +1,66 @@
+<h3 class="title title-[% channel_config.$sales_channel %]">Pre-Order Number: [% pre_order.pre_order_number %]</h3>
+[% PROCESS stocktracker/reservation/common/customerhead.tt %]
+<br>
+<form id="pre_order_item_size_change" name="pre_order_item_size_change" method="post" action="/StockControl/Reservation/PreOrder/ActionChangeItemSize" onsubmit="javascript:return validate_pre_order_item_size_change_form();">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="pre_order_id" value="[% pre_order.id %]">
+    <h3 class="title title-[% channel_config.$sales_channel %]">Select Item(s)</h3>
+    <table class="data wide-data" id="sizechange_pre_order_items">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>SKU</th>
+            <th>Product Name</th>
+            <th>Size</th>
+            <th>Select Item</th>
+            <th>Change To</th>
+        </tr>
+    </thead>
+    <tbody>
+    [% FOREACH item IN pre_order_items %]
+        [%- SET item_id = item.item_obj.id -%]
+        <tr class="dividebelow">
+            <td>&nbsp;</td>
+            <td>[% item.sku %]</td>
+            <td>[% item.name %]</td>
+            <td>[% item.size %] ([% item.designer_size %])</td>
+            <td>
+                [% IF item.can_change_size %]
+                    [% IF item.alt_sizes.size > 0 %]
+                        <input type="checkbox" class="pre_order_select_size" id="pre_order_item-[% item_id %]" name="pre_order_item-[% item_id %]" value="1">
+                    [% ELSE %]
+                        No available sizes
+                    [% END %]
+                [% ELSE %]
+                    [% item.item_obj.pre_order_item_status.status %]
+                [% END %]
+            </td>
+            <td>
+                [% IF item.can_change_size && item.alt_sizes.size > 0 %]
+                    <select class="pre_order_select_alternative" id="item_new_size-[% item_id %]" name="item_new_size-[% item_id %]" disabled="disabled">
+                        <option value="0">Choose an alternative size...</option>
+                        <option value="0">--------------------------------</option>
+                        [% FOREACH altsize = item.alt_sizes %]
+                            [%- SET variant = altsize.variant -%]
+                            <option value="[% variant.id %]">[% variant.designer_size.size %] - [% variant.sku %]
+                                [%-
+                                    IF !altsize.is_available;
+                                    THEN;
+                                        '    SOLD OUT';
+                                    END;
+                                -%]</option>
+                        [% END %]
+                    </select>
+                [% ELSE %]
+                -
+                [% END %]
+            </td>
+        </tr>
+    [% END %]
+    </tbody>
+    </table>
+    <br>
+    <div id="summary__action_forms">
+        <button type="submit" class="button" name="change_size_submit" id="pre_order_item_size_change_submit" value="1">Change Sizes &raquo;</button>
+    </div>
+</form>

@@ -1,0 +1,39 @@
+<h1>Going Going Gone</h1>
+
+<div class="warning">
+    This screen is partially implemented! It was left here because it didn't
+    adversely affect creating existing Outnet Promotional Events.
+</div>
+
+<form>
+    <div id="ft">
+        <div id="promotion_details">
+            <div class="yui-navset">
+                <ul class="yui-nav">
+                    <li class="selected"><a href="#tab1"><em>Basics</em></a></li>
+                    <li><a href="#tab2"><em>Timeframe</em></a></li>
+                    <li><a href="#tab3"><em>Content</em></a></li>
+                </ul>            
+                <div class="yui-content">
+                    <div id="tab1">
+                        [% PROCESS events/ggg/tab_basics.tt %]
+                    </div>
+                    <div id="tab2">
+                        [% PROCESS events/ggg/tab_timeframe.tt %]
+                    </div>
+                    <div id="tab3">
+                        [% PROCESS events/ggg/tab_content.tt %]
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Tabview Magic -->
+<script type="text/javascript">
+    var tabView = new YAHOO.widget.TabView(
+        'promotion_details',
+        { activeIndex: 0, orientation: 'top' }
+    );
+</script>

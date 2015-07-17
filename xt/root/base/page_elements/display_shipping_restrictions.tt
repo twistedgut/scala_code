@@ -1,0 +1,10 @@
+<table>
+    <tr>
+        [% IF is_hazmat %]
+            <td><img class="center" src="/images/product_extras/hazmat.jpg" alt="Hazmat" title="Hazmat" width="50" /></td>
+        [% END %]
+        [% IF is_aerosol %]
+            <td><img class="center" src="/images/product_extras/aerosol.jpg" alt="Aerosol" title="Aerosol" width="50" /></td>
+        [% END %]
+    </tr>
+</table>

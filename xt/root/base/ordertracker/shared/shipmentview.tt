@@ -1,0 +1,650 @@
+[% USE PrintDocs -%]
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td colspan="2"><span class="title title-[% channel_config.$sales_channel %]">Shipment Details</td>
+        <td><img src="/images/blank.gif" width="1" height="1"></td>
+        <td colspan="2"><span class="title title-[% channel_config.$sales_channel %]">Shipment Address</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        <td><img src="/images/blank.gif" width="1" height="1"></td>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td width="130" align="right"><strong>Shipment Number:&nbsp;&nbsp;</strong></td>
+        <td width="190">&nbsp;[% shipment_id %]</td>
+        <td width="50"><img src="/images/blank.gif" width="1" height="24"></td>
+        <td width="130" align="right"><strong>Name:&nbsp;&nbsp;</strong></td>
+        <td width="190">&nbsp;[% ship_address.first_name %] [% ship_address.last_name %]</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        <td><img src="/images/blank.gif" width="1" height="1"></td>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr height="22">
+        <td align="right"><strong>Date:&nbsp;&nbsp;</strong></td>
+        <td>&nbsp;[% shipment.date %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right"><strong>Street Address:&nbsp;&nbsp;</strong></td>
+        <td>&nbsp;[% ship_address.address_line_1 %][% IF ship_address.address_line_2 %]<br>&nbsp;[% ship_address.address_line_2 %][% END %][% IF ship_address.address_line_3 %]<br>&nbsp;[% ship_address.address_line_3 %][% END %]</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        <td><img src="/images/blank.gif" width="1" height="1"></td>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr height="22">
+        <td align="right"><strong>Shipment Type:&nbsp;&nbsp;</strong></td>
+        <td>&nbsp;[% shipment.class %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right"><strong>Town/City:&nbsp;&nbsp;</strong></td>
+        <td>&nbsp;[% ship_address.towncity %]</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        <td><img src="/images/blank.gif" width="1" height="1"></td>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr height="22">
+        <td align="right"><strong>Shipment Class:&nbsp;&nbsp;</strong></td>
+        <td>[% shipment.type %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right"><strong>County/State:&nbsp;&nbsp;</strong></td>
+        <td>&nbsp;[% ship_address.county %]</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        <td><img src="/images/blank.gif" width="1" height="1"></td>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td align="right"><strong>Packing Instruction:&nbsp;&nbsp;</strong></td>
+        <td>&nbsp;[% shipment.packing_instruction %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right"><strong>Postcode:&nbsp;&nbsp;</strong></td>
+        <td>&nbsp;[% ship_address.postcode %]</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        <td><img src="/images/blank.gif" width="1" height="1"></td>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td align="right"><strong>Status:&nbsp;&nbsp;</strong></td>
+        <td>&nbsp;<span class="highlight">[% shipment.status %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right"><strong>Country:&nbsp;&nbsp;</strong></td>
+        <td>&nbsp;[% ship_address.country %]</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        <td><img src="/images/blank.gif" width="1" height="1"></td>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td align="right"><strong>Email:&nbsp;&nbsp;</strong></td>
+        <td>&nbsp;[% shipment.email %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right"><strong>Telephone:&nbsp;&nbsp;</strong></td>
+        <td>&nbsp;[% shipment.telephone %]</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        <td><img src="/images/blank.gif" width="1" height="1"></td>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td align="right"><strong>Destination Code:&nbsp;</strong></td>
+        <td>&nbsp;[% shipment.destination_code %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+        <td align="right"><strong>Mobile Telephone:&nbsp;&nbsp;</strong></td>
+        <td>&nbsp;[% shipment.mobile_telephone %]</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        <td><img src="/images/blank.gif" width="1" height="1"></td>
+        <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    [% IF outward_airway_bill != "none" || return_airway_bill != "none" %]
+        <tr>
+            <td colspan="5" height="30">&nbsp;</td>
+        </tr>
+        [% IF shipment_type_id == 2 %]
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                <td><img src="/images/blank.gif" width="1" height="1"></td>
+                <td colspan="2"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td align="right"><strong>Courier Reference:&nbsp;&nbsp;</strong></td>
+                <td>&nbsp;[% outward_airway_bill %]</td>
+                <td><img src="/images/blank.gif" width="1" height="24"></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                <td><img src="/images/blank.gif" width="1" height="1"></td>
+                <td colspan="2"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        [% ELSE %]
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                <td><img src="/images/blank.gif" width="1" height="1"></td>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td align="right"><strong>Outward Airwaybill:&nbsp;&nbsp;</strong></td>
+                <td>&nbsp;<a href="http://www.dhl.com/publish/g0/en/eshipping/track.high.html?hideTitleText=0&AWB=[% outward_airway_bill %]&type=fasttrack" target="_blank">[% outward_airway_bill %]</a></td>
+                <td><img src="/images/blank.gif" width="1" height="24"></td>
+                <td align="right"><strong>Return Airwaybill:&nbsp;&nbsp;</strong></td>
+                <td>&nbsp;<a href="http://www.dhl.com/publish/g0/en/eshipping/track.high.html?hideTitleText=0&AWB=[% return_airway_bill %]&type=fasttrack" target="_blank">[% return_airway_bill %]</a></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                <td><img src="/images/blank.gif" width="1" height="1"></td>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        [% END %]
+    [% END %]
+</table>
+
+
+[% IF notes.size > 0 %]
+<br><br>
+
+<span class="title title-[% channel_config.$sales_channel %]">Shipment Notes</span><br>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <tr>
+        <td colspan="8" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td class="tableHeader" width="17%">&nbsp;&nbsp;&nbsp;Date</td>
+        <td class="tableHeader" width="33%">Note</td>
+        <td class="tableHeader" width="9%">Type</td>
+        <td class="tableHeader">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td class="tableHeader" width="12%">Operator</td>
+        <td class="tableHeader" width="15%">Dept.</td>
+        <td class="tableHeader" width="7%"></td>
+        <td class="tableHeader" width="7%"></td>
+    </tr>
+    <tr>
+        <td colspan="8" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+[% FOREACH noteid = notes.keys.nsort %]
+    <tr>
+        <td>&nbsp;&nbsp;&nbsp;[% notes.$noteid.date %]</td>
+        <td>[% notes.$noteid.note %]</td>
+        <td>[% notes.$noteid.description %]</td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>[% notes.$noteid.name %]</td>
+        <td>[% notes.$noteid.department %]</td>
+        <td>[% IF notes.$noteid.operator_id == operator_id %]<a href="[% short_url %]Note/[% orders_id %]/Shipment/[% id %]/[% noteid %]">Edit</a>[% END %]</td>
+        <td>[% IF notes.$noteid.operator_id == operator_id %]<a href="[% short_url %]EditNote/Shipment/Delete/[% orders_id %]/[% noteid %]">Delete</a>[% END %]</td>
+    </tr>
+    <tr>
+        <td colspan="8" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+[% END %]
+</table>
+
+[% END %]
+
+<br><br>
+
+[% IF shipment_status_id == 3 %]
+
+<span class="title title-[% channel_config.$sales_channel %]">Shipment Hold</span><br>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td align="right" width="15%"><strong>Held By&nbsp;:&nbsp;</strong></td>
+        <td>[% hold.name %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+    </tr>
+    <tr>
+        <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td align="right" width="15%"><strong>Date Held&nbsp;:&nbsp;</strong></td>
+        <td>[% hold.hold_date %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+    </tr>
+    <tr>
+        <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td align="right" width="15%"><strong>Reason&nbsp;:&nbsp;</strong></td>
+        <td>[% hold.reason %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+    </tr>
+    <tr>
+        <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td align="right" width="15%"><strong>Comment&nbsp;:&nbsp;</strong></td>
+        <td>[% hold.comment %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+    </tr>
+    <tr>
+        <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td align="right" width="15%"><strong>Release Date&nbsp;:&nbsp;</strong></td>
+        <td>[% hold.release_date %]</td>
+        <td><img src="/images/blank.gif" width="1" height="24"></td>
+    </tr>
+    <tr>
+        <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+</table>
+<br>
+<br>
+
+[% END %]
+
+<span class="title title-[% channel_config.$sales_channel %]">Shipment Items</span><br>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <tr>
+        <td colspan="9" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr height="24">
+        <td class="tableHeader">&nbsp;&nbsp;&nbsp;SKU</td>
+        <td class="tableHeader">Name</td>
+        <td class="tableHeader">Designer</td>
+        <td class="tableHeader">Size</td>
+        <td class="tableHeader">Status</td>
+        <td class="tableHeader" align="right">Unit Price&nbsp;&nbsp;&nbsp;</td>
+        <td class="tableHeader" align="right">Tax&nbsp;</td>
+        <td class="tableHeader" align="right">Duties&nbsp;</td>
+        <td class="tableHeader" align="right">Sub-Total&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan="9" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+
+    [% FOREACH itemid = ship_items.keys %]
+
+        [% SET class = "" %]
+
+        [% IF ship_items.$itemid.shipment_item_status_id == SHIPMENT_ITEM_STATUS__CANCEL_PENDING
+                   || ship_items.$itemid.shipment_item_status_id == SHIPMENT_ITEM_STATUS__CANCELLED
+                   || ship_items.$itemid.shipment_item_status_id == SHIPMENT_ITEM_STATUS__LOST
+                   || ship_items.$itemid.shipment_item_status_id == SHIPMENT_ITEM_STATUS__UNDELIVERED %]
+            [% class = " class=\"light\"" %]
+        [% END %]
+
+        <tr height="24">
+            <td[% class %]>&nbsp;&nbsp;&nbsp;<a href="javascript://" onClick="window.open('[% ship_items.$itemid.image.0 %]','viewimage','width=240,height=345,scrollbars=no');" class="noline">[% ship_items.$itemid.sku %]</a>&nbsp;[% 's' IF ship_items.$itemid.special_order_flag == 1 %]</td>
+            <td[% class %]>[% ship_items.$itemid.name %]</td>
+            <td[% class %]>[% ship_items.$itemid.designer %]</td>
+            <td[% class %]>[% IF ship_items.$itemid.short_name != "" %][% ship_items.$itemid.short_name %] [% END %][% ship_items.$itemid.designer_size %][% IF ship_items.$itemid.designer_size != ship_items.$itemid.size %] ([% ship_items.$itemid.size %])[% END %]</td>
+            <td[% class %]><strong>[% ship_items.$itemid.status %]</strong></td>
+            <td[% class %] align="right">[% ship_items.$itemid.unit_price %]&nbsp;&nbsp;&nbsp;</td>
+            <td[% class %] align="right">[% ship_items.$itemid.tax %]&nbsp;</td>
+            <td[% class %] align="right">[% ship_items.$itemid.duty %]&nbsp;</td>
+            <td[% class %] align="right">[% ship_items.$itemid.sub_total %]&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="9" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    [% END %]
+
+    <tr height="24">
+        <td class="blank" colspan="5"><img src="/images/blank.gif" width="1" height="24"></td>
+        <td class="blank" colspan="3" align="right"><strong>Shipping&nbsp;</strong></td>
+        <td class="blank" align="right">[% IF shipment_status_id == 5 %]<span class="light">[% END %]<strong>[% shipping_charge %]&nbsp;</strong></td>
+    </tr>
+    <tr>
+        <td colspan="9" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    [% IF store_credit && store_credit < 0 %]
+        <tr height="24">
+            <td class="blank" colspan="5"><img src="/images/blank.gif" width="1" height="24"></td>
+            <td class="blank" colspan="3" align="right"><strong>Store Credit&nbsp;</strong></td>
+            <td class="blank" align="right">[% IF shipment_status_id == 5 %]<span class="light">[% END %]<strong>[% store_credit %]&nbsp;</strong></td>
+        </tr>
+        <tr>
+            <td colspan="9" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    [% END %]
+    [% IF gift_credit && gift_credit < 0 %]
+        <tr height="24">
+            <td class="blank" colspan="5"><img src="/images/blank.gif" width="1" height="24"></td>
+            <td class="blank" colspan="3" align="right"><strong>Gift Credit&nbsp;</strong></td>
+            <td class="blank" align="right">[% IF shipment_status_id == 5 %]<span class="light">[% END %]<strong>[% gift_credit %]&nbsp;</strong></td>
+        </tr>
+        <tr>
+            <td colspan="9" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    [% END %]
+    <tr height="24">
+        <td class="blank" colspan="5"><img src="/images/blank.gif" width="1" height="24"></td>
+        <td class="blank" colspan="3" align="right"><strong>Shipment Total&nbsp;</strong></td>
+        <td class="blank" align="right">[% IF shipment_status_id == 5 %]<span class="light">[% END %]<strong>[% orders.currency %]&nbsp;[% shipment_total %]&nbsp;</strong></td>
+    </tr>
+    <tr>
+        <td colspan="9" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+</table>
+
+<br><br>
+
+
+[% IF emails.size > 0 %]
+
+<span class="title title-[% channel_config.$sales_channel %]">Shipment Email Log</span><br>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <tr>
+        <td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td class="tableHeader">&nbsp;&nbsp;&nbsp;Type</td>
+        <td class="tableHeader">&nbsp;&nbsp;&nbsp;Date Sent</td>
+        <td class="tableHeader">&nbsp;&nbsp;&nbsp;Sent By</td>
+    </tr>
+    <tr>
+        <td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    [% FOREACH emailid = emails.keys.nsort %]
+
+    <tr>
+        <td>&nbsp;&nbsp;&nbsp;[% emails.$emailid.template %]</td>
+        <td>&nbsp;&nbsp;&nbsp;[% emails.$emailid.date %]</td>
+        <td>&nbsp;&nbsp;&nbsp;[% emails.$emailid.operator %]</td>
+    </tr>
+    <tr>
+        <td colspan="4" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+
+    [% END %]
+</table>
+
+<br><br>
+
+[% END %]
+
+[% IF paperwork.size > 0 %]
+
+<span class="title title-[% channel_config.$sales_channel %]">Print Log</span><br>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <tr>
+        <td colspan="3" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td class="tableHeader">&nbsp;&nbsp;&nbsp;Document</td>
+        <td class="tableHeader">&nbsp;&nbsp;&nbsp;Date Printed</td>
+        <td class="tableHeader">&nbsp;&nbsp;&nbsp;Printer</td>
+    </tr>
+    <tr>
+        <td colspan="3" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+
+    [% FOREACH docid = paperwork.keys.nsort %]
+
+    <tr>
+        <td>&nbsp;&nbsp;&nbsp;[% IF paperwork.$docid.file != "" %]<a href="[% PrintDocs.relative_document_path( paperwork.$docid.file ) %]" target="_blank">[% END %][% paperwork.$docid.document %]</td>
+        <td>&nbsp;&nbsp;&nbsp;[% paperwork.$docid.date %]</td>
+        <td>&nbsp;&nbsp;&nbsp;[% paperwork.$docid.name %]</td>
+    </tr>
+    <tr>
+        <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+
+    [% END %]
+    <tr>
+        <td colspan="3" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+    </tr>
+</table>
+
+<br><br>
+
+[% END %]
+
+<span class="title title-[% channel_config.$sales_channel %]">Shipment Status Log</span><br>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <tr>
+        <td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td class="tableHeader" width="17%">&nbsp;&nbsp;&nbsp;Date</td>
+        <td class="tableHeader" width="33%">Status</td>
+        <td class="tableHeader" width="20%">Operator</td>
+        <td class="tableHeader" width="20%">Department</td>
+    </tr>
+    <tr>
+        <td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+[% FOREACH shiplogid = shipment_log.keys.nsort %]
+    <tr>
+        <td>&nbsp;&nbsp;&nbsp;[% shipment_log.$shiplogid.date %]</td>
+        <td>[% shipment_log.$shiplogid.status %]</td>
+        <td>[% shipment_log.$shiplogid.name %]</td>
+        <td>[% shipment_log.$shiplogid.department %]</td>
+    </tr>
+    <tr>
+        <td colspan="4" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+[% END %]
+</table>
+<br><br>
+<h2 class="title title-[% channel_config.$sales_channel %]">Shipment Item Log</h2>
+<table class="data wide-data divided-data">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Item</th>
+            <th>Status</th>
+            <th>Operator</th>
+            <th>Department</th>
+        </tr>
+    </thead>
+    <tbody>
+[% USE date; FOREACH log_item = shipment_item_log %]
+    <tr>
+        <td>[% date.format(log_item.date, '%F %R') %]</td>
+        <td>[% log_item.sku %]</td>
+        <td>[% log_item.status %]</td>
+        <td>[% log_item.name %]</td>
+        <td>[% log_item.department %]</td>
+    </tr>
+    </tbody>
+[% END %]
+</table>
+<br><br><br>
+
+[% IF returns.size > 0 %]
+
+[% FOREACH returnid = returns.keys %]
+    <span class="title title-[% channel_config.$sales_channel %]">Return Details</span><br>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <tr>
+        <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td align="right" width="15%"><strong>RMA:&nbsp;</strong></td>
+        <td>[% returns.$returnid.rma_number %]</td>
+        <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+    </tr>
+    <tr>
+        <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr height="24">
+        <td align="right" class="blank"><strong>Date Created:&nbsp;</strong></td>
+        <td class="blank">[% returns.$returnid.date_created %]</td>
+        <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+    </tr>
+    <tr>
+        <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr height="24">
+        <td align="right" class="blank"><strong>Status:&nbsp;</strong></td>
+        <td class="blank"><span class="highlight">[% returns.$returnid.status %]</span></td>
+        <td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+    </tr>
+    <tr>
+        <td colspan="3" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr>
+        <td colspan="3" class="blank"><img src="/images/blank.gif" width="1" height="20"></td>
+    </tr>
+    </table>
+
+    <span class="title title-[% channel_config.$sales_channel %]">Return Status Log</span><br>
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="3" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Date</td>
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Status</td>
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Operator</td>
+        </tr>
+        <tr>
+            <td colspan="3" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+        [% FOREACH log_id = returns.$returnid.log.keys %]
+
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;[% returns.$returnid.log.$log_id.date %]</td>
+            <td>&nbsp;&nbsp;&nbsp;[% returns.$returnid.log.$log_id.status %]</td>
+            <td>&nbsp;&nbsp;&nbsp;[% returns.$returnid.log.$log_id.name %]</td>
+        </tr>
+        <tr>
+            <td colspan="3" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+
+        [% END %]
+    </table>
+
+    <br><br>
+
+    [% IF returns.$returnid.return_notes.size > 0 %]
+
+        <span class="title title-[% channel_config.$sales_channel %]">Return Notes</span><br>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+            <tr>
+                <td colspan="8" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td class="tableHeader" width="17%">&nbsp;&nbsp;&nbsp;Date</td>
+                <td class="tableHeader" width="33%">Note</td>
+                <td class="tableHeader" width="10%">Type</td>
+                <td class="tableHeader">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td class="tableHeader" width="12%">Operator</td>
+                <td class="tableHeader" width="8%">Dept.</td>
+                <td class="tableHeader" width="10%"></td>
+                <td class="tableHeader" width="10%"></td>
+            </tr>
+            <tr>
+                <td colspan="8" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        [% FOREACH ret_note_id = returns.$returnid.return_notes.keys.nsort %]
+            <tr>
+                <td>&nbsp;&nbsp;&nbsp;[% returns.$returnid.return_notes.$ret_note_id.date %]</td>
+                <td>[% returns.$returnid.return_notes.$ret_note_id.note %]</td>
+                <td>[% returns.$returnid.return_notes.$ret_note_id.description %]</td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>[% returns.$returnid.return_notes.$ret_note_id.name %]</td>
+                <td>[% returns.$returnid.return_notes.$ret_note_id.department %]</td>
+                <td>[% IF returns.$returnid.return_notes.$ret_note_id.operator_id == operator_id %]<a href="[% short_url %]Note/[% orders_id %]/Return/[% returnid %]/[% ret_note_id %]">Edit</a>[% END %]</td>
+                <td>[% IF returns.$returnid.return_notes.$ret_note_id.operator_id == operator_id %]<a href="[% short_url %]EditNote/Return/Delete/[% orders_id %]/[% ret_note_id %]">Delete</a>[% END %]</td>
+            </tr>
+            <tr>
+                <td colspan="8" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+        [% END %]
+            <tr>
+                <td colspan="8" class="blank"><img src="/images/blank.gif" width="1" height="20"></td>
+            </tr>
+        </table>
+    [% END %]
+
+    <span class="title title-[% channel_config.$sales_channel %]">Return Items</span><br>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;SKU</td>
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Type</td>
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Reason</td>
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Status</td>
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Date Received</td>
+        </tr>
+        <tr>
+            <td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+        [% FOREACH returnitemid = returns.$returnid.return_items.keys %]
+
+            [% tdclass = "" %]
+
+            [% IF returns.$returnid.return_items.$returnitemid.status == "Cancelled" %]
+                [% tdclass = " class=\"light\"" %]
+            [% END %]
+
+            <tr>
+                <td[% tdclass %]>&nbsp;&nbsp;&nbsp;[% returns.$returnid.return_items.$returnitemid.sku %]</td>
+                <td[% tdclass %]>&nbsp;&nbsp;&nbsp;[% returns.$returnid.return_items.$returnitemid.type %]</td>
+                <td[% tdclass %]>&nbsp;&nbsp;&nbsp;[% returns.$returnid.return_items.$returnitemid.reason %]</td>
+                <td[% tdclass %]>&nbsp;&nbsp;&nbsp;[% returns.$returnid.return_items.$returnitemid.status %]</td>
+                <td[% tdclass %]>&nbsp;&nbsp;&nbsp;[% returns.$returnid.return_items.$returnitemid.date_received %]</td>
+            </tr>
+            <tr>
+                <td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+
+        [% END %]
+    </table>
+
+    <br><br>
+
+    <span class="title title-[% channel_config.$sales_channel %]">Return Item Status Log</span><br>
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Date</td>
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;SKU</td>
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Status</td>
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Operator</td>
+        </tr>
+        <tr>
+            <td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+        [% FOREACH item_log_id = returns.$returnid.item_log.keys %]
+
+            [% SET ri_id = returns.$returnid.item_log.$item_log_id.return_item_id %]
+
+            <tr>
+                <td>&nbsp;&nbsp;&nbsp;[% returns.$returnid.item_log.$item_log_id.date %]</td>
+                <td>&nbsp;&nbsp;&nbsp;[% returns.$returnid.return_items.$ri_id.sku %]</td>
+                <td>&nbsp;&nbsp;&nbsp;[% returns.$returnid.item_log.$item_log_id.status %]</td>
+                <td>&nbsp;&nbsp;&nbsp;[% returns.$returnid.item_log.$item_log_id.name %]</td>
+            </tr>
+            <tr>
+                <td colspan="4" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+
+
+        [% END %]
+    </table>
+
+    <br><br><br>
+
+    [% END %]
+
+<br>
+
+[% END %]

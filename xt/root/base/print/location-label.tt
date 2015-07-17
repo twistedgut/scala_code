@@ -1,0 +1,9 @@
+<html>
+<!-- Template name: [% template.name %] -->
+<body>
+<p align="center">
+<img src="file://[% config_dirs.barcode %]/[% barcode_image %]" /><br />
+[% readable_location %]
+<p>
+</body>
+</html>

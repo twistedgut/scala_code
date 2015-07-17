@@ -1,0 +1,388 @@
+
+
+[% IF !form_submitted %]
+
+	<form name="cancelForm" action="[% short_url %]/Returns/RemoveItem?order_id=[% order_id %]&shipment_id=[% shipment_id %]&return_id=[% return_id %]" method="post">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    	<input type="hidden" name="select_items" value="1">
+	<span class="title title-[% channel_config.$sales_channel %]">Select Item(s)</span><br>
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+		<tr>
+			<td colspan="7" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+		<tr>
+			<td class="tableHeader" width="5%">&nbsp;</td>
+            <td class="tableHeader" width="10%">Product</td>
+			<td class="tableHeader" width="33%">Size</td>
+			<td class="tableHeader" width="10%">Type</td>
+			<td class="tableHeader" width="20%">Reason</td>
+			<td class="tableHeader" width="15%">Status</td>
+			<td class="tableHeader" width="15%">Remove Item(s)</td>
+		</tr>
+		<tr>
+			<td colspan="7" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+
+		[% FOREACH retitemid = return_items.keys %]
+
+			[% SET itemid = return_items.$retitemid.shipment_item_id %]
+
+            [% IF return_items.$retitemid.return_item_status_id == 1 %]
+                <tr>
+                    <td align="center"><a href="[% return_items.$retitemid.images.0 %]" title="View Product Image" target="new" class="imagezoom"><img src="/images/icons/image.png"></a></td>
+                    <td>[% shipment_items.$itemid.sku %]</td>
+                    <td>[% IF shipment_items.$itemid.short_name %][% shipment_items.$itemid.short_name %] [% END %][% shipment_items.$itemid.designer_size %][% IF shipment_items.$itemid.designer_size != shipment_items.$itemid.size %] ([% shipment_items.$itemid.size %])[% END %]</td>
+                    <td>[% return_items.$retitemid.type %]</td>
+                    <td>[% return_items.$retitemid.reason %]</td>
+                    <td>[% return_items.$retitemid.status %]</td>
+                    <td><input type="checkbox" name="selected-[% retitemid %]" value="1"></td>
+                </tr>
+            [% ELSE %]
+                <tr>
+                    <td align="center"><a href="[% return_items.$retitemid.images.0 %]" title="View Product Image" target="new" class="imagezoom"><img src="/images/icons/image.png"></a></td>
+                    <td><span class="lowlight">[% shipment_items.$itemid.sku %]</span></td>
+                    <td><span class="lowlight">[% IF shipment_items.$itemid.short_name %][% shipment_items.$itemid.short_name %] [% END %][% shipment_items.$itemid.designer_size %][% IF shipment_items.$itemid.designer_size != shipment_items.$itemid.size %] ([% shipment_items.$itemid.size %])[% END %]</span></td>
+                    <td><span class="lowlight">[% return_items.$retitemid.type %]</span></td>
+                    <td><span class="lowlight">[% return_items.$retitemid.reason %]</span></td>
+                    <td><span class="lowlight">[% return_items.$retitemid.status %]</span></td>
+                    <td><span class="lowlight">-</span></td>
+                </tr>
+            [% END %]
+            <tr>
+                <td>&nbsp;</td>
+                <td colspan="6" valign="top">[% IF return_items.$retitemid.return_item_status_id != 1 %]<span class="lowlight">[% END %]<i>[% shipment_items.$itemid.designer %] - [% shipment_items.$itemid.name %]</i></td>
+            </tr>
+			<tr>
+				<td colspan="7" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+			</tr>
+		[% END %]
+	</table>
+	<br>
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+		<tr>
+			<td class="blank" colspan="2"><img src="/images/blank.gif" width="1" height="15"></td>
+		</tr>
+		<tr>
+			<td class="blank" colspan="2" align="right"><input class="button" type="submit" name="subbutton" value="Continue &raquo;"></td>
+		</tr>
+	</table>
+	</form>
+
+[% ELSE %]
+
+		[% IF num_remove_items == 0 %]
+			<p class="error_msg">You haven't selected any of the items in the return for removal, please try again.</p>
+			<img src="/images/blank.gif" width="1" height="400">
+		[% ELSIF num_remove_items == num_return_items %]
+			<p class="error_msg">You have selected all of the items in the return for removal, please use the "Cancel Return" function instead.</p>
+			<img src="/images/blank.gif" width="1" height="400">
+		[% ELSE %]
+
+			<form name="createRetForm" action="[% short_url %]/RemoveReturnItem?order_id=[% order_id %]&shipment_id=[% shipment_id %]&return_id=[% return_id %]" method="post">
+                [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    			<input type="hidden" name="select_items" value="1">
+			<span class="title title-[% channel_config.$sales_channel %]">Removed Item(s)</span><br>
+			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+				<tr>
+					<td colspan="6" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+				</tr>
+                <tr>
+                    <td class="tableHeader" width="1%">&nbsp;</td>
+                    <td class="tableHeader" width="10%">Product</td>
+                    <td class="tableHeader" width="33%">Size</td>
+                    <td class="tableHeader" width="10%">Type</td>
+                    <td class="tableHeader" width="20%">Reason</td>
+                    <td class="tableHeader" width="15%">Status</td>
+                </tr>
+				<tr>
+					<td colspan="6" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+				</tr>
+
+				[% FOREACH retitemid = return_items.keys %]
+
+					[% SET itemid = return_items.$retitemid.shipment_item_id %]
+
+					[% IF return_items.$retitemid.remove == 1 %]
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>[% shipment_items.$itemid.sku %]</td>
+                            <td>[% IF shipment_items.$itemid.short_name %][% shipment_items.$itemid.short_name %] [% END %][% shipment_items.$itemid.designer_size %][% IF shipment_items.$itemid.designer_size != shipment_items.$itemid.size %] ([% shipment_items.$itemid.size %])[% END %]</td>
+                            <td>[% return_items.$retitemid.type %]</td>
+                            <td>[% return_items.$retitemid.reason %]</td>
+                            <td>[% return_items.$retitemid.status %]</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td colspan="6" valign="top"><i>[% shipment_items.$itemid.designer %] - [% shipment_items.$itemid.name %]</i></td>
+                        </tr>
+						<tr>
+							<td colspan="6" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+						</tr>
+						<input type="hidden" name="selected-[% retitemid %]" value="1">
+					[% END %]
+				[% END %]
+			</table>
+
+			<br><br>
+
+			<span class="title title-[% channel_config.$sales_channel %]">Refund/Debit</span><br>
+
+			[% IF return_invoices.size > 0 %]
+
+				[% FOREACH invid = return_invoices.keys %]
+
+					[% IF invoice_remove.$invid && invoice_remove.$invid.size > 0 %]
+
+					<input type="hidden" name="amend_invoice" value="1">
+
+						<input type="hidden" name="amend_invoice-[% invid %]" value="1">
+
+						<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+							<tr>
+								<td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+							</tr>
+							<tr height="24">
+								<td class="tableHeader" width="15%">&nbsp;&nbsp;&nbsp;SKU</td>
+								<td class="tableHeader" width="15%">Unit Price</td>
+								<td class="tableHeader" width="15%">Tax</td>
+								<td class="tableHeader" width="27%">Duty</td>
+								<td class="tableHeader" width="28%">Sub_Total</td>
+							</tr>
+							<tr>
+								<td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+							</tr>
+
+							[% SET total = 0 %]
+
+							[% FOREACH inv_itemid = invoice_remove.$invid.keys %]
+								[% SET ship_item_id = return_invoices.$invid.items.$inv_itemid.shipment_item_id %]
+								<tr>
+									<td>&nbsp;&nbsp;&nbsp;[% shipment_items.$ship_item_id.sku %]</td>
+									<td>[% return_invoices.$invid.items.$inv_itemid.unit_price %]</td>
+									<td>[% return_invoices.$invid.items.$inv_itemid.tax %]</td>
+									<td>[% return_invoices.$invid.items.$inv_itemid.duty %]</td>
+									<td>[% return_invoices.$invid.items.$inv_itemid.unit_price + return_invoices.$invid.items.$inv_itemid.tax + return_invoices.$invid.items.$inv_itemid.duty %]</td>
+								</tr>
+								<tr>
+									<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+								</tr>
+
+								<input type="hidden" name="amend_invoice_item-[% invid %]-[% inv_itemid %]" value="1">
+
+								[% total = total + return_invoices.$invid.items.$inv_itemid.unit_price + return_invoices.$invid.items.$inv_itemid.tax + return_invoices.$invid.items.$inv_itemid.duty %]
+
+							[% END %]
+
+							<tr>
+								<td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+								<td class="blank" colspan="3" align="right"><b>Current Total:&nbsp;&nbsp;</b></td>
+								<td class="blank">[% return_invoices.$invid.total %]</td>
+							</tr>
+							<tr>
+								<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+							</tr>
+
+							[% total = total + return_invoices.$invid.total %]
+
+
+							<tr>
+								<td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+								<td class="blank" colspan="3" align="right"><b>New Total:&nbsp;&nbsp;</b></td>
+								<td class="blank">[% total %]</td>
+							</tr>
+							<tr>
+								<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+							</tr>
+							<tr>
+								<td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+								<td class="blank" colspan="3" align="right"><b>Credit/Debit Type:&nbsp;&nbsp;</b></td>
+								<td class="blank">
+									[% IF amend_invoice.$invid.refund_type_id != "" %]
+										[% amend_invoice.$invid.refund_type %]
+										<input type="hidden" name="amend_invoice_type_id-[% invid %]" value="[% amend_invoice.$invid.refund_type_id %]">
+									[% ELSIF (return_invoices.$invid.renumeration_type_id < 3 && total > 0) || (return_invoices.$invid.renumeration_type_id == 3 && total < 0) %]
+										[% return_invoices.$invid.type %]
+										<input type="hidden" name="amend_invoice_type_id-[% invid %]" value="[% return_invoices.$invid.renumeration_type_id %]">
+									[% ELSE %]
+										[% IF total > 0 %]
+											<input type="radio" name="amend_invoice_type_id-[% invid %]" value="2" checked>&nbsp;Card Refund&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="amend_invoice_type_id" value="1">&nbsp;Store Credit</td>
+										[% ELSIF total < 0 %]
+											<input type="hidden" name="amend_invoice_type_id-[% invid %]" value="3">
+											Card Debit
+										[% ELSE %]
+											<input type="hidden" name="amend_invoice_type_id-[% invid %]" value="0">
+											None
+										[% END %]
+									[% END %]
+								</td>
+							</tr>
+							<tr>
+								<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+							</tr>
+						</table>
+						<br><br>
+					[% END %]
+				[% END %]
+			[% ELSE %]
+				None<br><br><br>
+			[% END %]
+
+			[% IF invoice_create && invoice_create.size > 0 %]
+
+				<input type="hidden" name="create_invoice" value="1">
+
+				<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+					<tr>
+						<td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+					</tr>
+					<tr height="24">
+						<td class="tableHeader" width="15%">&nbsp;&nbsp;&nbsp;SKU</td>
+						<td class="tableHeader" width="15%">Unit Price</td>
+						<td class="tableHeader" width="15%">Tax</td>
+						<td class="tableHeader" width="27%">Duty</td>
+						<td class="tableHeader" width="28%">Sub_Total</td>
+					</tr>
+					<tr>
+						<td colspan="5" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+					</tr>
+
+					[% SET total = 0 %]
+
+					[% FOREACH inv_itemid = invoice_create.keys %]
+
+						[% SET invid = invoice_create.$inv_itemid %]
+
+						[% SET ship_item_id = return_invoices.$invid.items.$inv_itemid.shipment_item_id %]
+
+						<tr>
+							<td>&nbsp;&nbsp;&nbsp;[% shipment_items.$ship_item_id.sku %]</td>
+							<td>[% return_invoices.$invid.items.$inv_itemid.unit_price %]</td>
+							<td>[% return_invoices.$invid.items.$inv_itemid.tax %]</td>
+							<td>[% return_invoices.$invid.items.$inv_itemid.duty %]</td>
+							<td>[% return_invoices.$invid.items.$inv_itemid.unit_price + return_invoices.$invid.items.$inv_itemid.tax + return_invoices.$invid.items.$inv_itemid.duty %]</td>
+						</tr>
+						<tr>
+							<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+						</tr>
+
+						<input type="hidden" name="create_invoice_item-[% inv_itemid %]" value="[% invid %]">
+						<input type="hidden" name="create_invoice_price-[% inv_itemid %]" value="[% return_invoices.$invid.items.$inv_itemid.unit_price %]">
+						<input type="hidden" name="create_invoice_tax-[% inv_itemid %]" value="[% return_invoices.$invid.items.$inv_itemid.tax %]">
+						<input type="hidden" name="create_invoice_duty-[% inv_itemid %]" value="[% return_invoices.$invid.items.$inv_itemid.duty %]">
+
+						[% total = total + return_invoices.$invid.items.$inv_itemid.unit_price + return_invoices.$invid.items.$inv_itemid.tax + return_invoices.$invid.items.$inv_itemid.duty %]
+
+
+					[% END %]
+
+					<tr>
+						<td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+						<td class="blank" colspan="3" align="right"><b>Grand Total:&nbsp;&nbsp;</b></td>
+						<td class="blank">[% total %]</td>
+					</tr>
+					<tr>
+						<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+					</tr>
+					<tr>
+						<td class="blank"><img src="/images/blank.gif" width="1" height="24"></td>
+						<td class="blank" colspan="3" align="right"><b>Credit/Debit Type:&nbsp;&nbsp;</b></td>
+						<td class="blank">
+							[% IF create_invoice.refund_type_id != "" %]
+								[% create_invoice.refund_type %]
+								<input type="hidden" name="create_invoice_type_id" value="[% create_invoice.refund_type_id %]">
+							[% ELSE %]
+								[% IF total > 0 %]
+									<input type="radio" name="create_invoice_type_id" value="2" checked>&nbsp;Card Refund&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="create_invoice_type_id" value="1">&nbsp;Store Credit</td>
+								[% ELSIF total < 0 %]
+									<input type="hidden" name="create_invoice_type_id" value="3">
+									Card Debit
+								[% ELSE %]
+									<input type="hidden" name="create_invoice_type_id" value="0">
+									None
+								[% END %]
+							[% END %]
+					</tr>
+					<tr>
+						<td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+					</tr>
+				</table>
+				<br><br>
+			[% END %]
+
+			<br><br>
+
+			<span class="title title-[% channel_config.$sales_channel %]">Customer Email</span><br>
+
+			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+				<tr>
+					<td colspan="2" class="divider"></td>
+				</tr>
+                <tr height="24">
+                    <td width="149" align="right"><b>Send Email:</b>&nbsp;&nbsp;</td>
+                    <td width="570"><input type="radio" name="send_email" value="yes" checked>&nbsp;&nbsp;Yes&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="send_email" value="no">&nbsp;&nbsp;No</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"></td>
+                </tr>
+                <tr height="30">
+                    <td align="right"><b>To:</b>&nbsp;&nbsp;</td>
+                    <td><input type="text" size="35" name="email_to" value="[% email_to %]"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"></td>
+                </tr>
+                <tr height="30">
+                    <td align="right"><b>From:</b>&nbsp;&nbsp;</td>
+                    <td><input type="text" size="35" name="email_from" value="[% email_from %]"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"></td>
+                </tr>
+                <tr height="30">
+                    <td align="right"><b>Reply-To:</b>&nbsp;&nbsp;</td>
+                    <td><input type="text" size="35" name="email_replyto" value="[% email_from %]"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"></td>
+                </tr>
+                <tr height="30">
+                    <td align="right"><b>Subject:</b>&nbsp;&nbsp;</td>
+                    <td><input type="text" size="35" name="email_subject" value="[% email_subject %]"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" height="10"></td>
+                </tr>
+                <tr valign="top">
+                    <td align="right"><b>Email Text:&nbsp;&nbsp;</b></td>
+                    <td>
+                        <textarea name="email_body" rows="15" cols="80">[% email_msg %]</textarea>
+                        <input type="hidden" name ="email_content_type" value="[% email_content_type %]" >
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" height="10"></td>
+                </tr>
+				<tr>
+					<td colspan="2" class="divider"></td>
+				</tr>
+			</table>
+
+
+			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+				<tr>
+					<td class="blank" colspan="2"><img src="/images/blank.gif" width="1" height="10"></td>
+				</tr>
+				<tr>
+					<td class="blank" colspan="2" align="right"><input class="button" type="submit" name="subbutton" value="Complete &raquo;"></td>
+				</tr>
+			</table>
+			</form>
+		[% END %]
+[% END %]
+
+
+<br><br><br><br>
+

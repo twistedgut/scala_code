@@ -1,0 +1,8 @@
+<pre>
+
+h1. RED (Europa Changes)
+ * EN-2206: Europa: Changed use of the 'Goods In' printer in 'Stock In' and 'Fast Track' pages and also changed the Barcode printer used in Item Count (ec6a89c)
+ * EN-2198: Changed new Europa printer from being '44_Printer' to being '52_Printer' to save on a later clash with merging to master (fa16e06)
+ * EN-2198: Changed Picking List to print to 'stock_transfer_europa' printer when a Europa Location for DC1, also changed Location Pages to go upto Floor 4 (34a52ae)
+
+</pre>

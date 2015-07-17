@@ -1,0 +1,50 @@
+#!/usr/bin/env perl
+use NAP::policy "tt";
+use Getopt::Long;
+use Pod::Usage;
+use FindBin::libs;
+use FindBin::libs qw( base=lib_dynamic );
+use XTracker::Role::WithAMQMessageFactory;
+
+my ($transfer_id,$help);
+
+my $p=Getopt::Long::Parser->new(
+    config => [qw(
+        no_auto_abbrev
+        no_getopt_compat
+        no_gnu_compat
+        no_permute
+        no_bundling
+        no_ignore_case
+        no_auto_version
+        no_auto_help
+             )],
+);
+$p->getoptions(
+    'transfer_id|s=i' => \$transfer_id,
+    'help|h' => \$help,
+) or pod2usage(2);
+
+pod2usage(1) if $help;
+
+pod2usage(2) unless ($transfer_id =~ /^\d+$/);
+
+my $payload = {
+    transfer_id => $transfer_id,
+};
+
+my $factory = XTracker::Role::WithAMQMessageFactory->build_msg_factory;
+
+$factory->transform_and_send('XT::DC::Messaging::Producer::WMS::StockChanged',$payload);
+
+__END__
+
+=head1 NAME
+
+send_stock_changed - send the C<stock_changed> message
+
+=head1 SYNOPSIS
+
+  send_stock_changed --transfer_id 987654
+
+=cut

@@ -1,0 +1,390 @@
+[%- USE Utilities('subkeysrt') -%]
+[% IF shipments.defined AND shipments.size > 0 %]
+
+    <span class="title title-[% channel_config.$sales_channel %]">Select Shipment</span><br />
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="9" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr height="24">
+            <td class="tableHeader">&nbsp;&nbsp;&nbsp;Shipment Number</td>
+            <td class="tableHeader">Date</td>
+            <td class="tableHeader">Type</td>
+            <td class="tableHeader">Status</td>
+        </tr>
+        <tr>
+            <td colspan="9" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+
+    [% FOREACH id = shipments.keys %]
+        <tr>
+            [% IF shipments.$id.shipment_status_id != 5 %]
+                <td>&nbsp;&nbsp;&nbsp;<a href="[% short_url %]/ChangeCountryPricing?order_id=[% order_id %]&shipment_id=[% id %]&action=Check">[% id %]</a></td>
+                <td>[% shipments.$id.date %]</td>
+                <td>[% shipments.$id.class %]</td>
+                <td>[% shipments.$id.status %]</td>
+            [% ELSE %]
+                <td class="light">&nbsp;&nbsp;&nbsp;[% id %]</td>
+                <td class="light">[% shipments.$id.date %]</td>
+                <td class="light">[% shipments.$id.class %]</td>
+                <td class="light">[% shipments.$id.status %]</td>
+            [% END %]
+        </tr>
+        <tr>
+            <td colspan="4" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    [% END %]
+
+    </table>
+
+[% ELSE %]
+
+    <span class="title title-[% channel_config.$sales_channel %]">Shipment Details</span><br>
+
+    <table id="shipment_details" width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+            <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                    <td width="20%" align="right"><b>Shipment Number:&nbsp;&nbsp;</td>
+                    <td width="80%">&nbsp;[% shipment.id %]</td>
+            </tr>
+            <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                    <td width="20%" align="right"><b>Order Number:&nbsp;&nbsp;</td>
+                    <td width="80%">&nbsp;[% order.order_nr %]</td>
+            </tr>
+            <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                    <td width="20%" align="right"><b>Customer:&nbsp;&nbsp;</td>
+                    <td width="80%">&nbsp;[% invoice_address.first_name %]&nbsp;[% invoice_address.last_name %]</td>
+            </tr>
+            <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                    <td width="20%" align="right"><b>Shipping State/County:&nbsp;&nbsp;</td>
+                    <td width="80%">&nbsp;[% current_county %]</td>
+            </tr>
+            <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                    <td width="20%" align="right"><b>Shipping Zipcode/Postcode:&nbsp;&nbsp;</td>
+                    <td width="80%">&nbsp;[% current_postcode %]</td>
+            </tr>
+            <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                    <td width="20%" align="right"><b>Shipping Country:&nbsp;&nbsp;</td>
+                    <td width="80%">&nbsp;[% current_country %]</td>
+            </tr>
+            <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+    </table>
+    <br><br>
+
+    [% IF check_pricing == 1 %]
+        <form name="newDestination" action="[% short_url %]/ChangeCountryPricing?order_id=[% order_id %]&shipment_id=[% shipment_id %]&action=Check" method="post">
+            [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+        <span class="title title-[% channel_config.$sales_channel %]">Select New Shipping Destination</span><br>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td width="20%" align="right"><b>State/County:&nbsp;&nbsp;</td>
+                <td width="80%">&nbsp;&nbsp;<input type="text" size="30" name="county" value="[% check_county %]"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td width="20%" align="right"><b>Zipcode/Postcode:&nbsp;&nbsp;</td>
+                <td width="80%">&nbsp;&nbsp;<input type="text" size="30" name="postcode" value="[% check_postcode %]"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td width="20%" align="right"><b>Country:&nbsp;&nbsp;</td>
+                <td width="80%">&nbsp;
+                <select name="country">
+                    <option value="0">------------</option>
+                    [% FOREACH country = countries.keys.sort %]
+                        <option value="[% country %]" [% IF country == check_country %]selected[% END %]>[% country %]</option>
+                    [% END %]
+                </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="right" class="blank"><input type="submit" name="submit" value="Check Pricing >" class="button"></td>
+            </tr>
+        </table>
+        </form>
+        <br><br>
+    [% END %]
+
+    <form name="amendPricing" action="[% short_url %]/[% IF check_pricing == 1 %]ChangeCountryPricing?order_id=[% order_id %]&shipment_id=[% shipment_id %]&action=Check[% ELSE %]UpdateShipmentPricing?shipment_id=[% shipment_id %][% END %]" method="post">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+        <input type="hidden" name="amend" value="1">
+
+    <span class="title title-[% channel_config.$sales_channel %]">[% IF check_pricing == 1 %]Check[% ELSE %]Confirm[% END %] Pricing</span><br>
+    <table id="list_of_items" width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="12" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td rowspan="2" class="tableHeader" width="10%">&nbsp;&nbsp;PID</td>
+            <td rowspan="2" class="tableHeader" width="20%">Designer</td>
+            <td rowspan="2" class="tableHeader" width="20%">Name</td>
+            <td rowspan="2" class="tableHeader" width="12%">Promotion</td>
+            <td rowspan="2" class="tableHeader" width="2%" style="border-left:1px dotted #999"></td>
+            <td colspan="3" class="tableHeader">Current Pricing</td>
+            <td rowspan="2" class="tableHeader" width="2%" style="border-left:1px dotted #999"></td>
+            <td colspan="3" class="tableHeader">New Pricing</td>
+        </tr>
+        <tr>
+            <td class="tableHeader" width="6%">Price</td>
+            <td class="tableHeader" width="6%">Tax</td>
+            <td class="tableHeader" width="6%">Duty</td>
+            <td class="tableHeader" width="6%">Price</td>
+            <td class="tableHeader" width="6%">Tax</td>
+            <td class="tableHeader" width="6%">Duty</td>
+        </tr>
+        <tr>
+            <td colspan="12" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        [% FOREACH id = shipment_item.nsubkeysrt('product_id','size_id') %]
+            [% product_id = shipment_item.$id.product_id %]
+            [% IF shipment_item.$id.shipment_item_status_id == SHIPMENT_ITEM_STATUS__NEW
+               || shipment_item.$id.shipment_item_status_id == SHIPMENT_ITEM_STATUS__SELECTED
+               || shipment_item.$id.shipment_item_status_id == SHIPMENT_ITEM_STATUS__PICKED
+               || shipment_item.$id.shipment_item_status_id == SHIPMENT_ITEM_STATUS__PACKING_EXCEPTION
+               || shipment_item.$id.shipment_item_status_id == SHIPMENT_ITEM_STATUS__PACKED
+               || auth_department == 1 %]
+                <tr>
+                    <td>&nbsp;&nbsp;[% product_id %]-[% shipment_item.$id.sku_size %]</td>
+                    <td>[% shipment_item.$id.designer %]</td>
+                    <td>[% shipment_item.$id.name %]</td>
+                    <td>[% IF shipment_item.$id.promotion_percentage %][% shipment_item.$id.promotion_percentage * 100 %]%[% ELSE %]-[% END %]</td>
+                    <td style="border-left:1px dotted #999">&nbsp;</td>
+                    <td>[% shipment_item.$id.unit_price %]</td>
+                    <td>[% shipment_item.$id.tax %]</td>
+                    <td>[% shipment_item.$id.duty %]</td>
+                    <td style="border-left:1px dotted #999">&nbsp;</td>
+                    <td><input type="hidden" name="price_[% id %]" value="[% shipment_item.$id.new_unit_price %]">[% IF shipment_item.$id.unit_price != shipment_item.$id.new_unit_price %]<span class="highlight">[% END %][% shipment_item.$id.new_unit_price %]</td>
+                    <td><input type="hidden" name="tax_[% id %]" value="[% shipment_item.$id.new_tax %]">[% IF shipment_item.$id.tax != shipment_item.$id.new_tax %]<span class="highlight">[% END %][% shipment_item.$id.new_tax %]</td>
+                    <td><input type="hidden" name="duty_[% id %]" value="[% shipment_item.$id.new_duty %]">[% IF shipment_item.$id.duty != shipment_item.$id.new_duty %]<span class="highlight">[% END %][% shipment_item.$id.new_duty %]</td>
+
+                </tr>
+                [% IF restrictions.defined && restrictions.restricted_products.size %]
+                    [%-
+                        SET product_restrictions= restrictions.restricted_products.$product_id;
+                        SET product_restricted  = ( product_restrictions.actions.restrict ? 1 : 0 );
+                        SET product_notify      = ( product_restrictions.actions.notify ? 1 : 0 );
+                        SET product_reasons     = product_restrictions.reason_descriptions.join( ', ' );
+                        SET row_title           = ( product_restricted ? "Can't Deliver" : "Can Deliver" );
+                    -%]
+                    <tr id="[% product_id %]-[% shipment_item.$id.sku_size %]-[% IF product_restricted %]restricted[% ELSE %]not-restricted[% END %]" class="[% IF product_restricted %]restricted_highlight[% ELSE %]not_restricted_highlight[% END %]" title="[% row_title %]">
+                        <td colspan="4">
+                            <img class="inline" style="vertical-align: middle; padding-left: 10px;" src="/images/icons/[% IF product_restricted %]lorry_error[% ELSE %]lorry[% END %].png">
+                            <span style="vertical-align: middle; padding-left: 10px;">
+                                [%- IF product_restricted -%]
+                                    [%- product_reasons -%]
+                                [%- ELSE -%]
+                                    No Restrictions
+                                    [%- IF product_notify -%]
+                                        &nbsp;-&nbsp;[% product_reasons %] (requires a notification)
+                                    [%- END -%]
+                                [%- END -%]
+                            </span>
+                        </td>
+                        <td style="border-left:1px dotted #999">&nbsp;</td>
+                        <td colspan="3"></td>
+                        <td style="border-left:1px dotted #999">&nbsp;</td>
+                        <td colspan="3"></td>
+                    </tr>
+
+                [% END %]
+                <tr>
+                    <td colspan="12" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+            [% END %]
+        [% END %]
+        <tr>
+            <td colspan="12" class="blank"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td colspan="12" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>Shipping Charge</td>
+            <td></td>
+            <td style="border-left:1px dotted #999">&nbsp;</td>
+            <td>[% shipment.shipping_charge %]</td>
+            <td></td>
+            <td></td>
+            <td style="border-left:1px dotted #999">&nbsp;</td>
+            <td>[% IF shipment.shipping_charge != new_shipping_charge %]
+                    <input type="hidden" size="5" name="shipping" value="[% new_shipping_charge %]">
+                    <input type="hidden" size="5" name="diff_shipping" value="[% shipment.shipping_charge - new_shipping_charge %]"><span class="highlight">[% END %][% new_shipping_charge %]</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="12" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td colspan="12" class="blank"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td colspan="12" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td class="blank" colspan="2"><img src="/images/blank.gif" width="1" height="24"></td>
+            <td colspan="8" class="blank" align="right"><b>Current Total:</td>
+            <td class="blank" align="right"><b>[% current_total %]</td>
+            <td class="blank"><b>&nbsp;&nbsp;[% order.currency %]</td>
+        </tr>
+        <tr>
+            <td colspan="7" class="blank"><img src="/images/blank.gif" width="1" height="1"></td>
+            <td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td class="blank" colspan="2"><img src="/images/blank.gif" width="1" height="24"></td>
+            <td colspan="8" class="blank" align="right"><b>New Total:</td>
+            <td class="blank" align="right"><b>[% new_total %]</td>
+            <td class="blank"><b>&nbsp;&nbsp;[% order.currency %]</td>
+        </tr>
+        <tr>
+            <td colspan="7" class="blank"><img src="/images/blank.gif" width="1" height="1"></td>
+            <td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+            <td class="blank" colspan="2"><img src="/images/blank.gif" width="1" height="24"></td>
+            <td colspan="8" class="blank" align="right"><b>Difference:</td>
+            <td class="blank" align="right"><b>[% difference %]</td>
+            <td class="blank"><b>&nbsp;&nbsp;[% order.currency %]</td>
+        </tr>
+        <tr>
+            <td colspan="7" class="blank"><img src="/images/blank.gif" width="1" height="1"></td>
+            <td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+           [% IF check_pricing != 1 %]
+            [% IF payment == 1 %]
+
+                <tr>
+                    <td class="blank" colspan="2"><img src="/images/blank.gif" width="1" height="24"></td>
+                    <td colspan="7" class="blank" align="right"><b>Type:</td>
+                    <td class="blank" colspan="3"><b>
+                        [% IF difference > 3 %]
+                            &nbsp;&nbsp;Card Debit <input type="hidden" name="refund_type" value="3">
+                        [% ELSIF difference < -3 %]
+                            &nbsp;&nbsp;<input type="radio" name="refund_type" value="2" checked>&nbsp;Card Refund&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="refund_type" value="1" selected>&nbsp;Store Credit
+                        [% END %]
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="7" class="blank"><img src="/images/blank.gif" width="1" height="1"></td>
+                    <td colspan="5" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+            </tr>
+            [% ELSE %]
+                [% IF difference != "0.00" %]
+                    <tr>
+                        <td class="blank" colspan="2"><img src="/images/blank.gif" width="1" height="24"></td>
+                        <td class="blank" colspan="10">
+                            This amount will be [% IF difference > 0 %]added to[% ELSE %]taken off[% END %] the payment which is taken once the shipment is packed.
+                        </td>
+                    </tr>
+                [% END %]
+            [% END %]
+           [% END %]
+    </table>
+    <br><br>
+
+    [% IF !dont_show_email && ( payment == 0 || difference > 3 || difference< -3 ) %]
+
+        <span class="title title-[% channel_config.$sales_channel %]">Customer Email</span><br>
+        <table id="customer_email" width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+            <tr>
+                <td colspan="2" class="divider"></td>
+            </tr>
+            <tr height="24">
+                <td width="149" align="right"><b>Send Email:</b>&nbsp;&nbsp;</td>
+                <td width="570"><input type="radio" name="send_email" value="yes" checked>&nbsp;&nbsp;Yes&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="send_email" value="no">&nbsp;&nbsp;No</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"></td>
+            </tr>
+            <tr height="30">
+                <td align="right"><b>To:</b>&nbsp;&nbsp;</td>
+                <td><input type="text" size="35" name="email_to" value="[% order.email %]"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"></td>
+            </tr>
+            <tr height="30">
+                <td align="right"><b>From:</b>&nbsp;&nbsp;</td>
+                <td><input type="text" size="35" name="email_from" value="[% customercare_email %]"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"></td>
+            </tr>
+            <tr height="30">
+                <td align="right"><b>Reply-To:</b>&nbsp;&nbsp;</td>
+                <td><input type="text" size="35" name="email_replyto" value="[% customercare_email %]"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"></td>
+            </tr>
+            <tr height="30">
+                <td align="right"><b>Subject:</b>&nbsp;&nbsp;</td>
+                <td><input type="text" size="35" name="email_subject" value="[% email_info.subject %]"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"></td>
+            </tr>
+            <tr>
+                <td colspan="2" height="10"></td>
+            </tr>
+            <tr valign="top">
+                <td align="right"><b>Email Text:&nbsp;&nbsp;</b></td>
+                <td>
+                    <textarea name="email_body" rows="15" cols="80">[% email_info.content %]</textarea>
+                    <input type="hidden" name="email_content_type" value="[% email_info.content_type %]"/>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" height="10"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"></td>
+            </tr>
+        </table>
+        <br><br>
+
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td align="right"><input type="submit" name="submit" value="[% IF check_pricing == 1 %]Send Email[% ELSE %]Update Pricing[% END %] >" class="button"></td>
+            </tr>
+        </table>
+        <br><br>
+    [% END %]
+    </form>
+[% END %]
+

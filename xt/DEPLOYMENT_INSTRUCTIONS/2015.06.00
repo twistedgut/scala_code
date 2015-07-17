@@ -1,0 +1,5318 @@
+=====================================
+XT 2015.06.00 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               :
+Cherwell           :
+Release Manager    : Michael Hoang
+Build Manager      : Rich Moore
+TechOps            :
+Backend Developer  :
+Frontend Developer :
+QA                 :
+PCI Authorised by  :
+
+2 - CHANGELOG
+-------------
+http://stash.vm.wtf.nap/projects/BAK/repos/xt/browse/CHANGES/2015.06.00?at=refs/heads/release/2015.06
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2015.06/xt-2015.06.00-0.noarch.rpm
+
+Unless otherwise stated, do the following for DC1, DC2 and DC3.
+
+4 - NEW PROPERTIES:
+-------------------
+Add or update the following in "/etc/nap.properties" prior to release
+
+5 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+No action needs to be performed before the deployment
+
+6 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+
+
+SHIP-605/SHIP-615: Update /etc/hosts on DC1.
+
+SHIP-605/SHIP-615: Update /etc/cups/printers.conf on all DCs. Make sure you do this on
+both web servers Make sure you do this on
+both web servers. Also, before updating the files make sure you stop cups, you
+can do this by running the following command:
+
+sudo service cups stop
+
+Once you've made the changes, make sure you restart cups, which you can do by
+executing
+
+sudo service cups start
+
+Add the following printer to /etc/hosts:
+
+10.3.17.98 returns_in_printer_xcage
+
+10.3.52.11  pack_u1_label_01
+10.3.52.12  pack_u1_document_01
+10.3.52.13  pack_u1_label_02
+10.3.52.14  pack_u1_document_02
+10.3.52.15  pack_u1_label_03
+10.3.52.16  pack_u1_document_03
+10.3.52.17  pack_u1_label_04
+10.3.52.18  pack_u1_document_04
+10.3.52.19  pack_u1_label_05
+10.3.52.20  pack_u1_document_05
+10.3.52.21  pack_u1_label_06
+10.3.52.22  pack_u1_document_06
+10.3.52.23  pack_u1_label_07
+10.3.52.24  pack_u1_document_07
+10.3.52.25  pack_u1_label_08
+10.3.52.26  pack_u1_document_08
+10.3.52.27  pack_u1_label_09
+10.3.52.28  pack_u1_document_09
+10.3.52.29  pack_u1_label_10
+10.3.52.30  pack_u1_document_10
+10.3.52.31  pack_u1_label_11
+10.3.52.32  pack_u1_document_11
+10.3.52.33  pack_u1_label_12
+10.3.52.34  pack_u1_document_12
+10.3.52.35  pack_u1_label_13
+10.3.52.36  pack_u1_document_13
+10.3.52.37  pack_u1_label_14
+10.3.52.38  pack_u1_document_14
+10.3.52.39  pack_u1_label_15
+10.3.52.40  pack_u1_document_15
+10.3.52.41  pack_u1_label_16
+10.3.52.42  pack_u1_document_16
+10.3.52.43  pack_u1_label_17
+10.3.52.44  pack_u1_document_17
+10.3.52.45  pack_u1_label_18
+10.3.52.46  pack_u1_document_18
+10.3.52.47  pack_u1_label_19
+10.3.52.48  pack_u1_document_19
+10.3.52.49  pack_u1_label_20
+10.3.52.50  pack_u1_document_20
+10.3.52.51  pack_u1_label_21
+10.3.52.52  pack_u1_document_21
+10.3.52.53  pack_u1_label_22
+10.3.52.54  pack_u1_document_22
+10.3.52.55  pack_u1_label_23
+10.3.52.56  pack_u1_document_23
+10.3.52.57  pack_u1_label_24
+10.3.52.58  pack_u1_document_24
+10.3.52.59  pack_u1_label_25
+10.3.52.60  pack_u1_document_25
+10.3.52.61  pack_u1_label_26
+10.3.52.62  pack_u1_document_26
+10.3.52.63  pack_u1_label_27
+10.3.52.64  pack_u1_document_27
+10.3.52.65  pack_u1_label_28
+10.3.52.66  pack_u1_document_28
+10.3.52.67  pack_u1_label_29
+10.3.52.68  pack_u1_document_29
+10.3.52.69  pack_u1_label_30
+10.3.52.70  pack_u1_document_30
+10.3.52.71  pack_u1_label_31
+10.3.52.72  pack_u1_document_31
+10.3.52.73  pack_u1_label_32
+10.3.52.74  pack_u1_document_32
+10.3.52.75  pack_u1_label_33
+10.3.52.76  pack_u1_document_33
+10.3.52.77  pack_u1_label_34
+10.3.52.78  pack_u1_document_34
+10.3.52.79  pack_u1_label_35
+10.3.52.80  pack_u1_document_35
+10.3.52.81  pack_u1_label_36
+10.3.52.82  pack_u1_document_36
+10.3.52.83  pack_u1_label_37
+10.3.52.84  pack_u1_document_37
+10.3.52.85  pack_u1_label_38
+10.3.52.86  pack_u1_document_38
+10.3.52.87  pack_u1_label_39
+10.3.52.88  pack_u1_document_39
+10.3.52.89  pack_u1_label_40
+10.3.52.90  pack_u1_document_40
+10.3.52.91  pack_u1_label_41
+10.3.52.92  pack_u1_document_41
+10.3.52.93  pack_u1_label_42
+10.3.52.94  pack_u1_document_42
+10.3.52.95  pack_u1_label_43
+10.3.52.96  pack_u1_document_43
+10.3.52.97  pack_u1_label_44
+10.3.52.98  pack_u1_document_44
+10.3.52.99  pack_u1_label_45
+10.3.52.100 pack_u1_document_45
+10.3.52.101 pack_u1_label_46
+10.3.52.102 pack_u1_document_46
+10.3.52.103 pack_u1_label_47
+10.3.52.104 pack_u1_document_47
+10.3.52.105 pack_u1_label_48
+10.3.52.106 pack_u1_document_48
+10.3.52.107 pack_u1_label_49
+10.3.52.108 pack_u1_document_49
+10.3.52.109 pack_u1_label_50
+10.3.52.110 pack_u1_document_50
+10.3.52.111 pack_u1_label_51
+10.3.52.112 pack_u1_document_51
+10.3.52.113 pack_u1_label_52
+10.3.52.114 pack_u1_document_52
+10.3.52.115 pack_u1_label_53
+10.3.52.116 pack_u1_document_53
+10.3.52.117 pack_u1_label_54
+10.3.52.118 pack_u1_document_54
+10.3.52.119 pack_u1_label_55
+10.3.52.120 pack_u1_document_55
+10.3.52.121 pack_u1_label_56
+10.3.52.122 pack_u1_document_56
+10.3.52.123 pack_u1_label_57
+10.3.52.124 pack_u1_document_57
+10.3.52.125 pack_u1_label_58
+10.3.52.126 pack_u1_document_58
+10.3.52.127 pack_u1_label_59
+10.3.52.128 pack_u1_document_59
+10.3.52.129 pack_u1_label_60
+10.3.52.130 pack_u1_document_60
+10.3.52.131 pack_u1_label_61
+10.3.52.132 pack_u1_document_61
+10.3.52.133 pack_u1_label_62
+10.3.52.134 pack_u1_document_62
+10.3.52.135 pack_u1_label_63
+10.3.52.136 pack_u1_document_63
+10.3.52.137 pack_u1_label_64
+10.3.52.138 pack_u1_document_64
+10.3.52.139 pack_u1_label_65
+10.3.52.140 pack_u1_document_65
+10.3.52.141 pack_u1_label_66
+10.3.52.142 pack_u1_document_66
+10.3.52.143 pack_u1_label_67
+10.3.52.144 pack_u1_document_67
+10.3.52.145 pack_u1_label_68
+10.3.52.146 pack_u1_document_68
+10.3.52.147 pack_u1_label_69
+10.3.52.148 pack_u1_document_69
+10.3.52.149 pack_u1_label_70
+10.3.52.150 pack_u1_document_70
+10.3.52.151 pack_u1_label_71
+10.3.52.152 pack_u1_document_71
+10.3.52.153 pack_u1_label_72
+10.3.52.154 pack_u1_document_72
+10.3.52.155 pack_u1_label_73
+10.3.52.156 pack_u1_document_73
+10.3.52.157 pack_u1_label_74
+10.3.52.158 pack_u1_document_74
+10.3.52.159 pack_u1_label_75
+10.3.52.160 pack_u1_document_75
+10.3.52.161 pack_u1_label_76
+10.3.52.162 pack_u1_document_76
+10.3.52.163 pack_u1_label_77
+10.3.52.164 pack_u1_document_77
+10.3.52.165 pack_u1_label_78
+10.3.52.166 pack_u1_document_78
+10.3.52.167 pack_u1_label_79
+10.3.52.168 pack_u1_document_79
+10.3.52.169 pack_u1_label_80
+10.3.52.170 pack_u1_document_80
+10.3.52.171 pack_u1_label_81
+10.3.52.172 pack_u1_document_81
+10.3.52.173 pack_u1_label_82
+10.3.52.174 pack_u1_document_82
+10.3.52.175 pack_u1_label_83
+10.3.52.176 pack_u1_document_83
+10.3.52.177 pack_u1_label_84
+10.3.52.178 pack_u1_document_84
+10.3.52.179 pack_u1_label_85
+10.3.52.180 pack_u1_document_85
+10.3.52.181 pack_u1_label_86
+10.3.52.182 pack_u1_document_86
+10.3.52.183 pack_u1_label_87
+10.3.52.184 pack_u1_document_87
+10.3.52.185 pack_u1_label_88
+10.3.52.186 pack_u1_document_88
+10.3.52.187 pack_u1_label_89
+10.3.52.188 pack_u1_document_89
+10.3.52.189 pack_u1_label_90
+10.3.52.190 pack_u1_document_90
+10.3.52.191 pack_u1_label_91
+10.3.52.192 pack_u1_document_91
+10.3.52.193 pack_u1_label_92
+10.3.52.194 pack_u1_document_92
+10.3.52.195 pack_u1_label_93
+10.3.52.196 pack_u1_document_93
+10.3.52.197 pack_u1_label_94
+10.3.52.198 pack_u1_document_94
+10.3.47.100 pack_u4_label_01
+10.3.47.101 pack_u4_document_01
+10.3.47.102 pack_u4_label_02
+10.3.47.103 pack_u4_document_02
+10.3.47.104 pack_u4_label_03
+10.3.47.105 pack_u4_document_03
+10.3.47.106 pack_u4_label_04
+10.3.47.107 pack_u4_document_04
+10.3.47.108 pack_u4_label_05
+10.3.47.109 pack_u4_document_05
+10.3.47.110 pack_u4_label_06
+10.3.47.111 pack_u4_document_06
+10.3.47.112 pack_u4_label_07
+10.3.47.113 pack_u4_document_07
+10.3.47.114 pack_u4_label_08
+10.3.47.115 pack_u4_document_08
+10.3.47.116 pack_u4_label_09
+10.3.47.117 pack_u4_document_09
+10.3.47.118 pack_u4_label_10
+10.3.47.119 pack_u4_document_10
+10.3.47.120 pack_u4_label_11
+10.3.47.121 pack_u4_document_11
+10.3.47.122 pack_u4_label_12
+10.3.47.123 pack_u4_document_12
+10.3.47.124 pack_u4_label_13
+10.3.47.125 pack_u4_document_13
+10.3.47.126 pack_u4_label_14
+10.3.47.127 pack_u4_document_14
+10.3.47.128 pack_u4_label_15
+10.3.47.129 pack_u4_document_15
+10.3.47.130 pack_u4_label_16
+10.3.47.131 pack_u4_document_16
+10.3.47.132 pack_u4_label_17
+10.3.47.133 pack_u4_document_17
+10.3.47.134 pack_u4_label_18
+10.3.47.135 pack_u4_document_18
+10.3.47.136 pack_u4_label_19
+10.3.47.137 pack_u4_document_19
+10.3.47.138 pack_u4_label_20
+10.3.47.139 pack_u4_document_20
+10.3.47.140 pack_u4_label_21
+10.3.47.141 pack_u4_document_21
+10.3.47.142 pack_u4_label_22
+10.3.47.143 pack_u4_document_22
+10.3.47.144 pack_u4_label_23
+10.3.47.145 pack_u4_document_23
+10.3.47.146 pack_u4_label_24
+10.3.47.147 pack_u4_document_24
+10.3.47.148 pack_u4_label_25
+10.3.47.149 pack_u4_document_25
+10.3.47.150 pack_u4_label_26
+10.3.47.151 pack_u4_document_26
+10.3.47.152 pack_u4_label_27
+10.3.47.153 pack_u4_document_27
+10.3.47.154 pack_u4_label_28
+10.3.47.155 pack_u4_document_28
+10.3.17.10  pack_jc_label_01
+10.3.17.11  pack_jc_document_01
+10.3.17.12  pack_jc_label_02
+10.3.17.13  pack_jc_document_02
+10.3.17.14  pack_jc_label_03
+10.3.17.15  pack_jc_document_03
+10.3.17.16  pack_jc_label_04
+10.3.17.17  pack_jc_document_04
+10.3.17.238 pack_jc_label_05
+10.3.17.239 pack_jc_document_05
+10.3.17.222 pack_jc_addresscard_01
+
+
+DC1
+---
+Remove the following printer definitions:
+jc_returns_in_printer_01
+returns_in_printer_01
+returns_in_printer_02
+returns_in_printer_03
+returns_in_printer_04
+returns_in_printer_05
+returns_in_printer_06
+returns_in_printer_07
+returns_in_printer_08
+returns_in_printer_09
+returns_in_printer_10
+returns_in_printer_11
+returns_in_printer_12
+returns_in_printer_13
+returns_in_printer_14
+returns_in_printer_15
+returns_in_printer_16
+returns_in_printer_17
+returns_in_printer_18
+
+Copy/paste the following printers into /etc/cups/printers.conf on *BOTH* web
+servers:
+
+<Printer returns_in_printer_xcage>
+    Info returns_in_printer_xcage
+    XTLocation Returns In Station XCage
+    XTSection returns_in
+    XTType document
+    Location DC2
+    DeviceURI lpd://returns_in_printer_xcage/queue
+    State Idle
+    StateTime 1323764549
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer jc_returns_in_printer_01>
+    Info jc_returns_in_printer_01 (jc_returns_in_printer_01)
+    XTLocation JC Returns In Station 01
+    XTSection returns_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://jc_returns_in_printer_01/queue
+    State Idle
+    StateTime 1323764549
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_in_printer_01>
+    Info returns_in_printer_01 (returns_in_printer_01)
+    XTLocation Returns In Station 01
+    XTSection returns_in
+    XTType document
+    Location DC2
+    DeviceURI lpd://returns_in_printer_01/queue
+    State Idle
+    StateTime 1323764549
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_in_printer_02>
+    Info returns_in_printer_02 (returns_in_printer_02)
+    XTLocation Returns In Station 02
+    XTSection returns_in
+    XTType document
+    Location DC2
+    DeviceURI lpd://returns_in_printer_02/queue
+    State Idle
+    StateTime 1323805096
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_in_printer_03>
+    Info returns_in_printer_03 (returns_in_printer_03)
+    XTLocation Returns In Station 03
+    XTSection returns_in
+    XTType document
+    Location DC2
+    DeviceURI lpd://returns_in_printer_03/queue
+    State Idle
+    StateTime 1323781463
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_in_printer_04>
+    Info returns_in_printer_04 (returns_in_printer_04)
+    XTLocation Returns In Station 04
+    XTSection returns_in
+    XTType document
+    Location DC2
+    DeviceURI lpd://returns_in_printer_04/queue
+    State Idle
+    StateTime 1323718642
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_in_printer_05>
+    Info sample_doc
+    XTLocation Returns In Station 05
+    XTSection returns_in
+    XTType document
+    Location dc1
+    DeviceURI lpd://sample_doc/auto
+    State Idle
+    StateTime 1323805549
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_in_printer_06>
+    Info returns_in_printer_06 (returns_in_printer_06)
+    XTLocation Returns In Station 06
+    XTSection returns_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://returns_in_printer_06/queue
+    State Idle
+    StateTime 1307618706
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_in_printer_07>
+    Info returns_in_printer_07 (returns_in_printer_07)
+    XTLocation Returns In Station 07
+    XTSection returns_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://returns_in_printer_07/queue
+    State Idle
+    StateTime 1323805075
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_in_printer_08>
+    Info returns_in_printer_08 (returns_in_printer_08)
+    XTLocation Returns In Station 08
+    XTSection returns_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://returns_in_printer_08/queue
+    State Idle
+    StateTime 1323811527
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_in_printer_09>
+    Info returns_in_printer_09 (returns_in_printer_09)
+    XTLocation Returns In Station 09
+    XTSection returns_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://returns_in_printer_09/queue
+    State Idle
+    StateTime 1323805514
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_in_printer_10>
+    Info returns_in_printer_10 (returns_in_printer_10)
+    XTLocation Returns In Station 10
+    XTSection returns_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://returns_in_printer_10/queue
+    State Idle
+    StateTime 1323804865
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_in_printer_11>
+    Info returns_in_printer_11 (returns_in_printer_11)
+    XTLocation Returns In Station 11
+    XTSection returns_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://returns_in_printer_11/queue
+    State Idle
+    StateTime 1307549587
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_in_printer_12>
+    Info returns_in_printer_12 (returns_in_printer_12)
+    XTLocation Returns In Station 12
+    XTSection returns_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://returns_in_printer_12/queue
+    State Idle
+    StateTime 1323718642
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_in_printer_13>
+    Info returns_in_printer_13 (returns_in_printer_13)
+    XTLocation Returns In Station 13
+    XTSection returns_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://returns_in_printer_13/queue
+    State Idle
+    StateTime 1307576263
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_in_printer_14>
+    Info returns_in_printer_14 (returns_in_printer_14)
+    XTLocation Returns In Station 14
+    XTSection returns_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://returns_in_printer_14/queue
+    State Idle
+    StateTime 1323811520
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_in_printer_15>
+    Info returns_in_printer_15 (returns_in_printer_15)
+    XTLocation Returns In Station 15
+    XTSection returns_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://returns_in_printer_15/queue
+    State Idle
+    StateTime 1323768921
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_in_printer_16>
+    Info returns_in_printer_16 (returns_in_printer_16)
+    XTLocation Returns In Station 16
+    XTSection returns_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://returns_in_printer_16/queue
+    State Idle
+    StateTime 1323806501
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_in_printer_17>
+    Info returns_in_printer_17
+    XTLocation Returns In Station 17
+    XTSection returns_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://returns_in_printer_17/queue
+    State Idle
+    StateTime 1323806501
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_in_printer_18>
+    Info returns_in_printer_18
+    XTLocation Returns In Station 18
+    XTSection returns_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://returns_in_printer_18/queue
+    State Idle
+    StateTime 1323806501
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+** ADD PACKING PRINTERS**
+
+<Printer pack_u1_document_01>
+    Info Packing Doc U1 01
+    Location DC1
+    DeviceURI lpd://pack_u1_document_01/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_02>
+    Info Packing Doc U1 02
+    Location DC1
+    DeviceURI lpd://pack_u1_document_02/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_03>
+    Info Packing Doc U1 03
+    Location DC1
+    DeviceURI lpd://pack_u1_document_03/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_04>
+    Info Packing Doc U1 04
+    Location DC1
+    DeviceURI lpd://pack_u1_document_04/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_05>
+    Info Packing Doc U1 05
+    Location DC1
+    DeviceURI lpd://pack_u1_document_05/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_06>
+    Info Packing Doc U1 06
+    Location DC1
+    DeviceURI lpd://pack_u1_document_06/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_07>
+    Info Packing Doc U1 07
+    Location DC1
+    DeviceURI lpd://pack_u1_document_07/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_08>
+    Info Packing Doc U1 08
+    Location DC1
+    DeviceURI lpd://pack_u1_document_08/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_09>
+    Info Packing Doc U1 09
+    Location DC1
+    DeviceURI lpd://pack_u1_document_09/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_10>
+    Info Packing Doc U1 10
+    Location DC1
+    DeviceURI lpd://pack_u1_document_10/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_11>
+    Info Packing Doc U1 11
+    Location DC1
+    DeviceURI lpd://pack_u1_document_11/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_12>
+    Info Packing Doc U1 12
+    Location DC1
+    DeviceURI lpd://pack_u1_document_12/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_13>
+    Info Packing Doc U1 13
+    Location DC1
+    DeviceURI lpd://pack_u1_document_13/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_14>
+    Info Packing Doc U1 14
+    Location DC1
+    DeviceURI lpd://pack_u1_document_14/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_15>
+    Info Packing Doc U1 15
+    Location DC1
+    DeviceURI lpd://pack_u1_document_15/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_16>
+    Info Packing Doc U1 16
+    Location DC1
+    DeviceURI lpd://pack_u1_document_16/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_17>
+    Info Packing Doc U1 17
+    Location DC1
+    DeviceURI lpd://pack_u1_document_17/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_18>
+    Info Packing Doc U1 18
+    Location DC1
+    DeviceURI lpd://pack_u1_document_18/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_19>
+    Info Packing Doc U1 19
+    Location DC1
+    DeviceURI lpd://pack_u1_document_19/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_20>
+    Info Packing Doc U1 20
+    Location DC1
+    DeviceURI lpd://pack_u1_document_20/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_21>
+    Info Packing Doc U1 21
+    Location DC1
+    DeviceURI lpd://pack_u1_document_21/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_22>
+    Info Packing Doc U1 22
+    Location DC1
+    DeviceURI lpd://pack_u1_document_22/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_23>
+    Info Packing Doc U1 23
+    Location DC1
+    DeviceURI lpd://pack_u1_document_23/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_24>
+    Info Packing Doc U1 24
+    Location DC1
+    DeviceURI lpd://pack_u1_document_24/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_25>
+    Info Packing Doc U1 25
+    Location DC1
+    DeviceURI lpd://pack_u1_document_25/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_26>
+    Info Packing Doc U1 26
+    Location DC1
+    DeviceURI lpd://pack_u1_document_26/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_27>
+    Info Packing Doc U1 27
+    Location DC1
+    DeviceURI lpd://pack_u1_document_27/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_28>
+    Info Packing Doc U1 28
+    Location DC1
+    DeviceURI lpd://pack_u1_document_28/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_29>
+    Info Packing Doc U1 29
+    Location DC1
+    DeviceURI lpd://pack_u1_document_29/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_30>
+    Info Packing Doc U1 30
+    Location DC1
+    DeviceURI lpd://pack_u1_document_30/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_31>
+    Info Packing Doc U1 31
+    Location DC1
+    DeviceURI lpd://pack_u1_document_31/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_32>
+    Info Packing Doc U1 32
+    Location DC1
+    DeviceURI lpd://pack_u1_document_32/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_33>
+    Info Packing Doc U1 33
+    Location DC1
+    DeviceURI lpd://pack_u1_document_33/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_34>
+    Info Packing Doc U1 34
+    Location DC1
+    DeviceURI lpd://pack_u1_document_34/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_35>
+    Info Packing Doc U1 35
+    Location DC1
+    DeviceURI lpd://pack_u1_document_35/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_36>
+    Info Packing Doc U1 36
+    Location DC1
+    DeviceURI lpd://pack_u1_document_36/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_37>
+    Info Packing Doc U1 37
+    Location DC1
+    DeviceURI lpd://pack_u1_document_37/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_38>
+    Info Packing Doc U1 38
+    Location DC1
+    DeviceURI lpd://pack_u1_document_38/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_39>
+    Info Packing Doc U1 39
+    Location DC1
+    DeviceURI lpd://pack_u1_document_39/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_40>
+    Info Packing Doc U1 40
+    Location DC1
+    DeviceURI lpd://pack_u1_document_40/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_41>
+    Info Packing Doc U1 41
+    Location DC1
+    DeviceURI lpd://pack_u1_document_41/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_42>
+    Info Packing Doc U1 42
+    Location DC1
+    DeviceURI lpd://pack_u1_document_42/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_43>
+    Info Packing Doc U1 43
+    Location DC1
+    DeviceURI lpd://pack_u1_document_43/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_44>
+    Info Packing Doc U1 44
+    Location DC1
+    DeviceURI lpd://pack_u1_document_44/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_45>
+    Info Packing Doc U1 45
+    Location DC1
+    DeviceURI lpd://pack_u1_document_45/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_46>
+    Info Packing Doc U1 46
+    Location DC1
+    DeviceURI lpd://pack_u1_document_46/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_47>
+    Info Packing Doc U1 47
+    Location DC1
+    DeviceURI lpd://pack_u1_document_47/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_48>
+    Info Packing Doc U1 48
+    Location DC1
+    DeviceURI lpd://pack_u1_document_48/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_49>
+    Info Packing Doc U1 49
+    Location DC1
+    DeviceURI lpd://pack_u1_document_49/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_50>
+    Info Packing Doc U1 50
+    Location DC1
+    DeviceURI lpd://pack_u1_document_50/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_51>
+    Info Packing Doc U1 51
+    Location DC1
+    DeviceURI lpd://pack_u1_document_51/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_52>
+    Info Packing Doc U1 52
+    Location DC1
+    DeviceURI lpd://pack_u1_document_52/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_53>
+    Info Packing Doc U1 53
+    Location DC1
+    DeviceURI lpd://pack_u1_document_53/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_54>
+    Info Packing Doc U1 54
+    Location DC1
+    DeviceURI lpd://pack_u1_document_54/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_55>
+    Info Packing Doc U1 55
+    Location DC1
+    DeviceURI lpd://pack_u1_document_55/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_56>
+    Info Packing Doc U1 56
+    Location DC1
+    DeviceURI lpd://pack_u1_document_56/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_57>
+    Info Packing Doc U1 57
+    Location DC1
+    DeviceURI lpd://pack_u1_document_57/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_58>
+    Info Packing Doc U1 58
+    Location DC1
+    DeviceURI lpd://pack_u1_document_58/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_59>
+    Info Packing Doc U1 59
+    Location DC1
+    DeviceURI lpd://pack_u1_document_59/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_60>
+    Info Packing Doc U1 60
+    Location DC1
+    DeviceURI lpd://pack_u1_document_60/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_61>
+    Info Packing Doc U1 61
+    Location DC1
+    DeviceURI lpd://pack_u1_document_61/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_62>
+    Info Packing Doc U1 62
+    Location DC1
+    DeviceURI lpd://pack_u1_document_62/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_63>
+    Info Packing Doc U1 63
+    Location DC1
+    DeviceURI lpd://pack_u1_document_63/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_64>
+    Info Packing Doc U1 64
+    Location DC1
+    DeviceURI lpd://pack_u1_document_64/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_65>
+    Info Packing Doc U1 65
+    Location DC1
+    DeviceURI lpd://pack_u1_document_65/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_66>
+    Info Packing Doc U1 66
+    Location DC1
+    DeviceURI lpd://pack_u1_document_66/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_67>
+    Info Packing Doc U1 67
+    Location DC1
+    DeviceURI lpd://pack_u1_document_67/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_68>
+    Info Packing Doc U1 68
+    Location DC1
+    DeviceURI lpd://pack_u1_document_68/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_69>
+    Info Packing Doc U1 69
+    Location DC1
+    DeviceURI lpd://pack_u1_document_69/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_70>
+    Info Packing Doc U1 70
+    Location DC1
+    DeviceURI lpd://pack_u1_document_70/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_71>
+    Info Packing Doc U1 71
+    Location DC1
+    DeviceURI lpd://pack_u1_document_71/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_72>
+    Info Packing Doc U1 72
+    Location DC1
+    DeviceURI lpd://pack_u1_document_72/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_73>
+    Info Packing Doc U1 73
+    Location DC1
+    DeviceURI lpd://pack_u1_document_73/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_74>
+    Info Packing Doc U1 74
+    Location DC1
+    DeviceURI lpd://pack_u1_document_74/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_75>
+    Info Packing Doc U1 75
+    Location DC1
+    DeviceURI lpd://pack_u1_document_75/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_76>
+    Info Packing Doc U1 76
+    Location DC1
+    DeviceURI lpd://pack_u1_document_76/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_77>
+    Info Packing Doc U1 77
+    Location DC1
+    DeviceURI lpd://pack_u1_document_77/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_78>
+    Info Packing Doc U1 78
+    Location DC1
+    DeviceURI lpd://pack_u1_document_78/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_79>
+    Info Packing Doc U1 79
+    Location DC1
+    DeviceURI lpd://pack_u1_document_79/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_80>
+    Info Packing Doc U1 80
+    Location DC1
+    DeviceURI lpd://pack_u1_document_80/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_81>
+    Info Packing Doc U1 81
+    Location DC1
+    DeviceURI lpd://pack_u1_document_81/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_82>
+    Info Packing Doc U1 82
+    Location DC1
+    DeviceURI lpd://pack_u1_document_82/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_83>
+    Info Packing Doc U1 83
+    Location DC1
+    DeviceURI lpd://pack_u1_document_83/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_84>
+    Info Packing Doc U1 84
+    Location DC1
+    DeviceURI lpd://pack_u1_document_84/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_85>
+    Info Packing Doc U1 85
+    Location DC1
+    DeviceURI lpd://pack_u1_document_85/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_86>
+    Info Packing Doc U1 86
+    Location DC1
+    DeviceURI lpd://pack_u1_document_86/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_87>
+    Info Packing Doc U1 87
+    Location DC1
+    DeviceURI lpd://pack_u1_document_87/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_88>
+    Info Packing Doc U1 88
+    Location DC1
+    DeviceURI lpd://pack_u1_document_88/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_89>
+    Info Packing Doc U1 89
+    Location DC1
+    DeviceURI lpd://pack_u1_document_89/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_90>
+    Info Packing Doc U1 90
+    Location DC1
+    DeviceURI lpd://pack_u1_document_90/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_91>
+    Info Packing Doc U1 91
+    Location DC1
+    DeviceURI lpd://pack_u1_document_91/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_92>
+    Info Packing Doc U1 92
+    Location DC1
+    DeviceURI lpd://pack_u1_document_92/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_93>
+    Info Packing Doc U1 93
+    Location DC1
+    DeviceURI lpd://pack_u1_document_93/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_document_94>
+    Info Packing Doc U1 94
+    Location DC1
+    DeviceURI lpd://pack_u1_document_94/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_01>
+    Info Packing Doc U4 01
+    Location DC1
+    DeviceURI lpd://pack_u4_document_01/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_02>
+    Info Packing Doc U4 02
+    Location DC1
+    DeviceURI lpd://pack_u4_document_02/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_03>
+    Info Packing Doc U4 03
+    Location DC1
+    DeviceURI lpd://pack_u4_document_03/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_04>
+    Info Packing Doc U4 04
+    Location DC1
+    DeviceURI lpd://pack_u4_document_04/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_05>
+    Info Packing Doc U4 05
+    Location DC1
+    DeviceURI lpd://pack_u4_document_05/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_06>
+    Info Packing Doc U4 06
+    Location DC1
+    DeviceURI lpd://pack_u4_document_06/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_07>
+    Info Packing Doc U4 07
+    Location DC1
+    DeviceURI lpd://pack_u4_document_07/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_08>
+    Info Packing Doc U4 08
+    Location DC1
+    DeviceURI lpd://pack_u4_document_08/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_09>
+    Info Packing Doc U4 09
+    Location DC1
+    DeviceURI lpd://pack_u4_document_09/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_10>
+    Info Packing Doc U4 10
+    Location DC1
+    DeviceURI lpd://pack_u4_document_10/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_11>
+    Info Packing Doc U4 11
+    Location DC1
+    DeviceURI lpd://pack_u4_document_11/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_12>
+    Info Packing Doc U4 12
+    Location DC1
+    DeviceURI lpd://pack_u4_document_12/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_13>
+    Info Packing Doc U4 13
+    Location DC1
+    DeviceURI lpd://pack_u4_document_13/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_14>
+    Info Packing Doc U4 14
+    Location DC1
+    DeviceURI lpd://pack_u4_document_14/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_15>
+    Info Packing Doc U4 15
+    Location DC1
+    DeviceURI lpd://pack_u4_document_15/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_16>
+    Info Packing Doc U4 16
+    Location DC1
+    DeviceURI lpd://pack_u4_document_16/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_17>
+    Info Packing Doc U4 17
+    Location DC1
+    DeviceURI lpd://pack_u4_document_17/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_18>
+    Info Packing Doc U4 18
+    Location DC1
+    DeviceURI lpd://pack_u4_document_18/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_19>
+    Info Packing Doc U4 19
+    Location DC1
+    DeviceURI lpd://pack_u4_document_19/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_20>
+    Info Packing Doc U4 20
+    Location DC1
+    DeviceURI lpd://pack_u4_document_20/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_21>
+    Info Packing Doc U4 21
+    Location DC1
+    DeviceURI lpd://pack_u4_document_21/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_22>
+    Info Packing Doc U4 22
+    Location DC1
+    DeviceURI lpd://pack_u4_document_22/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_23>
+    Info Packing Doc U4 23
+    Location DC1
+    DeviceURI lpd://pack_u4_document_23/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_24>
+    Info Packing Doc U4 24
+    Location DC1
+    DeviceURI lpd://pack_u4_document_24/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_25>
+    Info Packing Doc U4 25
+    Location DC1
+    DeviceURI lpd://pack_u4_document_25/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_26>
+    Info Packing Doc U4 26
+    Location DC1
+    DeviceURI lpd://pack_u4_document_26/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_27>
+    Info Packing Doc U4 27
+    Location DC1
+    DeviceURI lpd://pack_u4_document_27/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_document_28>
+    Info Packing Doc U4 28
+    Location DC1
+    DeviceURI lpd://pack_u4_document_28/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_01>
+    Info Packing Lab U1 01
+    Location DC1
+    DeviceURI lpd://pack_u1_label_01/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_02>
+    Info Packing Lab U1 02
+    Location DC1
+    DeviceURI lpd://pack_u1_label_02/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_03>
+    Info Packing Lab U1 03
+    Location DC1
+    DeviceURI lpd://pack_u1_label_03/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_04>
+    Info Packing Lab U1 04
+    Location DC1
+    DeviceURI lpd://pack_u1_label_04/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_05>
+    Info Packing Lab U1 05
+    Location DC1
+    DeviceURI lpd://pack_u1_label_05/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_06>
+    Info Packing Lab U1 06
+    Location DC1
+    DeviceURI lpd://pack_u1_label_06/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_07>
+    Info Packing Lab U1 07
+    Location DC1
+    DeviceURI lpd://pack_u1_label_07/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_08>
+    Info Packing Lab U1 08
+    Location DC1
+    DeviceURI lpd://pack_u1_label_08/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_09>
+    Info Packing Lab U1 09
+    Location DC1
+    DeviceURI lpd://pack_u1_label_09/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_10>
+    Info Packing Lab U1 10
+    Location DC1
+    DeviceURI lpd://pack_u1_label_10/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_11>
+    Info Packing Lab U1 11
+    Location DC1
+    DeviceURI lpd://pack_u1_label_11/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_12>
+    Info Packing Lab U1 12
+    Location DC1
+    DeviceURI lpd://pack_u1_label_12/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_13>
+    Info Packing Lab U1 13
+    Location DC1
+    DeviceURI lpd://pack_u1_label_13/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_14>
+    Info Packing Lab U1 14
+    Location DC1
+    DeviceURI lpd://pack_u1_label_14/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_15>
+    Info Packing Lab U1 15
+    Location DC1
+    DeviceURI lpd://pack_u1_label_15/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_16>
+    Info Packing Lab U1 16
+    Location DC1
+    DeviceURI lpd://pack_u1_label_16/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_17>
+    Info Packing Lab U1 17
+    Location DC1
+    DeviceURI lpd://pack_u1_label_17/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_18>
+    Info Packing Lab U1 18
+    Location DC1
+    DeviceURI lpd://pack_u1_label_18/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_19>
+    Info Packing Lab U1 19
+    Location DC1
+    DeviceURI lpd://pack_u1_label_19/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_20>
+    Info Packing Lab U1 20
+    Location DC1
+    DeviceURI lpd://pack_u1_label_20/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_21>
+    Info Packing Lab U1 21
+    Location DC1
+    DeviceURI lpd://pack_u1_label_21/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_22>
+    Info Packing Lab U1 22
+    Location DC1
+    DeviceURI lpd://pack_u1_label_22/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_23>
+    Info Packing Lab U1 23
+    Location DC1
+    DeviceURI lpd://pack_u1_label_23/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_24>
+    Info Packing Lab U1 24
+    Location DC1
+    DeviceURI lpd://pack_u1_label_24/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_25>
+    Info Packing Lab U1 25
+    Location DC1
+    DeviceURI lpd://pack_u1_label_25/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_26>
+    Info Packing Lab U1 26
+    Location DC1
+    DeviceURI lpd://pack_u1_label_26/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_27>
+    Info Packing Lab U1 27
+    Location DC1
+    DeviceURI lpd://pack_u1_label_27/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_28>
+    Info Packing Lab U1 28
+    Location DC1
+    DeviceURI lpd://pack_u1_label_28/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_29>
+    Info Packing Lab U1 29
+    Location DC1
+    DeviceURI lpd://pack_u1_label_29/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_30>
+    Info Packing Lab U1 30
+    Location DC1
+    DeviceURI lpd://pack_u1_label_30/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_31>
+    Info Packing Lab U1 31
+    Location DC1
+    DeviceURI lpd://pack_u1_label_31/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_32>
+    Info Packing Lab U1 32
+    Location DC1
+    DeviceURI lpd://pack_u1_label_32/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_33>
+    Info Packing Lab U1 33
+    Location DC1
+    DeviceURI lpd://pack_u1_label_33/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_34>
+    Info Packing Lab U1 34
+    Location DC1
+    DeviceURI lpd://pack_u1_label_34/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_35>
+    Info Packing Lab U1 35
+    Location DC1
+    DeviceURI lpd://pack_u1_label_35/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_36>
+    Info Packing Lab U1 36
+    Location DC1
+    DeviceURI lpd://pack_u1_label_36/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_37>
+    Info Packing Lab U1 37
+    Location DC1
+    DeviceURI lpd://pack_u1_label_37/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_38>
+    Info Packing Lab U1 38
+    Location DC1
+    DeviceURI lpd://pack_u1_label_38/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_39>
+    Info Packing Lab U1 39
+    Location DC1
+    DeviceURI lpd://pack_u1_label_39/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_40>
+    Info Packing Lab U1 40
+    Location DC1
+    DeviceURI lpd://pack_u1_label_40/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_41>
+    Info Packing Lab U1 41
+    Location DC1
+    DeviceURI lpd://pack_u1_label_41/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_42>
+    Info Packing Lab U1 42
+    Location DC1
+    DeviceURI lpd://pack_u1_label_42/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_43>
+    Info Packing Lab U1 43
+    Location DC1
+    DeviceURI lpd://pack_u1_label_43/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_44>
+    Info Packing Lab U1 44
+    Location DC1
+    DeviceURI lpd://pack_u1_label_44/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_45>
+    Info Packing Lab U1 45
+    Location DC1
+    DeviceURI lpd://pack_u1_label_45/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_46>
+    Info Packing Lab U1 46
+    Location DC1
+    DeviceURI lpd://pack_u1_label_46/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_47>
+    Info Packing Lab U1 47
+    Location DC1
+    DeviceURI lpd://pack_u1_label_47/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_48>
+    Info Packing Lab U1 48
+    Location DC1
+    DeviceURI lpd://pack_u1_label_48/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_49>
+    Info Packing Lab U1 49
+    Location DC1
+    DeviceURI lpd://pack_u1_label_49/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_50>
+    Info Packing Lab U1 50
+    Location DC1
+    DeviceURI lpd://pack_u1_label_50/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_51>
+    Info Packing Lab U1 51
+    Location DC1
+    DeviceURI lpd://pack_u1_label_51/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_52>
+    Info Packing Lab U1 52
+    Location DC1
+    DeviceURI lpd://pack_u1_label_52/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_53>
+    Info Packing Lab U1 53
+    Location DC1
+    DeviceURI lpd://pack_u1_label_53/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_54>
+    Info Packing Lab U1 54
+    Location DC1
+    DeviceURI lpd://pack_u1_label_54/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_55>
+    Info Packing Lab U1 55
+    Location DC1
+    DeviceURI lpd://pack_u1_label_55/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_56>
+    Info Packing Lab U1 56
+    Location DC1
+    DeviceURI lpd://pack_u1_label_56/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_57>
+    Info Packing Lab U1 57
+    Location DC1
+    DeviceURI lpd://pack_u1_label_57/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_58>
+    Info Packing Lab U1 58
+    Location DC1
+    DeviceURI lpd://pack_u1_label_58/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_59>
+    Info Packing Lab U1 59
+    Location DC1
+    DeviceURI lpd://pack_u1_label_59/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_60>
+    Info Packing Lab U1 60
+    Location DC1
+    DeviceURI lpd://pack_u1_label_60/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_61>
+    Info Packing Lab U1 61
+    Location DC1
+    DeviceURI lpd://pack_u1_label_61/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_62>
+    Info Packing Lab U1 62
+    Location DC1
+    DeviceURI lpd://pack_u1_label_62/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_63>
+    Info Packing Lab U1 63
+    Location DC1
+    DeviceURI lpd://pack_u1_label_63/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_64>
+    Info Packing Lab U1 64
+    Location DC1
+    DeviceURI lpd://pack_u1_label_64/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_65>
+    Info Packing Lab U1 65
+    Location DC1
+    DeviceURI lpd://pack_u1_label_65/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_66>
+    Info Packing Lab U1 66
+    Location DC1
+    DeviceURI lpd://pack_u1_label_66/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_67>
+    Info Packing Lab U1 67
+    Location DC1
+    DeviceURI lpd://pack_u1_label_67/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_68>
+    Info Packing Lab U1 68
+    Location DC1
+    DeviceURI lpd://pack_u1_label_68/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_69>
+    Info Packing Lab U1 69
+    Location DC1
+    DeviceURI lpd://pack_u1_label_69/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_70>
+    Info Packing Lab U1 70
+    Location DC1
+    DeviceURI lpd://pack_u1_label_70/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_71>
+    Info Packing Lab U1 71
+    Location DC1
+    DeviceURI lpd://pack_u1_label_71/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_72>
+    Info Packing Lab U1 72
+    Location DC1
+    DeviceURI lpd://pack_u1_label_72/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_73>
+    Info Packing Lab U1 73
+    Location DC1
+    DeviceURI lpd://pack_u1_label_73/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_74>
+    Info Packing Lab U1 74
+    Location DC1
+    DeviceURI lpd://pack_u1_label_74/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_75>
+    Info Packing Lab U1 75
+    Location DC1
+    DeviceURI lpd://pack_u1_label_75/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_76>
+    Info Packing Lab U1 76
+    Location DC1
+    DeviceURI lpd://pack_u1_label_76/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_77>
+    Info Packing Lab U1 77
+    Location DC1
+    DeviceURI lpd://pack_u1_label_77/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_78>
+    Info Packing Lab U1 78
+    Location DC1
+    DeviceURI lpd://pack_u1_label_78/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_79>
+    Info Packing Lab U1 79
+    Location DC1
+    DeviceURI lpd://pack_u1_label_79/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_80>
+    Info Packing Lab U1 80
+    Location DC1
+    DeviceURI lpd://pack_u1_label_80/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_81>
+    Info Packing Lab U1 81
+    Location DC1
+    DeviceURI lpd://pack_u1_label_81/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_82>
+    Info Packing Lab U1 82
+    Location DC1
+    DeviceURI lpd://pack_u1_label_82/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_83>
+    Info Packing Lab U1 83
+    Location DC1
+    DeviceURI lpd://pack_u1_label_83/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_84>
+    Info Packing Lab U1 84
+    Location DC1
+    DeviceURI lpd://pack_u1_label_84/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_85>
+    Info Packing Lab U1 85
+    Location DC1
+    DeviceURI lpd://pack_u1_label_85/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_86>
+    Info Packing Lab U1 86
+    Location DC1
+    DeviceURI lpd://pack_u1_label_86/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_87>
+    Info Packing Lab U1 87
+    Location DC1
+    DeviceURI lpd://pack_u1_label_87/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_88>
+    Info Packing Lab U1 88
+    Location DC1
+    DeviceURI lpd://pack_u1_label_88/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_89>
+    Info Packing Lab U1 89
+    Location DC1
+    DeviceURI lpd://pack_u1_label_89/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_90>
+    Info Packing Lab U1 90
+    Location DC1
+    DeviceURI lpd://pack_u1_label_90/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_91>
+    Info Packing Lab U1 91
+    Location DC1
+    DeviceURI lpd://pack_u1_label_91/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_92>
+    Info Packing Lab U1 92
+    Location DC1
+    DeviceURI lpd://pack_u1_label_92/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_93>
+    Info Packing Lab U1 93
+    Location DC1
+    DeviceURI lpd://pack_u1_label_93/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u1_label_94>
+    Info Packing Lab U1 94
+    Location DC1
+    DeviceURI lpd://pack_u1_label_94/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_01>
+    Info Packing Lab U4 01
+    Location DC1
+    DeviceURI lpd://pack_u4_label_01/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_02>
+    Info Packing Lab U4 02
+    Location DC1
+    DeviceURI lpd://pack_u4_label_02/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_03>
+    Info Packing Lab U4 03
+    Location DC1
+    DeviceURI lpd://pack_u4_label_03/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_04>
+    Info Packing Lab U4 04
+    Location DC1
+    DeviceURI lpd://pack_u4_label_04/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_05>
+    Info Packing Lab U4 05
+    Location DC1
+    DeviceURI lpd://pack_u4_label_05/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_06>
+    Info Packing Lab U4 06
+    Location DC1
+    DeviceURI lpd://pack_u4_label_06/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_07>
+    Info Packing Lab U4 07
+    Location DC1
+    DeviceURI lpd://pack_u4_label_07/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_08>
+    Info Packing Lab U4 08
+    Location DC1
+    DeviceURI lpd://pack_u4_label_08/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_09>
+    Info Packing Lab U4 09
+    Location DC1
+    DeviceURI lpd://pack_u4_label_09/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_10>
+    Info Packing Lab U4 10
+    Location DC1
+    DeviceURI lpd://pack_u4_label_10/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_11>
+    Info Packing Lab U4 11
+    Location DC1
+    DeviceURI lpd://pack_u4_label_11/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_12>
+    Info Packing Lab U4 12
+    Location DC1
+    DeviceURI lpd://pack_u4_label_12/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_13>
+    Info Packing Lab U4 13
+    Location DC1
+    DeviceURI lpd://pack_u4_label_13/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_14>
+    Info Packing Lab U4 14
+    Location DC1
+    DeviceURI lpd://pack_u4_label_14/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_15>
+    Info Packing Lab U4 15
+    Location DC1
+    DeviceURI lpd://pack_u4_label_15/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_16>
+    Info Packing Lab U4 16
+    Location DC1
+    DeviceURI lpd://pack_u4_label_16/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_17>
+    Info Packing Lab U4 17
+    Location DC1
+    DeviceURI lpd://pack_u4_label_17/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_18>
+    Info Packing Lab U4 18
+    Location DC1
+    DeviceURI lpd://pack_u4_label_18/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_19>
+    Info Packing Lab U4 19
+    Location DC1
+    DeviceURI lpd://pack_u4_label_19/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_20>
+    Info Packing Lab U4 20
+    Location DC1
+    DeviceURI lpd://pack_u4_label_20/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_21>
+    Info Packing Lab U4 21
+    Location DC1
+    DeviceURI lpd://pack_u4_label_21/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_22>
+    Info Packing Lab U4 22
+    Location DC1
+    DeviceURI lpd://pack_u4_label_22/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_23>
+    Info Packing Lab U4 23
+    Location DC1
+    DeviceURI lpd://pack_u4_label_23/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_24>
+    Info Packing Lab U4 24
+    Location DC1
+    DeviceURI lpd://pack_u4_label_24/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_25>
+    Info Packing Lab U4 25
+    Location DC1
+    DeviceURI lpd://pack_u4_label_25/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_26>
+    Info Packing Lab U4 26
+    Location DC1
+    DeviceURI lpd://pack_u4_label_26/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_27>
+    Info Packing Lab U4 27
+    Location DC1
+    DeviceURI lpd://pack_u4_label_27/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_u4_label_28>
+    Info Packing Lab U4 28
+    Location DC1
+    DeviceURI lpd://pack_u4_label_28/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_jc_document_01>
+    Info Packing Doc JC 01
+    Location DC1
+    DeviceURI lpd://pack_jc_document_01/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_jc_document_02>
+    Info Packing Doc JC 02
+    Location DC1
+    DeviceURI lpd://pack_jc_document_02/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_jc_document_03>
+    Info Packing Doc JC 03
+    Location DC1
+    DeviceURI lpd://pack_jc_document_03/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_jc_document_04>
+    Info Packing Doc JC 04
+    Location DC1
+    DeviceURI lpd://pack_jc_document_04/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_jc_document_05>
+    Info Packing Doc JC 05
+    Location DC1
+    DeviceURI lpd://pack_jc_document_05/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_jc_label_01>
+    Info Packing Lab JC 01
+    Location DC1
+    DeviceURI lpd://pack_jc_label_01/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_jc_label_02>
+    Info Packing Lab JC 02
+    Location DC1
+    DeviceURI lpd://pack_jc_label_02/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_jc_label_03>
+    Info Packing Lab JC 03
+    Location DC1
+    DeviceURI lpd://pack_jc_label_03/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_jc_label_04>
+    Info Packing Lab JC 04
+    Location DC1
+    DeviceURI lpd://pack_jc_label_04/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_jc_label_05>
+    Info Packing Lab JC 05
+    Location DC1
+    DeviceURI lpd://pack_jc_label_05/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer pack_jc_addresscard_01>
+    Info Packing Address Card JC 01
+    Location DC1
+    DeviceURI lpd://pack_jc_addresscard_01/queue
+    State Idle
+    StateTime 1299516927
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+DC2
+---
+Remove the following printer definitions:
+returns-dc2
+returns_dc2_2
+returns_dc2_3
+returns_dc2_4
+returns_dc2_5
+returns_dc2_6
+returns_dc2_7
+returns_dc2_spare_1
+returns_dc2_spare_2
+
+Copy/paste the following printers into /etc/cups/printers.conf on *BOTH* web
+servers:
+
+<Printer returns-dc2>
+    Info returns-dc2
+    XTLocation Printer Station Returns In 01
+    XTSection returns_in
+    XTType document
+    Location DC2
+    DeviceURI lpd://returns-dc2/auto
+    State Idle
+    StateTime 1299513108
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_dc2_2>
+    Info returns_dc2_2
+    XTLocation Printer Station Returns In 02
+    XTSection returns_in
+    XTType document
+    Location DC2
+    DeviceURI lpd://returns_dc2_2/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_dc2_3>
+    Info returns_dc2_3
+    XTLocation Printer Station Returns In 03
+    XTSection returns_in
+    XTType document
+    Location DC2
+    DeviceURI lpd://returns_dc2_3/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_dc2_4>
+    Info returns_dc2_4
+    XTLocation Printer Station Returns In 04
+    XTSection returns_in
+    XTType document
+    Location DC2
+    DeviceURI lpd://returns_dc2_4/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_dc2_5>
+    Info returns_dc2_5
+    XTLocation Printer Station Returns In 05
+    XTSection returns_in
+    XTType document
+    Location DC2
+    DeviceURI lpd://returns_dc2_5/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_dc2_6>
+    Info returns_dc2_6
+    XTLocation Printer Station Returns In 06
+    XTSection returns_in
+    XTType document
+    Location DC2
+    DeviceURI lpd://returns_dc2_6/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer returns_dc2_7>
+    Info returns_dc2_7
+    XTLocation Printer Station Returns In 07
+    XTSection returns_in
+    XTType document
+    Location DC2
+    DeviceURI lpd://returns_dc2_7/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+DC3
+---
+Remove the following printer definitions:
+CRS_Doc_1
+CRS_Doc_2
+CRS_Doc_3
+CRS_Doc_4
+CRS_Doc_5
+CRS_Doc_6
+CRS_Doc_7
+CRS_Doc_8
+srs_doc_1
+
+Copy/paste the following printers into /etc/cups/printers.conf on *BOTH* web
+servers:
+
+<Printer CRS_Doc_1_1>
+    Info CRS_Doc_1_1
+    XTLocation Printer Station Customer Returns In 01
+    XTSection returns_in
+    XTType document
+    DeviceURI lpd://CRS_Doc_1/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer CRS_Doc_1_2>
+    Info CRS_Doc_1_2
+    XTLocation Printer Station Customer Returns In 02
+    XTSection returns_in
+    XTType document
+    DeviceURI lpd://CRS_Doc_1/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer CRS_Doc_2_1>
+    Info CRS_Doc_2_1
+    XTLocation Printer Station Customer Returns In 03
+    XTSection returns_in
+    XTType document
+    Location DC3
+    DeviceURI lpd://CRS_Doc_2/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer CRS_Doc_2_2>
+    Info CRS_Doc_2_2
+    XTLocation Printer Station Customer Returns In 04
+    XTSection returns_in
+    XTType document
+    Location DC3
+    DeviceURI lpd://CRS_Doc_2/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer CRS_Doc_3_1>
+    Info CRS_Doc_3_1
+    XTLocation Printer Station Customer Returns In 05
+    XTSection returns_in
+    XTType document
+    Location DC3
+    DeviceURI lpd://CRS_Doc_3/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer CRS_Doc_3_2>
+    Info CRS_Doc_3_2
+    XTLocation Printer Station Customer Returns In 06
+    XTSection returns_in
+    XTType document
+    Location DC3
+    DeviceURI lpd://CRS_Doc_3/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer CRS_Doc_4_1>
+    Info CRS_Doc_4_1
+    XTLocation Printer Station Customer Returns In 07
+    XTSection returns_in
+    XTType document
+    Location DC3
+    DeviceURI lpd://CRS_Doc_4/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer CRS_Doc_4_2>
+    Info CRS_Doc_4_2
+    XTLocation Printer Station Customer Returns In 08
+    XTSection returns_in
+    XTType document
+    Location DC3
+    DeviceURI lpd://CRS_Doc_4/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer CRS_Doc_5_1>
+    Info CRS_Doc_5_1
+    XTLocation Printer Station Customer Returns In 09
+    XTSection returns_in
+    XTType document
+    Location DC3
+    DeviceURI lpd://CRS_Doc_5/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer CRS_Doc_5_2>
+    Info CRS_Doc_5_2
+    XTLocation Printer Station Customer Returns In 10
+    XTSection returns_in
+    XTType document
+    Location DC3
+    DeviceURI lpd://CRS_Doc_5/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer CRS_Doc_6_1>
+    Info CRS_Doc_6_1
+    XTLocation Printer Station Customer Returns In 11
+    XTSection returns_in
+    XTType document
+    Location DC3
+    DeviceURI lpd://CRS_Doc_6/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer CRS_Doc_6_2>
+    Info CRS_Doc_6_2
+    XTLocation Printer Station Customer Returns In 12
+    XTSection returns_in
+    XTType document
+    Location DC3
+    DeviceURI lpd://CRS_Doc_6/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer CRS_Doc_7_1>
+    Info CRS_Doc_7_1
+    XTLocation Printer Station Customer Returns In 13
+    XTSection returns_in
+    XTType document
+    Location DC3
+    DeviceURI lpd://CRS_Doc_7/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer CRS_Doc_7_2>
+    Info CRS_Doc_7_2
+    XTLocation Printer Station Customer Returns In 14
+    XTSection returns_in
+    XTType document
+    Location DC3
+    DeviceURI lpd://CRS_Doc_7/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer CRS_Doc_8_1>
+    Info CRS_Doc_8_1
+    XTLocation Printer Station Customer Returns In 15
+    XTSection returns_in
+    XTType document
+    Location DC3
+    DeviceURI lpd://CRS_Doc_8/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer CRS_Doc_8_2>
+    Info CRS_Doc_8_2
+    XTLocation Printer Station Customer Returns In 16
+    XTSection returns_in
+    XTType document
+    Location DC3
+    DeviceURI lpd://CRS_Doc_8/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer srs_doc_1>
+    Info srs_doc_1
+    XTLocation Printer Station Sample Returns In 01
+    XTSection returns_in
+    XTType document
+    Location DC3
+    DeviceURI lpd://srs_doc_1/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer hvc_doc_returns_1>
+    Info hvc_doc_returns_1
+    XTLocation Printer Station HVC Returns
+    XTSection returns_in
+    XTType document
+    Location DC2
+    DeviceURI lpd://hvc_doc_1/auto
+    State Idle
+    StateTime 1288789155
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+
+sudo yum install xt
+
+7 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+No action needs to be performed after the deployment
+
+8 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

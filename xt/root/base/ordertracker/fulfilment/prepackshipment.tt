@@ -1,0 +1,309 @@
+[% PROCESS 'ordertracker/fulfilment/packing_common.tt' %]
+<script type="text/javascript" src="/javascript/common.js"></script>
+
+[% WRAPPER packing_wrapper %]
+    [% PROCESS warning_messages %]
+    <h3 class="title title-[% channel_config.$sales_channel %]">Shipment Summary</h3>
+    [% PROCESS shipment_info %]
+
+    <form name="pickShipment" action="/Fulfilment/Packing/ProcessPayment" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+    [% IF pack_status.ready > 0 %]
+        <h3 class=" title title-[% channel_config.$sales_channel %]">Items to be Packed</h3>
+
+        <table class="data wide-data divided-data" id="item-list">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>SKU</th>
+                    <th>Designer</th>
+                    <th>Description</th>
+                    <th>Size</th>
+                    <th>Container</th>
+                    <th class="packing_qc">QC</th>
+                </tr>
+            </thead>
+            <tbody>
+                [% FOREACH id = shipment_item_info.keys.sort %]
+                [%
+                   product_id = shipment_item_info.$id.product_id;
+                    IF shipment_item_info.$id.active_channel.channel_name == 'MRPORTER.COM';
+                       filename = product_id _ '_mrp';
+                       image_size = 'l';
+                    ELSE;
+                       filename = product_id;
+                       image_size = 'dl';
+                    END %]
+                    [% IF shipment_item_info.$id.shipment_item_status_id == db_constant('SHIPMENT_ITEM_STATUS__PICKED') || shipment_item_info.$id.shipment_item_status_id == db_constant('SHIPMENT_ITEM_STATUS__PACKING_EXCEPTION') %]
+                        <tr [% IF shipment_item_info.$id.container_is_pigeonhole %] class="highlight2" [% END %]>
+                            <td>
+                                <a[% IF shipment_item_info.$id.active_channel.live %] href="[% image_host_url %]/images/products/[% product_id %]/[% filename %]_in_[% image_size %].jpg" target="new" class="imagezoom"[% END %]><img src="[% shipment_item_info.$id.image.0 %]" width="120" hspace="5" vspace="5"></a>
+                                <div class="divideabove bottom-half">
+                                    <table>
+                                        <tr>
+                                            [% IF shipment_item_info.$id.ship_restriction.is_hazmat %]
+                                                <td><img class="center" src="/images/product_extras/hazmat.jpg" alt="Hazmat" title="Hazmat" width="50" /></td>
+                                            [% END %]
+                                            [% IF shipment_item_info.$id.ship_restriction.is_aerosol %]
+                                                <td><img class="center" src="/images/product_extras/aerosol.jpg" alt="Aerosol" title="Aerosol" width="50" /></td>
+                                            [% END %]
+                                            [% IF shipment_item_info.$id.ship_restriction.is_hazmat_lq %]
+                                                <td><img class="center" src="/images/product_extras/hazmat_lq.jpg" alt="Hazmat LQ" title="Hazmat LQ" width="50" /></td>
+                                            [% END %]
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                            <td>[% shipment_item_info.$id.product_id %]-[% shipment_item_info.$id.sku_size %]</td>
+                            <td>[% shipment_item_info.$id.designer %]</td>
+                            <td>[% shipment_item_info.$id.display_description %]</td>
+                            <td>[% IF shipment_item_info.$id.short_name != "" %][% shipment_item_info.$id.short_name %] [% END %][% shipment_item_info.$id.designer_size %]</td>
+                            <td [% IF shipment_item_info.$id.container_is_pigeonhole %] class="highlight2" [% END %]>[% shipment_item_info.$id.container_id %]</td>
+                            <td>[% PROCESS QCbit id=id %]</td>
+                        </tr>
+                        <tr>
+                            [% PROCESS page_elements/shipitem_packing_note.tt sitem_info=shipment_item_info.$id cols=7 %]
+                        </tr>
+                    [% END %]
+                [% END %]
+            </tbody>
+        </table>
+        [% IF shipment_extra_items.keys.size %]
+            <table class="data wide-data divided-data" id="item-list">
+                <thead>
+                    <tr>
+                        <th>Additional Items</th>
+                        <th>Item type</th>
+                        <th>Description / Content</th>
+                        <th class="packing_qc">QC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    [% FOREACH extra = shipment_extra_items.keys.sort %]
+                        [% IF extra == 'GiftMessage' %]
+                            [% FOREACH gift_message = gift_messages %]
+                                <tr>
+                                <td>
+                                    <a href="/print_docs/[% gift_message.get_image_path_silent %]" target="new" class="imagezoom">
+                                        <img height="70px" src="/print_docs/[% gift_message.get_image_path_silent %]" alt="Gift message preview" >
+                                    </a>
+                                </td>
+                                <td>Gift Message</td>
+                                <td>[% gift_message.get_message_text.replace('\n', '<br>') %]</td>
+                                [% IF gift_message.shipment_item.defined %]
+                                    [% idval = gift_message.shipment_item.id %]
+                                    <td>[% PROCESS QCbit id='GiftMessage_' _ idval type='shipment_extra_item_qc' %]</td>
+                                [% ELSE %]
+                                    <td>[% PROCESS QCbit id='GiftMessage' type='shipment_extra_item_qc' %]</td>
+                                [% END %]
+                                </tr>
+                            [% END %]
+                        [% ELSE %]
+                            <tr>
+                                <td><img src="/images/product_extras/[% extra %].png" alt="[% shipment_extra_items.$extra.fullname %] icon"></td>
+                                <td>[% shipment_extra_items.$extra.fullname %]</td>
+                                <td>[% shipment_extra_items.$extra.description.replace('\n', '<br>') %]</td>
+                                <td>[% PROCESS QCbit id=extra type='shipment_extra_item_qc' %]</td>
+                            </tr>
+                        [% END %]
+                    [% END %]
+                </tbody>
+            </table>
+        [% END %]
+
+        <script type="text/javascript">//<![CDATA[
+            jQuery(function() {
+                var button=jQuery("input[name='qc_do']");
+                var status={[%
+                    my_total_items=0;
+                    FOREACH id = shipment_item_info.keys;
+                        IF shipment_item_info.$id.shipment_item_status_id == db_constant('SHIPMENT_ITEM_STATUS__PICKED') || shipment_item_info.$id.shipment_item_status_id == db_constant('SHIPMENT_ITEM_STATUS__PACKING_EXCEPTION');
+                            'shipment_item_qc_' _ id _ ': -1,';
+                            my_total_items = my_total_items + 1;
+                        END;
+                    END;
+                    FOREACH extra = shipment_extra_items.keys.sort;
+                        IF extra == 'GiftMessage';
+                            FOREACH gift_message = gift_messages;
+                                IF gift_message.shipment_item.defined;
+                                    idval = gift_message.shipment_item.id;
+                                    'shipment_extra_item_qc_' _ extra _ '_' _ idval _ ': -1,';
+                                    my_total_items = my_total_items + 1;
+                                ELSE;
+                                    'shipment_extra_item_qc_' _ extra _ ': -1,';
+                                    my_total_items = my_total_items + 1;
+                                END;
+                            END;
+                        ELSE;
+                        'shipment_extra_item_qc_' _ extra _ ': -1,';
+                        my_total_items = my_total_items + 1;
+                        END;
+                    END;
+                    %]0:-1};
+                jQuery("table.data div.qc_reason").hide();
+                var failures=0;
+                jQuery("table.data input.qc_radio:checked").each(function(i,el_) {
+                    var el=jQuery(el_);
+                    status[el.attr('name')]=el.val();
+                    if (el.val()==0) {
+                        el.nextAll("div.qc_reason").show();
+                    }
+                    return true;
+                });
+                function update_button() {
+                    var failures=0;var passes=0;
+                    jQuery.each(status,function(id,val) {
+                        if (val==0||val==2) ++failures
+                        else if (val==1) ++passes;
+                    });
+
+                    if ((failures+passes)==[% my_total_items %]) {
+                        if (failures) {
+                            button.attr("value","« Send it back");
+                        }
+                        else {
+                            button.attr("value","Start Packing »");
+                        }
+                    }
+                    else {
+                        button.attr("value","Check items!");
+                    }
+                }
+                update_button();
+                jQuery("table.data input.qc_radio").bind(
+                    jQuery.browser.msie ? "propertychange" : "change", function(e) {
+                        if (e.type == "change" || (e.type == "propertychange" && window.event.propertyName == "checked") ) {
+                            var r=jQuery(this);
+                            status[r.attr('name')]=r.val();
+                            if (r.val() == 1 || r.val() == 2) {
+                                r.nextAll("div.qc_reason").hide();
+                            }
+                            else if (r.val() == 0) {
+                                r.nextAll("div.qc_reason").show();
+                            }
+                            update_button();
+                        }
+                    }
+                );
+                jQuery("form").bind('submit',function() {
+                    var proceed=true;var marked=0;var message;
+
+                    jQuery(this).find("input.qc_radio:checked").each(function(i,el_) {
+                        var el=jQuery(el_);
+                        if (el.val() == 0) {
+                            ++marked;
+                            var reason=el.nextAll("div.qc_reason").children("input.qc_reason").val();
+                            reason=reason.replace(/\s+/,' ','g').replace(/(^ )|( $)/,'','g');
+                            if (reason=="") {
+                                 message="Please provide a reason for each failed item";
+                                 proceed=false;
+                            }
+                        }
+                        else if (el.val() == 1) {
+                            ++marked;
+                        }
+                        else if (el.val() == 2) {
+                            ++marked;
+                        }
+                        return true;
+                    });
+                    if (marked < [% my_total_items %]) {
+                        message="Please mark each item as either OK or Fail";
+                        proceed=false;
+                    }
+
+                    [% IF shipment.stickers_enabled -%]
+                        var packing_printer = $('packing_printer').val();
+                        if(packing_printer == ''){
+                            message="Please select a packing printer";
+                            proceed=false;
+                        }
+                    [% END -%]
+
+
+                    if (!proceed) {
+                        alert(message);
+                        return false;
+                    }
+                    return double_submit();
+                });
+            });
+        //]]></script>
+
+        <br><br>
+    [% END %]
+
+    [% IF pack_status.packed > 0 %]
+        <h3 class="title-[% channel_config.$sales_channel %]">Packed Items</h3>
+
+        <table class="data wide-data divided-data">
+            <tr>
+                <th></th>
+                <th>SKU</th>
+                <th>Designer</th>
+                <th>Description</th>
+                <th>Size</th>
+            </tr>
+            [% FOREACH id = shipment_item_info.keys %]
+
+                [% IF shipment_item_info.$id.shipment_item_status_id == db_constant('SHIPMENT_ITEM_STATUS__PACKED') || shipment_item_info.$id.shipment_item_status_id == db_constant('SHIPMENT_ITEM_STATUS__DISPATCHED') %]
+                    <tr valign="middle" height="160">
+                        <td width="20%" rowspan="2"><img src="[% shipment_item_info.$id.image.0 %]" width="120" hspace="5" vspace="5"></td>
+                        <td width="12%" align="center">[% shipment_item_info.$id.product_id %]-[% shipment_item_info.$id.sku_size %]</td>
+                        <td width="25%">[% shipment_item_info.$id.designer %]</td>
+                        <td width="31%">[% shipment_item_info.$id.display_description %]</td>
+                        <td width="12%">[% IF shipment_item_info.$id.short_name != "" %][% shipment_item_info.$id.short_name %] [% END %][% shipment_item_info.$id.designer_size %]</td>
+                    </tr>
+                    <tr height="30">
+                        [% PROCESS page_elements/shipitem_packing_note.tt sitem_info=shipment_item_info.$id cols=5 %]
+                    </tr>
+                [% END %]
+            [% END %]
+        </table>
+
+    [% END %]
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td align="right">
+                <input type="hidden" name="shipment_id" value="[% shipment_id %]">
+                    [% FOREACH tote = containers; # pass this on in case we need to rescan them %]
+                        <input type="hidden" name="container_id" value="[% tote %]">
+                    [% END %]
+                    [% # This is the selector for packing_printers for mrp stickers -%]
+                    [% IF shipment.stickers_enabled && ( iws_rollout_phase < 2 || (! shipment.stickers_printed) ) -%]
+                        <select id="packing_printer" name="packing_printer">
+                            <option value="">--------------------</option>
+                            [% FOREACH printer = packing_printers.all -%]
+                                [% IF printer.value == packing_printer -%]
+                                    <option value="[% printer.value %]" selected="selected">Current: [% printer.setting %]</option>
+                                [% ELSE %]
+                                    <option value="[% printer.value %]">[% printer.setting %]</option>
+                                [% END -%]
+                            [% END -%]
+                        </select>
+                    [% END -%]
+
+                    [% INCLUDE page_elements/forms/submit_button.tt submit='Check items!' btn_name="qc_do" %]
+            </td>
+        </tr>
+    </table>
+    </form>
+
+[% END %]
+
+
+[% BLOCK QCbit;
+    DEFAULT type='shipment_item_qc' %]
+    <input type="radio" class="qc_radio" name="[% type %]_[% id %]" id="[% type %]_[% id %]_ok" value="1">
+        <label for="[% type %]_[% id %]_ok">OK</label>
+    <input type="radio" class="qc_radio" name="[% type %]_[% id %]" id="[% type %]_[% id %]_fail" value="0">
+        <label for="[% type %]_[% id %]_fail">Fail</label><br />
+    <input type="radio" class="qc_radio" name="[% type %]_[% id %]" id="[% type %]_[% id %]_missing" value="2">
+        <label for="[% type %]_[% id %]_missing">Missing</label>
+    <div class="qc_reason">
+        <label class="qc_reason" for="[% type %]_[% id %]_reason">Failure reason</label><br>
+        <input type="text" class="qc_reason" name="[% type %]_[% id %]_reason" id="[% type %]_[% id %]_reason">
+    </div>
+[% END %]

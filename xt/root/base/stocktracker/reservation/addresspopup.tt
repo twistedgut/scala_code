@@ -1,0 +1,142 @@
+[% IF previous_addresses.first %]
+<div id="address_popup__previous_address_section">
+    <h3 class="title-[% channel_config.$sales_channel %]">Select [% address_type %] Address</h3>
+    <div id="address_popup__previous_address_list">
+        <form>
+            <table class="wide-data data" name="shipment_address_table" id="shipment_address_table">
+                <thead>
+                    <tr>
+                        <th width="5%"></th>
+                        <th width="25%">Name</th>
+                        <th width="60%">Address</th>
+                        <th width="10%">Country</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    [% FOREACH address IN previous_addresses %]
+                    <tr class="dividebelow">
+                        [% NEXT IF address.id == '' %]
+                        <td><input [% IF loop.last %]checked="checked"[% END %] type="radio" id="address_popup__selected_address_id" name="address_id" value="[% address.id %]">
+                             [%-
+                                 name = address.first_name _ ',' _ address.last_name _ "\n";
+                                 IF address.address_line_1; THEN; line1 =  address.address_line_1 _ "++"; ELSE; line1 = ''; END;
+                                 IF address.address_line_2; THEN; line2 =  address.address_line_2 _ "++"; ELSE; line2 = ''; END;
+                                 IF address.address_line_3; THEN; line3 = address.address_line_3 _ "++"; ELSE; line3 = ''; END;
+                                 IF address.city; THEN; city = address.city _ "++"; ELSE; city='';END;
+                                 IF address.postcode; THEN; postcode = address.postcode _ "++"; ELSE; postcode='';END;
+                                 IF address.county; THEN; county  = address.county _ "++"; ELSE; county='';END;
+                                 IF address.country;THEN; country = address.country _ "++";ELSE; country=''; END;
+                                 add_line = name _ line1 _ line2 _ line3 _ city _ postcode _ county _ country;
+                             -%]
+
+                             <input type="hidden" id="[% address.id %]_str" value="[% add_line %]">
+                        </td>
+                        <td>[% address.first_name %] [% address.last_name %]</td>
+                        <td>
+                            [% address.address_line_1 %]
+                            [% IF address.address_line_2 %][% address.address_line_2 %],<br>[% END %]
+                            [% IF address.address_line_3 %][% address.address_line_3 %],<br>[% END %]
+                            [% address.city %],<br>
+                            [% address.postcode %]
+                            [% IF address.county %]<br>[% address.county %] [% END %]
+                        </td>
+                        <td>[% address.country %]</td>
+                    </tr>
+                    [% END %]
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+    [% UNLESS origin == 'preorder_summary' %]
+    <div id="address_popup__previous_address_options">
+        <input type="checkbox" id="address_popup__select_address_use_for_both" name="use_for_both"> Use for both Shipment and Invoice.
+    </div>
+    [% END %]
+    <div id="address_popup__previous_address_buttons">
+        <input type="submit" id="address_popup__select_address_cancel_button" class="address_popup__cancel_button button" value="Cancel">
+        <input type="submit" id="address_popup__select_address_submit_button" class=" button" value="Select Address">
+    </div>
+</div>
+<hr>
+[% END %]
+
+<script>
+// Create an array of countries which requires postcode
+var postcode_check=new Array();
+[% FOREACH country IN postcode_countries %]
+    postcode_check.push("[% country %]");
+[% END %]
+</script>
+<div id="address_popup__new_address_section">
+    <h3 class="title-[% channel_config.$sales_channel %]">New [% address_type %] Address</h3>
+    <div class="address_popup__new_address_input_fields">
+        <input type="hidden" class="new_address__form" id="new_address__pre_order_id" value="[% pre_order.id %]">
+        <table class="data wide-data" name="new_address">
+            <tr class="dividebelow divideabove">
+                <td><p>First Name</p></td>
+                <td><input type="text" class="new_address__form_input" value="[% shipment_address.first_name || customer.first_name %]" id="new_address__first_name" default_value="[% shipment_address.first_name || customer.first_name %]"></td>
+            </tr>
+            <tr class="dividebelow">
+                <td><p>Last Name</p></td>
+                <td><input type="text" class="new_address__form_input" value="[% shipment_address.last_name || customer.last_name %]" id="new_address__last_name" default_value="[% shipment_address.last_name || customer.last_name %]"></td>
+            </tr>
+            <tr class="dividebelow">
+                <td><p>Address Line 1</p></td>
+                <td><input type="text" class="new_address__form_input" value="[% shipment_address.address_line_1 %]" id="new_address__address_line_1" default_value="[% shipment_address.address_line_1 %]"></td>
+            </tr>
+            <tr class="dividebelow">
+                <td><p>Address Line 2</p></td>
+                <td><input type="text" class="new_address__form_input" value="[% shipment_address.address_line_2 %]" id="new_address__address_line_2" default_value="[% shipment_address.address_line_2 %]"></td>
+            </tr>
+            <tr class="dividebelow">
+                <td><p>City</p></td>
+                <td><input type="text" class="new_address__form_input" value="[% shipment_address.towncity %]" id="new_address__towncity" default_value="[% shipment_address.towncity %]"></td>
+            </tr>
+            <tr class="dividebelow">
+                <td><p>Postcode</p></td>
+                <td><input type="text" class="new_address__form_input" value="[% shipment_address.postcode %]" id="new_address__postcode" default_value="[% shipment_address.postcode %]"></td>
+            </tr>
+            <tr class="dividebelow" id="new_address__county_row">
+                <td><p>County</p></td>
+                <td>
+                    <select id="new_address__country_area_dropdown" name="county"></select>
+                    <input type="text" class="new_address__form_input" value="[% shipment_address.county %]" id="new_address__county"  default_value="[% shipment_address.county %]" >
+                </td>
+            </tr>
+            <tr class="dividebelow" id="new_address__state_row">
+                <td><p>State</p></td>
+                <td>
+                    <select class="new_address__form_input" id="new_address__us_state"   default_value="[% shipment_address.county %]">
+                        <option id='state_unknown'  value="" >Please Select State</option>
+                        [% FOREACH state IN country_subdivision %]
+                            <option id="[% state.id %]" value="[% state.iso %]" [% IF (state.iso == shipment_address.county) || (state.id == shipment_country_subdivision.id) %] selected  [% END %]>[% state.name %]</option>
+                        [% END %]
+                    </select>
+                </td>
+            </tr>
+            <tr class="dividebelow">
+                <td><p>Country</p></td>
+                <td>
+                    <select class="new_address__form_input" id="new_address__country" default_value="[% shipment_address.country %]">
+                        <option id='country_unknown'  value="" >Please Select Country</option>
+                        [% FOREACH country IN countries %]
+                        <option id="[% country.id %]" value="[% country.country %]" [% IF (country.country == shipment_address.country) || (country.id == shipment_country.id) %] selected [% END %]>[% country.country %]</option>
+                        [% END %]
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    [% UNLESS origin == 'preorder_summary' %]
+    <div id="address_popup__new_address_options">
+        <input type="checkbox" class="new_address__form" id="new_address__use_for_both"> Use for both Shipment and Invoice.
+    </div>
+    [% END %]
+    <div id="address_popup__new_address_buttons">
+        <input type="submit" id="address_popup__new_address_reset_button" class="button" value="Reset">
+        <input type="submit" id="address_popup__new_address_cancel_button" class="address_popup__cancel_button button" value="Cancel">
+        <input type="submit" id="address_popup__new_address_save_button" class="button" value="Add New Address">
+    </div>
+</div>

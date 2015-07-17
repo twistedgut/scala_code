@@ -1,0 +1,125 @@
+[% USE Department %]
+[%-
+    SET can_view = 0;
+    IF department_id == db_constant('DEPARTMENT__MARKETING');
+    THEN;
+        can_view   = 1;
+    END;
+-%]
+
+[% IF can_view %]
+
+[%-
+    SET channel_name_list = {};
+    FOREACH channel_id = channels.keys.sort;
+        SET channel_name = channels.$channel_id.name;
+        channel_name_list.$channel_name.id = channel_id;
+        channel_name_list.$channel_name.count = segment.$channel_name.active.size;
+    END;
+-%]
+<div id="tabContainer" class="yui-navset">
+    [% PROCESS page_elements/channel_tabs.tt channel_list=channel_name_list,use_channel_list_counts=1 %]
+    <div class="yui-content">
+
+        [% FOREACH channel_name = channel_name_list.keys.sort %]
+            [% channel_id = channel_name_list.$channel_name.id %]
+
+            [% SET channel = channels.$channel_id.name %]
+
+            <div id="tab[% loop.count %]" class="tabWrapper-[% channel_config.$channel %]">
+            <div class="tabInsideWrapper">
+
+                [% IF segment %]
+                    [% FOREACH flag IN ['active','disabled'] %]
+
+                        [% SET heading = 'Active' %]
+
+                        [%-
+                          IF flag == 'disabled';
+                            THEN;
+                                heading = 'Disabled';
+                            END;
+                        -%]
+                            <span class="title title-[% channel_config.$channel %]">[% heading %] Customer Segment List</span><br />
+                        [% IF segment.$channel.$flag.size %]
+
+
+
+
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+                        <tr>
+                            <td colspan="5" class="dividerHeader"></td>
+                        </tr>
+                        <tr>
+                            <td width="10%" class="tableHeader">Customer Segment Name</td>
+                            <td width="10%" class="tableHeader">Creation Date</td>
+                            <td width="10%" class="tableHeader">Count of Customers</td>
+                            <td width="10%" class="tableHeader" colspan="2">Action</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="dividerHeader"></td>
+                        </tr>
+
+                            [% FOREACH segment_row = segment.$channel.$flag %]
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;
+                                        <a href="/NAPEvents/InTheBox/CustomerSegment/Edit?segment_id=[%segment_row.id %]&action=edit">[% segment_row.name %] </a>
+                                    </td>
+                                    <td>[% segment_row.created_date.dmy %]</td>
+                                    <td>[% segment_row.get_customer_count %]</td>
+                                    <td>
+                                        [% IF flag == 'active' %]
+                                            <form method="POST" action="/NAPEvents/InTheBox/CustomerSegment/Edit" name="edit_[% segment_row.id %]">
+                                                [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                                                <input type="hidden" name="action" value="edit" />
+                                                <input type="hidden" name="segment_id" value="[% segment_row.id %]" />
+                                                <input type="image" value="[% edit_promotion %]"
+                                                    class="top_padded" src="/images/icons/pencil.png" alt="Edit Customer Segment" title="Edit Customer Segment" />
+                                            </form>
+                                        [% ELSE %]
+                                            &nbsp;
+                                        [% END %]
+
+                                    </td>
+                                    <td>
+                                         <form method="POST" action="/NAPEvents/InTheBox/CustomerSegment/ManageCustomerSegment" name="toggle_[% segment_row.id %]">
+                                            [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                                            <input type="hidden" name="segment_id" value="[% segment_row.id %]" />
+                                            [% IF flag == 'active' %]
+                                                <input type="hidden" name="action_name" value="disable" />
+                                                <input type="image" value="[% delete_promotion %]"
+                                                    class="top_padded" src="/images/icons/cross.png" alt="Disable Customer Segment" title="Disable Customer Segment" />
+                                            [% ELSE %]
+                                                 <input type="hidden" name="action_name" value="enable" />
+                                                <input type="image" value="[% enable_promotion %]"
+                                                    class="top_padded" src="/images/icons/tick.png" alt="Enable Customer Segment" title="Enable Customer Segment" />
+                                            [% END %]
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" class="divider"></td>
+                                </tr>
+                        [% END %]
+                    </table>
+                    [% ELSE %]
+                        [% heading %] Customer Segment List is Empty.
+                    [% END %]
+                    <br><br>
+                [% END %]
+                [% END %]
+
+            </div>
+            </div>
+        [% END %]
+    </div>
+</div>
+
+[% PROCESS page_elements/tab_script.tt %]
+
+[% ELSE %]
+    <p class="error_msg">You do not have permission to view this page, please contact marketing department.</p>
+[% END %]
+

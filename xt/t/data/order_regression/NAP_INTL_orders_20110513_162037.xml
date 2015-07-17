@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ORDERS>
+  <ORDER O_ID="1473324" ORDER_DATE="2011-05-13 16:19" CHANNEL="NAP-INTL" CUST_ID="1097621" CUST_IP="10.5.2.33" USED_STORED_CREDIT_CARD="T" LOGGED_IN_USERNAME="suma.binger@net-a-porter.com">
+    <TENDER_LINE TL_ID="1505913" TYPE="Card" RANK="1">
+      <VALUE CURRENCY="GBP">301.00</VALUE>
+      <PAYMENT_DETAILS>
+        <PRE_AUTH_CODE>30002748</PRE_AUTH_CODE>
+      </PAYMENT_DETAILS>
+    </TENDER_LINE>
+    <PROMOTION_BASKET PB_ID="1" TYPE="percentage_discount" DESCRIPTION="9">
+      <VALUE CURRENCY="GBP">0.00</VALUE>
+    </PROMOTION_BASKET>
+    <PROMOTION_BASKET PB_ID="2" TYPE="free_shipping" DESCRIPTION="18">
+      <VALUE CURRENCY="GBP">0.00</VALUE>
+    </PROMOTION_BASKET>
+    <PROMOTION_LINE PL_ID="1" TYPE="percentage_discount" DESCRIPTION="9">
+      <VALUE CURRENCY="GBP">129.00</VALUE>
+      <ORDER_LINE_ID>6247048</ORDER_LINE_ID>
+    </PROMOTION_LINE>
+    <PROMOTION_LINE PL_ID="2" TYPE="free_shipping" DESCRIPTION="18">
+      <VALUE CURRENCY="GBP">0.00</VALUE>
+      <ORDER_LINE_ID>6247048</ORDER_LINE_ID>
+    </PROMOTION_LINE>
+    <BILLING_DETAILS>
+      <NAME>
+        <TITLE>Miss</TITLE>
+        <FIRST_NAME>suma</FIRST_NAME>
+        <LAST_NAME>binger</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>36, swabey road</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2>Langley</ADDRESS_LINE_2>
+        <ADDRESS_LINE_3>36, swabey road</ADDRESS_LINE_3>
+        <TOWNCITY>Slough</TOWNCITY>
+        <COUNTY>Berkshire</COUNTY>
+        <STATE />
+        <POSTCODE>SL3 8NP</POSTCODE>
+        <COUNTRY>GB</COUNTRY>
+      </ADDRESS>
+      <CONTACT_DETAILS>
+        <TELEPHONE TYPE="HOME" />
+        <TELEPHONE TYPE="MOBILE">(NULL)</TELEPHONE>
+        <TELEPHONE TYPE="OFFICE">07849043880</TELEPHONE>
+        <EMAIL>suma.binger@net-a-porter.com</EMAIL>
+      </CONTACT_DETAILS>
+    </BILLING_DETAILS>
+    <DELIVERY_DETAILS>
+      <NAME>
+        <TITLE>Mr</TITLE>
+        <FIRST_NAME>suma</FIRST_NAME>
+        <LAST_NAME>binger</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>1 The Village Offices</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2>Westfield London Shopping Cent</ADDRESS_LINE_2>
+        <ADDRESS_LINE_3>1 The Village Offices</ADDRESS_LINE_3>
+        <TOWNCITY>London</TOWNCITY>
+        <COUNTY />
+        <STATE />
+        <POSTCODE>W127GF</POSTCODE>
+        <COUNTRY>GB</COUNTRY>
+      </ADDRESS>
+      <ORDER_LINE OL_ID="6247047" DESCRIPTION="Signature Packaging" SKU="900006-001" QUANTITY="1" OL_SEQ="1">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      <ORDER_LINE OL_ID="6247048" DESCRIPTION="Printed silk kaftan" SKU="103427-012" QUANTITY="1" OL_SEQ="2">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">250.83</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">50.17</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      <ORDER_LINE OL_ID="6247049" DESCRIPTION="London Premier 1" SKU="900005-001" QUANTITY="1" OL_SEQ="3">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+    </DELIVERY_DETAILS>
+    <GROSS_TOTAL>
+      <VALUE CURRENCY="GBP">301.00</VALUE>
+    </GROSS_TOTAL>
+    <POSTAGE>
+      <VALUE CURRENCY="GBP">0.00</VALUE>
+    </POSTAGE>
+  </ORDER>
+</ORDERS>
+

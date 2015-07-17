@@ -1,0 +1,35 @@
+/* HOVER STYLES */
+div.tosca {
+  display: none;
+  text-align: left;
+  position: absolute;
+  margin-top: -100px;
+  width: 120px;
+  padding: 0px 13px;
+  background: #eeeeee;
+  color: #000000;
+  border: 1px solid #1a1a1a;
+  font-size: 90%;
+}
+
+div.clear {
+  clear: both;
+}
+
+div.profile {
+  width: 70px;
+  text-align: center;
+  float: left;
+  margin: 10px 37px 30px 38px;
+}
+
+.dialog {
+    border: solid 1px black;
+    margin: 14px 0;
+    padding: 4px;
+    display: none;
+}
+.dialog a.close {
+    display: inline-block;
+    float: right;
+}

@@ -1,0 +1,55 @@
+<pre>
+
+
+h1. CANDO - Customer & Orders
+
+* cando-1740 : Remove hacky_pre_order table
+* cando-8375 : Added PreOrder to Order link on summary page
+* CANDO-8258: Prevent "invalid" addresses being used in Pre-Order.
+* CANDO-8395: Show message on login fail for disabled account
+* CANDO-8422: Limit results on order searches and prevent invalid
+              order searches based upon telephone number
+* CANDO-8402: Fix character encoding bug in Stock Reservation Report
+
+
+h1. DC2A - DC2 Automation
+
+* DCA-4166: Set container status correctly at GOH integration
+* DCA-4009: Config for large allocations
+* DCA-4010: Split large GOH allocations
+
+h1. DCOP - DC Operations
+
+*
+
+
+h1. SHIP - Expedited Shippping
+
+*
+
+
+h1. WHM - Warehouse
+
+*
+
+
+
+h1. Other
+
+h2. BS - Build Support
+
+*
+
+h2. PM - Product Management
+
+*
+
+h2. SAS - Search & Aggregation
+
+*
+
+h2. Misc
+
+*
+
+</pre>

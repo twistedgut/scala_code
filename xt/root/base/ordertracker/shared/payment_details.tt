@@ -1,0 +1,147 @@
+[%-
+    SET pay_card_info                   = payment_info.cardInfo;
+    SET settlements                     = payment_info.settlements;
+    SET current_payment_status_text     = payment_info.current_payment_status;
+    FOREACH settlement = settlements;
+        IF     settlement.settleReference == order_payment.settle_ref
+            && settlement.providerTakesCreditRisk.defined
+            && !settlement.providerTakesCreditRisk;
+            SET current_payment_status_text = payment_info.current_payment_status _ ' - Provider takes no risk';
+        END;
+    END;
+-%]
+<script>
+// Create variable for storing ip address
+var customer_ipaddress = "[% orders.ip_address %]";
+</script>
+<h3 class="title-[% channel_config.$sales_channel %]">Payment Details</h3>
+    <table class="wide-data divided-data" id="order_details__payment_card_details">
+        <tr>
+            <td align ="right"><b>Payment Method:</b> </td>
+            <td align="left" colspan="3">[% payment_info.paymentMethod %]</td>
+
+        </tr>
+        <tr>
+            <td width="20%" align="right"><b>PSP:</b>&nbsp;&nbsp;</td>
+            <td align="left">[% payment_info.provider %]</td>
+            <td width="25%" align="right"><b>Issuing Country:</b>&nbsp;&nbsp;</td>
+            <td width="30%" align="left">[% pay_card_info.countryIssuer %]</td>
+        </tr>
+
+        <tr>
+            <td align="right"><b>PSP Reference:</b>&nbsp;&nbsp;</td>
+            <td align="left">[% payment_info.providerReference %]</td>
+            <td align="right"><b>Issuer:</b>&nbsp;&nbsp;</td>
+            <td align="left">[% pay_card_info.cardIssuer %]</td>
+        </tr>
+
+        <tr>
+            <td align="right"><b>Value:</b>&nbsp;&nbsp;</td>
+            <td align="left">[% payment_info.currency %]&nbsp;[% (payment_info.coinAmount || 0) / 100 %]</td>
+            <td align="right"><b>IP Address:</b>&nbsp;&nbsp;</td>
+            <td align="left" >[% orders.ip_address || '-' %]
+                [% IF orders.ip_address %]
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <img src="/images/icons/application_view_list.png" id="popup_geolocation__href" style="display: inline; cursor: pointer;" alt="View Geolocation information " border="0" />
+                [% END %]
+            </td>
+        </tr>
+
+        <tr>
+            <td align="right"><b>Card Number:</b>&nbsp;&nbsp;</td>
+            <td style="vertical-align: middle;">
+                [% pay_card_info.cardNumberFirstDigit %]***********[% pay_card_info.cardNumberLastFourDigits %]&nbsp;&nbsp;&nbsp;&nbsp;
+
+                [% IF payment_info.paymentHistory.size > 0 && !exclude_card_history %]
+                    <a href="javascript://" onClick="showCardHistory()"><img src="/images/icons/application_view_list.png" style="display: inline;" alt="View all orders placed with this card" border="0" /></a>
+                [% END %]
+            </td>
+            <td align="right"><b>3D Secure Response:</b>&nbsp;&nbsp;</td>
+            <td aligh="left">[% payment_info.threeDSecureResponse || 'Non 3D Secure transaction' %]</td>
+        </tr>
+
+        <tr>
+            <td align="right"><b>Expiry Date:</b>&nbsp;&nbsp;</td>
+            <td align="left">[% pay_card_info.cardExpiryMonth %]/[% pay_card_info.cardExpiryYear %]</td>
+            <td align="right"><b>Stored Card:</b>&nbsp;&nbsp;</td>
+            <td align="left">
+                [% IF pay_card_info.storedCard %]
+                    Yes
+                [% ELSE %]
+                    No
+                [% END %]
+            </td>
+        </tr>
+
+        <tr>
+            <td align="right"><b>Card Type:</b>&nbsp;&nbsp;</td>
+            <td align="left">[% pay_card_info.cardType %]</td>
+            <td align="right"><b>Internal Payment Reference:</b>&nbsp;&nbsp;</td>
+            <td align="left">[% payment_info.preauthReference %]</td>
+        </tr>
+
+        <tr>
+            <td align="right"><b>CV2 Check:</b>&nbsp;&nbsp;</td>
+            <td align="left">[% payment_info.cv2avsStatus %]</td>
+            <td align="right"><b>Valid:</b>&nbsp;&nbsp;</td>
+            <td align="left">[% IF order_payment.valid %]Yes[% ELSE %]<span class="highlight">No</span>[% END %]</td>
+        </tr>
+
+        <tr>
+            <td align="right"><b>Auth Code:</b>&nbsp;&nbsp;</td>
+            <td aligh="left">[% payment_info.authCode %]</td>
+            <td align="right"><b>Fulfilled:</b>&nbsp;&nbsp;</td>
+            <td align="left">[% IF order_payment.fulfilled %]Yes[% ELSE %]No[% END %]</td>
+        </tr>
+
+        <tr>
+            <td align="right"><b>Provider:</b>&nbsp;&nbsp;</td>
+            <td align="left">[% payment_info.provider %]</td>
+            <td align="right"><b>Provider Reference:</b>&nbsp;&nbsp;</td>
+            <td align="left">[% pay_card_info.providerReference %]</td>
+        </tr>
+
+        <tr>
+            <td align="right"><b>Current Payment Status:</b>&nbsp;&nbsp;</td>
+            <td align="left">[% current_payment_status_text %]</td>
+            <td align="right"><b>Original Payment Status:</b>&nbsp;&nbsp;</td>
+            <td align="left">[% payment_info.original_payment_status %]</td>
+        </tr>
+        <tr>
+            <td align="right"><b>Payment Attempts:</b>&nbsp;&nbsp;</td>
+            <td align="left" colspan="3">[% pay_card_info.cardAttempts %]</td>
+        </tr>
+        [% IF acl_obj.has_permission( '/Finance/ActiveInvoices', { can_use_fallback => 1 } ) %]
+        <tr>
+            <td align="right"><b>Refund History:</b>&nbsp;&nbsp;</td>
+            <td align="left" colspan="3"><input type="submit" id="order_tracker__shared__payment_details__refund_history" value="View Refund History" payment_id="[% order_payment.id %]">
+        </tr>
+        [% END %]
+
+        [% IF !order_payment.valid %]
+            <tr>
+                <td colspan="5" class="blank" align="right">
+                    <br />
+                    <form name="validatePreauth" action="[% url %]" method="post">
+                        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                        <input type="hidden" name="validate_preauth" value="1">
+                        <input class="button" type="submit" name="submit" value="Validate Pre-Auth &raquo;">
+                    </form>
+                </td>
+            </tr>
+        [% END %]
+        [% IF show_payfulfill_btn %]
+            <tr>
+                <td colspan="5" class="blank" align="right">
+                    <br/>
+                    <form name="fulfillPayment" action="[% url %]" method="post" onsubmit="javascript:return confirm('Are You Sure You Wish To Do This?');">
+                        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                        <input type="hidden" name="fulfill_payment" value="1" />
+                        <input type="hidden" name="payment_id" value="[% order_payment.id %]" />
+                        <input class="button" type="submit" name="submit" value="Manual Fulfill &raquo;" />
+                    </form>
+                </td>
+            </tr>
+        [% END %]
+    </table>
+    [% PROCESS shared/refund_history.tt %]

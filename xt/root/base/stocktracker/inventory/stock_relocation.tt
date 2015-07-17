@@ -1,0 +1,184 @@
+
+[% IF from_location && to_location %]
+
+    <span class="title">Confirm Locations</span><br>
+    <table width="[% IF view == 'HandHeld' %]210[% ELSE %]100%[% END %]" cellpadding="0" cellspacing="0" border="0" class="data">
+    <form name="locationForm" action="/StockControl/StockRelocation/RelocateStock" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="view" value="[% view %]">
+    <input type="hidden" name="from_location" value="[% from_location %]">
+    <input type="hidden" name="to_location" value="[% to_location %]">
+        <tr>
+            <td colspan="3" class="divider"></td>
+        </tr>
+        <tr height="24"> 
+            <td width="23%" align="right" nowrap><b>Location:&nbsp;&nbsp;&nbsp;</td>
+            <td width="77%">[% from_location %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr height="24"> 
+            <td width="23%" align="right" nowrap><b>New&nbsp;Location:&nbsp;&nbsp;&nbsp;</td>
+            <td width="77%">[% to_location %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr> 
+            <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+        </tr>
+        <tr> 
+            <td colspan="2" class="blank" align="right"><input type="button" name="submitbutton" value="Complete &raquo;" class="button" onclick="submitPressed()"></td>
+        </tr>
+    </form>
+    </table><br />
+
+    <script language="Javascript">
+    <!--
+
+        function submitPressed() { 
+            document.locationForm.submitbutton.disabled = true; 
+            document.locationForm.submit(); 
+        } 
+
+
+    //-->
+    </script>
+
+    <span class="title">Location Stock</span><br />
+
+    <table width="[% IF view == 'HandHeld' %]210[% ELSE %]100%[% END %]" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr> 
+            <td width="35%" class="tableHeader">&nbsp;&nbsp;SKU</td>
+            <td width="65%" class="tableHeader">Quantity</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        [% FOREACH sku = stock %]
+            <tr height="24"> 
+                <td>&nbsp;&nbsp;[% sku.product_id %]-[% sku.size_id %]</td>
+                 <td>[% sku.quantity %]</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"></td>
+            </tr>
+        [% END %]
+    </table><br />
+    <br />
+
+[% ELSIF from_location %]
+
+    <span class="title">Enter New Location</span><br>
+    <table width="[% IF view == 'HandHeld' %]210[% ELSE %]100%[% END %]" cellpadding="0" cellspacing="0" border="0" class="data">
+    <form name="locationForm" action="/StockControl/StockRelocation" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="view" value="[% view %]">
+    <input type="hidden" name="from_location" value="[% from_location %]">
+        <tr>
+            <td colspan="3" class="divider"></td>
+        </tr>
+        <tr height="24"> 
+            <td width="23%" align="right" nowrap><b>Location:&nbsp;&nbsp;&nbsp;</td>
+            <td width="77%">[% from_location %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr height="24"> 
+            <td width="23%" align="right" nowrap><b>New&nbsp;Location:&nbsp;&nbsp;&nbsp;</td>
+            <td width="77%"><input type="text" name="to_location" value="" size="10"></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr> 
+            <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+        </tr>
+        <tr> 
+            <td colspan="2" class="blank" align="right"><input type="submit" name="submit" value="Continue &raquo;" class="button"></td>
+        </tr>
+    </form>
+    </table><br />
+   
+    <script language="Javascript">
+    <!--
+
+        // default cursor
+        document.locationForm.to_location.focus();
+
+    //-->
+    </script>
+
+    <span class="title">Location Stock</span><br />
+
+    <table width="[% IF view == 'HandHeld' %]210[% ELSE %]100%[% END %]" cellpadding="0" cellspacing="0" border="0" class="data">
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr> 
+            <td width="35%" class="tableHeader">&nbsp;&nbsp;SKU</td>
+            <td width="65%" class="tableHeader">Quantity</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        [% FOREACH sku = stock %]
+            <tr height="24"> 
+                <td>&nbsp;&nbsp;[% sku.product_id %]-[% sku.size_id %]</td>
+                 <td>[% sku.quantity %]</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="divider"></td>
+            </tr>
+        [% END %]
+    </table><br />
+    <br />
+
+[% ELSE %]
+    
+    <span class="title">Enter Current Location</span><br>
+    <table width="[% IF view == 'HandHeld' %]210[% ELSE %]100%[% END %]" cellpadding="0" cellspacing="0" border="0" class="data">
+    <form name="locationForm" action="/StockControl/StockRelocation" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="view" value="[% view %]">
+        <tr>
+            <td colspan="3" class="divider"></td>
+        </tr>
+        <tr height="24"> 
+            <td width="23%" align="right" nowrap><b>Location:&nbsp;&nbsp;&nbsp;</td>
+            <td width="77%"><input type="text" name="from_location" value="" size="10"></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="divider"></td>
+        </tr>
+        <tr> 
+            <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+        </tr>
+        <tr> 
+            <td colspan="2" class="blank" align="right"><input type="submit" name="submit" value="Continue &raquo;" class="button"></td>
+        </tr>
+    </form>
+    </table><br />
+    <br />
+
+    <script language="Javascript">
+    <!--
+
+        // default cursor
+        document.locationForm.from_location.focus();
+
+    //-->
+    </script>
+
+[% END %]
+
+
+[% IF view != 'HandHeld' %]
+	<img src="/images/blank.gif" width="1" height="300">
+[% END %]
+

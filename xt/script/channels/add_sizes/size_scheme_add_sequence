@@ -1,0 +1,57 @@
+#!/opt/xt/xt-perl/bin/perl
+# vim: ts=8 sts=4 et sw=4 sr sta
+use strict;
+use warnings;
+
+use FindBin::libs;
+use FindBin::libs qw( base=lib_dynamic );
+use Data::Dump qw/pp/;
+use IO::File;
+use Text::CSV;
+use Size::Scheme;
+use XTracker::Database;
+use XTracker::Constants::FromDB qw(:channel);
+
+my $db_type;
+eval { my $test = $CHANNEL__NAP_INTL };
+if($@){ $db_type = 'XTracker_DC2' }else{ $db_type = 'XTracker_DC1' }
+my $dbh                 = XTracker::Database::get_database_handle({name => $db_type, type => 'readonly'} );
+
+my $schema              = XTracker::Database::get_schema_using_dbh($dbh, 'xtracker_schema' );
+my $size_scheme         = $schema->resultset('Public::SizeScheme');
+
+
+my $filename = $ARGV[0] || undef;
+if (not defined $filename) {
+    die "Cannot find file - $filename";
+}
+
+my $file = IO::File->new;
+if (not $file->open("< $filename")) {
+    die "Cannot open file:$filename";
+}
+
+my $csv = Text::CSV->new({ allow_whitespace => 1 });
+
+my $schemes = undef;
+
+while (my $line = $csv->getline($file)) {
+    my $cols = \@{$line};
+    my $name = shift @{$cols};
+    my $scheme = $size_scheme->search({ name => $name });
+
+    print "\n\n";
+    my $set = $scheme->first->size_scheme_variant_sizes;
+    my $count = 0;
+    while (my $size_var = $set->next) {
+        my $size = $size_var->size;
+        $count++;
+        my $rv = $size->update({ sequence => $count });
+        print $size->id .": ". $size->size ." - ". $size->get_column('sequence') ."\n";
+    }
+
+}
+
+$file->close;
+
+#$_->add_to_db($size_scheme) foreach @{$schemes};

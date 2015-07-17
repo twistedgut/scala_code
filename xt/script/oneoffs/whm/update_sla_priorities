@@ -1,0 +1,68 @@
+#!/opt/xt/xt-perl/bin/perl
+use NAP::policy "tt";
+
+=head1 DESCRIPTION
+
+This script is intended to be run once-only to map SLA priorities from the
+previous 1-14 to the new 1-3 categories.
+
+=cut
+
+use FindBin::libs;
+use FindBin::libs qw( base=lib_dynamic );
+
+use XTracker::Constants::FromDB qw( :shipment_item_status );
+use XTracker::Database qw( :common );
+
+my ($schema) = get_schema_and_ro_dbh('xtracker_schema');
+
+my @shipment_ids = get_shipment_items_by_status(
+    $SHIPMENT_ITEM_STATUS__NEW
+)->get_column('shipment_id')->func('distinct');
+
+my @shipments = $schema->resultset('Public::Shipment')
+                       ->search(
+                           { 'me.id' => { -in => \@shipment_ids },
+                             'me.sla_priority' => { q{!=} => undef } },
+                           { prefetch => {
+                               link_orders__shipment => {
+                                   orders => 'customer',
+                               },
+                           }, },
+                       )->all;
+
+
+print <<EOS;
+
+##########################################################################
+#                                                                        #
+# Updating SLA priorities of shipments with statuses of new and selected #
+#                                                                        #
+##########################################################################
+
+EOS
+printf qq{Found %d shipments with a status of 'new' or 'selected'\n}, scalar @shipments;
+my $count = 0;
+for my $shipment ( @shipments ) {
+    my @msg;
+    push @msg, sprintf( q{[%d of %d]}, ++$count, scalar @shipments );
+    # Can't run apply_SLAs as that resets the cutoff too...
+    my $order = $shipment->order;
+    my $sla_priority = $order && $order->customer->is_category_staff             ? 3
+                     : !$shipment->is_premier || $shipment->is_transfer_shipment ? 2
+                     :                                                             1;
+    my $old_priority = $shipment->sla_priority;
+    $shipment->update({ sla_priority => $sla_priority });
+    push @msg, sprintf(
+        qq{Updated shipment %d - SLA priority %d to %d},
+        $shipment->id, $old_priority, $sla_priority );
+    print join( q{ }, @msg ) . qq{\n};
+}
+
+print qq{Done.\n};
+
+sub get_shipment_items_by_status {
+    my ( $status_id ) = @_;
+    return $schema->resultset('Public::ShipmentItem')
+                  ->search({ shipment_item_status_id => $status_id });
+}

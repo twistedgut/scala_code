@@ -1,0 +1,32 @@
+<pre>
+
+h1. WHM
+    * WHM-2301 - Packing Exception - audit trail to PE actions
+
+h1. DC2A
+    * DCA-2583 - Add operator who picked items on allocation item log page
+    * DCA-2649 - Migration Report
+    * DCA-2716 - Add storage type to return delivery sheet
+
+h1. CANDO
+    * CANDO-1199 - Prevent XT from accepting nonsensical fraud hotlist entries
+    * CANDO-2052 - CMS/Translations: Customer Care Emails- Lower Priority (Batch 1)
+    * CANDO-2801 - Order importer needs to correct IP address when front end sends comma separated garbage.
+    * CANDO-2846 - Use of deprecated DBIC search with hash instead of hashref params in XT::Domain::Order
+    * CANDO-2821 - Order View page CAN show accented characters within product names incorrectly
+    * CANDO-402  - Quick Search
+    * CANDO-2212 - Personal Shopping: Flag EIP's customers on Order search
+    * CANDO-2516 - Personal Shopping: Access measurements from Product page
+    * CANDO-2053 - CMS/Translations: Customer Care Emails- Lower Priority (Batch 2)
+    * CANDO-2213 - Highlight notes created for a reservation
+    * CANDO-2751 - Translations: Flag Returns Communication Slip on packers screen
+    * CANDO-2784 - Handles Failure to send an Email when Refunding a Customer
+    * CANDO-2450 - PPT PreOrders Saved Cards: Ensure HTTPS Transport for All Card Interactions
+    * CANDO-2455 - CANDO XT 'Saved Cards'
+    * CANDO-2836 - CONRAD: Cache Not being Cleared when used in Parallel Mode on the Job Queue or for Bulk Testing and Order View Testing
+    * CANDO-2843 - CONRAD: Disabled Conditions are not being Excluded when Applying the Rules
+    * CANDO-2658 - CONRAD PHASE 2: Number each row (P1)
+    * CANDO-2834 - CONRAD: Make the 'Change Log Message' Dialog Box look professional in FireFox
+    * CANDO-2652 - Customer language preference handler continues even when no customer is found
+
+</pre>

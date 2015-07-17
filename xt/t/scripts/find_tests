@@ -1,0 +1,29 @@
+#!/usr/bin/env perl
+#
+# Generate lists of tests by constraint
+#
+
+use NAP::policy "tt", 'test';
+use FindBin::libs;
+
+use File::Find::Rule;
+use Test::XTracker::RunCondition::Find;
+
+my %params = map { split(/=/, $_) } map { s/^\-\-//r } @ARGV;
+usage() unless values %params;
+
+for my $file ( File::Find::Rule
+    ->file()
+    ->name( '*.t' )
+    ->in( 't/')
+) {
+    print $file . "\n" if
+        Test::XTracker::RunCondition::Find->evaluate_file( $file, {
+            %params
+        });
+}
+
+sub usage {
+    print "\nUsage: t/scripts/find_tests [option pairs]\n";
+    print "\neg: t/scripts/find_tests --phase 0 --dc DC2\n";
+}

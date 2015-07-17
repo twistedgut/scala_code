@@ -1,0 +1,25 @@
+<pre>
+
+h1. CANDO - Customer and Order Management
+    * CANDO-125: Reservations - Bulk extend reservations expiry
+    * CANDO-576: Turning On Premier Email & SMS Alerts for NAP & MRP for DC1
+    * CANDO-711: Page: Goods In > Returns QC is too slow
+    * CANDO-715: Page: Goods In > Returns Faulty is too slow
+    * CANDO-727: Page: Finance > Credit Hold is too slow
+    * CANDO-728: Page: Finance > Credit Check is too slow
+    * CANDO-730: Query: stock_order_item has no index on voucher_variant_id
+    * CANDO-731: Page: Goods In > Returns In is too slow
+
+h1. FLEX - Flexible Shipping
+    * FLEX-578: Outnet INTL & AM - Premier Nominated Day
+      * FLEX-752: Email/SMS settings
+    * FLEX-713: Remove old shipping schema tables
+    * FLEX-661: Free returns for Outnet Premier
+
+h1. DC3 - HKDC
+    * HKDC-10: Creating DC3 in XT - Blank Database
+    * HKDC-11: Creating DC3 in XT - Configuration
+    * HKDC-12: Creating DC3 in XT - Lookup Data
+    * HKDC-13: Test suite XT
+
+</pre>

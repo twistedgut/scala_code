@@ -1,0 +1,132 @@
+<!-- BEGIN XTracker/tt/stocktracker/sample/search_results.tt -->
+<!-- ANDY -->
+
+<style>
+
+    [% FOREACH po = purchase_orders.keys %]
+        #so[% po %] { display: none; }
+    [% END %]
+
+</style>
+
+
+[% INCLUDE page_elements/forms/stock_in_search.tt %]
+
+<br />
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <thead>
+        <tr>
+            <td colspan="6" class="dividerHeader"></td>
+        </tr>
+        <tr height="24"> 
+            <td width="10%" class="tableHeader"></td>
+            <td width="30%" class="tableHeader">PO Number</td>
+            <td width="20%" class="tableHeader">Designer</td>
+            <td width="15%" class="tableHeader">Total</td>
+            <td width="15%" class="tableHeader">Status</td>
+            <td width="15%" class="tableHeader">Date</td>
+        </tr>
+        <tr>
+            <td colspan="6" class="dividerHeader"></td>
+        </tr>
+    </thead>
+    <tbody>
+
+
+   [% FOREACH po_id = purchase_orders.keys %]
+
+       [% FOREACH po_item = purchase_orders.$po_id %]
+       [% SET po_item_id = po_item.id %]
+
+           <tr height="20">
+
+                <td id="open_[% po_item.id %]">[% INCLUDE page_elements/tablespacer.tt %]<a href="javascript:showPO('[% po_item.id %]')" class="zoom">[+]</a></td>
+                <td><a href="/StockControl/PurchaseOrder/Overview?po_id=[% po_item.id %]">[% po_item.purchase_order_number %]</a></td>
+       [% SET d = 1672 %]
+                <td>[% po_item.designer %]</td>
+                <td>[% del.$po_id %]</td>
+                <td>[% po_item.status %]</td>
+                <td>[% po_item.date %]</td>
+            </tr>
+
+	[% END %]
+
+            <tr>
+                <td colspan="6" class="divider"></td>
+            </tr>
+            <tr><td class="none"></td><td colspan="4" class="none">
+            <div id="so[% po_item.id %]">
+                <br />
+                <table border="0" cellpadding="0" cellspacing="0" class="data" width="100%">
+                    <thead>
+                        <tr>
+                            <td colspan="8" class="dividerHeader"></td>
+                        </tr>
+                        <tr>
+                            <td class="tableHeader" width="20%">[% INCLUDE page_elements/headerspacer.tt %]Product Id</td>
+                            <td class="tableHeader" width="10%">Style Ref</td>
+                            <td class="tableHeader" width="30%">Shipping Window</td>
+                            <td class="tableHeader" width="05%">Ord</td>
+                            <td class="tableHeader" width="05%">Del</td>
+                            <td class="tableHeader" width="10%">Type</td>
+                            <td class="tableHeader" width="10%">Status</td>
+                            <td class="tableHeader" width="10%">Stock Order ID</td>
+                        </tr>
+                        <tr>
+                            <td colspan="8" class="dividerHeader"></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+            [% FOREACH so = po_item.so_results_list_ref %]
+            [% SET so_key = so.id %]
+                    <tr>
+
+<!--
+                    [% IF potype == 'sample' %]
+                        <td><a href="BookSample?so_id=[% so.id %]">[% so.product_id %]</a></td>
+                    [% ELSIF type != 'stockcontrol' && so.status_id != 3 %]
+                        <td>[% INCLUDE page_elements/tablespacer.tt %]<a href="StockIn/PackingSlip?so_id=[% so.id %]">[% so.product_id %]</a></td>
+                    [% ELSE %]
+                        <td>[% INCLUDE page_elements/tablespacer.tt %][% so.product_id %]</td>
+-->
+
+
+                    [% IF so.status == 'Delivered' %]
+                        <td>[% INCLUDE page_elements/tablespacer.tt %][% so.product_id %]</td>
+                    [% ELSE %]
+                        <td>[% INCLUDE page_elements/tablespacer.tt %]<a href="/StockControl/Sample/BookSample?so_id=[% so.id %]">[% so.product_id %]</a></td>
+                    [% END %]
+                    [% END %]
+                        <td>[% so.style_number %]</td>
+                        <td>[% so.start_ship_date %] - [% so.cancel_ship_date %]</td>
+                        <td>[% so.ordered %]</td>
+                        <td>[% so.delivered %]</td>
+                        <td>[% so.type %]</td>
+                        <td>[% so.status %]</td>
+			<td>[% so.id %]</td>
+                    </tr>
+                    <tr>
+                        <td colspan="8" class="divider"></td>
+                    </tr>
+            [% END %]
+                </table>
+                <br />
+            </div></td></tr>
+    [% END %]
+    		<tr height="24">
+			<td colspan="8" class="blank">[% INCLUDE page_elements/headerspacer.tt %]page: [
+				[% FOREACH pagenum = pages %]
+                [% IF pagenum == current_page %]
+                    <span class="highlight">[% pagenum %]</span>
+                [% ELSE %]
+					<a href='[% IF type == 'stockcontrol' %]/StockControl/PurchaseOrder/Search[% ELSE %]StockIn[% END %]?[% FOREACH term = search_terms.keys %]&[% term %]=[% search_terms.$term %][% END %]&page=[% pagenum %]' class="pagenum">[% pagenum %]</a>
+				[% END %]
+				[% END %]
+                ]
+			</td>
+		</tr>
+    </tbody>
+</table>
+
+<!-- END XTracker/tt/stocktracker/sample/search_results.tt -->

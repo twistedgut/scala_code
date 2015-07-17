@@ -1,0 +1,77 @@
+#!perl
+
+use strict;
+use warnings;
+use File::Slurp qw(slurp);
+use JSON::XS;
+use DateTime;
+use URI;
+
+# AMQ stats
+# time | destination | type | filename | error
+
+# eg: find queues/svcqa_000* | xargs perl script/amq_dlq_stats | cut -d'|' -f2,3 | sort | uniq -c | sort -gr
+
+for my $filename ( @ARGV ) {
+
+    # File contents
+    my $data = slurp( $filename );
+    unless ( $data ) {
+        print STDERR "Couldn't open [$filename] for reading\n";
+        next;
+    }
+
+    # Timestamp
+    my ($timestamp) = $data =~ m/timestamp:(\d+)/;
+    my $dt = DateTime->from_epoch( epoch => ($timestamp/1000) );
+    my $date = $dt->ymd('-') . ' ' . $dt->hms(':');
+
+    # Get the JSON component
+    unless ($data =~ s/^.+?\n\n//s ) {
+        print STDERR "File [$filename] doesn't look like a stomp message\n";
+        next;
+    }
+
+    # Parse what we found
+    unless ( $data = eval { decode_json( $data ) } ) {
+        print STDERR "Can't parse JSON in [$filename]: $@";
+        next;
+    }
+
+    # Deeper parse...
+    my $message = eval { decode_json $data->{'message'}->{'original_message'} };
+    unless ( $message ) {
+        print STDERR "Can't parse original message in [$filename]\n";
+        next;
+    }
+
+    # EVEN DEEPER PARSE (used for message type)
+    my $message_body = eval { decode_json $message->{'body'} };
+
+    # Pull out the destination
+    my $destination = eval { $data->{'message'}->{'destination'} };
+    unless ( $destination ) {
+        print STDERR "Can't retrieve a destination from [$filename]\n";
+        next;
+    }
+    if ( $destination =~ m!://! ) {
+        my $d = URI->new( $destination )->path;
+        $d =~ s!^!/queue! unless $d =~ m!^/queue!;
+        $destination = $d;
+    }
+
+    # Make an attempt to determine the type
+    my $message_type =
+        eval { $message->{'@type'} } ||
+        eval { $data->{'JMSType'} }    ||
+        'Unknown';
+
+    my $error =
+        eval { $data->{message}{errors}[0] } ||
+            'Unknown';
+    $error =~ s{\n+}{ }g;
+
+    # Can we parse out an interesting error?
+    print "$date|$destination|$message_type|$filename|$error\n";
+
+}

@@ -1,0 +1,11 @@
+
+<Model::MessageQueue>
+    base_class NAP::Messaging::Catalyst::MessageQueueAdaptor
+    <args>
+    <servers>
+        hostname    [% DC2_AMQ_BROKER_HOSTNAME %]
+        port        [% DC2_AMQ_BROKER_PORT %]
+    </servers>
+   </args>
+</Model::MessageQueue>
+

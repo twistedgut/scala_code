@@ -1,0 +1,72 @@
+<div id='display_product'>
+    [% PROCESS page_elements/display_product.tt %]
+</div>
+
+<div id='product_content'>
+
+    <span class="title">Purchase Pricing</span><br/>
+    <div id='purchase'>
+        <table class="wide-data data">
+            <thead>
+                <tr>
+                    <th>[% INCLUDE page_elements/tablespacer.tt %]Original Wholesale</th>
+                    <th>Wholesale Price</th>
+                    <th>Uplift Cost</th>
+                    <th>Wholesale Currency</th>
+                    <th>UK Landed Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+                [% FOREACH purchase = purchase_pricing %]
+                    <tr class="dividebelow">
+                        <td>[% INCLUDE page_elements/tablespacer.tt %] [% purchase.original_wholesale %]</td>
+                        <td>[% purchase.wholesale_price %]</td>
+                        <td>[% purchase.uplift_cost %]</td>
+                        <td>[%purchase.currency %]</td>
+                        <td>[% purchase.uk_landed_cost %]</td>
+                    </tr>
+                [% END %]
+            </tbody>
+        </table>
+    </div>
+    <br/><br/>
+
+    <div id='markdown'>
+        <table class="wide-data data">
+            <thead>
+                <tr>
+                    <th>[% INCLUDE page_elements/tablespacer.tt %]Payment Terms</th>
+                    <th>Deposit</th>
+                    <th>10 Day Settlement Discount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="dividebelow">
+                    <td>[% INCLUDE page_elements/tablespacer.tt %] [%  product.payment_term %]</td>
+                    <td>[% product.payment_deposit %]</td>
+                    <td>[% product.payment_settlement_discount %]</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <br/><br/>
+
+    [% IF log_data.size > 0 %]
+        <div id="tabContainer" class="yui-navset">
+            [% PROCESS page_elements/channel_tabs.tt channel_list = log_data %]
+            <div class="yui-content">
+                [% FOREACH channel = log_data.keys.sort %]
+                    <div id="tab[% loop.count %]" class="tabWrapper-[% channel_config.$channel %]">
+                        <div class="tabInsideWrapper">
+                            [% PROCESS page_elements/log_body.tt %]
+                        </div>
+                    </div>
+                [% END %]
+            </div>
+        </div>
+        [% PROCESS page_elements/tab_script.tt %]
+    [% ELSE %]
+        [% PROCESS logs/no_log_data.tt log_title='Delivery Log' %]
+    [% END %]
+
+</div>

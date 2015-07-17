@@ -1,0 +1,59 @@
+<span class="title title-[% config_section %]">Credit Details</span>
+
+<form method="POST" action="[% c.req.uri %]" name="create_store_credit" id="create_store_credit">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+[% IF customer %]
+
+    <div class="formrow divideabove dividebelow">
+        <span class="fakelabel">Customer Number:</span>
+        <p class="customer_nr">[% customer.pws_customer_id | html %]</p>
+    </div>
+
+    <div class="formrow dividebelow">
+        <span class="fakelabel">Customer:</span>
+        <p class="customer_name">[% customer.display_name | html %]</p>
+    </div>
+
+[%  ELSE %]
+
+    <div class="formrow divideabove dividebelow">
+        <label for="channel">Sales Channel:</label>
+        <p class="inline"><select id="channel" name="channel">
+        [% FOREACH ch IN channels %]
+            <option [% IF ch.deny_store_credit %] disabled="disabled" [% END %] value="[% ch.id %]">[% ch.name | html %]</option>
+        [% END %]
+        </select></p>
+    </div>
+
+    <div class="formrow dividebelow">
+        <label for="customer_nr">Customer Number:</label>
+        <p class="inline"><input id="customer_nr" name="customer_nr" type="text"></p>
+    </div>
+[% END; %]
+
+    <div class="formrow dividebelow">
+        <label for="value">Value:</label>
+        <p class="inline"><input id="value" name="value" type="text" value="[% '0.00' | html %]" class="smallest" size="5"></p>
+    </div>
+
+    <div class="formrow dividebelow">
+        <label for="currency">Currency:</label>
+        <p class="inline"><select id="currency" name="currency" class="smallest">
+        [% FOREACH cur IN currency %]
+            <option value="[% cur.id %]">[% cur.name | html %]</option>
+        [% END %]
+        </select></p>
+    </div>
+
+    <div class="formrow dividebelow">
+        <label for="notes">Notes:</label>
+        <p class="inline"><input id="notes" name="notes" type="text" value="[% '' | html %]" size="255"></p>
+    </div>
+
+    <div class="formrow buttons formend aftertable">
+        <input type="submit" value="Create Store Credit &raquo;" class="button">
+    </div>
+
+</form>
+

@@ -1,0 +1,78 @@
+<br><br>
+
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+<form name="decision" action="/StockControl/PerpetualInventory/SetStockCountDecision" method="post">
+	[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+	<input type="hidden" name="count_id" value="[% count_id%]">
+	<input type="hidden" name="variant_id" value="[% variant_id %]">	
+	<input type="hidden" name="location_id" value="[% location_id %]">
+	<input type="hidden" name="location" value="[% location %]">
+	<input type="hidden" name="variance" value="[% variance %]">
+	<input type="hidden" name="decision" value="[% decision %]">
+	<tr>
+		<td class="divider" colspan="2"></td>
+	</tr>
+	<tr> 
+		<td width="20%" align="right"><b>PID/SKU:</b>&nbsp;&nbsp;</td>
+		<td width="80%">[% sku %]</td>
+	</tr>
+	<tr>
+		<td class="divider" colspan="2"></td>
+	</tr>
+	<tr> 
+		<td align="right"><b>Location:</b>&nbsp;&nbsp;</td>
+		<td>[% location %]</td>
+	</tr>
+	<tr>
+		<td class="divider" colspan="2"></td>
+	</tr>
+	<tr> 
+		<td align="right"><b>Expected Quantity:</b>&nbsp;&nbsp;</td>
+		<td>[% expected_quantity %]</td>
+	</tr>
+	<tr>
+		<td class="divider" colspan="2"></td>
+	</tr>
+	<tr> 
+		<td align="right"><b>Variance:</b>&nbsp;&nbsp;</td>
+		<td>[% IF variance > 0 %]+[% END %][% variance %]</td>
+	</tr>
+	<tr>
+		<td class="divider" colspan="2"></td>
+	</tr>
+	<tr> 
+		<td align="right"><b>Decision:</b>&nbsp;&nbsp;</td>
+		<td>[% IF decision.match('Accept') %]Accepted[% ELSIF decision.match('Decline') %]Declined[% ELSE %]Deleted[% END %]</td>
+	</tr>
+	<tr>
+		<td class="divider" colspan="2"></td>
+	</tr>
+	[% IF !decision.match('Delete') %]
+		<tr> 
+			<td align="right"><b>Notes:</b>&nbsp;&nbsp;</td>
+			<td><input type="text" name="notes" value="" size="30"></td>
+		</tr>
+		<tr>
+			<td class="divider" colspan="2"></td>
+		</tr>
+	[% END %]
+	[% IF decision.match('Decline') %]
+	<tr> 
+		<td align="right"><b>Set Variance:</b>&nbsp;&nbsp;</td>
+		<td><input type="text" name="set_variance" value="" size="4"></td>
+	</tr>
+	<tr>
+		<td class="divider" colspan="2"></td>
+	</tr>
+	[% END %]
+	<tr>
+		<td class="blank" colspan="2"><img src="/images/blank.gif" width="1" height="15"></td>
+	</tr>
+	<tr> 
+		<td colspan="2" class="blank" align="right">[% PROCESS page_elements/forms/submit_button.tt %]</td>
+	</tr>
+	<tr>
+		<td class="blank" colspan="2"><img src="/images/blank.gif" width="1" height="15"></td>
+	</tr>
+</table>

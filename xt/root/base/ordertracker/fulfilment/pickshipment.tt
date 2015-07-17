@@ -1,0 +1,163 @@
+
+[% IF shipment.shipment_status_id == 1 || shipment.shipment_status_id == 3 || shipment.shipment_status_id == 6 || shipment.shipment_status_id == 7 || shipment.shipment_status_id == 9 %]
+	<p class="error_msg">This shipment is currently on hold, please do not process.</p><img src="/images/blank.gif" width="1" height="500">
+[% ELSIF shipment.shipment_status_id == 5 %]
+	<p class="error_msg">This shipment has been cancelled, please do not process.</p><img src="/images/blank.gif" width="1" height="500">
+[% ELSE %]
+	[% IF staff %]
+		<p class="display_msg">This is a Staff shipment.</p>
+	[% END %]
+
+	[% IF ready == 0 && picked == 0 && notready > 0 %]
+		<p class="error_msg">This shipment is not ready to be picked.</p>
+	[% ELSE %]
+
+		[% IF ready == 0 && notready == 0 && picked > 0 %]
+            <p class="display_msg">The shipment has now been picked.</p>
+            <script language="javascript">
+                <!--
+                    function reLoad(){
+                        document.location.href = "/Fulfilment/Picking";
+                    }
+                    setTimeout ("reLoad()",2000);
+                //-->
+            </script>
+		[% ELSE %]
+
+			<span class="title title-[% channel_config.$sales_channel %]">Pick Item</span><br>
+
+            <form action="" method="post" onSubmit="return double_submit()">
+                [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+                <input type="hidden" name="shipment_id" value="[% shipment_id %]">
+
+                <div class="formrow divideabove dividebelow">
+                    [% IF process != 'sku' && process != 'container' %]
+                        <label for="location">Enter Location</label>
+                        <input type="text" name="location" id="location" value="">
+                    [% ELSE %]
+                        <span class="fakelabel">Location</span>
+                        <input type="hidden" name="location" value="[% location %]">
+                        <input type="hidden" name="location_id" value="[% location_id %]">
+                        <p>[% location %]</p>
+                    [% END %]
+                </div>
+                [% IF process == 'sku' || process == 'container' %]
+                    <div class="formrow dividebelow">
+                        [% IF process == 'sku' %]
+                            <label for="sku">Enter SKU</label>
+                            <input type="text" name="sku" id="sku" value="">
+                        [% ELSE %]
+                            <span class="fakelabel">SKU</span>
+                            <input type="hidden" name="sku" value="[% sku %]">
+                            <p>[% sku %]</p>
+                        [% END %]
+                    </div>
+                [% END %]
+                [% IF process == 'container' %]
+                    <div class="formrow dividebelow">
+                        <label for="container_id">Enter Container/Tote id</label>
+                        <input type="text" name="container_id" id="container_id" value="">
+                    </div>
+                [% END %]
+
+                <div class="formrow dividebelow">
+                    [% PROCESS page_elements/forms/submit_button.tt %]
+                </div>
+            </form>
+
+            <script type="text/javascript">
+                    document.getElementById('[% process || 'location' %]').focus();
+            </script>
+
+			<br><br>
+		[% END %]
+
+
+        [% IF sales_channel == "theOutnet.com" %]
+            <span class="warning_msg warning_msg-[% channel_config.$sales_channel %]">Please make sure all NAP tags are removed and replaced by Outnet tags</span><br>
+        [% END %]
+
+
+		[% IF ready > 0 %]
+			<span class="title title-[% channel_config.$sales_channel %]">Items to be Picked</span><br>
+
+			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+				<tr>
+					<td class="dividerHeader" colspan="5"></td>
+				</tr>
+				<tr>
+					<td class="tableHeader"></td>
+					<td class="tableHeader" align="center">SKU</td>
+					<td class="tableHeader">Designer</td>
+					<td class="tableHeader">Name</td>
+					<td class="tableHeader">Size</td>
+				</tr>
+				<tr>
+					<td class="dividerHeader" colspan="5"></td>
+				</tr>
+				[% FOREACH id = shipment_item_info.keys %]
+
+					[% IF shipment_item_info.$id.shipment_item_status_id == SHIPMENT_ITEM_STATUS__SELECTED %]
+						<tr valign="middle">
+							<td width="20%"><img src="[% shipment_item_info.$id.image.0 %]" width="120" hspace="5" vspace="5"></td>
+							<td width="12%" align="center">[% shipment_item_info.$id.product_id %]-[% shipment_item_info.$id.sku_size %]</td>
+							<td width="25%">[% shipment_item_info.$id.designer %]</td>
+							<td width="31%">[% shipment_item_info.$id.name %]</td>
+							<td width="12%">[% IF shipment_item_info.$id.short_name != "" %][% shipment_item_info.$id.short_name %] [% END %][% shipment_item_info.$id.designer_size %]</td>
+						</tr>
+						<tr>
+							<td class="divider" colspan="5"></td>
+						</tr>
+					[% END %]
+				[% END %]
+			</table>
+
+			<br><br>
+
+		[% END %]
+
+		[% IF picked > 0 %]
+			<span class="title title-[% channel_config.$sales_channel %]">Picked Items</span><br>
+
+			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+				<tr>
+					<td class="dividerHeader" colspan="5"></td>
+				</tr>
+				<tr>
+					<td class="tableHeader"></td>
+					<td class="tableHeader" align="center">SKU</td>
+					<td class="tableHeader">Designer</td>
+					<td class="tableHeader">Name</td>
+					<td class="tableHeader">Size</td>
+				</tr>
+				<tr>
+					<td class="dividerHeader" colspan="5"></td>
+				</tr>
+				[% FOREACH id = shipment_item_info.keys %]
+
+					[% IF shipment_item_info.$id.shipment_item_status_id == SHIPMENT_ITEM_STATUS__PICKED
+                                           || shipment_item_info.$id.shipment_item_status_id == SHIPMENT_ITEM_STATUS__PACKING_EXCEPTION
+                                           || shipment_item_info.$id.shipment_item_status_id == SHIPMENT_ITEM_STATUS__PACKED
+                                           || shipment_item_info.$id.shipment_item_status_id == SHIPMENT_ITEM_STATUS__DISPATCHED %]
+						<tr valign="middle">
+							<td width="20%"><img src="[% shipment_item_info.$id.image.0 %]" width="120" hspace="5" vspace="5"></td>
+							<td width="12%" align="center">[% shipment_item_info.$id.product_id %]-[% shipment_item_info.$id.sku_size %]</td>
+							<td width="25%">[% shipment_item_info.$id.designer %]</td>
+							<td width="31%">[% shipment_item_info.$id.name %]</td>
+							<td width="12%">[% IF shipment_item_info.$id.short_name != "" %][% shipment_item_info.$id.short_name %] [% END %][% shipment_item_info.$id.designer_size %]</td>
+						</tr>
+						<tr>
+							<td class="divider" colspan="5"></td>
+						</tr>
+					[% END %]
+				[% END %]
+			</table>
+
+		[% END %]
+	[% END %]
+[% END %]
+<br><br>
+
+<br>
+

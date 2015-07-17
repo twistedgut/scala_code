@@ -1,0 +1,7 @@
+BEGIN;
+
+ALTER TABLE renumeration ADD COLUMN "sent_to_psp" BOOLEAN DEFAULT FALSE;
+
+COMMIT;
+
+

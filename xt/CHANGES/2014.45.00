@@ -1,0 +1,49 @@
+<pre>
+
+
+h1. CANDO - Customer & Orders
+
+*
+
+
+h1. DC2A - DC2 Automation
+
+* DCA-4139: Fix pick scheduler for DCD allocation when full is short/cancelled
+
+
+h1. DCOP - DC Operations
+
+* DCOP-1659: Increase the maximum allowed digit from 2 to 3
+*
+
+
+h1. SHIP - Expedited Shippping
+
+*
+
+
+h1. WHM - Warehouse
+
+*
+
+
+
+h1. Other
+
+h2. BS - Build Support
+
+*
+
+h2. PM - Product Management
+
+*
+
+h2. SAS - Search & Aggregation
+
+*
+
+h2. Misc
+
+*
+
+</pre>

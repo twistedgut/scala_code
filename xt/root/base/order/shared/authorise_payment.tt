@@ -1,0 +1,235 @@
+[% IF orders_id %]
+    [% IF msg %]
+        <p class="display_msg">[% msg %]</p>
+        <img src="/images/blank.gif" width="1" height="300">
+    [% ELSE %]
+        <script language="javascript" type="text/javascript">
+            function confirm_cancel() {
+                if ( !confirm("Are You Sure You Want to Cancel this Pre-Auth?") ) {
+                    return false;
+                }
+                return true;
+            }
+        </script>
+
+        <form name="cancelPayment" action="AuthorisePayment" method="post">
+
+            [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+            <input type="hidden" name="orders_id" value="[% orders_id %]">
+
+            <h3 class="title title-[% channel_config.$sales_channel %]">Billing Details</h3>
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" id="billing_details">
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr height="22">
+                    <td width="20%" align="right"><b>Order Number:&nbsp;&nbsp;</td>
+                    <td width="80%">[% order.order_nr %]</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr height="22">
+                    <td width="20%" align="right"><b>Customer:&nbsp;&nbsp;</td>
+                    <td width="80%">[% order.order_address.full_name %]</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr height="22" valign="top">
+                    <td width="20%" align="right"><b>Billing Address:&nbsp;&nbsp;</td>
+                    <td width="80%">
+                        [% order.order_address.address_line_1 %]<br />
+                        [% IF order.order_address.address_line_2 %][% order.order_address.address_line_2 %]<br />[% END %]
+                        [% order.order_address.towncity %]<br />
+                        [% IF order.order_address.county %][% order.order_address.county %]<br />[% END %]
+                        [% order.order_address.postcode %]<br />
+                        [% order.order_address.country %]
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+            </table>
+            <br><br>
+
+            <h3 class="title title-[% channel_config.$sales_channel %]">Existing Pre-Auth Details</h3>
+            [% IF order_payment %]
+                [% SET auth_cancelled = order_payment.preauth_cancelled %]
+                <table class="wide-data divided-data" id="existing_pre_auth_details">
+                    <tr>
+                        <td width="20%" align="right"><strong>PSP:</strong></td>
+                        <td align="left">[% payment_info.provider %]</td>
+                        <td width="25%" align="right"><strong>Internal Payment Reference:</strong></td>
+                        <td width="35%" align="left">[% payment_info.preauthReference %]</td>
+                    </tr>
+                    <tr>
+                        <td align="right"><strong>PSP Reference:</strong></td>
+                        <td align="left">[% payment_info.providerReference %]</td>
+                        <td align="right"><strong>Pre-Auth Reference:</strong></td>
+                        <td align="left">[% order_payment.preauth_ref %]
+                            [% IF auth_cancelled %]
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="highlight">(This Pre-Auth has been Cancelled)</span>
+                            [% END %]
+                        </td>
+                    <tr>
+                        <td align="right"><strong>Value:</strong></td>
+                        <td colspan="3" align="left">[% payment_info.currency %]&nbsp;[% (payment_info.coinAmount || 0) / 100 %]</td>
+                    </tr>
+                </table>
+                [% IF !auth_cancelled %]
+                    <br/>
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td align="right">
+                                <input type="submit" name="action" value="CANCEL" class="button" onclick="javascript:return confirm_cancel();" />
+                            </td>
+                        </tr>
+                    </table>
+                [% END %]
+
+                [% PROCESS order/shared/payment_cancellation_log.tt payment_log=payment_cancel_log %]
+                [% PROCESS order/shared/payment_cancellation_log.tt payment_log=payment_replacement_cancel_log %]
+
+            [% ELSE %]
+                <span style="font-weight:bold;">No Pre-Auth record could be found</span><br/>
+            [% END %]
+            <br/><br/>
+
+        </form>
+
+        [% payment_form.header('editPayment') %]
+
+            <input type="hidden" name="keepCard" value="0">
+            <input type="hidden" name="savedCard" value="0">
+
+            <h3 class="title title-[% channel_config.$sales_channel %]">Payment Details</h3>
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" id="payment_details">
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr height="30">
+                    <td width="20%" align="right"><b>Card Type:&nbsp;&nbsp;</td>
+                    <td width="80%">
+
+                        <select name="cardType">
+                            [% FOREACH card_type = card_types %]
+                            <option value="[% card_type.value %]" [% IF params.card_type == card_type.value %]selected[% END %]>[% card_type.name %]</option>
+                            [% END %]
+                        </select>
+
+                        <br />
+
+                        <img src="/images/cardtypes/icon_card_visa.gif"
+                            style="display:inline; margin-left:3px" />
+                        <img src="/images/cardtypes/icon_card_electron.gif"
+                            style="display:inline;" />
+                        <img src="/images/cardtypes/icon_card_amex.gif"
+                            style="display:inline;" />
+                        <img src="/images/cardtypes/icon_card_mastercard.gif"
+                            style="display:inline;" />
+                        <img src="/images/cardtypes/icon_card_maestro.gif"
+                            style="display:inline;" />
+                        <img src="/images/cardtypes/icon_card_delta.gif"
+                            style="display:inline;" />
+                        <img src="/images/cardtypes/icon_card_jcb.gif" height="25"
+                            style="display:inline;" />
+
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr height="30">
+                    <td width="20%" align="right"><b>Credit Card Number:&nbsp;&nbsp;</td>
+                    <td width="80%"><input type="text" size="35" name="cardNumber" value="[% IF params.number %][% params.number %][% END %]"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr height="30">
+                    <td align="right"><b>Cardholder's Name:&nbsp;&nbsp;</td>
+                    <td width="80%"><input type="text" size="35" name="cardHoldersName" value="[% IF params.cardholder %][% params.cardholder %][% END %]"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr height="30">
+                    <td align="right"><b>Security Number:&nbsp;&nbsp;</td>
+                    <td><input type="text" size="5" name="cVSNumber" value="[% IF params.cvs_num %][% params.cvs_num %][% END %]"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr height="30">
+                    <td align="right"><b>Start Date:&nbsp;&nbsp;</td>
+                    <td>
+                        <select name="startMonth">
+                        [% FOREACH month = start_date_months %]
+                        <option value="[% month.value %]" [% IF params.start_month == month.value %]selected[% END %]>[% month.name %]</option>
+                        [% END %]
+                        </select>
+
+                        <select name="startYear">
+                        [% FOREACH year = start_date_years %]
+                        <option value="[% year.value %]" [% IF params.start_year == year.value %]selected[% END %]>[% year.name %]</option>
+                        [% END %]
+                        </select>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr height="30">
+                    <td align="right"><b>Expiry Date:&nbsp;&nbsp;</td>
+                    <td>
+                        <select name="expiryMonth">
+                        [% FOREACH month = expiry_date_months %]
+                        <option value="[% month.value %]" [% IF params.expiry_month == month.value %]selected[% END %]>[% month.name %]</option>
+                        [% END %]
+                        </select>
+
+                        <select name="expiryYear">
+                        [% FOREACH year = expiry_date_years %]
+                        <option value="[% year.value %]" [% IF params.expiry_year == year.value %]selected[% END %]>[% year.name %]</option>
+                        [% END %]
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr height="30">
+                    <td align="right"><b>Issue Number:&nbsp;&nbsp;</td>
+                    <td><input type="text" size="5" name="issueNumber" value="[% IF params.issue %][% params.issue %][% END %]"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+                <tr height="30">
+                    <td align="right"><b>Value:&nbsp;&nbsp;</td>
+                    <td>
+                        [% payment_value %]&nbsp;[% order.currency.currency %]
+                        <input type="hidden" name="payment_value" value="[% payment_value %]">
+                        <input type="hidden" name="payment_currency" value="[% order.currency.currency %]">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+                </tr>
+            </table>
+            <br><br>
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td align="right">
+                    <input type="submit" name="action" value="SUBMIT" class="button">
+                    </td>
+                </tr>
+            </table>
+
+        [% payment_form.footer %]
+
+        <br><br>
+    [% END %]
+[% END %]

@@ -1,0 +1,259 @@
+[% USE PrintDocs -%]
+<html> 
+<head> 
+<!-- Template name: [% template.name %] -->
+<title></title>
+[% INCLUDE shared/show_print_images.tt %]
+<style type="text/css">
+body { margin-top: 1cm; margin-left: 1.0cm; }
+</style>
+</head>
+<body bgcolor="#FFFFFF" TEXT="#000000">
+
+<table border=0 cellspacing=0 cellpadding=0 width=690>
+	<tr>
+		<td colspan=5 align="center" height="75px" valign="top">
+			<font face="Arial,Helvetica" size=4 color="#000000">PREMIER - ORDER DETAILS</font><br>
+			<!-- img src="/images/blank.gif" width=570 height=50 border=0 -->
+		</td>
+	</tr>
+	<tr>
+		<td colspan="5"><img src="file://[% PrintDocs.document_path('pickorder' _ shipment.id _ '.png') %]"><br><br></td>
+	</tr>
+	<tr>
+		<td bgcolor="#999999"><img src="/images/blank.gif" width=140 height=1 border=0></td>
+		<td bgcolor="#999999"><img src="/images/blank.gif" width=190 height=1 border=0></td>
+		<td bgcolor="#999999"><img src="/images/blank.gif" width=30 height=1 border=0></td>
+		<td bgcolor="#999999"><img src="/images/blank.gif" width=140 height=1 border=0></td>
+		<td bgcolor="#999999"><img src="/images/blank.gif" width=190 height=1 border=0></td>
+	</tr>
+	<tr height="22">
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">&nbsp;<b>Order Number:&nbsp;</b></td>
+		<td colspan="4"><font face="Arial,Helvetica" size=-2 color="#000000">[% order.order_nr %]</font></td>
+	</tr>
+	<tr>
+		<td colspan=5 bgcolor="#999999"><img src="/images/blank.gif" width=1 height=1 border=0></td>
+	</tr>
+	<tr height="22">
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">&nbsp;<b>Customer Number:</b></td>
+		<td colspan="4"><font face="Arial,Helvetica" size=-2 color="#000000">[% customer.is_customer_number %]</font></td>
+	</tr>
+	<tr>
+		<td colspan=5 bgcolor="#999999"><img src="/images/blank.gif" width=1 height=1 border=0></td>
+	</tr>
+	<tr height="22">
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">&nbsp;<b>Customer Category:</b></td>
+		<td colspan="4"><font face="Arial,Helvetica" size=-2 color="#000000">[% customer.category %]</font></td>
+	</tr>
+	<tr>
+		<td colspan=5 bgcolor="#999999"><img src="/images/blank.gif" width=1 height=1 border=0></td>
+	</tr>
+	<tr>
+		<td colspan=5><img src="/images/blank.gif" width=1 height=5 border=0></td>
+	</tr>
+	<tr>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">&nbsp;<b>Invoice Address:</b></td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">[% invoice_address.first_name %]&nbsp;[% invoice_address.last_name %]</font></td>
+		<td>&nbsp;</td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">&nbsp;<b>Shipping Address:</b></td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">[% shipping_address.first_name %]&nbsp;[% shipping_address.last_name %]</font></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">[% invoice_address.address_line_1 %][% IF invoice_address.address_line_2 != "" %], [% invoice_address.address_line_2 %][% END %][% IF invoice_address.address_line_3 != "" %], [% invoice_address.address_line_3 %][% END %]</font></td>
+		<td>&nbsp;</td>
+		<td></td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">[% shipping_address.address_line_1 %][% IF shipping_address.address_line_2 != "" %], [% shipping_address.address_line_2 %][% END %][% IF shipping_address.address_line_3 != "" %], [% shipping_address.address_line_3 %][% END %]</font></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">[% invoice_address.towncity %]</font></td>
+		<td>&nbsp;</td>
+		<td></td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">[% shipping_address.towncity %]</font></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">[% invoice_address.county %]</font></td>
+		<td>&nbsp;</td>
+		<td></td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">[% shipping_address.county %]</font></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">[% invoice_address.country %]</font></td>
+		<td>&nbsp;</td>
+		<td></td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">[% shipping_address.country %]</font></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">[% invoice_address.postcode %]</font></td>
+		<td>&nbsp;</td>
+		<td></td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">[% shipping_address.postcode %]</font></td>
+	</tr>
+	<tr>
+		<td colspan=5><img src="/images/blank.gif" width=1 height=5 border=0></td>
+	</tr>
+	<tr>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">&nbsp;<b>Telephone:</b></td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">[% order.telephone %]</font></td>
+		<td>&nbsp;</td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">&nbsp;<b>Telephone:</b></td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">[% shipment.telephone %]</font></td>
+	</tr>
+	<tr>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">&nbsp;<b>Mobile Telephone:</b></td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">[% order.mobile_telephone %]</font></td>
+		<td>&nbsp;</td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">&nbsp;<b>Mobile Telephone:</b></td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">[% shipment.mobile_telephone %]</font></td>
+	</tr>
+	<tr>
+		<td colspan=5><img src="/images/blank.gif" width=1 height=5 border=0></td>
+	</tr>
+	<tr>
+		<td colspan=5 bgcolor="#999999"><img src="/images/blank.gif" width=1 height=1 border=0></td>
+	</tr>
+	<tr>
+		<td colspan=5><img src="/images/blank.gif" width=1 height=5 border=0></td>
+	</tr>
+	<tr>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">&nbsp;<b>Email:</b></td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">[% order.email %]</font></td>
+		<td>&nbsp;</td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">&nbsp;<b>Email:</b></td>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">[% shipment.email %]</font></td>
+	</tr>
+	<tr>
+		<td colspan=5><img src="/images/blank.gif" width=1 height=5 border=0></td>
+	</tr>
+	<tr>
+		<td colspan=5 bgcolor="#999999"><img src="/images/blank.gif" width=1 height=1 border=0></td>
+	</tr>
+	<tr>
+		<td colspan=5><img src="/images/blank.gif" width=1 height=10 border=0></td>
+	</tr>
+	[% IF shipment.gift == 1 %]
+	<tr>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">&nbsp;<b>Gift Message:</b></td>
+		<td colspan="4"><font face="Arial,Helvetica" size=-2 color="#000000">[% shipment.gift_message | html %]</font></td>
+	</tr>
+	<tr>
+		<td colspan=5><img src="/images/blank.gif" width=1 height=5 border=0></td>
+	</tr>
+	<tr>
+		<td colspan=5 bgcolor="#999999"><img src="/images/blank.gif" width=1 height=1 border=0></td>
+	</tr>
+	<tr>
+		<td colspan=5><img src="/images/blank.gif" width=1 height=10 border=0></td>
+	</tr>
+	[% END %]
+	<tr>
+		<td><font face="Arial,Helvetica" size=-2 color="#000000">&nbsp;<b>Customer Comments:</b></td>
+		<td colspan="4">
+			<font face="Arial,Helvetica" size=-2 color="#000000">
+			[% IF customer.legacy_comment != "" %]
+				[% customer.legacy_comment %]<br>
+			[% END %]
+			[% FOREACH custnote = customer.notes.keys.nsort %]	
+				[% customer.notes.$custnote.note %]<br>
+			[% END %]
+			</font>
+		</td>
+	</tr>
+	<tr>
+		<td colspan=5><img src="/images/blank.gif" width=1 height=5 border=0></td>
+	</tr>
+	<tr>
+		<td colspan=5 bgcolor="#999999"><img src="/images/blank.gif" width=1 height=1 border=0></td>
+	</tr>
+	<tr>
+		<td colspan=2><img src="/images/blank.gif" width=1 height=40 border=0></td>
+	</tr>
+	<tr valign="top">
+		<td colspan=5>
+			<font face="Arial,Helvetica" size=2 color="#000000"><b>Order Items</b><br>
+			<br>
+			</font>
+		</td>
+	</tr>
+</table>
+
+<table width="645" border=1 cellspacing=0 cellpadding=0 width=690 bordercolor="#000000">
+	<tr bgcolor="#cccccc">
+		<td align="center"><font face="Arial,Helvetica" size=1 color="#000000">SKU</font></td>
+		<td>&nbsp;<font face="Arial,Helvetica" size=1 color="#000000">DESCRIPTION</font></td>
+		<td align="center"><font face="Arial,Helvetica" size=1 color="#000000">QTY</font></td>
+		<td align="center"><font face="Arial,Helvetica" size=1 color="#000000">UNIT<br>PRICE</font></td>
+		<td align="center"><font face="Arial,Helvetica" size=1 color="#000000">TAX</font></td>
+		<td align="center"><font face="Arial,Helvetica" size=1 color="#000000">DUTIES</font></td>
+		<td align="center"><font face="Arial,Helvetica" size=1 color="#000000">PRICE</font></td>
+		<td align="center"><font face="Arial,Helvetica" size=1 color="#000000">SUB<br>TOTAL</font></td>					
+	</tr>
+[% SET prodcount = 0 %]
+
+[% FOREACH id = shipment_item.keys %]
+	<tr valign="top">
+		<td align="center"><font face="Arial,Helvetica" size=1 color="#000000">[% shipment_item.$id.sku %]</td>
+		<td align="left"><font face="Arial,Helvetica" size=1 color="#000000">[% shipment_item.$id.name %]</td>
+		<td align="center"><font face="Arial,Helvetica" size=1 color="#000000">[% shipment_item.$id.quantity %]</td>
+		<td align="center"><font face="Arial,Helvetica" size=1 color="#000000">[% shipment_item.$id.unit_price %]</td>
+		<td align="center"><font face="Arial,Helvetica" size=1 color="#000000">[% shipment_item.$id.tax %]</td>
+		<td align="center"><font face="Arial,Helvetica" size=1 color="#000000">[% shipment_item.$id.duty %]</td>
+		<td align="center"><font face="Arial,Helvetica" size=1 color="#000000">[% shipment_item.$id.total_price %]</td>
+		<td align="center"><font face="Arial,Helvetica" size=1 color="#000000">[% shipment_item.$id.total_price * shipment_item.$id.quantity %]</td>
+	</tr>
+
+	[% prodcount = prodcount + 1 %]
+[% END %]
+
+[% IF shipment.store_credit && shipment.store_credit < 0 %]
+	<tr>  
+		<td   align="right"></td>  
+		<td  align="center"><font face="Arial,Helvetica" size=1 color="#000000">Store Credit</td>  
+		<td   align="right"></td>  
+		<td  align="right"></td>  
+		<td  align="right"></td>  
+		<td  align="right"></td>  
+		<td  align="right"></td>  
+		<td align="center" ><font face="Arial,Helvetica" size=1 color="#000000">[% shipment.store_credit %]</font></td> 
+	</tr>
+	[% prodcount = prodcount + 1 %]
+[% END %]
+
+[% IF shipment.gift_credit && shipment.gift_credit < 0 %]
+	<tr>  
+		<td  align="right"></td>  
+		<td align="center"><font face="Arial,Helvetica" size=1 color="#000000">Gift Credit</td>  
+		<td  align="right"></td>  
+		<td  align="right"></td>  
+		<td align="right"></td>  
+		<td  align="right"></td>  
+		<td align="right"></td>  
+		<td align="center" ><font face="Arial,Helvetica" size=1 color="#000000">[% shipment.gift_credit %]</font></td> 
+	</tr>
+	[% prodcount = prodcount + 1 %]
+[% END %]
+	<tr bgcolor="#ffffff" height="30">
+		<td colspan="7" align="right"><font face="Arial,Helvetica" size=1 color="#000000">&nbsp;<b>TOTAL PRICE:&nbsp;</b></td>
+		<td align="center"><font face="Arial,Helvetica" size=1 color="#000000">[% shipment.total_price %]&nbsp;&nbsp;</font></td>					
+	</tr>
+	<tr bgcolor="#ffffff" height="30">
+		<td colspan="7" align="right"><font face="Arial,Helvetica" size=1 color="#000000">&nbsp;<b>SHIPPING:&nbsp;</b></td>
+		<td align="center"><font face="Arial,Helvetica" size=1 color="#000000">[% shipment.shipping %]&nbsp;&nbsp;</font></td>					
+	</tr>
+	<tr bgcolor="#ffffff" height="30">
+		<td colspan="7" align="right"><font face="Arial,Helvetica" size=1 color="#000000">&nbsp;<b>SHIPPING TAX:&nbsp;</b></td>
+		<td align="center"><font face="Arial,Helvetica" size=1 color="#000000">[% shipment.shipping_tax %]&nbsp;&nbsp;</font></td>					
+	</tr>
+	<tr bgcolor="#ffffff" height="30">
+		<td colspan="7" align="right"><font face="Arial,Helvetica" size=2 color="#000000">&nbsp;<b>GRAND TOTAL:&nbsp;</b></td>
+		<td align="center"><font face="Arial,Helvetica" size=2 color="#000000">[% shipment.grand_total %]&nbsp;&nbsp;</font></td>					
+	</tr>
+
+</table>
+
+</body>
+</html>

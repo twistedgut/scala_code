@@ -1,0 +1,16 @@
+Not Found
+{
+  "@context": {
+    "error": {
+      "@id": "http://rels.net-a-porter.com/rels/error",
+      "@type": "@id"
+    }
+  },
+  "request": "urn:nap:account:cardToken:NONE",
+  "error": [
+    {
+      "code": "urn:nap:error:seaview:2-2",
+      "message": "Account does not have a card token"
+    }
+  ]
+}

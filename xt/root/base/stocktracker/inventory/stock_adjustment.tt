@@ -1,0 +1,117 @@
+[% IF variant_id OR product.id -%]
+
+<div id='display_product'>
+    [% PROCESS page_elements/display_product.tt %]
+</div>
+
+[% SET cur_channel = '' %]
+[% IF view_channel %]
+    [% cur_channel = view_channel %]
+[% ELSIF active_channel.channel_name %]
+    [% cur_channel = active_channel.channel_name %]
+[% END %]
+
+<div id="tabContainer" class="yui-navset">
+        [% PROCESS page_elements/channel_tabs.tt channel_list=located,no_size=1,tab_channel_to_use=cur_channel %]
+    <div class="yui-content">
+
+        [% FOREACH channel = located.keys.sort %]
+
+            <div id="tab[% loop.count %]" class="tabWrapper-[% channel_config.$channel %]">
+                        <div class="tabInsideWrapper">
+
+                <span class="title title-[% channel_config.$channel %]">Adjust Stock</span><br />
+
+                <form name="frm_quarantine" action="/StockControl/StockAdjustment/SetStockAdjustment" method="post">
+                    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                                        <input type="hidden" name="view_channel" value="[% channel %]" />
+                <table class="wide-data divided-data data">
+                    <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>Size</th>
+                            <th>Location</th>
+                            <th>Quantity</th>
+                            <th>Adjust</th>
+                            <th>Reason</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    [% FOREACH v_id = located.$channel.keys.nsort  %]
+                        [% FOREACH location_id = located.$channel.$v_id.keys  %]
+                          [% FOREACH status_id = located.$channel.$v_id.$location_id.keys  %]
+                            [% SET line = located.$channel.$v_id.$location_id.$status_id %]
+
+                            <tr>
+                                <td><a href="StockAdjustment?variant_id=[% v_id %]">[% product.id %]-[% variant.$v_id.size_id %]</a></td>
+                                <td>[% variant.$v_id.designer_size %]</td>
+                                <td>[% line.location %]<input type="hidden" name="location_[% v_id %]_[% line.location_id %]_[% line.status_id %]" value="[% line.location %]"></td>
+                                <td>[% line.quantity %]<input type="hidden" name="locationquantity_[% v_id %]_[% line.location_id %]_[% line.status_id %]" value="[% line.quantity %]"></td>
+                                <td>[% IF auth_level > 1 %]<input type="text" name="quantity_[% v_id %]_[% line.location_id %]_[% line.status_id %]" size="2">[% ELSE %]&nbsp;[% END %]</td>
+                                <td>
+                                    [% IF auth_level > 1 %]
+                                    <select name="reason_[% v_id %]_[% line.location_id %]_[% line.status_id %]">
+                                        <option value="">-----------------------</option>
+                                        <option value="Adjustment Error">Adjustment Error</option>
+                                        <option value="Event/Gift">Event/Gift</option>
+                                        <option value="Extra Stock">Extra Stock</option>
+                                        <option value="Input Error">Input Error</option>
+                                        <option value="Labeling Error">Labeling Error</option>
+                                        <option value="Missing from Stock">Missing from Stock</option>
+                                        <option value="PID Combination">PID Combination</option>
+                                        <option value="PID Switch">PID Switch</option>
+                                        <option value="Stock Transfer">Stock Transfer</option>
+                                        <option value="Virtual Return">Virtual Return</option>
+                                        <option value="Sales Channel Transfer">Sales Channel Transfer</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    [% ELSE %]&nbsp;[% END %]
+                                </td>
+                                <td>[% IF auth_level > 1 %]<input type="text" name="notes_[% v_id %]_[% line.location_id %]_[% line.status_id %]" size="25">[% ELSE %]&nbsp;[% END %]
+                                    <input type="hidden" name="vid_[% v_id %]-[% line.location_id %]-[% line.status_id %]" value="[% v_id %]">
+                                    <input type="hidden" name="channel_[% v_id %]_[% line.location_id %]_[% line.status_id %]" value="[% line.channel_id %]">
+                                </td>
+                            </tr>
+                        [% END %]
+                      [% END %]
+                    [% END %]
+                    </tbody>
+                </table>
+
+                [% IF variant_id %]
+                    <input type="hidden" name="variant_id" value="[% variant_id %]">
+                [% ELSE %]
+                    <input type="hidden" name="product_id" value="[% product.id %]">
+                [% END %]
+
+                [% IF auth_level > 1 -%]
+                <div class="formrow buttons aftertable">
+                    [% INCLUDE page_elements/forms/submit_button.tt %]
+                </div>
+                [% END -%]
+
+                </form>
+
+                        </div>
+            </div>
+            [% SET channel_count = channel_count + 1 %]
+        [% END %]
+    </div>
+</div>
+
+[% PROCESS page_elements/tab_script.tt %]
+
+[% ELSE -%]
+[%# no variant or product chosen so show forms -%]
+
+[% PROCESS shared/adjustment_search.tt title='Adjust Stock by Product' label='Product ID' search_id='product_id' action_url='/StockControl/StockAdjustment/StockAdjust' -%]
+[% PROCESS shared/adjustment_search.tt title='Adjust Stock by Variant' label='Variant ID' search_id='variant_id' action_url='/StockControl/StockAdjustment/StockAdjust' -%]
+
+<script type="text/javascript">
+<!--
+    document.adjustStock.product_id.focus();
+// -->
+</script>
+[% END -%]

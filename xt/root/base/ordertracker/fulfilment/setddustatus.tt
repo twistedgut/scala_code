@@ -1,0 +1,185 @@
+
+
+
+<form name="acceptDDUcharges" action="/Fulfilment/DDU/UpdateDDUStatus" method="post" onSubmit="return double_submit()">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="shipment_id" value="[% shipment_id %]">
+    <input type="hidden" name="order_id" value="[% order_id %]">
+    <input type="hidden" name="customer_id" value="[% order.customer_id %]">
+    <input type="hidden" name="sub_section" value="[% subsection %]">
+<span class="title title-[% channel_config.$sales_channel %]">DDU Authorisation</span><br>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+	<tr>
+		<td colspan="4" class="divider"></td>
+	</tr>
+    <tr>
+        <td width="20%" align="right"><b> Authorise Charges:</b>&nbsp;&nbsp;&nbsp;</td>
+        <td width="20%">
+            <select name="authorise" id="select_ddu_authorisation__dropdown">
+                <option value="">Please select DDU Authorisation......</option>
+                <option value="authorise_all" >Yes ( and for all future orders )</option>
+                <option value="no" >No ( for this order only )</option>
+            </select>
+        </td>
+        <td colspan="2" width="60%"> </td>
+    </tr>
+	<tr class="send_email">
+		<td colspan="4" class="divider"></td>
+	</tr>
+	<tr class="send_email">
+		<td align="right"><b>Send Email Confirmation:</b>&nbsp;&nbsp;&nbsp;</td>
+		<td colspan="3">
+            <input type="radio" name="sendemail" value="yes" checked>&nbsp;&nbsp;&nbsp;Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="sendemail" value="no">&nbsp;&nbsp;&nbsp;No
+        </td>
+	</tr>
+	<tr>
+		<td colspan="4" class="divider"></td>
+	</tr>
+	<tr>
+		<td colspan="4" class="blank"><img src="/images/blank.gif" width="1" height="15"></td>
+	</tr>
+	<tr>
+		<td colspan="4" class="blank" align="right">[% INCLUDE page_elements/forms/submit_button.tt %]</td>
+	</tr>
+</table>
+</form>
+
+<br><br><br>
+
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+	<tr>
+		<td colspan="2"><span class="title title-[% channel_config.$sales_channel %]">Shipment Details</td>
+		<td><img src="/images/blank.gif" width="1" height="1"></td>
+		<td colspan="2"><span class="title title-[% channel_config.$sales_channel %]">Shipment Address</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td><img src="/images/blank.gif" width="1" height="1"></td>
+		<td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td width="130" align="right"><b>Shipment Number:&nbsp;&nbsp;</td>
+		<td width="170">&nbsp;[% shipment_id %]</td>
+		<td width="99"><img src="/images/blank.gif" width="1" height="24"></td>
+		<td width="100" align="right"><b>Name:&nbsp;&nbsp;</td>
+		<td width="220">&nbsp;[% ship_address.first_name %] [% ship_address.last_name %]</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td><img src="/images/blank.gif" width="1" height="1"></td>
+		<td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="22">
+		<td align="right"><b>Date:&nbsp;&nbsp;</td>
+		<td>&nbsp;[% ship_info.date %]</td>
+		<td><img src="/images/blank.gif" width="1" height="24"></td>
+		<td align="right"><b>Street Address:&nbsp;&nbsp;</td>
+		<td>&nbsp;[% ship_address.address_line_1 %]</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td><img src="/images/blank.gif" width="1" height="1"></td>
+		<td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="22">
+		<td align="right"><b>Shipment Type:&nbsp;&nbsp;</td>
+		<td>&nbsp;[%ship_info.class %]</td>
+		<td><img src="/images/blank.gif" width="1" height="24"></td>
+		<td align="right"><b>Town/City:&nbsp;&nbsp;</td>
+		<td>&nbsp;[% ship_address.towncity %]</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td><img src="/images/blank.gif" width="1" height="1"></td>
+		<td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr height="22">
+		<td align="right"><b>Shipment Class:&nbsp;&nbsp;</td>
+		<td>[% ship_info.type %]</td>
+		<td><img src="/images/blank.gif" width="1" height="24"></td>
+		<td align="right"><b>County/State:&nbsp;&nbsp;</td>
+		<td>&nbsp;[% ship_address.county %]</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td><img src="/images/blank.gif" width="1" height="1"></td>
+		<td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td align="right"><b>Packing Instruction:&nbsp;&nbsp;</td>
+		<td>&nbsp;[% ship_info.packing_instruction %]</td>
+		<td><img src="/images/blank.gif" width="1" height="24"></td>
+		<td align="right"><b>Postcode:&nbsp;&nbsp;</td>
+		<td>&nbsp;[% ship_address.postcode %]</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td><img src="/images/blank.gif" width="1" height="1"></td>
+		<td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td align="right"><b>Status:&nbsp;&nbsp;</td>
+		<td>&nbsp;<span class="highlight">[% ship_info.status %]</td>
+		<td><img src="/images/blank.gif" width="1" height="24"></td>
+		<td align="right"><b>Country:&nbsp;&nbsp;</td>
+		<td>&nbsp;[% ship_address.country %]</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+		<td><img src="/images/blank.gif" width="1" height="1"></td>
+		<td colspan="2" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+	</tr>
+</table>
+<br><br>
+
+<span class="title title-[% channel_config.$sales_channel %]">Shipment Items</span><br>
+<table class="data wide-data divided-data">
+    <thead>
+	<tr>
+            <th>SKU</th>
+            <th>Name</th>
+            <th>Designer</th>
+            <th>Size</th>
+            <th>Status</th>
+            <th>Unit Price</th>
+            <th>Tax</th>
+            <th>Duties</th>
+            <th>Sub-Total</th>
+	</tr>
+    </thead>
+    <tbody>
+	[% FOREACH itemid = ship_items.keys %]
+
+            [% class = "" %]
+
+            [% IF ship_items.$itemid.shipment_item_status_id == SHIPMENT_ITEM_STATUS__CANCEL_PENDING
+                || ship_items.$itemid.shipment_item_status_id == SHIPMENT_ITEM_STATUS__CANCELLED
+                || ship_items.$itemid.shipment_item_status_id == SHIPMENT_ITEM_STATUS__LOST
+                || ship_items.$itemid.shipment_item_status_id == SHIPMENT_ITEM_STATUS__UNDELIVERED %]
+                    [% class = " class=\"light\"" %]
+            [% END %]
+
+            <tr>
+                    <td[% class %]><a href="javascript://" onClick="window.open('[% ship_items.$itemid.image %]','viewimage','width=240,height=345,scrollbars=no');" class="noline">[% ship_items.$itemid.sku %]</a></td>
+                    <td[% class %]>[% ship_items.$itemid.name %]</td>
+                    <td[% class %]>[% ship_items.$itemid.designer %]</td>
+                    <td[% class %]>[% ship_items.$itemid.size %]</td>
+                    <td[% class %]><span class="highlight">[% ship_items.$itemid.status %]</td>
+                    <td[% class %] align="right">[% ship_items.$itemid.unit_price %]</td>
+                    <td[% class %] align="right">[% ship_items.$itemid.tax %]</td>
+                    <td[% class %] align="right">[% ship_items.$itemid.duty %]</td>
+                    <td[% class %] align="right">[% ship_items.$itemid.sub_total %]</td>
+            </tr>
+	[% END %]
+
+	<tr>
+		<td class="blank" colspan="8" align="right"><b>Shipping</td>
+		<td class="blank" align="right"><b>[% ship_info.shipping_charge %]</td>
+	</tr>
+	<tr>
+		<td class="blank" colspan="8" align="right"><b>Shipment Total</td>
+		<td class="blank" align="right"><b>[% ship_info.shipment_total %]</td>
+	</tr>
+    </tbody>
+</table>

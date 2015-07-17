@@ -1,0 +1,10 @@
+[% IF (! action_label.defined) %][% action_label = 'Undefined Action' %][% END %]
+[% IF (! action_value.defined) %][% action_value = 'undefined_value'  %][% END %]
+<div class="generate_coupon">
+    <form method="POST" action="/NAPEvents/Manage/">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+        <input type="hidden" name="action" value="[%action_value%]" />
+        <input type="hidden" name="promotion_id" value="[%promotion.id%]" />
+        <input class="button" type="submit" value="[%action_label%]" />
+    </form>
+</div>

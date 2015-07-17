@@ -1,0 +1,26 @@
+[% IF dc_name == 'DC1' -%]
+^XA
+^MUd,200,300
+^FO430,120^A0N,32,32^FD[% designer %]^FS
+^FO430,160^A0N,28,28^FD[% season %]^FS
+^FO430,200^A0N,28,28^FD[% colour %]^FS
+^FO430,240^A0N,28,28^FD[% size %]^FS
+^FO100,120^BCN,120,N,N^FD[% sku %]^FS
+^FO100,260^A0N,42,42^FD[% sku %]^FS
+^PQ[% copies %]^FS
+^XZ
+[% ELSE -%]
+^XA
+^MUd,200,300
+^FO445,125^A0N,36,36^FD[% designer %]^FS
+^FO445,165^A0N,32,32^FD[% season %]^FS
+^FO445,205^A0N,32,32^FD[% colour %]^FS
+^FO445,245^A0N,32,32^FD[% size %]^FS
+[% IF date -%]
+^FO445,285^A0N,32,32^FD[% date.strftime('%m-%d-%Y') %]^FS
+[% END -%]
+^FO100,120^BCN,150,N,N^FD[% sku %]^FS
+^FO100,285^A0N,75,60^FD[% sku %]^FS
+^PQ[% copies %]^FS
+^XZ
+[% END -%]

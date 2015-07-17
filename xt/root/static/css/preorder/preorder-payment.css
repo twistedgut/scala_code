@@ -1,0 +1,124 @@
+/*
+ * Page Layout
+ */
+
+#payment__page_grid {
+    display: table;
+    width:100%;
+}
+
+.payment__page_column {
+    display: table-cell;
+    width:50%;
+}
+
+.payment__page_row {
+    display: table-row;
+    width:100%;
+}
+
+.payment__page_cell {
+    display: table-row;
+    width: 100%;
+    padding: 4px;
+}
+
+#payment__payment_buttons {
+    margin-top:10px;
+    text-align:right;
+}
+
+
+
+/*
+ * Save Card List
+ */
+
+#payment__save_cards_list, #payment__payment__newcard_option {
+    width:100%;
+    padding:0;
+}
+
+.payment__saved_card {
+    display:table-row;
+    width:100%;
+    height:60px;
+}
+
+.payment__saved_card_radiobutton {
+    width:10%;
+    vertical-align:top;
+}
+
+.payment__saved_card_radiobutton, .payment__saved_card_details, #payment__new_card {
+    display:table-cell;
+}
+
+.payment__saved_card_type {
+    font-weight: bold;
+}
+
+/*
+ * New Card Form
+ */
+
+#payment__newcard_details {
+    dispaly:table;
+    width:100%;
+    margin: 5px;
+}
+
+.payment__newcard_row {
+    display:table-row;
+}
+
+.payment__newcard_row span {
+    display:table-cell;
+}
+
+.payment__newcard_field {
+    width:30%;
+    font-weight: bold;
+}
+
+/*
+ * Submit Form
+ */
+
+#payment__card_security_number {
+    display:table;
+    width: 100%;
+}
+
+#payment__card_security_number span {
+    display:table-cell;
+}
+
+#payment__security_field {
+    width: 40%;
+    font-weight: bold;
+}
+
+#payment__payment_buttons {
+    float:right;
+}
+
+#payment__payment_buttons span {
+    display: inline-block;
+}
+
+#payment__total_due {
+    font-weight: bold;
+    font-size: x-large;
+}
+
+#payment__total_due__discount {
+    font-weight: bold;
+    font-size: small;
+    margin-left: 3px;
+}
+
+#payment__total_due__zero_discount {
+    font-size: small;
+}
+

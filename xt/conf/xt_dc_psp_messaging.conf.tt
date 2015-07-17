@@ -1,0 +1,131 @@
+[% NAP_CONFIG_HEADER %]
+
+log4perl             [% XTDC_CONF_DIR %]/log4perl/amq_psp_consumer.conf
+<log4perlopts>
+    autoflush 1
+</log4perlopts>
+
+<Plugin::ErrorCatcher>
+    enable 1
+</Plugin::ErrorCatcher>
+
+<Stomp>
+    <servers>
+        hostname    [% PSP_AMQ_BROKER_HOSTNAME %]
+        port        [% PSP_AMQ_BROKER_PORT %]
+        <connect_headers>
+            login       [% PSP_AMQ_BROKER_USER_NAME %]
+            passcode    [% PSP_AMQ_BROKER_PASSWORD %]
+        </connect_headers>
+    </servers>
+    <servers>
+        hostname    [% PSP_AMQ_FAILOVER_BROKER_HOSTNAME %]
+        port        [% PSP_AMQ_FAILOVER_BROKER_PORT %]
+        <connect_headers>
+            login       [% PSP_AMQ_FAILOVER_BROKER_USER_NAME %]
+            passcode    [% PSP_AMQ_FAILOVER_BROKER_PASSWORD %]
+        </connect_headers>
+    </servers>
+    ## ask the broker to try to re-deliver anything we may have missed
+    ## while we were not connected (e.g. during an update of XT)
+    <subscribe_headers>
+        activemq.retroactive true
+    </subscribe_headers>
+</Stomp>
+
+<<Include xt_dc_psp_messaging_[% NAP_HOST_TYPE %].conf>>
+
+<Consumer::Orders::PaymentStatusUpdate>
+    <routes_map>
+        destination /topic/orders
+    </routes_map>
+</Consumer::Orders::PaymentStatusUpdate>
+
+
+<Consumer::DLP>
+    enabled 0
+</Consumer::DLP>
+
+<Consumer::VMSync>
+    enabled 0
+</Consumer::VMSync>
+
+<Consumer::OnlineFraud>
+    enabled 0
+</Consumer::OnlineFraud>
+
+<Consumer::NAPReturns>
+    enabled     0
+    channel_id  0
+</Consumer::NAPReturns>
+
+<Consumer::OutnetReturns>
+    enabled     0
+    channel_id  0
+</Consumer::OutnetReturns>
+
+<Consumer::MRPReturns>
+    enabled     0
+    channel_id  0
+</Consumer::MRPReturns>
+
+<Consumer::JCReturns>
+    enabled     0
+    channel_id  0
+</Consumer::JCReturns>
+
+<Consumer::Reimbursement>
+    enabled 0
+</Consumer::Reimbursement>
+
+<Consumer::SMSCorrespondence>
+    enabled 0
+</Consumer::SMSCorrespondence>
+
+<Consumer::Product>
+    enabled 0
+</Consumer::Product>
+
+<Consumer::PurchaseOrder>
+    enabled 0
+</Consumer::PurchaseOrder>
+
+<Consumer::XTWMS>
+    enabled 0
+</Consumer::XTWMS>
+
+<Consumer::JimmyChooOrder>
+    enabled 0
+</Consumer::JimmyChooOrder>
+
+<Consumer::MrPorterOrder>
+    enabled 0
+</Consumer::MrPorterOrder>
+
+<Consumer::CustomerInformation>
+    enabled 0
+</Consumer::CustomerInformation>
+
+<Consumer::DCQuery::FraudAnswer>
+    enabled 0
+</Consumer::DCQuery::FraudAnswer>
+
+<Consumer::DCQuery::FraudQuery>
+    enabled 0
+</Consumer::DCQuery::FraudQuery>
+
+<Consumer::SeaviewNotification>
+    enabled 0
+</Consumer::SeaviewNotification>
+
+<Consumer::PRL>
+    enabled 0
+</Consumer::PRL>
+
+<Consumer::RavniWMS>
+    enabled 0
+</Consumer::RavniWMS>
+
+<Consumer::Shipment>
+    enabled 0
+</Consumer::Shipment>

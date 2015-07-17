@@ -1,0 +1,9 @@
+<pre>
+
+h1. DCOP (DC Operations Support)
+
+* DCOP-343: Fix the height of the graph bar in the distribution report
+* DCOP-366: DBIC class for product is missing canonical_product_id
+* DCOP-389: Putaway prep from packing exception fails with previously-used containers
+
+</pre>

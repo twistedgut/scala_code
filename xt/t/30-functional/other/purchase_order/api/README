@@ -1,0 +1,6 @@
+These tests are for the 'Edit Purchase Order' feature in XTracker.
+Examples are: Update sizing, or change a size scheme.
+
+The front-end is in Fulcrum, but needs to edit data in XTracker, and so uses
+a REST API within XTracker.
+

@@ -1,0 +1,3 @@
+BEGIN;
+ALTER TABLE public.shipment_box ADD COLUMN tote_id VARCHAR(255) NOT NULL DEFAULT '';
+COMMIT;

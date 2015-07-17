@@ -1,0 +1,23 @@
+
+The daily cap for nominated day shipments for [% date.ymd %] has been reached.
+
+Cap: [% cap %]
+
+Number of Shipments: [% count %]
+
+
+You may want to mark this date as a restricted day so customers can no longer
+request a nominated day delivery on this day. However this will not effect
+non-nominated day shipments.
+
+To view the current number of nominated days shipments against the capacity
+please go to the appropriate XTracker to login and then locate
+Reporting > Shipping Reports > Nominated Day
+
+DC1
+http://xtracker.net-a-porter.com/Reporting/ShippingReports/NominatedDay
+
+DC2
+http://xt-us.net-a-porter.co/Reporting/ShippingReports/NominatedDay
+
+

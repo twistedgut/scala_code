@@ -1,0 +1,10 @@
+^XA
+^BY1,2,10
+^FO060,025^BCN,100,N,N^FD[% group_id %]^FS
+^FO060,140^A0N,28,28^FD[% group_id %]^FS
+[% IF type %]
+^FO10,170^A0N,30,30^FD[% type %]^FS
+[% END %]
+^FO060,170^A0N,30,30^FD([% sku %])^FS
+^PQ1^FS
+^XZ

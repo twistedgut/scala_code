@@ -1,0 +1,44 @@
+[%# TODO VPP: HTML tructure looks strange, spend more time to improve %]
+
+[% PROCESS fulfilment/goh/integration/define_css_and_js.tt %]
+
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="container-fluid">
+                <form action="[% c.uri_for( c.controller('Fulfilment::GOH::Integration').action_for('view'), [ process_integration_lane.prl_delivery_destination_row.id ] )  %]" method="GET" name="select_goh_integration_lane">
+                <button type="submit" class="btn btn-success btn-block btn-lg" id="select_integration_lane" name="select_integration_lane">Select Integration lane [% select_integration %] </button>
+                </form>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="container-fluid">
+                [% INCLUDE fulfilment/goh/integration/group_of_skus.tt
+                    process       = process_integration_lane
+                    show_all_skus = 1
+                %]
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="row">
+                <div class="container-fluid">
+                <form action="[% c.uri_for( c.controller('Fulfilment::GOH::Integration').action_for('view'), [ process_direct_lane.prl_delivery_destination_row.id ] ) %]" method="GET" name="select_goh_direct_lane">
+                <button type="submit" class="btn btn-success btn-block btn-lg" id="select_direct_lane" name="select_direct_lane">Select Direct lane</button>
+                </form>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="container-fluid">
+                [% INCLUDE fulfilment/goh/integration/group_of_skus.tt
+                    process       = process_direct_lane
+                    show_all_skus = 1
+                %]
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

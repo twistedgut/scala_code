@@ -1,0 +1,49 @@
+<pre>
+h1. Projects
+
+h2. Mr Porter [black]
+    * Stock transfer enhancements
+    * Fix for Fulfilment/Picking and Packing tabs
+    * Test fixes
+    * Data patches and scripts for new sizes and MrP classification/nav
+        (already run on live after 2010.21 release)
+
+h2. DCEA [orange]
+    * All changes below should be invisible to the end user, except those which are explicitly marked as user visible
+    * Started work on Invar messaging
+    ** Split XTracker into 'XTracker' and 'Ravni' components using AMQ to communicate between these two parts of the application
+    * Goods In QC
+    ** Added 'storage_type' to products (flat, oversize, hanging, awkward).
+    ** 'storage_type' recorded at QC *This is a user visible change*
+    ** 'storage_type' retrospectively added to existing products (partially complete)
+    ** Send pre_advice message.
+    * Put away
+    ** 'received' message sent on putaway
+    * Picking
+    ** Add 'shipment_request' message on selection of shipment for picking
+    ** Ravni shipment_request consumer responsible for printing pick sheet
+    * Packing
+    ** 'shipment_received' messages sent from XTracker
+    ** Add extra step for packers to formally QC shipment items before packing commence *This is a user visible change*
+    ** Allow packers to explain QC failures and mark them as needing attention from supervisor *This is a user visible change*
+    ** Allow supervisor to resolve shipments and assign them back to packer *This is a user visible change*
+    ** 'shipment_reject' messages sent on packing QC fail
+    ** 'shipment_packed' messages sent on packing complete
+    * Testing
+    ** Added testing code to manage race conditions introduced by using the asynchronous AMQ process within XTracker
+
+
+h2. Enhancements [RED]
+
+    * EN-1162 New low risk countries order importer rule and altered credit score points
+    * EN-1358 Criteo product feed script
+    * EN-1061 - Changed footers for print documents
+        - involved adding some config for freephone numbers (UK only)
+          and contact_hours
+        - added ca_tel config and changed
+            XTracker::Schema::Result::Public::Shipment::shipper_details
+            to use it as using long/spaced/ALPHA phone numbers which
+            are preferred for display purposes in AM
+            breaks carrier automation
+
+</pre>

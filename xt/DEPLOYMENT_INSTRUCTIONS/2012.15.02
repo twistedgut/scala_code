@@ -1,0 +1,68 @@
+=====================================
+XT 2012.15.02 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               : 2012-11-15
+Cherwell           : 
+Release Manager    : Shamir Raniga
+Build Manager      : Richard Moore
+TechOps            : Ana Fernandes del Alamo
+Backend Developer  : 
+Frontend Developer : 
+QA                 : 
+PCI Authorised by  : Yoann Martin
+
+2 - CHANGELOG
+-------------
+http://gitosis.net-a-porter.com/cgit/xt/tree/CHANGES/2012.15.02?h=release/2012.15
+
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2012.15/xt-2012.15.02-0.noarch.rpm
+
+Do this for DC1, DC2 and DC3.
+
+4 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+
+Make sure nap.properties has the following entries.
+
+APAC_LDAP_SERVER ldp01-pr-dc3.corp.net-a-porter.com
+LDAP_DOMAIN_3 corp.net-a-porter.com
+HK_LDAP_SERVERS DC09-PR-DC3.CORP.NET-A-PORTER.COM DC10-PR-HKO.CORP.NET-A-PORTER.COM
+
+Please check that these settings are correct for live production.
+
+5 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+sudo yum install xt
+
+6 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+No action needs to be performed after the deployment
+
+7 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

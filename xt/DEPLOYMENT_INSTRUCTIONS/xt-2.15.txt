@@ -1,0 +1,40 @@
+=================================
+XT 2.15 Release Instructions
+=================================
+
+Release Date:       2010/05/11
+
+
+These instructions are meant to be used in conjuction with those detailed in confluence:
+    http://confluence.net-a-porter.com/display/DEV/XT+Deployment#XTDeployment-XTApplicationdeployment
+
+
+*** IMPORTANT ***
+
+2.15.00: Initial Release
+2.15.01: Point Release
+2.15.02: Point Release
+ - N.B. 2.13 and 2.14 patches should be run on BOTH DCs.
+
+X. Lastly
+---------
+
+Paste any console output from the steps above as a
+
+  {noformat}
+    [replace with console output]
+  {noformat}
+
+comment to the JIRA ticket for this release.
+
+
+ _____________________________________
+/ You did remember to pull the latest \
+\ xt_deploy.sh, right?                /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

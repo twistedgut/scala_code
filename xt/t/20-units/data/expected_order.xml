@@ -1,0 +1,112 @@
+<ORDERS>
+  <ORDER O_ID="350000003" ORDER_DATE="2014-12-04 10:49:05" CHANNEL="OUTNET-INTL" CUST_ID="350000001" ACCOUNT_URN="urn:nap:account:e9fb57bd-7fa5-4cc1-9ab5-77a1bc5662af" CUST_IP="10.5.16.112" LANGUAGE="en" USED_STORED_CREDIT_CARD="T" SIGNATURE_REQUIRED="true" USER_AGENT="Mozilla/5.0 (Windows NT 6.1; WOW64; rv:30.0) Gecko/20100101 Firefox/30.0" ACCEPT_LANGUAGE="en-gb" LOGGED_IN_USERNAME="cucumberf1688ac8@example.com" >
+    <TENDER_LINE TL_ID="4" TYPE="Store Credit" RANK="1">
+      <VALUE CURRENCY="GBP">811.78</VALUE>
+    </TENDER_LINE>
+    <PROMOTION_BASKET PB_ID="1" TYPE="percentage_discount" DESCRIPTION="Staff 55% - Full Price">
+      <VALUE CURRENCY="GBP">0.00</VALUE>
+    </PROMOTION_BASKET>
+    <PROMOTION_BASKET PB_ID="2" TYPE="free_shipping" DESCRIPTION="INTL EIP gifting free shipping">
+      <VALUE CURRENCY="GBP">0.00</VALUE>
+    </PROMOTION_BASKET>
+    <PROMOTION_LINE PL_ID="1" TYPE="percentage_discount" DESCRIPTION="Staff 55% - Full Price">
+      <VALUE CURRENCY="GBP">171.87</VALUE>
+      <ORDER_LINE_ID>1</ORDER_LINE_ID>
+    </PROMOTION_LINE>
+    <PROMOTION_LINE PL_ID="2" TYPE="free_shipping" DESCRIPTION="INTL EIP gifting free shipping">
+      <VALUE CURRENCY="GBP">0.00</VALUE>
+      <ORDER_LINE_ID>2</ORDER_LINE_ID>
+    </PROMOTION_LINE>
+    <BILLING_DETAILS>
+      <NAME>
+        <TITLE>Mr</TITLE>
+        <FIRST_NAME>James</FIRST_NAME>
+        <LAST_NAME>Bond</LAST_NAME>
+      </NAME>
+      <ADDRESS URN="urn:nap:address:3ce7df59-d459-47d2-b962-5d8e44ecb1be">
+        <ADDRESS_LINE_1>13 Banul Andronache St</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2>Sector 1</ADDRESS_LINE_2>
+        <ADDRESS_LINE_3>13 Banul Andronache St</ADDRESS_LINE_3>
+        <TOWNCITY>Bucharest</TOWNCITY>
+        <COUNTY />
+        <STATE />
+        <POSTCODE>011663</POSTCODE>
+        <COUNTRY>RO</COUNTRY>
+      </ADDRESS>
+      <CONTACT_DETAILS>
+        <TELEPHONE TYPE="HOME" />
+        <TELEPHONE TYPE="MOBILE" />
+        <TELEPHONE TYPE="OFFICE">0808 560 3426</TELEPHONE>
+        <EMAIL>cucumberf1688ac8@example.com</EMAIL>
+      </CONTACT_DETAILS>
+    </BILLING_DETAILS>
+    <DELIVERY_DETAILS>
+      <NAME>
+        <TITLE>Mr</TITLE>
+        <FIRST_NAME>James</FIRST_NAME>
+        <LAST_NAME>Bond</LAST_NAME>
+      </NAME>
+      <ADDRESS URN="urn:nap:address:3ce7df59-d459-47d2-b962-5d8e44ecb1be">
+        <ADDRESS_LINE_1>13 Banul Andronache St</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2>Sector 1</ADDRESS_LINE_2>
+        <ADDRESS_LINE_3>13 Banul Andronache St</ADDRESS_LINE_3>
+        <TOWNCITY>Bucharest</TOWNCITY>
+        <COUNTY />
+        <STATE />
+        <POSTCODE>011663</POSTCODE>
+        <COUNTRY>RO</COUNTRY>
+      </ADDRESS>
+      <CONTACT_DETAILS>
+        <TELEPHONE TYPE="HOME" />
+        <TELEPHONE TYPE="MOBILE" />
+        <TELEPHONE TYPE="OFFICE">0808 560 3426</TELEPHONE>
+        <EMAIL>cucumberf1688ac8@example.com</EMAIL>
+      </CONTACT_DETAILS>
+      <ORDER_LINE OL_ID="1" DESCRIPTION="Basic Packaging" SKU="903100-001" QUANTITY="1" OL_SEQ="1">
+        <SALE>NO</SALE>
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+        <RETURNABLE>YES</RETURNABLE>
+      </ORDER_LINE>
+      <ORDER_LINE OL_ID="2" DESCRIPTION="Embroidered PVC and tulle dress" SKU="500272-011" QUANTITY="1" OL_SEQ="2">
+        <SALE>YES</SALE>
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">648.33</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">155.60</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+        <RETURNABLE>YES</RETURNABLE>
+      </ORDER_LINE>
+      <ORDER_LINE OL_ID="3" DESCRIPTION="Standard" SKU="903002-001" QUANTITY="1" OL_SEQ="3">
+        <SALE>NO</SALE>
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">6.33</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">1.52</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+        <RETURNABLE>YES</RETURNABLE>
+      </ORDER_LINE>
+    </DELIVERY_DETAILS>
+    <GROSS_TOTAL>
+      <VALUE CURRENCY="GBP">811.78</VALUE>
+    </GROSS_TOTAL>
+    <POSTAGE>
+      <VALUE CURRENCY="GBP">7.85</VALUE>
+    </POSTAGE>
+  </ORDER>
+</ORDERS>

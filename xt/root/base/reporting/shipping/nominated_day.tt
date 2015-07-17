@@ -1,0 +1,700 @@
+<script type="text/javascript" src="/js/jquery.progressbar.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+    [% FOREACH item = dates %]
+    $("#bar[% loop.count %]").progressBar({
+        barImage: {
+            [% cap_levels.green %]: '/images/progressbg_green.gif',
+            [% cap_levels.orange %]: '/images/progressbg_orange.gif',
+            [% cap_levels.red %]:  '/images/progressbg_red.gif'
+        },
+        max: '[% item.cap %]',
+        textFormat: 'fraction'
+    });
+    [% END %]
+});
+</script>
+
+<script type="text/javascript" src="/javascript/jquery.qtip-1.0.0-rc3.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/jquery/plugin/jqgrid/css/ui.jqgrid.css">
+<script type="text/javascript" src="/jquery/plugin/jqgrid/js/i18n/grid.locale-en.js"></script>
+<script type="text/javascript" src="/jquery/plugin/jqgrid/js/jquery.jqGrid.src.js"></script>
+
+<script type="text/javascript" src="/javascript/json2.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function () {
+
+    $('.toggleOpen').click(function(e) {
+
+        var thisRow = $(e.target).parent().parent();
+        var date = $(e.target).parent().children("span.date").text();
+        $('.toggleClose').hide();
+        $('.toggleOpen').show();
+        $(e.target).hide();
+        $(e.target).prev().show();
+        $('.toggleRow').remove();
+        var $url = '/Reporting/ShippingReports/AJAX/NominatedDayDetails?' + Math.random() + '=' + Math.random() + '&';
+        $.getJSON($url,
+        {
+            d: date
+        },
+            function(data){
+                var items = [];
+                if (data.status.status.length > 0) {
+                    $.each(data.status.status, function() {
+                            items.push('<tr class="toggleRow"><td></td><td><strong>' + this.label + '</strong></td>'
+                        	+ '<td>' + this.premier + '</td>'
+                            	+ '<td>' + this.non_premier + '</td><td /><td /></tr>'
+                            );
+                    });
+
+                    $(e.target).parent().next().next().html(data.status.total.premier);
+                    $(e.target).parent().next().next().next().html(data.status.total.non_premier);
+
+                } else {
+                    items.push('<tr class="toggleRow"><td colspan="6">no data</td></tr>');
+                }
+
+                    $(items.join('')).insertAfter(thisRow);
+
+
+            });
+    });
+
+    $('.toggleClose').click(function(e) {
+        $('.toggleRow').remove();
+        $(this).hide();
+        $(this).next().show();
+    });
+});
+
+function toggleEnable() {
+    $('.toggleOpen').show();
+    $('.toggleClose').hide();
+}
+
+function toggleDisable() {
+    $('.toggleRow').remove();
+    $('.toggleOpen').hide();
+    $('.toggleClose').hide();
+}
+
+</script>
+<style type="text/css">
+.toggleClose, .toggleOpen {float:left; width:16px; display:inline}
+.toggleClose {display:none}
+.weekday {
+    display    : inline-block;
+    margin-left: 4px;
+    width      : 25px;
+    text-align : right;
+}
+</style>
+
+
+
+
+<style type="text/css">
+
+.mrd {
+    display: none;
+}
+
+.mrd_hidden {
+    display: none;
+}
+
+.mrd_button {
+    float: right;
+    margin-bottom: 2px;
+}
+
+.mrd_button input {
+    text-align: center;
+    width: 180px;
+}
+
+input#mrd_save_button {
+    text-align: center;
+    width: 160px;
+}
+
+.mrd_date_has_some_restriction {
+    background-image:url('/images/icons/bullet_delete.png');
+    width: 16px;
+    height: 16px;
+    padding: 0px;
+    margin: 0px auto;
+}
+
+.mrd_save_form {
+    float: right;
+    margin-top: 4px;
+    margin-bottom: 8px;
+}
+
+#content table.divided-data .mrd_shipping_charge td {
+    background-color: white;
+    border: 0;
+    padding: 4px;
+}
+
+table.wide-data .mrd_shipping_charge_narrow {
+    padding: 0px;
+    margin: 0px;
+    text-align: center;
+}
+
+.mrd_shipping_charge_title {
+    text-align: right;
+}
+
+.mrd_shipping_charge_tr_corner {
+    background-image:url('/images/line_corner_top_right.gif');
+    background-position: center center;
+}
+
+.mrd_shipping_charge_vertical {
+    background-image:url('/images/line_vertical.gif');
+    background-position: center center;
+}
+
+.mrd_shipping_charge_all {
+    border-left-style: dashed;
+    border-left-width: 1px;
+    border-left-color: #cccccc;
+}
+
+.mrd_shipping_charge_toggle {
+    width: 16px;
+    height: 16px;
+    padding: 0px;
+    margin: 0px auto;
+}
+
+.mrd_shipping_charge_toggle_all {
+    width: 16px;
+    height: 16px;
+    padding: 0px;
+    margin: 0px auto;
+}
+
+.is_available {
+    background-image:url('/images/icons/sport_golf.png');
+}
+
+.is_restricted {
+    background-image:url('/images/icons/delete.png');
+}
+
+.report_duration {
+    float: right;
+    margin-top: 4px;
+}
+
+.mrd_restriction_type_help {
+    display: inline;
+    vertical-align: middle;
+}
+
+.qtip-content {
+    font-size: 80%;
+}
+
+
+</style>
+
+<script type="text/javascript">
+//
+// Manage Restricted Dates
+//
+// Abbreviated namespace: mrd
+//
+
+[% SET mrd_can_edit = is_manager %]
+
+
+var mrd_initial_restriction_type;
+var mrd_previous_restriction_type;
+var restricted_delivery_date_url = "/Reporting/ShippingReports/AJAX/ShippingRestrictedDeliveryDate"
+
+function mrd_start() {
+    mrd_initial_restriction_type = "dispatch";
+    mrd_previous_restriction_type = mrd_initial_restriction_type;
+    $("#mrd_restriction_type").val(mrd_initial_restriction_type);
+
+    $("#mrd_change_reason").val("");
+
+    mrd_load( mrd_show );
+}
+
+function mrd_finish() {
+    mrd_hide();
+    toggleEnable();
+}
+
+var restricted_type_date_sc;
+var original_restricted_type_date_sc;
+// restricted_type_date_sc has three top level keys: delivery,
+// dispatch, and transit. These are the restriction types.
+
+// Example
+
+// {
+//     "dispatch" : {
+//         "20120422" : ["43-35-43", "44-33", "45", "46", "all"]
+//     },
+//     "delivery" : {
+//         "20120422" : ["43-35-43", "44-33", "45", "46", "all"],
+//         "20120423" : ["43-35-43", "44-33", "45" ]
+//     },
+//     "transit" : {
+//         "20120418" : ["43", "44", "45", "46", "all"],
+//         "20120419" : ["43", "44", "45", "46", "all"],
+//         "20120420" : ["43", "44", "45", "46", "all"]
+//     }
+// }
+
+// The data is stored in these layers:
+
+// HTML elements with classes
+// restricted_type_date_sc variable
+// XT app
+
+function mrd_load(continue_function) {
+    var button = $(".mrd_button input");
+    button.attr("disabled", "disabled");
+    var old_button_text = button.attr("value");
+    button.attr("value", "Loading...");
+
+    $.ajax({
+        url: restricted_delivery_date_url,
+        data: {
+            begin_date : "[% restricted_dates.begin_date %]",
+            end_date   : "[% restricted_dates.end_date %]"
+        },
+        dataType: "json",
+        success: function (data, text_status) {
+            button.attr("value", old_button_text);
+            button.removeAttr("disabled");
+            if( !data || !data["status"] ) return mrd_load_error("Could not load restricted dates. Do you need to log in?");
+            if( data["status"]["error"] )  return mrd_load_error("Could not load restricted dates: " + data["status"]["error"]);
+
+            toggleDisable();    // The other thing on this page: date drill-down
+
+            restricted_type_date_sc = data["data"]["restriction_type"];
+            original_restricted_type_date_sc = JSON.parse(
+                JSON.stringify( restricted_type_date_sc )
+            );
+
+            mrd_update_icons(mrd_initial_restriction_type);
+            continue_function();
+        },
+        error: function (data, text_status) {
+            mrd_load_error("Something went wrong, could not load restricted dates.\nDo you need to log in perhaps?\nIf you're sure you're still logged in, please contact Service Desk.");
+            button.attr("value", old_button_text);
+            button.removeAttr("disabled");
+        }
+    });
+
+}
+
+function mrd_load_error(message) {
+    alert(message);
+    mrd_finish();
+}
+
+function mrd_update_icons(type) {
+    restricted_date_sc = restricted_type_date_sc[type];
+    var all_toggles = $(
+        ".mrd_shipping_charge_toggle, .mrd_shipping_charge_toggle_all"
+    );
+    mrd_mark_is_available(all_toggles);
+
+    for(var date_short in restricted_date_sc) {
+        $(restricted_date_sc[date_short]).each(function() {
+            id_name = "#restricted_" + this + "_" + date_short;
+            mrd_mark_is_restricted(id_name);
+        });
+    }
+}
+
+function mrd_parse_icons_into(type) {
+    restricted_date_sc = {};
+
+    $(".mrd_shipping_charge_toggle.is_restricted, .mrd_shipping_charge_toggle_all.is_restricted").each(function() {
+        var id = $(this).attr("id");
+        var parts = id.split(/_/);
+        var shipping_charge_id = parts[1];
+        var date               = parts[2];
+
+        restricted_date_sc[date] = restricted_date_sc[date] || [];
+        restricted_date_sc[date].push(shipping_charge_id);
+    });
+    restricted_type_date_sc[type] = restricted_date_sc;
+}
+
+
+function mrd_show() {
+    $('.mrd').show();
+    $(".mrd_hidden_when_in_use").hide();
+}
+
+function mrd_hide() {
+    $('.mrd').hide();
+    $(".mrd_hidden_when_in_use").show();
+}
+
+function mrd_save() {
+    var change_reason = $("#mrd_change_reason").val();
+    if(change_reason == "") {
+        $("#mrd_change_reason").focus().effect("highlight", {}, 1000).effect("highlight", {}, 1000);
+        return false;
+    }
+
+    var type = $("#mrd_restriction_type option:selected").attr("name");
+    mrd_parse_icons_into(type);
+
+    mrd_save_post();
+}
+
+// POST restricted_type_date_sc back to XT
+function mrd_save_post() {
+
+    var inputs = $(".mrd_save_cancel input");
+    inputs.attr("disabled", "disabled");
+    var button = $(".mrd_save_cancel input#mrd_save_button");
+    var old_button_text = button.attr("value");
+    button.attr("value", "Saving...");
+
+    $.ajax({
+        type: "POST",
+        url: restricted_delivery_date_url,
+        // https://metacpan.org/module/Plack::Middleware::CSRFBlock#javascript
+        headers: { "X-CSRF-Token": $("meta[name='csrf_token']").attr("content") },
+        data: {
+            begin_date                : "[% restricted_dates.begin_date %]",
+            end_date                  : "[% restricted_dates.end_date %]",
+            change_reason             : $("#mrd_change_reason").val(),
+            restricted_dates          : JSON.stringify(restricted_type_date_sc),
+            original_restricted_dates : JSON.stringify(original_restricted_type_date_sc)
+        },
+        success: function (data, text_status) {
+            button.attr("value", old_button_text);
+            inputs.removeAttr("disabled");
+            if( !data || !data["status"] ) return mrd_save_error("Could not save restricted dates. Do you need to log in?");
+            if( data["status"]["error"] )  return mrd_save_error("Could not save restricted dates: " + data["status"]["error"]);
+
+            mrd_update_display();
+            mrd_finish();
+        },
+        error: function (data, text_status) {
+            mrd_load_error("Something went wrong, could not save restricted dates. Please try again, and if that doesn't work tell Service Desk");
+            button.attr("value", old_button_text);
+            inputs.removeAttr("disabled");
+        }
+    });
+}
+
+function mrd_save_error(message) {
+    alert(message);
+}
+
+function mrd_cancel() {
+    mrd_finish();
+}
+
+function mrd_update_display() {
+    mrd_load_and_display_dates_with_any_restriction();
+    $("#mrd_change_log_jq_grid").trigger( "reloadGrid" );
+}
+
+function mrd_mark_is_available (nodes) {
+    $(nodes).removeClass("is_restricted");
+    $(nodes).addClass("is_available");
+}
+
+function mrd_mark_is_restricted (nodes) {
+    $(nodes).removeClass("is_available");
+    $(nodes).addClass("is_restricted");
+}
+
+function mrd_mark_available_or_restricted (condition, nodes) {
+    if(condition) {
+        mrd_mark_is_available(nodes);
+    }
+    else {
+        mrd_mark_is_restricted(nodes);
+    }
+}
+
+// Ensure the "All" button is synced with the rest of the buttons,
+// i.e. if all are checked it should be checked, otherwise not.
+function mrd_check_shipping_charge_toggle_all(this_toggle) {
+    var parent_tr = $(this_toggle).closest("tr");
+    var available_count = parent_tr.find(".mrd_shipping_charge_toggle.is_available").size();
+    var toggle_all = parent_tr.find(".mrd_shipping_charge_toggle_all");
+    mrd_mark_available_or_restricted(available_count > 0, toggle_all);
+}
+
+// Move to better place
+function mrd_load_and_display_dates_with_any_restriction () {
+    var url = "/Reporting/ShippingReports/AJAX/ShippingRestrictedDeliveryDateHasRestriction";
+    $.ajax({
+        url: url,
+        data: {
+            begin_date : "[% restricted_dates.begin_date %]",
+            end_date   : "[% restricted_dates.end_date %]"
+        },
+        dataType: "json",
+        success: function (data, text_status) {
+            if( !data || !data["status"] ) return false;
+            if( data["status"]["error"] )  return false;
+            var date_is_restricted = data;
+
+            $(".mrd_date_may_have_some_restriction").removeClass("mrd_date_has_some_restriction");
+            for( var date in date_is_restricted.data ) {
+                var td_id = "#restriction_" + date;
+                $(td_id + " .mrd_date_may_have_some_restriction").addClass("mrd_date_has_some_restriction");
+            }
+        },
+        error: function (data, text_status) { } // Ignore, non-fatal
+    });
+
+}
+
+$(document).ready(function () {
+
+    mrd_load_and_display_dates_with_any_restriction();
+
+    $(".mrd_shipping_charge_toggle").click(function () {
+        [% IF ! mrd_can_edit %]return;[% END %]
+        $(this).toggleClass("is_restricted");
+        $(this).toggleClass("is_available");
+        mrd_check_shipping_charge_toggle_all(this);
+    });
+
+    $(".mrd_shipping_charge_toggle_all").click(function () {
+        [% IF ! mrd_can_edit %]return;[% END %]
+        var all_toggles = $(this).closest("tr").find(
+            ".mrd_shipping_charge_toggle, .mrd_shipping_charge_toggle_all"
+        );
+        mrd_mark_available_or_restricted(
+            $(this).hasClass("is_restricted"),
+            all_toggles
+        );
+    });
+
+    $("#mrd_restriction_type").change(function() {
+        mrd_parse_icons_into(mrd_previous_restriction_type);
+
+        var type = $("#mrd_restriction_type option:selected").attr("name") || "delivery";
+        mrd_update_icons(type);
+
+        mrd_previous_restriction_type = type;
+    });
+});
+
+
+</script>
+
+
+<span class="mrd_hidden"><!-- Preload to avoid sluggishness on first load-->
+<img src="/images/icons/bullet_delete.png"   height="1" width="1" />
+<img src="/images/icons/sport_golf.png"      height="1" width="1" />
+<img src="/images/icons/delete.png"          height="1" width="1" />
+<img src="/images/line_corner_top_right.gif" height="1" width="1" />
+<img src="/images/line_vertical.gif"         height="1" width="1" />
+</span>
+<form class="mrd_button mrd_hidden_when_in_use">
+  <input type="submit" value="Manage Restricted Dates &gt;&gt;" onclick="mrd_start(); return false;">
+</form>
+<table class="data wide-data divided-data">
+<tbody>
+  [% SET shipping_charges = restricted_dates.shipping_charges %]
+  [% SET shipping_charge_count = shipping_charges.size %]
+  [% SET shipping_charge_colspan = shipping_charge_count %]
+  [% SET shipping_charge_empty_td_count = 0 %]
+  [% FOREACH shipping_charge = shipping_charges.reverse %]
+  <tr class="mrd mrd_shipping_charge">
+    [% IF shipping_charge_colspan == 1 %]
+      [%# Display in the last TR %]
+      <td colspan="4">
+      <form class="mrd_save_cancel">
+        <span style="float: right;">
+          Restriction Type:
+          <select id="mrd_restriction_type">
+            <option name="dispatch">Dispatch</option>
+            <option name="transit">Transit</option>
+            <option name="delivery">Delivery</option>
+          </select>
+          <img class="mrd_restriction_type_help" alt="Help" src="/images/icons/help.png" width="16" height="16"/>
+          <script type="text/javascript">
+          $(document).ready(function () {
+              $("img.mrd_restriction_type_help").qtip({
+                  content: "<b>Dispatch</b><br />The order cannot be Fulfilled or Dispatched from the Warehouse on this day.<br /><br /><i>Use this when the warehouse has reached capacity, and on days when the carrier won't pick up packages.</i><br /><br /><b>Transit</b><br />The order cannot be transported by the Carrier on this day. This will add a day to the first available delivery day offered on the site.<br /><br /><br /><b>Delivery</b><br />The Carrier will not hand the package over to the Customer on this day and it will not be offered as an option on the website.",
+                  position: {
+                      corner: {
+                          target:  "bottomLeft",
+                          tooltip: "topRight"
+                      }
+                  },
+                  style: {
+                      name:   "blue",
+                      border: { width: 0, radius: 5 },
+                      tip:    { corner: "topRight" }
+                  },
+                  show: "mouseover",
+                  hide: "mouseout"
+              });
+          });
+          </script>
+        </span>
+      </form>
+    </td>
+
+    [% ELSE %]
+    <td colspan="4"/>
+    [% END %]
+    <td colspan="[% shipping_charge_colspan %]" class="mrd_shipping_charge_title">[% shipping_charge.description %]</td>
+    <td class="mrd_shipping_charge_tr_corner"></td>
+    [% FILTER repeat(shipping_charge_empty_td_count) %]
+    <td class="mrd_shipping_charge_vertical"></td>
+    [% END %]
+    <td ></td><!-- All -->
+  </tr>
+  [%
+      shipping_charge_empty_td_count = shipping_charge_empty_td_count + 1;
+      shipping_charge_colspan = shipping_charge_colspan - 1;
+  %]
+  [% END %]
+
+  <tr>
+    <th>Date</th>
+    <th>Status</th>
+    <th>Premier</th>
+    <th>Non-Premier</th>
+    <th>Capacity</th>
+    <th class="mrd_hidden_when_in_use">Restricted</th>
+    [% FOREACH shipping_charge = shipping_charges %]
+    <th class="mrd mrd_shipping_charge_narrow mrd_shipping_charge_vertical"></th><!-- [% shipping_charge.description %] -->
+    [% END %]
+    <th class="mrd mrd_shipping_charge_narrow"></th><!-- All -->
+</tr>
+
+[% FOREACH item = dates %]
+[% SET short_date = item.date.ymd() %]
+<tr[% IF item.date.strftime("%a") == "Sun" %] class="separator"[% END %]>
+
+  <td>
+
+        <img id="toggle" class="toggleClose" class="toggle" alt="" src="/images/icons/zoom_out.png" />
+        <img alt="" class="toggleOpen" src="/images/icons/zoom_in.png" />
+    <span class="weekday">[% item.date.strftime("%a") %]</span> <span class="date">[% item.date.ymd %]</span>
+    </td>
+    <td></td>
+    <td class="premier">[% item.set.premier.count %]</td>
+    <td class="nonPremier">[% item.set.non_premier.count %]</td>
+    <td class="nowrap"><span class="progressBar" id="bar[% loop.count %]">
+        [% item.set.count %]
+    </span></td>
+
+    <td id="restriction_[% short_date %]" class="mrd_hidden_when_in_use">
+        <div class="mrd_date_may_have_some_restriction[% IF date_has_restriction.$short_date -%] mrd_date_has_some_restriction[%- END -%]" />
+    </td>
+
+    [% FOREACH shipping_charge = shipping_charges %]
+    <td class="mrd mrd_shipping_charge_narrow"><div id="restricted_[% shipping_charge.composite_id %]_[% short_date %]" class="mrd_shipping_charge_toggle is_available" /></td><!-- [% shipping_charge.description %] -->
+    [% END %]
+    <td class="mrd mrd_shipping_charge_narrow mrd_shipping_charge_all"><div id="restricted_all_[% short_date %]" class="mrd_shipping_charge_toggle_all is_available" /></td><!-- All -->
+</tr>
+[% END %]
+</table>
+
+<div class="mrd mrd_save_form">
+  <form class="mrd_save_cancel">
+  [% IF mrd_can_edit %]
+    (for the Change Log below) Why did you make the change? <input id="mrd_change_reason" type="text" size="40" maxlength="255"> &nbsp;
+    <input id="mrd_save_button" type="submit" value="Save Restricted Dates" onclick="mrd_save(); return false;">
+    <input type="submit" value="Cancel" onclick="mrd_cancel(); return false;">
+  [% ELSE # mrd_can_edit %]
+    <input type="submit" value="Close" onclick="mrd_cancel(); return false;">
+  [% END # mrd_can_edit %]
+  </form>
+</div>
+
+<div class="mrd_hidden_when_in_use report_duration">
+  Report duration:
+  [% SET duration_separator = "" %]
+  [% FOREACH report_duration = report.durations %]
+    [% duration_separator; SET duration_separator = "|" %]
+    [% IF report_duration.key == report.duration.key %]
+        [%- report_duration.moniker -%]
+    [% ELSE %]
+        <a href="/Reporting/ShippingReports/NominatedDay?report_duration=[% report_duration.key %]">[%- report_duration.moniker -%]</a>
+    [% END %]
+  [% END %]
+</div>
+
+
+<br />
+<br />
+<span class="title">Restricted Dates - Change Log</span>
+<table id="mrd_change_log_jq_grid"></table>
+<div id="pager"></div>
+
+<script type="text/javascript">
+
+$(function() {
+    $("#mrd_change_log_jq_grid").jqGrid({
+        url: "/Reporting/ShippingReports/AJAX/ShippingRestrictedDeliveryDateLog",
+        mtype: "GET",
+        datatype: "json",
+        jsonReader: {
+            root: 'data.log_entries',
+            repeatitems: false,
+            page:  function(obj)   {
+                if(!obj.data) return 1;
+                return obj.data.pagination.page_index;
+            },
+            total: function(obj)   {
+                if(!obj.data) return 1;
+                return obj.data.pagination.page_count;
+            },
+            records: function(obj) {
+                if(!obj.data) return 1;
+                return obj.data.pagination.record_count;
+            }
+        },
+        colNames:[
+            "Change Time",
+            "Operator",
+            "Change Reason",
+            "Shipping Charge",
+            "Type",
+            "Restricted Date",
+            "Restricted"
+        ],
+        colModel:[
+            { sortable: false, name: "change_time", width: 110 },
+            { sortable: false, name: "operator" },
+            { sortable: false, name: "change_reason", width: 220 },
+            { sortable: false, name: "shipping_charge", width: 120 },
+            { sortable: false, name: "restriction_type", width: 50 },
+            { sortable: false, name: "restricted_date", width: 80 },
+            { sortable: false, name: "is_restricted", width: 55 }
+        ],
+        rowNum:     10,
+        rowList:    [ 10, 50, 100, 500 ],
+        pager:      '#pager',
+        viewrecords: true,
+        shrinkToFit: true,
+        width: '100%',
+        height: '100%'
+    });
+});
+
+</script>
+

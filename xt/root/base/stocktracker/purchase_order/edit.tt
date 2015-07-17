@@ -1,0 +1,181 @@
+
+<!-- FROM [ INCLUDE page_elements/display_stock_order.tt ] -->
+
+
+<span class="title title-[% channel_config.$sales_channel %]">Purchase Order Details</span><br />
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+<form method="post" action="/StockControl/PurchaseOrder/UpdatePurchaseOrder">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <tr>
+        <td colspan="2" class="divider"></td>
+    </tr>
+    <tr height="30">
+        <td width="17%" align="right"><b>Name:</b>&nbsp;&nbsp;</td>
+        <td width="83%">
+                
+                <input type="text" size="40" name="purchase_order_number" value="[% purchase_order.purchase_order_number %]" readonly="true">
+
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"></td>
+    </tr>
+    <tr height="30">
+        <td width="17%" align="right"><b>Season:</b>&nbsp;&nbsp;</td>
+        <td width="83%">
+                
+                [% INCLUDE page_elements/forms/select_basic.tt options = seasons, current = purchase_order.season %]
+
+                &nbsp;&nbsp;
+                Please note this <b>will not</b> change the Season on products within the Purchase Order.
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"></td>
+    </tr>
+    <tr height="30">
+        <td width="17%" align="right"><b>Act:</b>&nbsp;&nbsp;</td>
+        <td width="83%">
+
+                [% INCLUDE page_elements/forms/select_basic.tt options = acts, current = purchase_order.act %]
+
+                &nbsp;&nbsp;
+                Please note this <b>will not</b> change the Act on products within the Purchase Order.
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"></td>
+    </tr>
+    <tr height="30">
+        <td width="17%" align="right"><b>Origin:</b>&nbsp;&nbsp;</td>
+        <td width="83%">
+               <input type="text" size="40" name="description" value="[% purchase_order.description %]">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"></td>
+    </tr>
+    <tr height="30">
+        <td width="17%" align="right"><b>Placed By:</b>&nbsp;&nbsp;</td>
+        <td width="83%">
+                <input type="text" size="40" name="placed_by" value="[% purchase_order.placed_by %]">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"></td>
+    </tr>
+    <tr>
+        <td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="20"></td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"></td>
+    </tr>
+    <tr height="30">
+        <td width="17%" align="right"><b>Shipping Window:</b>&nbsp;&nbsp;</td>
+        <td width="83%">
+
+        <select name='start_ship_day'>
+            <option value=''></option>
+           [% SET day = 1 %]
+           [% SET max = 31 %]
+           [% WHILE day <= max %] 
+           <option value='[% day %]'>[% day %]</option>   
+           [% SET day = day + 1 %]
+           [% END %]
+        </select>
+
+        [% months = [ { id => '01', name => 'Jan' }
+                  { id => '02', name => 'Feb' } 
+                  { id => '03', name => 'Mar' } 
+                  { id => '04', name => 'Apr' } 
+                  { id => '05', name => 'May' } 
+                  { id => '06', name => 'Jun' } 
+                  { id => '07', name => 'Jul' } 
+                  { id => '08', name => 'Aug' } 
+                  { id => '09', name => 'Sep' } 
+                  { id => '10', name => 'Oct' } 
+                  { id => '11', name => 'Nov' } 
+                  { id => '12', name => 'Dec' } ]
+        %]
+
+        <select name='start_ship_month'>
+        <option value=''></option>
+        [% FOREACH months %]
+           <option value='[% id %]'>[% name %]    
+        [% END %]
+        </select>
+
+        [% USE date %]
+
+
+        <select name='start_ship_year'>
+            <option value=''></option>
+            [% SET year = 2002 %]
+            [% SET max_year = date.format(mytime, '%Y') + 1 %]
+            [% WHILE year <= max_year %] 
+            <option value='[% year %]'>[% year %]</option> 
+            [% SET year = year + 1 %]
+            [% END %]
+        </select>
+                ---&nbsp;
+
+        <select name='cancel_ship_day'>
+            <option value=''></option>
+           [% SET day = 1 %]
+           [% SET max = 31 %]
+           [% WHILE day <= max %] 
+           <option value='[% day %]'>[% day %]</option>   
+           [% SET day = day + 1 %]
+           [% END %]
+        </select>
+
+        [% months = [ { id => '01', name => 'Jan' }
+                  { id => '02', name => 'Feb' } 
+                  { id => '03', name => 'Mar' } 
+                  { id => '04', name => 'Apr' } 
+                  { id => '05', name => 'May' } 
+                  { id => '06', name => 'Jun' } 
+                  { id => '07', name => 'Jul' } 
+                  { id => '08', name => 'Aug' } 
+                  { id => '09', name => 'Sep' } 
+                  { id => '10', name => 'Oct' } 
+                  { id => '11', name => 'Nov' } 
+                  { id => '12', name => 'Dec' } ]
+        %]
+
+        <select name='cancel_ship_month'>
+        <option value=''></option>
+        [% FOREACH months %]
+           <option value='[% id %]'>[% name %]    
+        [% END %]
+        </select>
+
+        <select name='cancel_ship_year'>
+            <option value=''></option>
+            [% SET year = 2002 %]
+            [% SET max_year = date.format(mytime, '%Y') + 1 %]
+            [% WHILE year <= max_year %] 
+            <option value='[% year %]'>[% year %]</option>  
+            [% SET year = year + 1 %]
+            [% END %]
+        </select>
+
+                &nbsp;&nbsp;
+                Please note this <b>will</b> change the shipping window on all products.
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="divider"></td>
+    </tr> 
+</table>
+<br />
+<br />
+
+<input type="hidden" name="po_id" value="[% po_id %]" />
+
+[% INCLUDE page_elements/forms/submit.tt %]
+
+</form>
+
+<img src="/images/blank.gif" width="1" height="250">

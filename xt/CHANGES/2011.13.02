@@ -1,0 +1,27 @@
+<pre>
+
+h1. Warehouse Management (WHM)
+    * Remove 10-char sku limit on 'List RMA' screen
+    * Display tote number by approved sample requests that have been picked
+    * Reduce SLA priorities from 14 to 3
+    * WHM-21:  Remove 10-char sku limit on 'List RMA' screen
+    * WHM-29:  Switching on Premier and Mr Porter labels at picking
+    * WHM-32:  Removing selection screen (automatic customer order selection)
+    * WHM-33:  Creating new message Queues
+    * WHM-35:  Commercial Invoice for South Africa
+    * WHM-36:  Error packing vouchers into boxes to be dispatched via UPS
+    * WHM-66:  Display tote number by approved sample requests that have been picked
+    * WHM-162: Add additional barcode labels printers in xTracker
+    * WHM-173: RTV PUTAWAY: WILL NOT ACCEPT 3 DIGITS {CMI: NAP340128}
+    * WHM-178: Reduce SLA priorities from 14 to 3
+
+
+h1. CANDO - Customer & Order Management
+    * CANDO-345: Amend Outnet Cust Care Details
+    * CANDO-366: Pending Reservations Automated Upload - Stock Discrepancies
+    * CANDO-106: Pending reservation permissions
+    * CANDO-74 : Customer Order View - Gift Card Receipt email
+    * CANDO-105: Allocating reservations to other users
+    * CANDO-385: Personal Shopper/Fashion Advisor Permissions
+
+</pre>

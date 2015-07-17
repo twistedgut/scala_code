@@ -1,0 +1,74 @@
+[% PROCESS page_elements/display_product.tt %]
+
+<div id="main_form">
+<span class="title title-[% channel_config.$sales_channel %]">Return Product</span>
+<form name="f_form" action="/GoodsIn/VendorSampleIn/BookIn" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+	<input type="hidden" name="psku" value="[% id %]" />
+	<input type="hidden" name="channel_id" value="[% channel_id %]" />
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <thead>
+            <tr>
+                <td colspan="7" class="dividerHeader"></td>
+            </tr>
+			<tr>
+				<td colspan="3" class="tableHeader">&nbsp;</td>
+				<td colspan="2" align="center" class="tableHeader">Product Quality</td>
+				<td colspan="2" align="center" class="tableHeader">Print Labels</td>
+			</tr>
+            <tr height="24"> 
+                <td width="20%" class="tableHeader">[% INCLUDE page_elements/headerspacer.tt %]SKU</td>
+                <td width="15%" class="tableHeader">Size</td>
+                <td width="15%" class="tableHeader" align="center">Quantity</td>
+                <td width="8%" class="tableHeader" align="center">Pass</td>
+                <td width="8%" class="tableHeader" align="center">Faulty</td>
+                <td width="8%" class="tableHeader" align="center">Large</td>
+                <td width="8%" class="tableHeader" align="center">Small</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="dividerHeader"></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr height="20">
+                <td class="">[% INCLUDE page_elements/headerspacer.tt %][% id %]</td>
+                <td>[% size %]</td>
+                <td align="center">1</td>
+                <td align="center"><input type='radio' name='qc_shipment_item_id' value='1' onclick='javascript:switch_fault_reasons(this.value);' /></td>
+                <td align="center"><input type='radio' name='qc_shipment_item_id' value='2' onclick='javascript:switch_fault_reasons(this.value);' /></td>
+                <td align="center"><input type='checkbox' name='large_variant_id' checked='checked' /></td>
+                <td align="center"><input type='checkbox' name='small_variant_id' checked='checked' /></td>
+            </tr>
+			<tr height="34" id="faulty_reason" style="display: none;">
+				<td colspan="5" align="right"><strong>Specify a Reason for being Faulty:&nbsp;</strong>
+					<select name="fault_reason">
+						<option value="">---------------------</option>
+					[% FOREACH reason = faultys.1 %]
+						<option value="[% reason.id %]">[% reason.reason %]</option>
+					[% END %]
+					</select>
+				</td>
+				<td colspan="2">&nbsp;</td>
+			</tr>
+            <tr><td colspan="7" class="dividerHeader"></td></tr>
+        </tbody>
+    </table>
+	<br/>
+	[% INCLUDE page_elements/forms/submit.tt %]
+
+</form>
+</div>
+<script language="javascript" type="text/javascript">
+
+	function switch_fault_reasons (xvalue) {
+
+		if ( xvalue == 2 ) {
+			document.getElementById('faulty_reason').style.display	= '';
+		}
+		else {
+			document.getElementById('faulty_reason').style.display	= 'none';
+		}
+	}
+
+</script>

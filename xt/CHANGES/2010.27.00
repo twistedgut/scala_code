@@ -1,0 +1,22 @@
+<pre>
+
+h1. Orange
+
+ * DCEA-704: Record cage storage type at Goods In QC
+ * DCEA-835: Receiving Inventory Adjustments
+ * DCEA-838: Reconciliation tool
+ * DCEA-844: Send hold reason to IWS
+ * DCEA-853: Print document for DC2 paperwork matching
+ * DCEA-936: Search for packed shipment by carton ID
+
+ * Also, various cosmetic and minor functionality fixes to Packing Exception screens
+ * DCEA-923: Make move_stock log quantity deletions
+ * REL-1341: Fix automatic channel transfer bug
+
+h1. Mr Porter
+
+Improved channelisation of new designer category creation.
+Pass through new "related_facts" product field from fulcrum to web db.
+Channelised product type measurement mappings.
+
+</pre>

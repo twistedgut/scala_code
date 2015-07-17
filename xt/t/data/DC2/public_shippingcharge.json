@@ -1,0 +1,1185 @@
+{
+    "public_shippingcharge": [
+        {
+            "sku": "",
+            "description": "Unknown",
+            "charge": "0.00",
+            "currency": "UNK",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900012-001",
+            "description": "United States Express",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000118-001",
+            "description": "US Pre-order Express",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900015-001",
+            "description": "New York Metro Area Express",
+            "charge": "15.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900025-002",
+            "description": "New York Metro Area Same Day",
+            "charge": "25.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Same Day",
+            "is_enabled": "0",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "910025-001",
+            "description": "New York Metro Area Same Day",
+            "charge": "25.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Same Day",
+            "is_enabled": "0",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900082-001",
+            "description": "North Dakota Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900084-001",
+            "description": "Nebraska Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900086-001",
+            "description": "New Hampshire Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900088-001",
+            "description": "New Mexico Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900090-001",
+            "description": "Nevada Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900092-001",
+            "description": "Ohio Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000104-001",
+            "description": "Texas Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000106-001",
+            "description": "Utah Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000108-001",
+            "description": "Vermont Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000110-001",
+            "description": "Washington Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000112-001",
+            "description": "Wisconsin Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000114-001",
+            "description": "West Virginia Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000116-001",
+            "description": "Wyoming Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900027-001",
+            "description": "District of Columbia Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900028-001",
+            "description": "Delaware Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900026-001",
+            "description": "Connecticut Next Business Day",
+            "charge": "12.50",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900029-001",
+            "description": "Massachusetts Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900030-001",
+            "description": "Maryland Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900031-001",
+            "description": "New Jersey Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900032-001",
+            "description": "New York Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900033-001",
+            "description": "Pennsylvania Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900034-001",
+            "description": "Rhode Island Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900035-001",
+            "description": "Virginia Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900094-001",
+            "description": "Oklahoma Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900096-001",
+            "description": "Oregon Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900098-001",
+            "description": "South Carolina Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000100-001",
+            "description": "South Dakota Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000102-001",
+            "description": "Tennessee Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900036-001",
+            "description": "Alaska Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900038-001",
+            "description": "Alabama Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900040-001",
+            "description": "Arkansas Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900042-001",
+            "description": "Arizona Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900044-001",
+            "description": "California Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900046-001",
+            "description": "Colorado Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900048-001",
+            "description": "Florida Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900050-001",
+            "description": "Georgia Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900052-001",
+            "description": "Hawaii Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900054-001",
+            "description": "Iowa Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900056-001",
+            "description": "Idaho Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900058-001",
+            "description": "Illinois Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900060-001",
+            "description": "Indiana Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900062-001",
+            "description": "Kansas Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900064-001",
+            "description": "Kentucky Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900066-001",
+            "description": "Louisiana Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900068-001",
+            "description": "Maine Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900070-001",
+            "description": "Michigan Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900072-001",
+            "description": "Minnesota Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900074-001",
+            "description": "Missouri Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900078-001",
+            "description": "Montana Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900080-001",
+            "description": "North Carolina Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900014-001",
+            "description": "Other Regions Express",
+            "charge": "55.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000130-001",
+            "description": "Canada Pre-order Express",
+            "charge": "40.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000131-001",
+            "description": "Other Pre-order Express",
+            "charge": "55.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900076-001",
+            "description": "Mississippi Next Business Day",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900013-001",
+            "description": "Canada Express",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "904001-001",
+            "description": "USA - Saver Service",
+            "charge": "11.95",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "0"
+        },{
+            "sku": "904002-001",
+            "description": "Canada",
+            "charge": "24.95",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "0"
+        },{
+            "sku": "904003-001",
+            "description": "Americas",
+            "charge": "39.95",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "0"
+        },{
+            "sku": "9000203-001",
+            "description": "Central and South America",
+            "charge": "35.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "904004-001",
+            "description": "International",
+            "charge": "45.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "0"
+        },{
+            "sku": "9000204-001",
+            "description": "Australia",
+            "charge": "0.00",
+            "currency": "GBP",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "testing",
+            "description": "Testing",
+            "charge": "10.00",
+            "currency": "GBP",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900089-002",
+            "description": "New Mexico 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900018-002",
+            "description": "New Jersey 1-2 Day Delivery",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900021-002",
+            "description": "New York 1-2 Day Delivery",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900024-002",
+            "description": "Connecticut 1-2 Day Delivery",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900095-002",
+            "description": "Oklahoma 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900097-002",
+            "description": "Oregon 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900099-002",
+            "description": "South Carolina 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000101-002",
+            "description": "South Dakota 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900037-002",
+            "description": "Alaska 2nd Day",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900039-002",
+            "description": "Alabama 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900041-002",
+            "description": "Arkansas 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900043-002",
+            "description": "Arizona 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900045-002",
+            "description": "California 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900047-002",
+            "description": "Colorado 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900049-002",
+            "description": "Florida 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900051-002",
+            "description": "Georgia 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900053-002",
+            "description": "Hawaii 2nd Day",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000135-002",
+            "description": "Massachusetts 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900055-002",
+            "description": "Iowa 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900091-002",
+            "description": "Nevada 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900057-002",
+            "description": "Idaho 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000136-002",
+            "description": "Maryland 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900059-002",
+            "description": "Illinois 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000137-002",
+            "description": "New Jersey 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900061-002",
+            "description": "Indiana 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900063-002",
+            "description": "Kansas 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000138-002",
+            "description": "New York 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900065-002",
+            "description": "Kentucky 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000103-002",
+            "description": "Tennessee 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900067-002",
+            "description": "Louisiana 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000105-002",
+            "description": "Texas 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900069-002",
+            "description": "Maine 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000107-002",
+            "description": "Utah 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900071-002",
+            "description": "Michigan 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900073-002",
+            "description": "Minnesota 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000109-002",
+            "description": "Vermont 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900075-002",
+            "description": "Missouri 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000111-002",
+            "description": "Washington 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000139-002",
+            "description": "Pennsylvania 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000113-002",
+            "description": "Wisconsin 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900079-002",
+            "description": "Montana 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000115-002",
+            "description": "West Virginia 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900081-002",
+            "description": "North Carolina 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000117-002",
+            "description": "Wyoming 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900083-002",
+            "description": "North Dakota 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000132-002",
+            "description": "Connecticut 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900085-002",
+            "description": "Nebraska 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000133-002",
+            "description": "District of Columbia 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900087-002",
+            "description": "New Hampshire 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000134-002",
+            "description": "Delaware 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900093-002",
+            "description": "Ohio 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000140-002",
+            "description": "Rhode Island 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000141-002",
+            "description": "Virginia 3-5 Business Days",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "900077-002",
+            "description": "Mississippi 3 day Air",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000205-001",
+            "description": "Alaska 2nd Day",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000206-001",
+            "description": "Hawaii 2nd Day",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000207-001",
+            "description": "Minnesota Ground",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000208-001",
+            "description": "Missouri Ground",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "904000-001",
+            "description": "USA - Ground",
+            "charge": "4.95",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "0"
+        },{
+            "sku": "usground",
+            "description": "JC US Ground",
+            "charge": "0.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Ground",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "usexpress",
+            "description": "JC US Express",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "usnypremier",
+            "description": "JC NY Premier",
+            "charge": "25.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Same Day",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "uscanadashipping",
+            "description": "JC Canada",
+            "charge": "20.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "usamericasshipping",
+            "description": "JC Americas",
+            "charge": "35.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "usrowshipping",
+            "description": "JC Rest of World",
+            "charge": "55.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Air",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000211-001",
+            "description": "Premier Daytime",
+            "charge": "25.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Same Day",
+            "latest_nominated_dispatch_daytime": "11:00:00",
+            "premier_routing_code": "D",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000215-001",
+            "description": "Premier Daytime",
+            "charge": "25.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Same Day",
+            "latest_nominated_dispatch_daytime": "11:00:00",
+            "premier_routing_code": "D",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000213-001",
+            "description": "Premier Daytime",
+            "charge": "25.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Same Day",
+            "latest_nominated_dispatch_daytime": "11:00:00",
+            "premier_routing_code": "D",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000217-001",
+            "description": "Premier Evening",
+            "charge": "25.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Same Day",
+            "latest_nominated_dispatch_daytime": "15:00:00",
+            "premier_routing_code": "E",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000215-002",
+            "description": "Premier Evening",
+            "charge": "25.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Same Day",
+            "latest_nominated_dispatch_daytime": "15:00:00",
+            "premier_routing_code": "E",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "9000213-002",
+            "description": "Premier Evening",
+            "charge": "25.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Same Day",
+            "latest_nominated_dispatch_daytime": "15:00:00",
+            "premier_routing_code": "E",
+            "is_return_shipment_free": "1"
+        },{
+          "currency" : "USD",
+          "charge" : "0.00",
+          "sku" : "920008-001",
+          "class" : "Same Day",
+          "flat_rate" : 1,
+          "description" : "Internal Staff Order",
+          "premier_routing_code": "C",
+          "is_return_shipment_free": "1"
+       },{
+          "currency" : "USD",
+          "charge" : "0.00",
+          "sku" : "920009-001",
+          "class" : "Same Day",
+          "flat_rate" : 1,
+          "description" : "Internal Staff Order",
+          "premier_routing_code": "C",
+          "is_return_shipment_free": "1"
+       },{
+          "currency" : "USD",
+          "charge" : "0.00",
+          "sku" : "920010-001",
+          "class" : "Same Day",
+          "flat_rate" : 1,
+          "description" : "Internal Staff Order",
+          "premier_routing_code": "C",
+          "is_return_shipment_free": "1"
+        },{
+            "sku": "920003-001",
+            "description": "FAST TRACK: Premier Anytime",
+            "charge": "25.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Same Day",
+            "premier_routing_code": "A",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "920004-001",
+            "description": "FAST TRACK: Premier Anytime",
+            "charge": "25.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Same Day",
+            "premier_routing_code": "A",
+            "is_return_shipment_free": "1"
+        },{
+            "sku": "920012-001",
+            "description": "FAST TRACK: Premier Anytime",
+            "charge": "25.00",
+            "currency": "USD",
+            "flat_rate": "1",
+            "class": "Same Day",
+            "premier_routing_code": "A",
+            "is_return_shipment_free": "1"
+       }
+    ]
+}

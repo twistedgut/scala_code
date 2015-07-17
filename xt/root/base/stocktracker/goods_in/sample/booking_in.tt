@@ -1,0 +1,102 @@
+
+[% IF msg != "" %]
+<span class="warning">[% msg %]</span><br><br>
+[% END %]
+
+
+[% IF shipment.size > 0 %]
+
+	[% PROCESS page_elements/display_product.tt %]
+	
+	<br><br>
+	<span class="title">Process Item</span><br>
+	
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+	<form name="findReturn" action="/GoodsIn/SampleIn/SetSampleReturnIn" method="post">
+	[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+	<input type="hidden" name="shipment_id" value="[% shipment_id %]">
+		<tr>
+			<td colspan="3" class="divider"></td>
+		</tr>
+		<tr height="24"> 
+			<td width="18%" align="right"><b>Enter Decision:&nbsp;&nbsp;&nbsp;</td>
+			<td width="82%"><input type="radio" name="decision" value="accept" checked>&nbsp;Accept&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="decision" value="reject">&nbsp;Reject</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+		<tr> 
+			<td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+		</tr>
+		<tr> 
+			<td colspan="2" class="blank" align="right"><input type="submit" name="submit" value="SUBMIT >" class="button"></td>
+		</tr>
+	</form>
+	</table>
+	
+	<br><br><br>
+	
+[% ELSE %]
+
+	[% IF search != "" %]
+		<span class="warning">Sorry, no samples could be found from the information entered, please try again</span><br><br>
+	[% END %]
+
+	<span class="title">Process Shipment</span><br>
+	
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+	<form name="findReturn" action="/GoodsIn/SampleIn" method="post">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+		<tr>
+			<td colspan="3" class="divider"></td>
+		</tr>
+		<tr height="24"> 
+			<td width="18%" align="right"><b>SKU:&nbsp;&nbsp;&nbsp;</td>
+			<td width="82%"><input type="text" name="sku" value=""></td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+		<tr> 
+			<td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+		</tr>
+		<tr> 
+			<td colspan="2" class="blank" align="right"><input type="submit" name="submit" value="SUBMIT >" class="button"></td>
+		</tr>
+	</form>
+	</table>
+	
+	<br><br><br>
+
+
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">	
+		<tr>
+			<td colspan="7" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+		<tr>
+			<td class="tableHeader">&nbsp;&nbsp;Shipment Number</td>
+			<td class="tableHeader">SKU</td>
+			<td class="tableHeader">Designer</td>
+			<td class="tableHeader">Date Returned</td>
+		</tr>
+		<tr>
+			<td colspan="7" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+	
+	[% FOREACH id = shipments.keys %]	
+		<tr>
+			<td>&nbsp;&nbsp;[% id %]</td>
+			<td>[% shipments.$id.product_id %]-[% shipments.$id.size_id %]</td>
+			<td>[% shipments.$id.designer %]</td>
+			<td>[% shipments.$id.date %]</td>
+		</tr>
+		<tr>
+			<td colspan="7" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+		</tr>
+	[% END %]
+	</table>
+
+[% END %]
+
+<br><br><br>
+

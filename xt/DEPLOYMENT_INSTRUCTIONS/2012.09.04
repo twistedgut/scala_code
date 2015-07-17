@@ -1,0 +1,77 @@
+=====================================
+XT 2012.09.04 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               : 2012-07-12
+Cherwell           : 
+Release Manager    : Rosemary Gow
+Build Manager      : Rich Moore
+TechOps            : 
+Backend Developer  : 
+Frontend Developer : 
+QA                 : 
+PCI Authorised by  : 
+
+2 - CHANGELOG
+-------------
+http://gitosis.net-a-porter.com/cgit/xt/tree/CHANGES/2012.09.04?h=release/2012.09
+
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2012.09/xt-2012.09.04-0.noarch.rpm
+
+Do this for DC1, DC2 and DC3.
+
+4 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+No action needs to be performed before the deployment
+
+4.1 NEW PROPERTIES:
+-------------------
+
+Add the following lines to nap.properties as a block just before the block
+that starts with DC1_XTRACKER_DB_NAME:
+
+    DC1_XTRACKER_DB_PATCHER_USER =
+    DC1_XTRACKER_DB_PATCHER_PASS =
+    DC2_XTRACKER_DB_PATCHER_USER =
+    DC2_XTRACKER_DB_PATCHER_PASS =
+    DC3_XTRACKER_DB_PATCHER_USER =
+    DC3_XTRACKER_DB_PATCHER_PASS =
+
+These settings default to the current behaviour of 'postgres user with no
+password'; i.e. no functional change.
+
+5 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+sudo yum install xt
+
+6 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+No action needs to be performed after the deployment
+
+7 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

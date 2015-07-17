@@ -1,0 +1,41 @@
+
+[% IF message %]
+<div id="message">
+    [% message %]
+</div>
+[% END %]
+
+[% IF old_location %]
+  [% form_action = '/StockControl/Location/MoveLocation' %]
+  [% old_location_attr = ' readonly value="' _ old_location _ '"' %]
+  [% focused_field = 'new_location' %]
+[% ELSE %]
+  [% form_action = '/StockControl/Location/MoveLocationForm' %]
+  [% focused_field = 'old_location' %]
+[% END %]
+
+<div id="location_move_form">
+
+<form id="location_move" name="location_move" action="[% form_action %]" method="POST">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+<p>
+<label for="old_location">Old Location</label>:
+<input id="old_location" name="old_location" size="8" onChange="document.getElementById('location_move').submit();"[% old_location_attr %] />
+<p>
+<label for="new_location">New Location</label>:
+<input id="new_location" name="new_location" size="8" />
+
+<div>
+<input type="submit" value="Move" />
+<input type="button" value="Cancel" onClick="window.location='/StockControl/Location/MoveLocationForm'; return true;" />
+<div>
+
+</form>
+
+</div>
+
+<script language="Javascript">
+<!--
+document.getElementById('[% focused_field %]').focus();
+-->
+</script>

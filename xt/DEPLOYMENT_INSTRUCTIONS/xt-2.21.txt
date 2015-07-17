@@ -1,0 +1,85 @@
+===============================
+XT 2.21 Deployment Instructions
+===============================
+
+Release Date:       2010/08/24
+
+These instructions are meant to be used in conjuction with those detailed in confluence:
+    http://confluence.net-a-porter.com/display/BAK/DAVE+XTDC+Deployment
+
+2.21.00: Initial Release
+
+1. AMQ daemon
+
+These steps have been automated in the RPM deployment.
+I'm still leaving the notes in case something goes wrong and we might need to rewvert to them
+
+   *** NEW AMQ CONSUMER SERVER *** (same script as before but using new code)
+  BEFORE DEPLOY
+    A) Make sure the existing conusmer server is stopped.
+  AFTER DEPLOY
+    B) Start up the new consumer server in the same way as the old:
+          /opt/xt/deploy/xtracker/script/xt_activemq_dc_daemon.pl start
+          (making sure you use the correct perl: '/opt/xt/xt-perl/bin/perl')
+    C) Check the consumer server is running:
+          /opt/xt/deploy/xtracker/script/xt_activemq_dc_daemon.pl status
+    D) If you need to stop the new server then use:
+          /opt/xt/deploy/xtracker/script/xt_activemq_dc_daemon.pl stop
+    E) Change the cronjob that runs every hour to stop and start the consumer server
+       to use the new parameters to stop and then start it.
+
+2. Credit log sync
+
+run script/gv_credit_log_sync.pl on each of the DC's
+
+This produces 2 SQL files called *_nap.sql & *_outnet.sql which need to be imported into the MYSQL databases.
+
+It will also produce some CSV files which need to be emailed to robin.edwards and james.witter 
+
+3. Crontab entry's
+
+*** IMPORTANT ***
+
+Please remember to apply DB patches for both DCs, but we shouldn't need to do that has the RPM does it for you.
+
+4. Order tender conversion
+
+run script/backfill_tenders.pl on each of the DC's - this will generate a file
+called insert_order_tenders.sql in the current working directory. Run the SQL
+file in the db for each DC:
+
+    /opt/xt/xt-perl/bin/perl /opt/xt/deploy/xtracker/script/backfill_tenders.pl
+    psql -U www -d DB_NAME -h DB_HOST -f insert_order_tenders.sql
+
+5. On DC2 only please run - see REL-430
+psql -U www -d xtracker_dc2 -g DB_HOST -c "SELECT setval( 'variant_id_seq', ( SELECT MAX(id) FROM variant ))" ;
+
+On development machines this took a few minutes for DC2.
+
+X. Lastly
+---------
+
+*** IMPORTANT ***
+
+!!!!! Don't forget to restart the scanner_reader.pl script as described in the DAVE XTDC Deployment confluence page. !!!!!
+
+Paste any console output from the steps above as a
+
+  {noformat}
+    [replace with console output]
+  {noformat}
+
+comment to the JIRA ticket for this release.
+
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+
+

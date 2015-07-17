@@ -1,0 +1,14 @@
+[%-
+    # Introduced for: CANDO-576
+
+    # used to send to the CRM (eGain) information about
+    # an SMS Message that has been sent to a Customer.
+-%]
+Order Number           : [% order.order_nr %]
+Customer               : [% customer.first_name %] [% customer.last_name %]
+Shipment Email Address : [% shipment.email %]
+Invoice Email Address  : [% order.email %]
+Sales Channel          : [% sales_channel %]
+
+Message Sent:
+[% message_body %]

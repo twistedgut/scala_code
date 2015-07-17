@@ -1,0 +1,69 @@
+<h3 class="title-[% channel_config.$sales_channel %]">Pre-Order Search</h3>
+<form name="reservationPreOrderSearch" action="/StockControl/Reservation/PreOrder/PreOrderSearch" method="post">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+<input type="hidden" name="search" value="1">
+<div class="formrow divideabove dividebelow">
+    <label for="customer_number">Customer Number</label>
+    <input type="text" name="customer_number" />
+</div>
+<div class="formrow dividebelow">
+    <label for="first_name">Pre-Order Number</label>
+    <input type="text" name="preorder_number" />
+</div>
+<div class="formrow buttons aftertable">
+    <input type="submit" name="submit" value="Submit &raquo;" class="button">
+</div>
+</form>
+
+[% IF customer &&  !no_preorder %]
+    <h3 class="title-[% channel_config.$sales_channel %]">Customer Pre Order</h3>
+
+    <b>Customer:</b>&nbsp;[% customer.first_name %] [% customer.last_name %]<br />
+    <b>Customer Number:</b>&nbsp; [% customer.is_customer_number %]<br />
+    <br>
+
+        <div id="preorder_tabview">
+        [% IF preorders.size %]
+            [% FOREACH preorder = preorders %]
+            <strong><a href="/StockControl/Reservation/PreOrder/Summary?pre_order_id=[% preorder.id %]">Pre Order Nr. [% preorder.pre_order_number %]</a></strong>&nbsp;&nbsp;&nbsp;<strong>Status: </strong>[% preorder.pre_order_status.status %][% IF preorder.is_incomplete || preorder.is_payment_declined %]&nbsp;-&nbsp;<a href="/StockControl/Reservation/PreOrder/Basket?pre_order_id=[% preorder.id %]">continue</a>[% END %]
+            <table class="wide-data data" id="preorder_[% preorder.id %]">
+                <thead>
+                    <tr>
+                        <th width="10%">SKU</th>
+                        <th width="40%">Name</th>
+                        <th width="5%">Size</th>
+                        <th width="5%">Quantity</th>
+                        [% IF preorder.has_discount %]<th>Discount</th>[% END %]
+                        <th width="10%">Source</th>
+                        <th width="10%">Created</th>
+                        <th width="10%">Operator</th>
+                        <th width="10%">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="reservations_in_[% reservation.status_id %]">
+                    [% FOREACH item = preorder.pre_order_items_rs.get_consolidated_items_for_display %]
+                    <tr class="dividebelow">
+                        <td>[% item.variant.sku %]</td>
+                        <td>[% item.variant.product.preorder_name %]</td>
+                        <td>[% item.variant.size.size %]</td>
+                        <td>[% item.get_column('count') %]</td>
+                        [% IF preorder.has_discount %]
+                            <td>[% preorder.applied_discount_percent %]%</td>
+                        [% END %]
+                        <td>[% IF preorder.reservation_source.source %][% preorder.reservation_source.source %][% ELSE %]n/a[% END %]</td>
+                        <td>[% preorder.created.strftime('%d-%m-%y') %]</td>
+                        <td>[% preorder.operator.name %]</td>
+                        <td>[% item.pre_order_item_status.status %]</td>
+                    </tr>
+                    [% END %]
+                </tbody>
+            </table>
+            <br>
+            [% END %]
+        [% ELSE %]
+          <strong> No pre-orders for this customer. </strong>
+        [% END %]
+        </div>
+[% ELSIF  no_preorder %]
+         <strong> No pre-order Found. </strong>
+[% END %]

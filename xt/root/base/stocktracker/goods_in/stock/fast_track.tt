@@ -1,0 +1,56 @@
+
+[% PROCESS page_elements/display_product.tt %]
+
+
+<div id="main_form">   
+   
+	<span class="title title-[% channel_config.$sales_channel %]">Select Size</span><br>
+    <form action="SetFastTrack" method="post" name="fast_track">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="prod_id" value="[% product_id %]">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <thead>
+            <tr>
+                <td colspan="7" class="dividerHeader"></td>
+            </tr>
+            <tr height="24"> 
+                <td width="20%" class="tableHeader">[% INCLUDE page_elements/headerspacer.tt %]SKU</td>
+                <td width="20%" class="tableHeader">Designer Size</td>
+                <td width="10%" class="tableHeader">Counted</td>
+                <td width="10%" class="tableHeader">Fast Track</td>
+                <td width="10%" class="tableHeader">Quantity</td>
+                <td width="0" style="display:none">hidden SKU</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="dividerHeader"></td>
+            </tr>
+        </thead>
+        <tbody>
+            [% validation_field = {} %]
+            [% FOREACH sp = stock_process_items.nsort('size_id') %]
+                <tr height="20">
+                 <td>[% INCLUDE page_elements/tablespacer.tt %][% product.id %]-[% sp.size_id %]</td>
+                    <td>[% sp.designer_size %]</td>
+                    <td>[% sp.quantity %]
+                       <input type="hidden" name="counted_[% sp.id %]" value="[% sp.quantity %]">
+                    </td>
+                    <td><input type="checkbox" name="fasttrack_[% sp.id %]">&nbsp;</td>
+                    <td><input type="text" size="5" name="quantity_[% sp.id %]" value="0">&nbsp;</td>
+                    <td style="display:none">
+                       <input type="hidden" name="sku_[% sp.id %]" value="[% product.id %]-[% sp.size_id %]">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="7" class="divider"></td>
+                </tr>
+            [% END %]
+    </table>
+    <br />
+    
+    <input type="hidden" name="delivery_id" value="[% delivery_id %]">
+
+    [% INCLUDE page_elements/forms/submit.tt %]
+    
+    </form>
+
+</div>

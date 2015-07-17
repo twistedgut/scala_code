@@ -1,0 +1,19 @@
+<pre>
+
+h1. Add to Top/Bottom option for Custom Lists
+
+h1. Bugs
+ * Fix slug upload error reporting and use symlinked dir for storage (8ce39ef)
+ * Fix filename in transfer of slug image                            (da9e5c4)
+
+h1. Enhancements
+ * 7f7107   Add 'Check All functionality' to active invoice screen
+ * f01717   render jobqueue in priority order with traffic light gradient
+
+h1. BLACK
+ * Add search for customer by email when creating a reservation
+ * Set reservations to always expire at 23:59:59 on the given day
+ * Improve user feedback messages when creating reservations
+ * Reservations in next upload screen now works as expected
+
+</pre>

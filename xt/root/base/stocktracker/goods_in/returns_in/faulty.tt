@@ -1,0 +1,315 @@
+[% IF process_group_id %]
+
+<h3 class="title-[% channel_config.$sales_channel %]">Process Faulty Item</h3>
+<div class="leftcol">
+    <div class="formrow divideabove dividebelow">
+        <span class="fakelabel">RMA Number</span>
+        <p>[% return.rma_number %]</p>
+    </div>
+    <div class="formrow dividebelow">
+        <span class="fakelabel">Date Created</span>
+        <p>[% return.date_created %]</p>
+    </div>
+    <div class="formrow dividebelow">
+        <span class="fakelabel">Status</span>
+        <p class="highlight">[% return.status %]</p>
+    </div>
+    <div class="formrow dividebelow">
+        <span class="fakelabel">Customer Category</span>
+        <p>[% customer_category %]</p>
+    </div>
+</div>
+<div class="rightcol">
+    <div class="formrow divideabove dividebelow">
+        <span class="fakelabel">Order Number</span>
+        <p>[% return.order_info.order_nr %]</p>
+    </div>
+    <div class="formrow dividebelow">
+        <span class="fakelabel">Shipment Number</span>
+        <p>[% return.shipment_id %]</p>
+    </div>
+    <div class="formrow dividebelow">
+        <span class="fakelabel">Comments</span>
+        <p>[% return.comment %]</p>
+    </div>
+</div>
+
+[% IF return.notes.size %]
+    <br><br>
+    <h3 class="title-[% channel_config.$sales_channel %]">Return Notes</h3>
+    <table class="wide-data data divided-data">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Note</th>
+                <th>Operator</th>
+                <th>Department</th>
+            </tr>
+        </thead>
+        <tbody>
+[%              FOREACH ret_note_id = return.notes.keys.nsort -%]
+            <tr>
+                <td>[% return.notes.$ret_note_id.date %]</td>
+                <td>[% return.notes.$ret_note_id.note %]</td>
+                <td>[% return.notes.$ret_note_id.name %]</td>
+                <td>[% return.notes.$ret_note_id.department %]</td>
+            </tr>
+[%              END -%]
+        </tbody>
+    </table>
+[% END %]
+
+<br><br>
+
+<h3 class="title-[% channel_config.$sales_channel %]">Return Items</h3>
+<form name="faultyReturn" action="/GoodsIn/ReturnsFaulty/SetReturnFaulty" method="post">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <input type="hidden" name="process_group_id" value="[% process_group_id %]">
+    <table class="wide-data data divided-data">
+        <thead>
+            <tr>
+                <th colspan="2">Item</th>
+                <th>Return Reason</th>
+                <th>Status</th>
+                <th>Decision</th>
+            </tr>
+        </thead>
+        <tbody>
+[%      FOREACH item_id = return.return_items.keys;
+            return_item = return.return_items.$item_id;
+            stock_process = return.process_items.$item_id;
+            is_faulty = stock_process.type_id == db_constant('STOCK_PROCESS_TYPE__FAULTY') ? 1 : 0;
+            shipment_item = return.shipment_items.${return_item.shipment_item_id};
+            transferred = ( sales_channel != shipment_item.active_channel ) -%]
+            <tr[% ' class="warn"' IF return_item.reason == 'Return for Repair' %]>
+[%          IF transferred; SET td_rowspan = ' rowspan="2"'; ELSE; SET td_rowspan = ''; END -%]
+                <td[% td_rowspan %]><img src="[% shipment_item.image.0 %]" width="120" hspace="5" vspace="5"></td>
+                <td[% td_rowspan %]>
+                    [% '<b>' IF is_faulty; shipment_item.product_id %]-[% shipment_item.sku_size %][% '</b>' IF is_faulty %]
+                    <br>[% shipment_item.designer %]
+                    <br><i>[% shipment_item.name %]</i>
+                    <br>SIZE: [% stock_process.size %]
+                </td>
+                <td[% td_rowspan %]>[% '<b>' IF is_faulty %][% return_item.reason %][% '</b>' IF is_faulty %]</td>
+                <td[% ' style="border-bottom: none"' IF transferred %]>[% '<b>' IF is_faulty %][% return_item.status %][% '</b>' IF is_faulty %]</td>
+                <td[% ' style="border-bottom: none"' IF transferred %]>
+[%              IF auth_level > 1 -%]
+[%                  IF is_faulty -%]
+[%                      IF return_item.return_item_status_id == db_constant('RETURN_ITEM_STATUS__FAILED_QC__DASH__AWAITING_DECISION') -%]
+                        <input type="radio" name="decision" value="accept" onclick="javascript: displayDiv(this, [% stock_process.id %]);"><b>&nbsp;Accept&nbsp;&nbsp;&nbsp;</b><input type="radio" name="decision" value="reject" onclick="javascript: displayDiv(this, [% stock_process.id %]);"><b>&nbsp;Reject</b>
+                        <br /><br /><input type="radio" name="decision" value="rtv_repair" onclick="javascript: displayDiv(this, [% stock_process.id %]);">&nbsp;RTV Repair&nbsp;
+                        <div id="rtv_repair_[% stock_process.id %]" style="visibility: hidden; display: none;">
+                            <table style="width: 100%; border: 0px solid lightgrey;" cellpadding="2" cellspacing="0" border="0">
+                                <tr>
+                                    <td style="border: 0;">
+                                        [%  INCLUDE page_elements/forms/select_list.tt
+                                            name                = "ddl_item_fault_type"
+                                            options             = item_fault_types
+                                            first_entry         = 'Select Fault Type...'
+                                            disabled            = 0
+                                            option_value_key    = 'id'
+                                            option_entry_key    = 'fault_type'
+                                        %]
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 0;" colspan="2">
+                                        <textarea rows="2" name="fault_description" style="width: 100%; border: 1px solid grey; text-align: justify"></textarea>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+[%                      ELSE -%]
+                        <br>
+                        <input type="radio" name="decision" value="rts" onclick="javascript: displayDiv(this, [% stock_process.id %]);"><b>&nbsp;Return to Stock</b><br>
+                        <br>
+                        <input type="radio" name="decision" value="rtv" onclick="javascript: displayDiv(this, [% stock_process.id %]);"><b>&nbsp;Return to Vendor</b><br>
+                        <div id="rtv_[% stock_process.id %]" style="visibility: hidden; display: none;">
+                            <table style="width: 100%; border: 0px solid lightgrey;" cellpadding="2" cellspacing="0" border="0">
+                                <tr>
+                                    <td style="border: 0;">
+                                        [%  INCLUDE page_elements/forms/select_list.tt
+                                            name                = "ddl_item_fault_type"
+                                            options             = item_fault_types
+                                            first_entry         = 'Select Fault Type...'
+                                            disabled            = 0
+                                            option_value_key    = 'id'
+                                            option_entry_key    = 'fault_type'
+                                        %]
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 0;" colspan="2">
+                                        <textarea rows="2" name="fault_description" style="width: 100%; border: 1px solid grey; text-align: justify"></textarea>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+[%                      UNLESS return.shipment_info.is_sample %]
+                        <br><input type="radio" name="decision" value="rtc" onclick="javascript: displayDiv(this, [% stock_process.id %]);">&nbsp;Return to Customer<br>
+[%                      END %]
+                        <br><input type="radio" name="decision" value="dead" onclick="javascript: displayDiv(this, [% stock_process.id %]);">&nbsp;Dead Stock<br>
+                        <br>
+[%                      END -%]
+[%                  END -%]
+[%              END -%]
+            </td>
+        </tr>
+[%      IF transferred -%]
+        <tr>
+            <td colspan="2" style="border-top: none"><p class="error_msg" style="text-align:center">Transferred to [% shipment_item.active_channel %]</p></td>
+        </tr>
+[%      END -%]
+[%          END %]
+        </tbody>
+    </table>
+[%  IF auth_level > 1 -%]
+    <div class="formrow buttons aftertable">
+        <input type="submit" name="submit" value="Submit &raquo;" class="button" />
+    </div>
+[%  END -%]
+</form>
+
+    <script type="text/javascript">
+    <!--
+
+        function displayDiv(radio, stock_process_id) {
+
+            var radios  = document.getElementsByName(radio.name);
+
+            for (var i = 0; i < radios.length; i++) {
+
+                var div = document.getElementById(radios[i].value + '_' + stock_process_id);
+
+                if (div) {
+                    if (radios[i].checked) {
+                        div.style.visibility    = 'visible';
+                        div.style.display       = 'block';
+                    }
+                    else {
+                        div.style.visibility    = 'hidden';
+                        div.style.display       = 'none';
+                    }
+                }
+            }
+
+        }
+
+    //-->
+    </script>
+
+[% ELSE %]
+
+    [% IF auth_level > 1 %]
+    <form name="findReturn" action="/GoodsIn/ReturnsFaulty" method="get">
+        <h3 class="title">Process Faulty Item</h3>
+        <div class="formrow divideabove dividebelow">
+            <label for="process_group_id">Process Group</label>
+            <input type="text" id="process_group_id" name="process_group_id" value="" />
+        </div>
+        <div class="formrow aftertable buttons">
+            <input type="submit" name="submit" value="Submit &raquo;" class="button">
+        </div>
+    </form>
+
+        <script type="text/javascript">
+        <!--
+
+            // default cursor
+            document.findReturn.process_group_id.focus();
+
+        //-->
+        </script>
+        <br />
+        <br />
+        <br />
+    [% END %]
+
+
+    [% IF deliveries.size %]
+        <div id="tabContainer" class="yui-navset">
+            [% PROCESS page_elements/channel_tabs.tt channel_list=deliveries %]
+            <div class="yui-content">
+
+                [% SET channel_count = 1 %]
+
+                [% FOREACH channel = deliveries.keys.sort %]
+
+                    <div id="tab[% channel_count %]" class="tabWrapper-[% channel_config.$channel %]">
+                    <div class="tabInsideWrapper">
+                        <h3 class="title title-[% channel_config.$channel %]">Faulty Returns Awaiting Decision</h3>
+                        <table class="wide-data divided-data data">
+                            <thead>
+                                <tr>
+                                    <th>Process Group</th>
+                                    <th>Delivery Number</th>
+                                    <th>RMA Number</th>
+                                    <th>PID</th>
+                                    <th>QC Date</th>
+                                    <th>Reason for Return</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            [% FOREACH delivery = deliveries.$channel.keys.nsort %]
+                                [% SET del = deliveries.$channel.$delivery %]
+                                [% NEXT UNLESS del.return_item_status_id == db_constant('RETURN_ITEM_STATUS__FAILED_QC__DASH__AWAITING_DECISION') %]
+                                <tr>
+                                    <td><a href="/GoodsIn/ReturnsFaulty?process_group_id=[% del.group_id %]">[% del.group_id %]</a></td>
+                                    <td>[% del.delivery_id %]</td>
+                                    <td>[% del.rma_number %]</td>
+                                    <td>[% del.sku %]</td>
+                                    <td>[% del.date %]</td>
+                                    <td>[% del.description %]</td>
+                                    <td>[% del.return_type %]</td>
+                                </tr>
+                            [% END %]
+                            </tbody>
+                        </table>
+
+                        <br><br>
+
+                        <h3 class="title title-[% channel_config.$channel %]">Faulty Returns Awaiting Process</h3>
+                        <table class="wide-data divided-data data">
+                            <thead>
+                                <tr>
+                                    <th>Process Group</th>
+                                    <th>Delivery Number</th>
+                                    <th>RMA Number</th>
+                                    <th>PID</th>
+                                    <th>Decision Date</th>
+                                    <th>Reason for Return</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            [% FOREACH delivery = deliveries.$channel.keys.nsort %]
+                                [% SET del = deliveries.$channel.$delivery %]
+                                [% NEXT IF del.return_item_status_id == db_constant('RETURN_ITEM_STATUS__FAILED_QC__DASH__AWAITING_DECISION') %]
+                                <tr>
+                                    <td><a href="/GoodsIn/ReturnsFaulty?process_group_id=[% del.group_id %]">[% del.group_id %]</a></td>
+                                    <td>[% del.delivery_id %]</td>
+                                    <td>[% del.rma_number %]</td>
+                                    <td>[% del.sku %]</td>
+                                    <td>[% del.date %]</td>
+                                    <td>[% del.description %]</td>
+                                    <td>[% del.return_type %]</td>
+                                </tr>
+                            [% END %]
+                            </tbody>
+                        </table>
+
+                        <br><b>Total:</b> [% deliveries.$channel.size %] [% IF deliveries.$channel.size > 1 %]deliveries[% ELSE %]delivery[% END %]<br>
+                        <br>
+
+                    </div>
+                    </div>
+
+                    [% SET channel_count = channel_count + 1 %]
+                [% END %]
+            </div>
+        </div>
+
+        [% PROCESS page_elements/tab_script.tt %]
+    [% END %]
+[% END %]

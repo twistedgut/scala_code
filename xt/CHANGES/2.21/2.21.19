@@ -1,0 +1,8 @@
+<pre>
+h2. Bugs [Blue]
+    * REL-782: GV - Exchange debits not being created
+    * REL-831: Notes field not being saved when creating a Return
+    * REL-817: RMA : Duties not being charged when doing a return
+    * REL-807: Refunds with error messages are not being highlighted in dark grey like they should be
+    * REL-820: Customer View > store credits no longer appearing
+</pre>

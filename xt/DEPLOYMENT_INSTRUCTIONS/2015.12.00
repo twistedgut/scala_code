@@ -1,0 +1,584 @@
+=====================================
+XT 2015.12.00 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               :
+Cherwell           :
+Release Manager    : Kaushal Patel
+Build Manager      : Bernard Gould
+TechOps            :
+Backend Developer  :
+Frontend Developer :
+QA                 :
+PCI Authorised by  :
+
+2 - CHANGELOG
+-------------
+http://stash.vm.wtf.nap/projects/BAK/repos/xt/browse/CHANGES/2015.12.00?at=refs/heads/release/2015.12
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2015.12/xt-2015.12.00-0.noarch.rpm
+
+nap-metrics-graphite to be installed
+
+Unless otherwise stated, do the following for DC1, DC2 and DC3.
+
+4 - NEW PROPERTIES:
+-------------------
+Add or update the following in "/etc/nap.properties" prior to release
+
+GRAPHITE_HOSTNAME           riemann01.wtf.nap
+
+5 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+No action needs to be performed before the deployment
+
+6 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+
+SHIP-607
+Update /etc/cups/printers.conf on all DCs. Make sure you do this on
+both web servers. Also, before updating the files make sure you stop cups - you
+can do this by running the following command:
+
+sudo service cups stop
+
+Once you've made the changes, make sure you restart cups, which you can do by
+executing
+
+sudo service cups start
+
+DC1
+---
+
+Remove the following printer definitions from /etc/cups/printers.conf:
+rad-gi1-doc
+rad-gi2-doc
+jc_stock_in_01
+stock_in_01
+stock_in_02
+stock_in_03
+stock_in_04
+stock_in_05
+
+Copy/paste the following printers into /etc/cups/printers.conf on *BOTH* web
+servers:
+
+<Printer rad-gi1-doc>
+    Info rad-gi1-doc
+    XTLocation RAD Stock In Station 01
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://rad-gi1-doc/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer rad-gi2-doc>
+    Info rad-gi2-doc
+    XTLocation RAD Stock In Station 02
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://rad-gi2-doc/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer rad-gi3-doc>
+    Info rad-gi3-doc
+    XTLocation RAD Stock In Station 03
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://rad-gi3-doc/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer stock_in_xcage_01>
+    Info stock_in_xcage_01
+    XTLocation Xcage Stock In Station 01
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://dc1-u3-xcage-hp/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer jc_stock_in_01>
+    Info jc_stock_in_01
+    XTLocation JC Stock In Station 01
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://jc_stock_in_01/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer stock_in_01>
+    Info stock_in_01
+    XTLocation Stock In Station 01
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://stock_in_01/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer stock_in_02>
+    Info stock_in_02
+    XTLocation Stock In Station 02
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://stock_in_02/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+DC2
+---
+
+Remove the following printer definitions from /etc/cups/printers.conf:
+stock_in_01
+stock_in_02
+stock_in_03
+stock_in_04
+stock_in_05
+stock_in_06
+stock_in_07
+stock_in_08
+stock_in_09
+stock_in_10
+stock_in_11
+stock_in_12
+stock_in_13
+
+Copy/paste the following printers into /etc/cups/printers.conf on *BOTH* web
+servers:
+
+<Printer stock_in_hvc_doc_1>
+    Info stock_in_hvc_doc_1
+    XTLocation Stock In Station HVC
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://hvc_doc_1/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer stock_in_01>
+    Info stock_in_01
+    XTLocation Stock In Station 01
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://stock_in_01/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer stock_in_02>
+    Info stock_in_02
+    XTLocation Stock In Station 02
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://stock_in_02/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer stock_in_03>
+    Info stock_in_03
+    XTLocation Stock In Station 03
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://stock_in_03/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer stock_in_04>
+    Info stock_in_04
+    XTLocation Stock In Station 04
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://stock_in_04/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer stock_in_05>
+    Info stock_in_05
+    XTLocation Stock In Station 05
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://stock_in_05/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer stock_in_06>
+    Info stock_in_06
+    XTLocation Stock In Station 06
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://stock_in_06/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer stock_in_07>
+    Info stock_in_07
+    XTLocation Stock In Station 07
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://stock_in_07/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer stock_in_08>
+    Info stock_in_08
+    XTLocation Stock In Station 08
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://stock_in_08/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer stock_in_09>
+    Info stock_in_09
+    XTLocation Stock In Station 09
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://stock_in_09/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer stock_in_10>
+    Info stock_in_10
+    XTLocation Stock In Station 10
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://stock_in_10/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer stock_in_11>
+    Info stock_in_11
+    XTLocation Stock In Station 11
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://stock_in_11/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer stock_in_12>
+    Info stock_in_12
+    XTLocation Stock In Station 12
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://stock_in_12/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer stock_in_13>
+    Info stock_in_13
+    XTLocation Stock In Station 13
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://stock_in_13/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+DC3
+---
+
+Remove the following printer definitions from /etc/cups/printers.conf:
+stock_in_01
+stock_in_02
+
+Copy/paste the following printers into /etc/cups/printers.conf on *BOTH* web
+servers:
+
+<Printer stock_in_hvc_doc_1>
+    Info stock_in_hvc_doc_1
+    XTLocation Stock In Station HVC
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://hvc_doc_1/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer stock_in_01>
+    Info stock_in_01
+    XTLocation Stock In Station 01
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://stock_in_01/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer stock_in_02>
+    Info stock_in_02
+    XTLocation Stock In Station 02
+    XTSection stock_in
+    XTType document
+    Location DC1
+    DeviceURI lpd://stock_in_02/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+sudo yum install xt
+
+7 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+No action needs to be performed after the deployment
+
+8 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

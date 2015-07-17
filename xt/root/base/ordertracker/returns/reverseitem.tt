@@ -1,0 +1,77 @@
+
+
+<span class="title title-[% channel_config.$sales_channel %]">Select Item(s)</span><br>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+<form name="cancelForm" action="[% short_url %]/ReverseReturnItem" method="post">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <tr>
+        <td colspan="7" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+    <tr height="24">
+        <td class="tableHeader" width="5%">&nbsp;&nbsp;&nbsp;</td>
+        <td class="tableHeader" width="22%">Product</td>
+        <td class="tableHeader" width="10%">Size</td>
+        <td class="tableHeader" width="15%">Type</td>
+        <td class="tableHeader" width="15%">Reason</td>
+        <td class="tableHeader" width="20%">Status</td>
+        <td class="tableHeader" width="20%">Reverse Item(s)</td>
+    </tr>
+    <tr>
+        <td colspan="7" class="dividerHeader"><img src="/images/blank.gif" width="1" height="1"></td>
+    </tr>
+	[% SET allow_submit = 0 %]
+    [% FOREACH return_item = return_items %]
+
+        [% SET shipment_item = return_item.shipment_item %]
+        [% SET span_class = '' %]
+        [% IF NOT return_item.can_reverse %]
+            [% SET span_class = '<span class="lowlight">' %]
+		[% ELSE %]
+			[% SET allow_submit = 1 %]
+        [% END %]
+
+		[% SET short_name = shipment_item.get_true_variant.product.product_attribute.size_scheme.short_name %]
+		[% SET designer_size = shipment_item.get_true_variant.designer_size.size %]
+		[% SET size = shipment_item.get_true_variant.size.size %]
+		[% SET designer = shipment_item.get_true_variant.product.designer.designer %]
+		[% SET name = shipment_item.get_true_variant.product.product_attribute.name %]
+		[% SET image_url = shipment_item.get_true_variant.product.get_large_live_image %]
+
+        <tr height="24">
+            <td align="center"><a href="[% image_url %]" target="new" class="imagezoom"  title="View Product Image"><img src="/images/icons/image.png"></a></td>
+            <td>[% span_class %][% shipment_item.get_sku %]</td>
+            <td>[% span_class %][% IF short_name %][% short_name %] [% END %][% designer_size %][% IF designer_size != size %] ([% size %])[% END %]</td>
+            <td>[% span_class %][% return_item.type.type %]</td>
+            <td>[% span_class %][% return_item.reason %]</td>
+            <td>[% span_class %][% return_item.status_str %]</td>
+            [% IF return_item.can_reverse %]
+                <td><input type="checkbox" name="returnitemid" value="[% return_item.id %]"></td>
+            [% ELSE %]
+                <td>-</td>
+            [% END %]
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td colspan="6" valign="top">[% span_class %]<i>[% designer %] - [% name %]</i></td>
+        </tr>
+        <tr>
+            <td colspan="7" class="divider"><img src="/images/blank.gif" width="1" height="1"></td>
+        </tr>
+    [% END %]
+	</table>
+	<br>
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+		<tr>
+			<td class="blank" colspan="2"><img src="/images/blank.gif" width="1" height="15"></td>
+		</tr>
+		<tr>
+			<td class="blank" colspan="2" align="right">
+				[% IF allow_submit %]
+					[% INCLUDE page_elements/forms/submit_button.tt %]
+				[% END %]
+			</td>
+		</tr>
+	</table>
+	<input type="hidden" name="return_id" value="[% return_id %]">
+</form>

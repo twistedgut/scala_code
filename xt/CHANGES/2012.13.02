@@ -1,0 +1,10 @@
+<pre>
+
+h1. WHM
+    * WHM-1380: Ensure the db connection is not timed out when running stock discrepancy script
+
+h1. CANDO
+    * CANDO-1497: Error message on Goods in/Returns in page
+    * CANDO-1500: Make checks on channel for imported order items non-fatal
+
+</pre>

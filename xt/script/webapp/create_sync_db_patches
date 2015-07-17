@@ -1,0 +1,201 @@
+#!/opt/xt/xt-perl/bin/perl -w
+use strict;
+use warnings;
+
+use FindBin::libs;
+use FindBin::libs qw( base=lib_dynamic );
+use IO::File;
+use XTracker::Database qw/ schema_handle /;
+
+=pod
+
+=head1 NAME
+
+script/webapp/create_sync_db_patches
+
+=head1 SYNOPSIS
+
+    # run script to generate sql files in current directory
+    script/webapp/create_sync_db_patches
+
+=head1 DESCRIPTION
+
+Create sql patches to apply to the webapp to bring tables immediately in sync
+with the XTDC database. This script was originally created so we can populate
+a new blank webapp database with sensible data rather than having to copy an
+entire webapp database and work out what needs removing. We should be aiming
+to start from an empty webapp database and populate as necessary/relevant.
+
+It will create two files NAPAC-211_country_duties.sql and
+NAPAC-211_currency_rate.sql based on existing data in XT's database. It is
+wrapped into transactions and will include delete statements to clear the
+tables of existing records for a clean refresh.
+
+=head2 NAPAC-211_country_duties.sql
+
+Tables updated - country_duties, hs_codes
+
+=head2 NAPAC-211_currency_rate.sql
+
+Tables updated - currency_rate, currency_exchange_rate
+
+=head1 AUTHOR
+
+Jason Tang C<< jason.tang@net-a-porter.com >>
+
+=cut
+ 
+my $schema = schema_handle;
+my $fh;
+
+make_country_duties();
+make_currency_rate();
+
+
+sub make_currency_rate {
+    $fh = IO::File->new("> NAPAC-211_currency_rate.sql");
+    _write_begin();
+    print $fh "DELETE FROM currency_exchange_rate;\n";
+    print $fh "DELETE FROM currency_rate;\n";
+    _write_currency_rate();
+    print $fh '
+INSERT INTO currency_exchange_rate (
+    source_code, destination_code, rate, valid_from_dts, valid_to_dts,
+    created_dts, created_by, last_updated_dts, last_updated_by
+)
+SELECT
+    source_code, destination_code, rate, now(), null, now(), "SYSTEM",
+    now(), "SYSTEM" from currency_rate
+GROUP BY source_code, destination_code;
+';
+    _write_commit();
+    $fh->close;
+}
+
+sub make_country_duties {
+    $fh = IO::File->new("> NAPAC-211_country_duties.sql");
+    _write_begin();
+    print $fh <<END
+SET foreign_key_checks = 0;
+truncate table country_duties;
+truncate table hs_codes;
+SET foreign_key_checks = 1;
+END
+    _write_hs_code();
+    _write_country_duty_rate();
+    _write_commit();
+    $fh->close;
+}
+
+sub _write_currency_rate {
+    my $dbh = $schema->storage->dbh;
+    my $set = $dbh->prepare("
+SELECT
+    s.id as \"season_id\",
+    c1.currency as \"from_currency\",
+    c2.currency as \"to_currency\",
+    cr.conversion_rate
+FROM
+    conversion_rate cr
+    JOIN season s
+        ON s.id = cr.season_id
+    JOIN currency c1
+        ON cr.source_currency = c1.id
+    JOIN currency c2
+        ON cr.destination_currency = c2.id
+WHERE
+    --seasons to restrict to
+    s.season IN ('HS13','FW13','SS13','CR13','Continuity')
+ORDER BY
+    s.id,c1.id,c2.id;
+    ");
+    my $rv = $set->execute;
+
+    print $fh '
+INSERT INTO currency_rate (
+    source_code,
+    destination_code,
+    season,
+    rate,
+    created_dts,
+    created_by,
+    last_updated_dts,
+    last_updated_by
+) values ';
+
+    my $first;
+    while (my $row = $set->fetchrow_hashref) {
+        if ($first) {
+            print $fh ',';
+        } else {
+            $first++;
+        }
+
+        print $fh '(
+    "'. $row->{from_currency} .'",
+    "'. $row->{to_currency} .'",
+    '. $row->{season_id} .',
+    "'. $row->{conversion_rate} .'",
+    NOW(),
+    "SYSTEM",
+    NOW(),
+    "SYSTEM"
+)';
+    }
+    print $fh ";\n";
+}
+
+sub _write_begin {
+    print $fh "BEGIN;\n\n";
+}
+
+sub _write_commit {
+    print $fh "\n\nCOMMIT;\n\n";
+}
+
+
+sub _write_hs_code {
+    my $set = $schema->resultset('Public::HSCode')->search({
+    },{
+        order_by => 'hs_code',
+    });
+
+    while (my $row = $set->next) {
+        next if (defined $row->hs_code && $row->hs_code !~ /^\d+$/);
+
+        print $fh '
+INSERT INTO hs_codes (
+    code
+) VALUES (
+    '. $row->hs_code .'
+);
+';
+    }
+}
+
+sub _write_country_duty_rate {
+    my $set = $schema->resultset('Public::CountryDutyRate')->search({
+    },{
+        order_by => 'country_id',
+    });
+
+    while (my $row = $set->next) {
+        next if (defined $row->hs_code->hs_code
+            && $row->hs_code->hs_code !~ /^\d+$/);
+
+        next if (defined $row->hs_code
+            &&  !$row->hs_code->active);
+        ## no critic(ProhibitMismatchedOperators)
+        print $fh '
+INSERT INTO country_duties (
+    hs_code, country, duty_percentage
+) VALUES (
+    "'.  $row->hs_code->hs_code .'",'
+    .'"'. $row->country->code .'",'
+    . $row->rate * 100 .'
+);
+';
+
+    }
+}
+

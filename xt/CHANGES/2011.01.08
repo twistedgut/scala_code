@@ -1,0 +1,18 @@
+<pre>
+
+h1. Mr Porter
+
+* Sticker printing
+* edialog feed
+* MrP image paths
+* MrP Garment bags
+* Measurements enhancement
+
+h1. DCEA
+
+* Locations are no longer channelised
+* Premier shipments now require a carton label (box id) to be scanned
+* The barcode scanners at the top of the dispatch lanes no longer initiate the printing of the dispatch documents; users must now print them manually via the "Fulfilment / Labeling" screen
+* Items marked as faulty in Packing Exception are now correctly logged as having been quarantined
+
+</pre>

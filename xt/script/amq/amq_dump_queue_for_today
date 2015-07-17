@@ -1,0 +1,58 @@
+#!/opt/xt/xt-perl/bin/perl
+
+use NAP::policy "tt";
+use Getopt::Long::Descriptive;
+use Path::Class qw(dir file);
+use DateTime;
+use English '-no_match_vars';
+
+# Dumps an ActiveMQ queue to a default directory for today's date
+
+my ($opt, $usage) = describe_options(
+    "amq_dump_queue_for_today %o
+
+Same as amq_dump_queue, but with sensible defaults for
+--destination (from the provided --queue)
+--output (in /var/amq/QUEUE/TODAYS_DATE)
+",
+    [ 'queue|q=s',         "Queue name (as it appears in the AMQ admin interface /admin/queues.jsp) to query (required)", { required => 1     } ],
+    [],
+    [ 'help|h|?',          "Print usage message and exit" ],
+    {
+        getopt_conf => [ "pass_through" ],
+    }
+);
+exit print($usage->text) if $opt->help;
+my @command_options = @ARGV;
+
+
+my $destination = "/queue/$opt->{queue}";
+
+# Retain any weird queue name chars (like ":"), and let / become
+# subdirs
+my $today_date = DateTime->now()->ymd("");
+my $safe_queue = ( $opt->{queue} =~ s/\s+/_/gsmr );
+my $output_dir = "/var/amq/queue/$safe_queue/$today_date/";
+
+my $this_dir = file( $PROGRAM_NAME )->dir;
+
+my @command = (
+    $EXECUTABLE_NAME,
+    "$this_dir/amq_dump_queue",
+    "--destination='$destination'",
+    "--output='$output_dir'",
+    @command_options,
+);
+
+warn "Running: @command\n\n";
+
+
+if ( $EFFECTIVE_USER_ID != 0 ) {
+    unshift(@command, "sudo");
+    warn "You're being asked for sudo, in order to ensure the dir
+$output_dir
+exists\n";
+}
+system(@command);
+
+

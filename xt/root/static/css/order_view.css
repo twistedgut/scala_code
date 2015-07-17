@@ -1,0 +1,29 @@
+DIV.returnable_state_icon {
+    position: relative;
+    display: inline;
+}
+DIV.returnable_state_icon IMG {
+    position: absolute;
+    left: -29px;
+    top: -2px;
+}
+
+DIV.third_party_payment_message SPAN {
+    font-weight: bold;
+    font-size: 1.3em;
+}
+
+DIV.order_status_message_wrapper {
+    margin: 10px 0px 0px 0px;
+}
+DIV.order_status_message_wrapper span {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+#order_view__pre_order_discount {
+    display: block;
+    padding: 2px 0px 2px 7px;
+    color: #555555;
+    font-weight: bold;
+}

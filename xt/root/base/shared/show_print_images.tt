@@ -1,0 +1,9 @@
+<script type="text/javascript" src="/jquery/jquery-1.7.min.js"></script>
+<script type="text/javascript">
+    $(document).ready( function() {
+        // fix static image paths
+        $("img[src*='/xt/root/static/']").each(function(i){$(this).attr('src',$(this).attr('src').replace(/^.*\/xt\/root\/static/,''))});
+        // fix static print document paths
+        $("img[src*='/xt_static/']").each( function(i){$(this).attr('src', $(this).attr('src').replace(/^.*\/xt_static/,''));});
+    });
+</script>

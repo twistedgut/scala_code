@@ -1,0 +1,105 @@
+[% IF results.size %]
+<div id="tabContainer" class="yui-navset">
+	[% PROCESS page_elements/channel_tabs.tt channel_list = channel_list multi_list = 1 %]
+	<div class="yui-content">
+		[% SET channel_count = 1 %]
+
+		[% FOREACH channel = channel_list.keys.sort %]
+
+			[% negative		= results.$channel.negative %]
+			[% returns		= results.$channel.returns %]
+			[% reservation	= results.$channel.reservation %]
+
+			<div id="tab[% channel_count %]" class="tabWrapper-[% channel_config.$channel %]">
+			<div class="tabInsideWrapper">
+
+                <br/><br/>
+
+				<span class="title title-[% channel_config.$channel %]">WEB/XT Reservation Consistency</span><br/>
+				<strong>Last updated:</strong> [% reservation_last_mod %]
+				<br/><br/>
+                [% IF reservation_consistency.$channel.size %]
+					<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data" id="web_xt_reservation_[% channel_count %]">
+						<thead>
+						<tr>
+							<td colspan="7" class="dividerHeader"></td>
+						</tr>
+						<tr height="24"> 
+							<td width="15%" class="tableHeader">&nbsp;&nbsp;&nbsp;&nbsp;SKU</td>
+                            <td width="15%" class="tableHeader">Customer Number</td>
+							<td width="18%" class="tableHeader">Web Reservation Level</td>
+							<td width="18%" class="tableHeader">XT Reservation Level</td>                            
+                            <td width="15%" class="tableHeader">Reported</td>
+                            <td width="35%" class="tableHeader" colspan="2">Variance</td>
+						</tr>
+						<tr>
+							<td colspan="7" class="dividerHeader"></td>
+						</tr>
+						</thead>
+						<tbody>
+						[% FOREACH variant_id = reservation_consistency.$channel.keys.sort %]
+                            [% FOREACH customer_number = reservation_consistency.$channel.$variant_id.keys.sort %]
+                                [% SET reservation = reservation_consistency.$channel.$variant_id.$customer_number %]
+                                
+                                [% IF reservation.adjusted == 1 %]
+                                    <tr>
+                                        <td class="light">&nbsp;&nbsp;&nbsp;&nbsp;<a href="/StockControl/Inventory/Overview?product_id=[% reservation.product_id %]">[% reservation.sku %]</a></td>
+                                        <td class="light">[% reservation.customer_number %]</td>
+                                        <td class="light">[% reservation.web_quantity %]</td>
+                                        <td class="light">[% reservation.xt_quantity %]</td>                            
+                                        <td class="light">[% reservation.reported %]</td>
+                                        <td  class="light" width="5%">
+                                            [% SET variance = reservation.xt_quantity - reservation.web_quantity %]
+                                            [% IF variance > 0 %]+[% END %][% variance %]
+                                        </td>                     
+                                        <td class="light" width="32%" align="center">
+                                            <i>Adjusted</i>
+                                        </td>
+                                        </form>
+                                    </tr>
+
+                                [% ELSE %]
+                                    <tr>
+                                        <td>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/StockControl/Inventory/Overview?product_id=[% reservation.product_id %]">[% reservation.sku %]</a></td>
+                                        <td>[% reservation.customer_number %]</td>
+                                        <td>[% reservation.web_quantity %]</td>
+                                        <td>[% reservation.xt_quantity %]</td>                            
+                                        <td>[% reservation.reported %]</td>
+                                        <td width="5%">
+                                            [% SET variance = reservation.xt_quantity - reservation.web_quantity %]
+                                            [% IF variance > 0 %]+[% END %][% variance %]
+                                        </td>
+                                        <td width="32%">
+                                        <form name="adjustReservation[% reservation.variant_id %][% reservation.customer_number %]" action="/Reporting/StockConsistency/AdjustReservation" method="post" onSubmit="return double_submit()">
+                                        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                                        <input type="hidden" name="id" value="[% reservation.id %]">
+                                        <input type="hidden" name="customer_number" value="[% reservation.customer_number %]">
+                                        <input type="hidden" name="variant_id" value="[% reservation.variant_id %]">
+                                        <input type="hidden" name="variance" value="[% variance %]">
+                                        <input type="hidden" name="channel_id" value="[% reservation.channel_id %]">                           
+                                            [% IF reservation.reported > 2 %]
+                                                <a href="javascript:document.adjustReservation[% reservation.variant_id %][% reservation.customer_number %].submit()" title="Adjust Website Reservation Level"><img src="/images/icons/database_go.png" alt="Adjust Website Reservation Level"></a>
+                                            [% END %]
+                                        </form>
+                                        </td>
+                                    </tr>
+                                [% END %]						
+                                <tr>
+                                    <td colspan="7" class="divider"></td>
+                                </tr>
+                            [% END %]
+						[% END %]
+					</table>
+				[% END %]
+			</div>
+			</div>
+            [% channel_count = channel_count + 1 %]
+		[% END %]
+	</div>
+</div>
+<br/><br/>
+
+[% PROCESS page_elements/tab_script.tt %]
+[% ELSE %]
+	<span class="title">No Data</span>
+[% END %]

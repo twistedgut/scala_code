@@ -1,0 +1,55 @@
+/* This CSS file is here because despite all the desktops
+   running IE7, we still need to support IE6 for the thin
+   client Windows CE installs */
+
+
+/* IE6 absolute positioned element is still 100% width.
+   Aligning the text right in this case positions it in
+   the right place */
+#headerTop #headerControls {
+    text-align: right;
+}
+
+/*  weird one this but the header image seems to blur
+    a bit at the top causing it to align badly with the
+    background. adding a top border hides this issue */
+#headerBottom {
+    border-top: 1px solid #888;
+}
+
+/* IE6 doesn't understand min-height, but more or less
+   interprets 'height' as min-height anyway */
+#nav1 {
+    height: 21px;
+}
+
+/* rework YUI menus especially for IE6 on thin client */
+#nav1 .yuimenubaritem-hassubmenu .yuimenu {
+    z-index: 200;
+    padding: 0 3px 3px 3px;
+    background: #EEE;
+}
+#nav1 .yuimenubaritem-hassubmenu .yuimenu div,
+#nav1 .yuimenubaritem-hassubmenu .yuimenu div ul {
+    padding: 0;
+}
+#nav1 .yuimenubaritem-hassubmenu .yuimenu li {
+    padding: 3px;
+}
+#nav1 .yuimenubaritem-hassubmenu .yuimenu li a:hover {
+    background: #DDD;
+}
+
+/* for some reason this absolutely positioned element is
+   offset by the left-margin of it's sibling element. This
+   Pulls it back where it should be */
+#channelTitle {
+    right: 121px;
+}
+
+/* Fix layout issue which causes content to drop below
+   the left hand navigation */
+#contentRight {
+    padding-left: 15px;
+    width: 816px;
+}

@@ -1,0 +1,5 @@
+BEGIN;
+    ALTER TABLE delivery ALTER COLUMN cancel SET NOT NULL;
+    ALTER TABLE delivery ALTER COLUMN status_id SET NOT NULL;
+    ALTER TABLE delivery ALTER COLUMN type_id SET NOT NULL;
+COMMIT;

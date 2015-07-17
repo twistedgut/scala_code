@@ -1,0 +1,78 @@
+<script type="text/javascript" src="/javascript/jquery.fancybox.pack.js?v=2.1.5"></script>
+<script type="text/javascript" src="/javascript/jquery.fancybox-buttons.js?v=1.0.5"></script>
+
+<link rel="stylesheet" href="/css/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<link rel="stylesheet" href="/css/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+
+<script type="text/javascript">//<![CDATA[
+jQuery(function($) {
+
+    $("a.topopup").click(function() {
+
+        $.fancybox.showLoading();  // show loading
+        // $.fancybox.hideActivity(); // remove loading
+        setTimeout(function(){ // then show popup, deley in .5 second
+            $.fancybox({
+                    'transitionIn' : 'fade',
+                    'transitionOut' : 'fade',
+                    'overlayColor' : '#000',
+                    'overlayOpacity' : '.6',
+                    'href' : '#popup_content',
+                    'onCleanup' : function() {
+                                    // close event
+                                  }
+                });
+        }, 500); // .5 second
+
+    }); // popup click end
+
+    $("#submitform").click(function() {
+
+        var quantity        = $("#quantity").val();
+        var reason          = $("#reason").val();
+        var comment         = $("#comment").val();
+
+        // basic validation
+        if(quantity == "") {
+            alert("Quantity field is blank.");
+            return false;
+        }
+        // TODO: validate number??
+        if(reason == "") {
+            alert("Reason field is blank.");
+            return false;
+        }
+        if(comment == "") {
+            alert("Comment is blank.");
+            return false;
+        }
+
+        var datastring = $("#quantityAdjustForm").serialize(); // get field value in form
+
+        $("#process").show();
+
+        $.ajax({
+                alert('Successful insert.');
+                //type: "POST", // type
+                //url: "post.php", // request file
+                //data: datastring, // post data
+                //success: function(responseText) { // get the response
+                //    if(responseText) {
+                //        alert('Succesfully insert.');
+
+                        // clear form after submit
+                $("#quantity").val('');
+                $("#reason").val('');
+                $("#comment").val('');
+
+                        $("#process").hide();
+                        $.fancybox.close(); // close popup
+                    }
+                } // end success
+        });
+
+    }); // click end
+
+}); // jQuery End
+
+//]]></script>

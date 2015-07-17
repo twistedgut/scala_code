@@ -1,0 +1,23 @@
+<pre>
+
+h1. Customer and Order Management (CANDO)
+    * CANDO-180: Fixed BUG where Stock was Being taken off the Web-Site twice each time an Exchange was being created
+    * CANDO-182: Fixed Bug where ARMA using 'Delivery Issue' resulted in Tax NOT being refunded to the Customer
+    * CANDO-138: Pointed 'Stock Sheet' printer in DC2 to lp name of a new printer: 'goodsin-stocksheet-doc-dc2'
+    * CANDO-212: DC2 - Changed the UPS Config to use 'UPS Ground' as the default Return Service
+    * CANDO-46 : Additional Payment Card Details on Order View Page
+    * CANDO-47 : Cancel Payment Pre-Auths when Cancelling an Order
+    * CANDO-54 : Added a PID to the Reservations Upload What's New PDF
+
+h1. DCEA
+    * DCEA-1504 - Sample Shipments sometimes don't send shipment_packed
+    * DCEA-1507 - container IDs for shipment_packed message
+    * DCEA-1295 - Pigeon hole at packing
+    * DCEA-1069 - P2 - Link to product in packing exception
+    * DCEA-1542 - Shipment_ready for cancelled items is not process correctly (web stock and XT stock get out of synch)
+    * DCEA-1540 - Packing QC: cannot mark additional items as missing
+    * DCEA-1536 - Orphan items cannot be scanned out of totes at PE 
+    * DCEA-1514 - Quarantine cancelled item in PE: web stock is decremented
+    * DCEA-1325 - Cancelled items sent to PE are lost
+
+</pre>

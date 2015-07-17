@@ -1,0 +1,8 @@
+[% INCLUDE page_elements/forms/select_drop_down.tt
+    name                = field_name.defined ? field_name : 'operator',
+    options             = operators,
+    selected            = current_operator.defined ? current_operator.id : '',
+    option_value_key    = 'id',
+    option_entry_key    = 'name',
+    onchange            = submit_on_change.defined ? 'this.form.submit()' : 'void(0)'
+%]

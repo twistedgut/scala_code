@@ -1,0 +1,59 @@
+<h3 class="title-[% channel_data.channel_config.$channel %]">Inner Boxes</h3>
+<table class="wide-data divided-data data" id="inner-boxes">
+    <thead>
+        <tr>
+            <th>Sort Order</th>
+            <th>Inner Box Name</th>
+            <th>Outer Box</th>
+            <th>Grouping ID</th>
+            <th>Quantity</th>
+            <th>Is Active</th>
+        </tr>
+    </thead>
+    <tbody>
+        [% FOREACH id = channel_data.channel_box_list.$channel.keys.nsort %]
+            <tr>
+                [% box = channel_data.channel_box_list.$channel.$id %]
+                <td>[% box.sort_order %]</td>
+                <td><a href="[% c.uri_for_action('/admin/packingboxadmin/edit_box', [ form_box_type , box.id ]) %]">
+                    [% box.inner_box %]</a></td>
+                <td>
+                    [% out_id = box.outer_box_id %]
+                    [% channel_data.channel_box_map.$channel.$out_id %]
+                </td>
+                <td>[% box.grouping_id %]</td>
+                <td>[% key = box.pims_code; channel_data.box_quantities.$key || '?' %][% INCLUDE admin/packingboxadmin/pims_edit_quantity_popup.tt %]</td>
+                <td><img src="/images/icons/tick.png" alt="y" border="0" /></td>
+            </tr>
+        [% END %]
+    </tbody>
+</table>
+
+[% IF ( channel_data.channel_box_inactive.$channel.keys.size ) %]
+    <h3 class="title-[% channel_config.$channel %]">Inner Boxes (inactive)</h3>
+    <table class="wide-data divided-data data" id="inner-inactive">
+        <thead>
+            <tr>
+                <th>Inner Box Name</th>
+                <th>Outer Box</th>
+                <th>Grouping ID</th>
+                <th>Is Active</th>
+            </tr>
+        </thead>
+        <tbody>
+            [% FOREACH id = channel_data.channel_box_inactive.$channel.keys.nsort %]
+                <tr>
+                    [% box = channel_data.channel_box_inactive.$channel.$id %]
+                    <td><a href="[% c.uri_for_action('/admin/packingboxadmin/edit_box', [ form_box_type , box.id ]) %]">
+                        [% box.inner_box %]</a></td>
+                    <td>
+                        [% out_id = box.outer_box_id %]
+                        [% channel_data.channel_box_map.$channel.$out_id %]
+                    </td>
+                    <td>[% box.grouping_id %]</td>
+                    <td><img src="/images/icons/cross.png" alt="n" border="0" /></td>
+                </tr>
+            [% END %]
+        </tbody>
+    </table>
+[% END %]

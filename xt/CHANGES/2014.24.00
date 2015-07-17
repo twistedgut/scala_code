@@ -1,0 +1,49 @@
+<pre>
+
+
+h1. CANDO - Customer & Orders
+
+* CANDO-8086: Refund of Zero Amount being triggered
+* CANDO-3094 - RMA: Exchange Charges being Split out on their own end up as Negative Refunds
+
+
+h1. DC2A - DC2 Automation
+
+*
+
+
+h1. DCOP - DC Operations
+
+*
+
+
+h1. SHIP - Expedited Shippping
+
+*
+
+
+h1. WHM - Warehouse
+
+*
+
+
+
+h1. Other
+
+h2. BS - Build Support
+
+*
+
+h2. PM - Product Management
+
+*
+
+h2. SAS - Search & Aggregation
+
+*
+
+h2. Misc
+
+*
+
+</pre>

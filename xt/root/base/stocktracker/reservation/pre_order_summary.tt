@@ -1,0 +1,385 @@
+[%- USE Utilities('subkeysrt') -%]
+[%-
+    SET show_discount = 0;
+    show_discount     = 1   IF pre_order.has_discount;
+-%]
+<div id="summary__page_options_section">
+  <form id="summary__page_options_form" action="CreateNote" method="post">
+    <input type="hidden" id="summary__page_options__pre_order_id" name="pre_order_id" value="[% pre_order.id %]">
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+  </form>
+
+  <div id="summary__preorder_details_box">
+    <h3 class="title-[% channel_config.$sales_channel %]">Summary: Pre-Order Nr. [% pre_order.pre_order_number %]</h3>
+    <span class="highlight">Status: </span>[% pre_order.pre_order_status.status %]
+    <br><br>
+    <hr>
+  </div>
+
+  [% INCLUDE stocktracker/reservation/common/customerhead.tt %]
+
+  <div id="summary__shipment_address_box" class="table-container">
+    <h3 class="title-[% channel_config.$sales_channel %]">Shipment Address</h3>
+    <div class="vcard">
+      <dl class="table-display">
+        <input type="hidden" name="shipment_address_id" id="summary__shipment_address_id" value="[% shipment_address.id %]">
+        <dt>Name</dt>             <dd class="fn">[% shipment_address.first_name %] [% shipment_address.last_name %]</dd>
+        <dt>Street Address</dt>   <dd class="street-address">[% shipment_address.address_line_1 %]</dd>
+        <dt>Street Address 2</dt> <dd class="locality">[% shipment_address.address_line_2 %]</dd>
+        [% IF shipment_address.address_line_3 %]<dt>Street Address 3</dt> <dd class="locality">[% shipment_address.address_line_3 %]</dd>[% END %]
+        [% IF shipment_address.towncity %]<dt>Town/City</dt>             <dd class="region">[% shipment_address.towncity %]</dd>[% END %]
+        [% IF shipment_address.postcode %]<dt>Postcode</dt>              <dd class="postal-code">[% shipment_address.postcode %]</dd>[% END %]
+        [% IF shipment_address.country %]<dt>Country</dt>                <dd class="country-name">[% shipment_address.country %]</dd>[% END %]
+        [% IF shipment_address.county %]<dt>State/County</dt>                <dd class="county">[% shipment_address.county %]</dd>[% END %]
+        [% IF shipment_address.telephone_day %]<dt>Phone Day</dt>        <dd class="tel">[% pre_order.telephone_day %]</dd>[% END %]
+        [% IF shipment_address.telephone_eve %]<dt>Phone Evening</dt>    <dd class="tel">[% pre_order.telephone_eve %]</dd>[% END %]
+      </dl>
+    </div>
+    <button type="button" id="summary__shipment_address_button" class="button address_popup__shipment_address_button">Use Different Address</button>
+  </div>
+
+  <div id="summary__invoice_address_box" class="table-container">
+    <h3 class="title-[% channel_config.$sales_channel %]">Invoice Address</h3>
+    <div class="vcard">
+      <dl class="table-display">
+        <dt>Name</dt>             <dd class="fn">[% invoice_address.first_name %] [% invoice_address.last_name %]</dd>
+        <dt>Street Address</dt>   <dd class="street-address">[% invoice_address.address_line_1 %]</dd>
+        <dt>Street Address 2</dt> <dd class="locality">[% invoice_address.address_line_2 %]</dd>
+        [% IF invoice_address.address_line_3 %]<dt>Street Address 3</dt> <dd class="locality">[% invoice_address.address_line_3 %]</dd>[% END %]
+        [% IF invoice_address.towncity %]<dt>Town/City</dt>             <dd class="region">[% invoice_address.towncity %]</dd>[% END %]
+        [% IF invoice_address.postcode %]<dt>Postcode</dt>              <dd class="postal-code">[% invoice_address.postcode %]</dd>[% END %]
+        [% IF invoice_address.country %]<dt>Country</dt>                <dd class="country-name">[% invoice_address.country %]</dd>[% END %]
+        [% IF shipment_address.county %]<dt>State/County</dt>                <dd class="county">[% shipment_address.county %]</dd>[% END %]
+        [% IF invoice_address.telephone_day %]<dt>Phone Day</dt>        <dd class="tel">[% pre_order.telephone_day %]</dd>[% END %]
+        [% IF invoice_address.telephone_eve %]<dt>Phone Evening</dt>    <dd class="tel">[% pre_order.telephone_eve %]</dd>[% END %]
+      </dl>
+    </div>
+  </div>
+
+  <div id="summary__shipment_details_box" class="clear">
+    <div id="summary__shipping_opts_box" class="table-container">
+      <h3 class="title-[% channel_config.$sales_channel %]">Delivery Options</h3>
+      <dl class="table-display">
+        <dt>Shipment Option</dt>  <dd>[% pre_order.shipping_charge.description %]</dd>
+        <dt>Packaging</dt>        <dd>[% pre_order.packaging_type.name %]</dd>
+        [% IF has_delivery_signature_optout %]
+        <dt>Signature upon Delivery Required</dt>
+            <dd>
+                [% IF pre_order.signature_required %]
+                  <img style="display: inline;" src="/images/icons/tick.png" title="Signature Required" alt="Signature Required" border="0">
+                [% ELSE %]
+                     <img style="display: inline;" src="/images/icons/cross.png" title="Signature Not Required" alt="Signature Not Required" border="0">
+                [% END %]
+
+            </dd>
+        [% END %]
+
+      </dl>
+    </div>
+
+    <div id="summary__contact_details_box" class="table-container">
+      <h3 class="title-[% channel_config.$sales_channel %]">Contact Details</h3>
+      <dl class="table-display">
+        <dt>Telephone Day</dt>  <dd>[% pre_order.telephone_day %]</dd>
+        <dt>Telephone Eve</dt> <dd>[% pre_order.telephone_eve %]</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div id="summary__shipment_details_box" class="clear">
+    <div id="summary__shipping_opts_box" class="table-container">
+      <h3 class="title-[% channel_config.$sales_channel %]">Operator</h3>
+      <dl class="table-display">
+        <dt>Operator</dt> <dd>[% pre_order.operator.name %]</dd>
+
+        [% IF new_operator_list.size > 0 %]
+        <dt>Transfer to new operator</dt>
+        <dd>
+            <form method="post">
+            [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+            <input type="hidden" name="pre_order_id" value="[% pre_order.id %]">
+            <select name="new_operator_id">
+            [% FOREACH operator = new_operator_list %]
+                <option [% IF pre_order.operator.id == operator.id %]selected[% END %] value="[% operator.id %]">[% operator.name %]</option>
+            [% END %]
+            </select>
+            <button type="submit" id="summary__shipment_address_button" class="button address_popup__shipment_address_button">Transfer</button>
+            </form>
+        </dd>
+        [% END %]
+      </dl>
+    </div>
+  </div>
+
+  <div id="summary__preorder_notes_box" class="clear">
+    <br>
+
+    <h3 class="title-[% channel_config.$sales_channel %]">Pre-Order Notes</h3>
+    <table class="wide-data data divided-data">
+      [% IF pre_order.pre_order_notes %]
+      <tr>
+        <th>Date</th>
+        <th>Note</th>
+        <th>Type</th>
+        <th>Operator</th>
+        <th></th>
+        <th></th>
+      </tr>
+      [% FOREACH po_note = pre_order.pre_order_notes %]
+      <tr>
+        <td>[% po_note.date.dmy %] [% po_note.date.hms %]</td>
+        <td>[% po_note.note %]</td>
+        <td>[% po_note.note_type.description %]</td>
+        <td>[% po_note.operator.name %]<br><span class="lowlight">[% po_note.operator.department.department %]</span></td>
+        <td><a href="/StockControl/Reservation/PreOrder/Note?note_category=PreOrder&note_id=[% po_note.id %]&parent_id=[% pre_order.id %]"><img src="/images/icons/page_edit.png" alt="Edit Note"></a></td>
+        <td><a href="/StockControl/Reservation/PreOrder/EditNote?note_category=PreOrder&action=Delete&note_id=[% po_note.id %]&parent_id=[% pre_order.id %]"><img src="/images/icons/cross.png" alt="Delete Note"></a></td>
+      </tr>
+      [% END %]
+      [% END %]
+      <tr>
+        <td colspan="5">
+        </td>
+        <td>
+          <a href="/StockControl/Reservation/PreOrder/Note?note_category=PreOrder&action=Create&sub_id=[% pre_order.id %]&parent_id=[% pre_order.id %]"><img src="/images/icons/add.png" alt="Add Note"></a>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<br >
+[% IF payment_info %]
+<div id="summary__preorder_payment_box" class="clear">
+  [% INCLUDE shared/payment_details.tt exclude_card_history=1 %]
+</div>
+[% END %]
+<br >
+<div id="summary__variants_section">
+    <form name="summary__complete_pre_order_form" id="summary__complete_pre_order_form" method="post" action="CancelPreOrder">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+        <input type="hidden" name="pre_order_id" value="[% pre_order.id %]">
+        <h3 class="title-[% channel_config.$sales_channel %]">Selected Products</h3>
+        <div id="summary__variants_table">
+            <table class="data wide-data" id="summary__variants_table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>SKU</th>
+                        <th>Product<br>Name</th>
+                        <th>Designer</th>
+                        <th>Designer<br>Size</th>
+                        [% IF show_discount %]<th>Discount</th>[% END %]
+                        <th>Price</th>
+                        <th>Duty</th>
+                        <th>Tax</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Cancel<br>Item</th>
+                    </tr>
+                </thead>
+                <tbody>
+                [% FOREACH item_id = variants.nsubkeysrt('sort_order') %]
+                    [%-
+                        SET td_class = "";
+                        IF variants.$item_id.item.is_cancelled;
+                        THEN;
+                            td_class = "class='show_cancelled'";
+                        END;
+                    -%]
+                    <tr class="dividebelow">
+                        <td [% td_class %] align="center"><img width="50" src="[% variants.$item_id.images.0 %]"></td>
+                        <td [% td_class %]>[% variants.$item_id.data.sku %]</td>
+                        <td [% td_class %]>[% variants.$item_id.data.name %]</td>
+                        <td [% td_class %]>[% variants.$item_id.data.designer %]</td>
+                        <td [% td_class %]>[% variants.$item_id.data.designer_size %]</td>
+                        [% IF show_discount %]<td [% td_class %]>[% pre_order.applied_discount_percent %]%</td>[% END %]
+                        <td [% td_class ? td_class : 'class="item_cost"' %]>[% currency.html_entity %][% variants.$item_id.price.unit_price %]</td>
+                        <td [% td_class ? td_class : 'class="item_cost"' %]>[% currency.html_entity %][% variants.$item_id.price.duty %]</td>
+                        <td [% td_class ? td_class : 'class="item_cost"' %]>[% currency.html_entity %][% variants.$item_id.price.tax %]</td>
+                        <td [% td_class ? td_class : 'class="item_cost"' %]>[% currency.html_entity %][% variants.$item_id.price.total %]</td>
+                        <td [% td_class %]>
+                            [% IF variants.$item_id.link_order %] <a href="/CustomerCare/OrderSearch/OrderView?order_id=[% variants.$item_id.link_order %]"> [% variants.$item_id.status %]</a>
+                            [% ELSE %][% variants.$item_id.status %]
+                            [% END %]
+                        </td>
+                        <td [% td_class %] align="center">[% IF variants.$item_id.item.can_be_cancelled %]<input name="item_to_cancel_[% item_id %]" type="checkbox" value="1">[% END %]</td>
+                    </tr>
+                [% END %]
+                </tbody>
+            </table>
+        </div>
+        [% IF pre_order.is_complete || pre_order.is_part_exported %]
+            <div id="summary__change_size_link" style="padding-top: 5px;">
+                <img src="/images/icons/bullet_wrench.png" class="inline" title="Change Size" alt="Change Size"><a href="/StockControl/Reservation/PreOrder/ChangeItemSize?pre_order_id=[% pre_order.id %]">Change Sizes for Pre-Order Items</a>
+            </div>
+        [% END %]
+        <br>
+        <div id="summary__payment_due_status">
+            Total Value: [% currency.html_entity %]<span id="payment_due__current__text">[% pre_order.total_uncancelled_value_formatted %]</span>
+        </div>
+        [% IF show_discount %]
+            <div id="summary__payment_without_discount" class="payment_without_discount">
+                without [% pre_order.applied_discount_percent %]% discount: [% currency.html_entity %][% pre_order.get_total_without_discount_formatted %]
+            </div>
+            <div id="summary__payment_discount_operator">
+                the discount was applied by <strong>[% pre_order.applied_discount_operator.name %]</strong>
+            </div>
+        [% END %]
+        <div id="summary__action_forms">
+            [% IF can_cancel_items %]
+            <button type="submit" class="button" name="cancel_pre_order" id="summary__cancel_pre_order_button" value="1">Cancel All Items</button>
+            &nbsp;&nbsp;&nbsp;
+            <button type="submit" class="button" name="cancel_items" id="summary__cancel_pre_order_item_button" value="1">Cancel Selected Items</button>
+            [% END %]
+        </div>
+    </form>
+    <hr>
+</div>
+[% IF refunds.size %]
+<div id="summary__refunds_section">
+    <h3 class="title-[% channel_config.$sales_channel %]">Refunds</h3>
+    <table class="data wide-data" id="summary__refunds_table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Created Date</th>
+            <th>Status</th>
+            <th>Total Value</th>
+            <th> </th>
+            <th> </th>
+        </tr>
+    </thead>
+    <tbody>
+    [% FOREACH refund IN refunds %]
+        <tr class="dividebelow">
+            <td></td>
+            <td>[% refund.created_date %]</th>
+            <td>[% refund.status %]</th>
+            <td>[% refund.total_value %]</th>
+             <td[% tdclass %]><a href="/Finance/ActiveInvoices/PreOrderInvoice?preorder_id=[% pre_order.id %]&action=View&invoice_id=[% refund.refund_id %]"><img src="/images/icons/page_go.png" alt="View Invoice"></a></td>
+                        <td[% tdclass %]>
+                            [% IF can_edit_preorder_refund %]
+                                <a href="/Finance/ActiveInvoices/PreOrderInvoice?preorder_id=[% pre_order.id %]&action=Edit&invoice_id=[% refund.refund_id %]"><img src="/images/icons/page_edit.png" alt="Edit Invoice"></a>
+                            [% END %]
+                        </td>
+
+        </tr>
+    [% END %]
+    </tbody>
+    </table>
+    <hr>
+</div>
+[% END %]
+[% IF statuses.pre_order.size || statuses.pre_order_items.size %]
+<div id="summary__status_logs_wrapper">
+    <table class="data wide-data">
+        <tr class="dividebelow">
+            <td style="padding-left: 0px; margin-left: 0px;"><h3 class="title-[% channel_config.$sales_channel %]">Status Logs</h3></td>
+            <td align="right" style="padding-right:15px"><img id="summary__status_logs_zoom_out_img" class="summary__status_logs_toggle" src="/images/icons/zoom_out.png" alt="Status Logs"><img class="summary__status_logs_toggle" id="summary__status_logs_zoom_in_img" src="/images/icons/zoom_in.png" alt="Status Logs"></td>
+        </tr>
+    </table>
+    <div id="summary__status_logs">
+    [% IF statuses.pre_order.size %]
+        <h3>Pre-Order Status Log</h3>
+        <table id="summary__status_log_pre_order" class="data wide-data">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Operator</th>
+                <th>Department</th>
+            </tr>
+        </thead>
+        <tbody>
+        [% FOREACH log IN statuses.pre_order %]
+            <tr class="dividebelow">
+                <td></td>
+                <td>[% log.status_date %]</td>
+                <td>[% log.status %]</td>
+                <td>[% log.operator_name %]</td>
+                <td>[% log.department %]</td>
+            </tr>
+        [% END %]
+        </tbody>
+        </table>
+        <br>
+    [% END %]
+    [% IF statuses.pre_order_items.size %]
+        <h3>Pre-Order Items Status Log</h3>
+        <table id="summary__status_log_pre_order_items" class="data wide-data">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Date</th>
+                <th>SKU</th>
+                <th>Status</th>
+                <th>Operator</th>
+                <th>Department</th>
+            </tr>
+        </thead>
+        <tbody>
+        [% FOREACH log IN statuses.pre_order_items %]
+            <tr class="dividebelow">
+                <td></td>
+                <td>[% log.status_date %]</td>
+                <td>[% log.item_obj.variant.sku %]</td>
+                <td>[% log.status %]</td>
+                <td>[% log.operator_name %]</td>
+                <td>[% log.department %]</td>
+            </tr>
+        [% END %]
+        </tbody>
+        </table>
+    [% END %]
+    <hr>
+    </div>
+</div>
+[% END %]
+
+[% IF pre_order.pre_order_operator_logs.size %]
+<div id="summary__operator_transfer_logs_wrapper">
+    <table class="data wide-data">
+        <tr class="dividebelow">
+            <td style="padding-left: 0px; margin-left: 0px;"><h3 class="title-[% channel_config.$sales_channel %]">Operator Transfer Logs</h3></td>
+            <td align="right" style="padding-right:15px"><img id="summary__operator_logs_zoom_out_img" class="summary__operator_logs_toggle" src="/images/icons/zoom_out.png" alt="Status Logs"><img class="summary__operator_logs_toggle" id="summary__operator_logs_zoom_in_img" src="/images/icons/zoom_in.png" alt="Status Logs"></td>
+        </tr>
+    </table>
+    <div id="summary__operator_logs">
+        <table id="summary__operator_logs_table" class="data wide-data">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Date</th>
+                <th>Operator</th>
+                <th>Assigned To</th>
+                <th>Department</th>
+            </tr>
+        </thead>
+        <tbody>
+        [% FOREACH log IN pre_order.pre_order_operator_logs %]
+            <tr class="dividebelow">
+                <td></td>
+                <td>[% log.created.strftime('%Y-%m-%d') %] @ [% log.created.strftime('%H:%M:%S') %]</td>
+                <td>[% log.operator.name %]</td>
+                <td>[% log.to_operator.name %]</td>
+                <td>[% log.to_operator.department.department %]</td>                
+            </tr>
+        [% END %]
+        </tbody>
+        </table>
+        <br>
+    <hr>
+    </div>
+</div>
+[% END %]
+
+<script language="javascript" type="text/javascript">
+    var country_areas  = [% country_areas %];
+    var current_county = "[% shipment_address.county %]";
+</script>
+<!-- here be popups -->
+<div id="popup_address__dialog">
+  [% INCLUDE stocktracker/reservation/addresspopup.tt %]
+</div>
+<!-- here be no popups -->

@@ -1,0 +1,73 @@
+[% PROCESS page_elements/display_product.tt %]
+
+[% SET show_submit = 0 %]
+
+<span class="title">Sample Goods In</span>
+<br />
+    <div id="main_form">
+    <form action='/StockControl/Sample/SetVendorSampleGoodsIn' method='post' name='SetVendorSampleGoodsIn'>
+    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <thead>
+            <tr>
+                <td colspan="7" class="dividerHeader"></td>
+            </tr>
+            <tr height="24"> 
+                <td width="20%" class="tableHeader">[% INCLUDE page_elements/headerspacer.tt %]Sku</td>
+				<td width="20%" class="tableHeader">Sales Channel</td>
+                <td width="10%" class="tableHeader">Size</td>
+                <td width="20%" class="tableHeader">Designer Size</td>
+                <td width="10%" class="tableHeader">Ordered</td>
+                <td width="10%" class="tableHeader">Delivered</td>
+                <td width="10%" class="tableHeader">Print Barcode</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="dividerHeader"></td>
+            </tr>
+        </thead>
+        <tbody>
+		[% FOREACH soi = stock_order_items.nsort('size_id') %]
+			[% channel = soi.sales_channel %]
+            [% SET v_id = soi.variant_id %]
+			<tr height="20">
+				<td>[% INCLUDE page_elements/tablespacer.tt %][% product.id %]-[% soi.size_id %]</td>
+				<td><span class="title-[% channel_config.$channel %]">[% channel %]</span></td>
+				<td>[% soi.size %]</td>
+				<td>Unknown</td>
+				<td>[% soi.quantity %]</td>
+				<td>
+					[% IF soi.status == 'Delivered' %]
+						[% soi.delivered_qty %]
+					[% ELSIF soi.status == 'Unknown' %]
+						[% SET show_submit = 1 %]
+						<input type='text' size='5' name='delivered_[% soi.id %]' value='[% soi.quantity %]'>
+					[% ELSE %]
+						[% SET show_submit = 1 %]
+						<input type='text' size='5' name='delivered_[% soi.id %]' value='[% soi.quantity %]'>
+					[% END %]
+				</td>
+				<td>
+					[% IF soi.status == 'Delivered' %]
+						<a href="/Barcode?print_small=1&amp;num_small=1&amp;type=variant_id&amp;id=[% v_id %]"><img src="/images/stock-print.png" alt="Print" /></a>
+					[% ELSE %]
+						<!--input type="checkbox" checked /-->&nbsp;
+					[% END %]
+				</td>
+			</tr>
+			<tr>
+				<td colspan="7" class="divider"></td>
+			</tr>
+		[% END %]
+    </table>
+    <br />
+    
+    <input type="hidden" name="product_id"     value="[% product.id %]" />
+    <input type="hidden" name="stock_order_id" value="[% stock_order_id %]" />
+    <input type="hidden" name="type"           value="[% type %]" />
+    <input type="hidden" name="id"             value="[% id %]" />
+
+	[% IF show_submit == 1 %]
+		[% INCLUDE page_elements/forms/submit.tt %]
+	[% END %]
+    </form>
+</div>

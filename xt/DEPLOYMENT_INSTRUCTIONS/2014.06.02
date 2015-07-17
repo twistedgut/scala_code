@@ -1,0 +1,1110 @@
+=====================================
+XT 2014.06.02 Deployment Instructions
+=====================================
+
+1 - RELEASE DETAILS
+-------------------
+Date               :
+Cherwell           :
+Release Manager    : Kaushal Patel
+Build Manager      : Rich Moore
+TechOps            :
+Backend Developer  :
+Frontend Developer :
+QA                 :
+PCI Authorised by  :
+
+2 - CHANGELOG
+-------------
+http://stash.vm.wtf.nap/projects/BAK/repos/xt/browse/CHANGES/2014.06.02?at=refs/heads/release/2014.06
+
+3 - PACKAGES TO INSTALL:
+------------------------
+cfmaster.dave:
+/var/www/html/netaporter/dev_releases/2014.06/xt-2014.06.02-0.noarch.rpm
+
+Update version of warehouse-common:
+/var/www/html/netaporter/unstable/noarch/warehouse-common-2.0.12-0.noarch.rpm
+
+Unless otherwise stated, do the following for DC1, DC2 and DC3.
+
+4 - NEW PROPERTIES:
+-------------------
+Add or update the following in "/etc/nap.properties" prior to release
+
+5 - PRE-DEPLOYMENT ACTIONS:
+---------------------------
+No action needs to be performed before the deployment
+
+6 - DEPLOYMENT RECIPE:
+----------------------
+sudo yum clean all
+sudo yum remove xt
+
+sudo service cups stop
+
+We now have to remove and add some printers for each of the DC's CUPS
+printers.conf files.
+
+Remove the following entries from DC1's /etc/cups/printers.conf file:
+
+<Printer item_count_01_large>
+    Info item_count_01_large
+    Location dc1
+    DeviceURI lpd://item_count_01_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_01_small>
+    Info item_count_01_small
+    Location dc1
+    DeviceURI lpd://item_count_01_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_02_large>
+    Info item_count_02_large
+    Location dc1
+    DeviceURI lpd://item_count_02_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_02_small>
+    Info item_count_02_small
+    Location dc1
+    DeviceURI lpd://item_count_02_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_03_large>
+    Info item_count_03_large
+    Location dc1
+    DeviceURI lpd://item_count_03_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_03_small>
+    Info item_count_03_small
+    Location dc1
+    DeviceURI lpd://item_count_03_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_04_large>
+    Info item_count_04_large
+    Location dc1
+    DeviceURI lpd://item_count_04_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_04_small>
+    Info item_count_04_small
+    Location dc1
+    DeviceURI lpd://item_count_04_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_05_large>
+    Info item_count_05_large
+    Location dc1
+    DeviceURI lpd://item_count_05_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_05_small>
+    Info item_count_05_small
+    Location dc1
+    DeviceURI lpd://item_count_05_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer jc_item_count_small_01>
+    Info jc_item_count_small_01
+    Location dc1
+    DeviceURI lpd://jc_item_count_small_01/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer jc_item_count_large_01>
+    Info jc_item_count_large_01
+    Location dc1
+    DeviceURI lpd://jc_item_count_large_01/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+Add the following entries:
+
+<Printer item_count_01_large>
+    Info item_count_01_large
+    XTLocation Item Count Station 01
+    XTSection item_count
+    XTType large_label
+    Location dc1
+    DeviceURI lpd://item_count_01_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_01_small>
+    Info item_count_01_small
+    XTLocation Item Count Station 01
+    XTSection item_count
+    XTType small_label
+    Location dc1
+    DeviceURI lpd://item_count_01_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_02_large>
+    Info item_count_02_large
+    XTLocation Item Count Station 02
+    XTSection item_count
+    XTType large_label
+    Location dc1
+    DeviceURI lpd://item_count_02_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_02_small>
+    Info item_count_02_small
+    XTLocation Item Count Station 02
+    XTSection item_count
+    XTType small_label
+    Location dc1
+    DeviceURI lpd://item_count_02_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_03_large>
+    Info item_count_03_large
+    XTLocation Item Count Station 03
+    XTSection item_count
+    XTType large_label
+    Location dc1
+    DeviceURI lpd://item_count_03_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_03_small>
+    Info item_count_03_small
+    XTLocation Item Count Station 03
+    XTSection item_count
+    XTType small_label
+    Location dc1
+    DeviceURI lpd://item_count_03_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_04_large>
+    Info item_count_04_large
+    XTLocation Item Count Station 04
+    XTSection item_count
+    XTType large_label
+    Location dc1
+    DeviceURI lpd://item_count_04_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_04_small>
+    Info item_count_04_small
+    XTLocation Item Count Station 04
+    XTSection item_count
+    XTType small_label
+    Location dc1
+    DeviceURI lpd://item_count_04_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer jc_item_count_large_01>
+    Info jc_item_count_large_01
+    XTLocation JC Item Count Station 01
+    XTSection item_count
+    XTType large_label
+    Location dc1
+    DeviceURI lpd://jc_item_count_large_01/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer jc_item_count_small_01>
+    Info jc_item_count_small_01
+    XTLocation JC Item Count Station 01
+    XTSection item_count
+    XTType small_label
+    Location dc1
+    DeviceURI lpd://jc_item_count_small_01/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+Remove the following entries from DC2's /etc/cups/printers.conf file:
+
+<Printer item_count_01_large>
+    Info item_count_01_large
+    Location dc1
+    DeviceURI lpd://item_count_01_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_02_large>
+    Info item_count_02_large
+    Location dc1
+    DeviceURI lpd://item_count_02_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_01_small>
+    Info item_count_01_small
+    Location dc1
+    DeviceURI lpd://item_count_01_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_02_small>
+    Info item_count_02_small
+    Location dc1
+    DeviceURI lpd://item_count_02_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_03_large>
+    Info item_count_03_large
+    Location dc1
+    DeviceURI lpd://item_count_03_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_03_small>
+    Info item_count_03_small
+    Location dc1
+    DeviceURI lpd://item_count_03_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_04_large>
+    Info item_count_04_large
+    Location dc1
+    DeviceURI lpd://item_count_04_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_04_small>
+    Info item_count_04_small
+    Location dc1
+    DeviceURI lpd://item_count_04_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_05_large>
+    Info item_count_05_large
+    Location dc1
+    DeviceURI lpd://item_count_05_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_05_small>
+    Info item_count_05_small
+    Location dc1
+    DeviceURI lpd://item_count_05_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+Add the following printers:
+
+<Printer item_count_01_large>
+    Info item_count_01_large
+    XTLocation Item Count Station 01
+    XTSection item_count
+    XTType large_label
+    Location dc1
+    DeviceURI lpd://item_count_01_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_01_small>
+    Info item_count_01_small
+    XTLocation Item Count Station 01
+    XTSection item_count
+    XTType small_label
+    Location dc1
+    DeviceURI lpd://item_count_01_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_02_large>
+    Info item_count_02_large
+    XTLocation Item Count Station 02
+    XTSection item_count
+    XTType large_label
+    Location dc1
+    DeviceURI lpd://item_count_02_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_02_small>
+    Info item_count_02_small
+    XTLocation Item Count Station 02
+    XTSection item_count
+    XTType small_label
+    Location dc1
+    DeviceURI lpd://item_count_02_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_03_large>
+    Info item_count_03_large
+    XTLocation Item Count Station 03
+    XTSection item_count
+    XTType large_label
+    Location dc1
+    DeviceURI lpd://item_count_03_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_03_small>
+    Info item_count_03_small
+    XTLocation Item Count Station 03
+    XTSection item_count
+    XTType small_label
+    Location dc1
+    DeviceURI lpd://item_count_03_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_04_large>
+    Info item_count_04_large
+    XTLocation Item Count Station 04
+    XTSection item_count
+    XTType large_label
+    Location dc1
+    DeviceURI lpd://item_count_04_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_04_small>
+    Info item_count_04_small
+    XTLocation Item Count Station 04
+    XTSection item_count
+    XTType small_label
+    Location dc1
+    DeviceURI lpd://item_count_04_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_05_large>
+    Info item_count_05_large
+    XTLocation Item Count Station 05
+    XTSection item_count
+    XTType large_label
+    Location dc1
+    DeviceURI lpd://item_count_05_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_05_small>
+    Info item_count_05_small
+    XTLocation Item Count Station 05
+    XTSection item_count
+    XTType small_label
+    Location dc1
+    DeviceURI lpd://item_count_05_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+One printer is specified twice in DC3's CUPS's /etc/cups/printers.conf file.
+Remove *just* *one* of them:
+
+<Printer returns_qc_large_08>
+    Info returns_qc_large_08
+    Location DC3
+    DeviceURI lpd://returns_qc_large_08/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+Remove the following entries from DC3's /etc/cups/printers.conf file:
+
+<Printer item_count_01_small>
+    Info item_count_01_small
+    Location DC3
+    DeviceURI lpd://item_count_01_small/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_01_large>
+    Info item_count_01_large
+    Location DC3
+    DeviceURI lpd://item_count_01_large/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_02_large>
+    Info item_count_02_large
+    Location DC3
+    DeviceURI lpd://item_count_02_large/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_02_small>
+    Info item_count_02_small
+    Location DC3
+    DeviceURI lpd://item_count_02_small/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_small_02>
+    Info item_count_small_02
+    Location DC3
+    DeviceURI lpd://item_count_small_02/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_small_01>
+    Info item_count_small_01
+    Location DC3
+    DeviceURI lpd://item_count_small_01/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_large_02>
+    Info item_count_large_02
+    Location DC3
+    DeviceURI lpd://item_count_large_02/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_large_01>
+    Info item_count_large_01
+    Location DC3
+    DeviceURI lpd://item_count_large_01/auto
+    State Idle
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer hvc_large_01>
+    Info High Value Barcode Large
+    Location DC3
+    DeviceURI lpd://hvc_large_01/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer hvc_small_01>
+    Info High Value Barcode Small
+    Location DC3
+    DeviceURI lpd://hvc_small_01/auto
+    State Idle
+    StateTime 1299516901
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+Add the following entries:
+
+<Printer item_count_01_large>
+    Info item_count_01_large
+    XTLocation Item Count Station 01
+    XTSection item_count
+    XTType large_label
+    Location dc1
+    DeviceURI lpd://item_count_01_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_01_small>
+    Info item_count_01_small
+    XTLocation Item Count Station 01
+    XTSection item_count
+    XTType small_label
+    Location dc1
+    DeviceURI lpd://item_count_01_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_02_large>
+    Info item_count_02_large
+    XTLocation Item Count Station 02
+    XTSection item_count
+    XTType large_label
+    Location dc1
+    DeviceURI lpd://item_count_02_large/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer item_count_02_small>
+    Info item_count_02_small
+    XTLocation Item Count Station 02
+    XTSection item_count
+    XTType small_label
+    Location dc1
+    DeviceURI lpd://item_count_02_small/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer hvc_large_01>
+    Info hvc_large_01
+    XTLocation Item Count Station HVC
+    XTSection item_count
+    XTType large_label
+    Location dc1
+    DeviceURI lpd://hvc_large_01/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+<Printer hvc_small_01>
+    Info hvc_small_01
+    XTLocation Item Count Station HVC
+    XTSection item_count
+    XTType small_label
+    Location dc1
+    DeviceURI lpd://hvc_small_01/auto
+    State Idle
+    StateTime 1292927406
+    Accepting Yes
+    Shared Yes
+    JobSheets none none
+    QuotaPeriod 0
+    PageLimit 0
+    KLimit 0
+    OpPolicy default
+    ErrorPolicy retry-job
+</Printer>
+
+Restart CUPS:
+
+sudo service cups start
+
+sudo yum install xt
+
+7 - POST-DEPLOYMENT ACTIONS:
+----------------------------
+No action needs to be performed after the deployment
+
+8 - ROLLBACK PLAN:
+------------------
+sudo yum downgrade xt
+
+
+=====================================
+End of Deployment Instructions
+=====================================
+
+ _____________________________________
+/ You do remember this is a DAVE      \
+\ sponsored release, right?           /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

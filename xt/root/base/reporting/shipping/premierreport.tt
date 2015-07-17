@@ -1,0 +1,70 @@
+[%-
+	IF template_type == "csv";
+		PROCESS csv_page;
+	ELSE;
+		PROCESS browser_page;
+	END;
+-%]
+[%- BLOCK csv_page -%]
+"Date","Sales Channel","Order Number","Shipment Number","Zone","Postcode","No. Pieces","Actual Weight","DIM Weight","Total Unit Cost","Total Taxes","Shipping Charge","Boxes"
+[% FOREACH shipment_id = results.keys.nsort %]
+[%- shipment = results.$shipment_id -%]
+"[% shipment.date %]",[% shipment.sales_channel %],[% shipment.order_nr %],[% shipment_id %],[% shipment.delivery_zone %],"[% shipment.postcode %]",[% shipment.num_pieces %],[% shipment.actual_weight %],[% shipment.volumetric_weight %],[% shipment.total_unit_price %],[% shipment.total_tax %],[% shipment.shipping_charge %],"[% shipment.boxes %]"
+[% END %]
+[%- END # BLOCK csv_page -%]
+[%- BLOCK browser_page -%]
+
+[% PROCESS reporting/shipping/report_filter.tt form_action="/Reporting/ShippingReports/$url_level" %]
+<br>
+[% IF results.size %]
+    <!--div align="right"><a href="/export/premier_report.csv">Export to CSV ></a></div-->
+    <span class="title">Premier Shipments</span><br>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+        <thead>
+        <tr>
+            <td colspan="10" class="dividerHeader"></td>
+        </tr>
+        <tr height="24"> 
+            <td class="tableHeader">&nbsp;&nbsp;Date</td>
+			<td class="tableHeader">Sales Channel</td>
+            <td class="tableHeader">Order Nr</td>
+            <td class="tableHeader">Shipment Nr</td>
+            <td class="tableHeader">Zone</td>
+            <td class="tableHeader">Pieces</td>
+            <td class="tableHeader">Weight</td>
+            <td class="tableHeader">Unit Cost</td>
+            <td class="tableHeader">Taxes</td>
+            <td class="tableHeader">Shipping</td>
+        </tr>
+        <tr>
+            <td colspan="10" class="dividerHeader"></td>
+        </tr>
+        </thead>
+        <tbody>
+        [% FOREACH shipment_id = results.keys.nsort %]
+			[% sales_channel = results.$shipment_id.sales_channel %]
+            <tr>
+                <td>&nbsp;&nbsp;[% results.$shipment_id.date %]</td>
+				<td><span class="title-[% channel_config.$sales_channel %]">[% sales_channel %]</span></td>
+                <td>[% results.$shipment_id.order_nr %]</td>
+                <td>[% shipment_id %]</td>
+                <td>[% results.$shipment_id.delivery_zone %]</td>
+                <td>[% results.$shipment_id.num_pieces %]</td>
+                <td>[% results.$shipment_id.actual_weight %]</td>
+                <td>[% results.$shipment_id.total_unit_price %]</td>
+                <td>[% results.$shipment_id.total_tax %]</td>
+                <td>[% results.$shipment_id.shipping_charge %]</td>                
+            </tr>
+            <tr>
+                <td colspan="10" class="divider"></td>
+            </tr>
+        [% END %]
+    </table>
+    <br><br>
+[% ELSE %]
+	[% IF form.submitted %]
+		<span class="title">No Results</span>
+	[% END %]
+[% END %]
+
+[%- END # BLOCK browser_page -%]

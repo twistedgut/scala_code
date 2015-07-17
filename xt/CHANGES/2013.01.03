@@ -1,0 +1,8 @@
+<pre>
+
+h1. WHM
+
+ * REL-10592/WHM-1929 Slowness in printing shipping document on 'Labelling' page in DC1.
+ * REL-10593/WHM-1930 Other problems with the webkit-enabled printing
+
+</pre>

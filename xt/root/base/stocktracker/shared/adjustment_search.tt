@@ -1,0 +1,10 @@
+<h3>[% title %]</h3>
+<form name="adjustStock" action=[% action_url %]>
+    <div class="formrow divideabove dividebelow">
+        <label for="[% search_id %]">[% label %]</label>
+        <input type="text" name="[% search_id %]" id="[% search_id %]" />
+    </div>
+    <div class="formrow buttons aftertable">
+        [% PROCESS page_elements/forms/submit_button.tt -%]
+    </div>
+</form>

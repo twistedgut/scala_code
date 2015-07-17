@@ -1,0 +1,7 @@
+<pre>
+
+h1. Bug Fixes
+ 
+ * REL-1061 Fix ActiveMQ lib path                                     (41ad7d8)
+
+</pre>

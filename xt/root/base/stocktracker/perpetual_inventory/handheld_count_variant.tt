@@ -1,0 +1,182 @@
+
+<span class="title">Stock Count</span><br>
+
+[% IF !stock_count.variant_id %]
+
+	Please enter the PID/SKU to be counted below <b>or</b> scan a location to find the nearest stock count.<br>
+	<br>
+	<table width="210" cellpadding="0" cellspacing="0" border="0" class="data">
+	<form name="enterSKU" action="[% form_submit %]" method="post">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+		<input type="hidden" name="redirect_type" value="[% stock_count.redirect_type %]">
+		<input type="hidden" name="redirect_id" value="[% stock_count.redirect_id %]">	
+        <input type="hidden" name="process_type" value="[% stock_count.process_type %]">
+		<input type="hidden" name="view" value="handheld">	
+		<tr>
+			<td colspan="3" class="divider"></td>
+		</tr>
+		<tr height="24"> 
+			<td align="right" width="5%"><b></b></td>
+			<td>&nbsp;&nbsp;<input type="text" name="sku_location" value=""></td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+		<tr> 
+			<td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+		</tr>
+		<tr> 
+			<td colspan="2"  class="blank" align="right">[% PROCESS page_elements/forms/submit_button.tt %]</td>
+		</tr>
+		<tr> 
+			<td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+		</tr>
+	</form>
+	</table>
+
+	<script language="Javascript">
+	<!--
+			document.enterSKU.sku_location.focus();
+	//-->
+	</script>
+
+[% ELSIF !stock_count.location %]
+
+	Please enter the location being counted below.<br>
+	<br>
+	<table width="210" cellpadding="0" cellspacing="0" border="0" class="data">
+	<form name="enterSKU" action="[% form_submit %]" method="post">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+		<input type="hidden" name="redirect_type" value="[% stock_count.redirect_type %]">
+		<input type="hidden" name="redirect_id" value="[% stock_count.redirect_id %]">	
+		<input type="hidden" name="variant_id" value="[% stock_count.variant_id %]">	
+        <input type="hidden" name="process_type" value="[% stock_count.process_type %]">
+		<input type="hidden" name="view" value="handheld">
+		<tr>
+			<td colspan="3" class="divider"></td>
+		</tr>
+		<tr height="24"> 
+			<td align="right" width="15%"><b>SKU:</b></td>
+			<td>&nbsp;&nbsp;[% stock_count.sku %]</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+		<tr height="24"> 
+			<td align="right" width="15%"><b>Location:</b></td>
+			<td>&nbsp;&nbsp;<input type="text" name="location" value=""></td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+		<tr> 
+			<td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+		</tr>
+		<tr> 
+			<td colspan="2"  class="blank" align="right">[% PROCESS page_elements/forms/submit_button.tt %]</td>
+		</tr>
+		<tr> 
+			<td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+		</tr>
+	</form>
+	</table>
+
+	<script language="Javascript">
+	<!--
+			document.enterSKU.location.focus();
+	//-->
+	</script>
+
+[% ELSE %]
+
+
+	
+	
+	<table width="210" cellpadding="0" cellspacing="0" border="0" class="data">
+		<tr>
+			<td class="divider" colspan="6"></td>
+		</tr>
+		<tr valign="top"> 
+			<td width="10%" align="right" style="padding-top:3px; padding-bottom:3px"><b>PID:&nbsp;&nbsp;</b></td>
+            <td width="50%" style="padding-top:3px; padding-bottom:3px">[% variant.sku %]</td>
+            <td width="10%" align="right" style="padding-top:3px; padding-bottom:3px"><b>Location:&nbsp;&nbsp;</b></td>
+            <td width="50%" style="padding-top:3px; padding-bottom:3px">[% stock_count.location %]</td>
+		</tr>
+		<tr>
+			<td class="divider" colspan="6"></td>
+		</tr>
+	</table>
+	
+	<br>
+	
+	<table width="210" cellpadding="0" cellspacing="0" border="0" class="data">	
+	
+	[% IF mismatch == 1 %]
+		<tr>
+			<td colspan="2" class="blank">
+				<span class="highlight">There was a discrepancy in stock levels, please count again to confirm the counted quantity</span>
+				<br><br>
+			</td>
+		</tr>
+	[% END %]
+	
+	[% IF count_type != "number" %]
+	<tr>
+		<td colspan="2" class="blank">
+			[% IF stock_count.redirect_type == "Pick" || stock_count.redirect_type == "Return" %]
+				Please enter the new location quantity for this product.
+			[% ELSE %]
+				Please enter the total stock count below.
+			[% END %]
+			<br>
+			<br>			
+		</td>
+	</tr>
+	
+	<form name="countItem" action="[% form_submit_complete %]" method="post">
+		[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+		<input type="hidden" name="finish" value="1">
+        <input type="hidden" name="count_input" value="1">
+		<input type="hidden" name="group_id" value="[% stock_count.group_id %]">
+		<input type="hidden" name="variant_id" value="[% stock_count.variant_id %]">
+		<input type="hidden" name="location" value="[% stock_count.location %]">
+		<input type="hidden" name="round" value="[% stock_count.round %]">
+		<input type="hidden" name="redirect_type" value="[% stock_count.redirect_type %]">
+		<input type="hidden" name="redirect_id" value="[% stock_count.redirect_id %]">
+        <input type="hidden" name="process_type" value="[% stock_count.process_type %]">	
+		<input type="hidden" name="view" value="handheld">
+	
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+		<tr height="24"> 
+			<td colspan="2">&nbsp;&nbsp;<input type="text" name="input_value" value="" size="5"></td>
+		</tr>
+		<tr>
+			<td colspan="2" class="divider"></td>
+		</tr>
+		<tr> 
+			<td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+		</tr>
+		<tr> 
+			<td colspan="2"  class="blank" align="right">[% PROCESS page_elements/forms/submit_button.tt %]</td>
+		</tr>
+		<tr> 
+			<td colspan="2" class="blank"><img src="/images/blank.gif" width="1" height="10"></td>
+		</tr>
+	</form>
+	[% END %]
+	
+	</table>
+	
+	
+	<script language="Javascript">
+	<!--
+			document.countItem.input_value.focus();
+	//-->
+	</script>
+
+
+[% END %]
+
+

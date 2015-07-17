@@ -1,0 +1,56 @@
+=================================
+XT 2.11 Release Instructions
+=================================
+
+Release Date:       2010/01/11
+
+
+These instructions are meant to be used in conjuction with those detailed in confluence:
+    http://confluence.net-a-porter.com/display/DEV/XT+Deployment#XTDeployment-XTApplicationdeployment
+
+
+*** IMPORTANT ***
+
+2.11.00: Initial Release
+2.11.01: DCS-2567 urgent fix for content testing
+2.11.02: DCS-2577 patcher bugs
+
+1. Modify calls to patcher
+--------------------------
+
+Identify any TOSA scripts calling /opt/xt/xt-perl/bin/patcher
+and change them so that the --paths_relative_to is the pathname 
+which changes across releases.
+
+ OLD: patcher [db options] /opt/xt/deploy/xt-2.11/db_schema/patches/1.23/Common \
+                           /opt/xt/deploy/xt-2.11/db_schema/patches/1.23/DC1
+
+ NEW: patcher [db options] --paths-relative-to /opt/xt/deploy/xt-2.11 \
+                          db_schema/patches/1.23/Common  \
+                          db_schema/patches/1.23/DC1
+
+
+
+
+X. Lastly
+---------
+
+Paste any console output from the steps above as a
+
+  {noformat}
+    [replace with console output]
+  {noformat}
+
+comment to the JIRA ticket for this release.
+
+
+ _____________________________________
+/ You did remember to pull the latest \
+\ xt_deploy.sh, right?                /
+ -------------------------------------
+        \   ^__^
+         \  (OO)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+

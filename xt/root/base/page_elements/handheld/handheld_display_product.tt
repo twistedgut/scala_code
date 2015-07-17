@@ -1,0 +1,58 @@
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <thead>
+        <tr>
+            <td colspan="2" class="dividerHeader"></td>
+        </tr>
+        <tr height="24">
+            <td colspan="2" class="tableheader">&nbsp;&nbsp;&nbsp;&nbsp;Product Detail: [% product.id %]</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="dividerHeader"></td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr height="100">
+            <td>
+                <img height='100px' width='75px' src=''>
+            </td>
+            <td>[% product.name %]</td>
+        </tr>
+        <tr height="20">
+            <td></td>
+            <td></td>
+        </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    <thead>
+        <tr>
+            <td colspan="7" class="dividerHeader"></td>
+        </tr>
+        <tr height="24">
+            <td class="tableheader">&nbsp;&nbsp;&nbsp;&nbsp;Designer</td>
+            <td class="tableheader">Style No</td>
+            <td class="tableheader">Product Type</td>
+            <td class="tableheader">Sub Type</td>
+            <td class="tableheader">Colour</td>
+            <td class="tableheader">Selling Price</td>
+        </tr>
+        <tr>
+            <td colspan="7" class="dividerHeader"></td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr height="20">
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[% product.designer %]</td>
+            <td>[% product.style_number %]</td>
+            <td>[% product.productuct_type %]</td>
+            <td>[% product.sub_type %]</td>
+            <td>[% #product. %]</td>
+            <td>[% #product. %]</td>
+            <td>[% #product. %]</td>
+            <td>[% #product. %]</td>
+        </tr>
+        <tr>
+            <td colspan="7" class="divider"></td>
+        </tr>
+</table>
+<br>
+<br>

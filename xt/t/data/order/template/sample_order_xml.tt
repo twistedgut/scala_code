@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ORDERS>
+  <ORDER O_ID="[% order.id %]" ORDER_DATE="[% order.date || '2009-07-22 15:30' %]" CHANNEL="[% order.channel_web_name || 'NAP-INTL' %]" CUST_ID="[% customer.id || 27016 %]" CUST_IP="116.14.244.177," USED_STORED_CREDIT_CARD="F" LOGGED_IN_USERNAME="bob@gmail.com">
+    <TENDER_LINE TL_ID="729565" TYPE="Store Credit" RANK="1">
+      <VALUE CURRENCY="GBP">761.09</VALUE>
+    </TENDER_LINE>
+    <BILLING_DETAILS>
+      <NAME>
+        <TITLE>Ms</TITLE>
+        <FIRST_NAME>Bob</FIRST_NAME>
+        <LAST_NAME>Smith</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>111 Some Street</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2></ADDRESS_LINE_2>
+        <ADDRESS_LINE_3></ADDRESS_LINE_3>
+        <TOWNCITY>Some Town</TOWNCITY>
+        <COUNTY>Some County</COUNTY>
+        <STATE></STATE>
+        <POSTCODE>112222</POSTCODE>
+        <COUNTRY>GB</COUNTRY>
+      </ADDRESS>
+      <CONTACT_DETAILS>
+        <TELEPHONE TYPE="HOME" />
+        <TELEPHONE TYPE="MOBILE" />
+        <TELEPHONE TYPE="OFFICE">111111111</TELEPHONE>
+        <EMAIL>bob@gmail.com</EMAIL>
+      </CONTACT_DETAILS>
+    </BILLING_DETAILS>
+    <DELIVERY_DETAILS>
+      <NAME>
+        <TITLE>Ms</TITLE>
+        <FIRST_NAME>Bob</FIRST_NAME>
+        <LAST_NAME>Smith</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>18 Kennington Road</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2>Kennington</ADDRESS_LINE_2>
+        <ADDRESS_LINE_3></ADDRESS_LINE_3>
+        <TOWNCITY>Oxford</TOWNCITY>
+        <COUNTY>Oxon</COUNTY>
+        <STATE></STATE>
+        <POSTCODE>OX1 5NZ</POSTCODE>
+        <COUNTRY>GB</COUNTRY>
+      </ADDRESS>
+      <ORDER_LINE OL_ID="2995400" DESCRIPTION="Basic Packaging" SKU="900007-001" QUANTITY="1" OL_SEQ="1">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </UNIT_NET_PRICE>
+	<TAX>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      <ORDER_LINE OL_ID="2995401" DESCRIPTION="International" SKU="[% order.default_international_shipping_sku || '900000-001' %]" QUANTITY="1" OL_SEQ="2">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">20.00</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">1.40</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      [% SET total = 20 + 1.4; # Shipping costs
+         FOREACH li IN order.items;
+           total = total + li.unit_price + li.tax + li.duty; %]
+      <ORDER_LINE OL_ID="[% 2995401 + loop.index %]" DESCRIPTION="[% li.description || 'Suede thigh-high boots' %]" SKU="[% li.sku %]" QUANTITY="[% li.quantity || 1 %]" OL_SEQ="[% 2 + loop.index %]">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">[% li.unit_price %]</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">[% li.tax %]</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">[% li.duty %]</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      [% END %]
+    </DELIVERY_DETAILS>
+    <GROSS_TOTAL>
+      <VALUE CURRENCY="GBP">761.09</VALUE>
+    </GROSS_TOTAL>
+    <POSTAGE>
+      <VALUE CURRENCY="GBP">0.00</VALUE>
+    </POSTAGE>
+  </ORDER>
+</ORDERS>

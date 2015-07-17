@@ -1,0 +1,16 @@
+<pre>
+h2. Bugs
+
+    * REL-980: (live issue) Fixes to update 'orders.tender' Card Debit records when changes are made to shipping/prices etc.
+
+h2. Projects
+
+    * GV: Merge of Gift Voucher project code
+
+    * DCEA: (to the special attention of MIS)
+
+      - previously, the shipment_item_status_id of a shipment_item record could only assume the value "picked" once
+      - now, it can transition from "picked" to "packing exception" (when the packer finds a problem with the item) to "picked" again (when the supervisor fixes the item in some way)
+
+      - XTracker needs the ActiveMQ broker to talk to itself; it will use the queues called "dc1/xt_wms" and "dc1/ravni_wms" (and "dc2/*" in the other DC)
+</pre>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ORDERS>
+  <ORDER O_ID="500013906" ORDER_DATE="2011-06-09 12:01" CHANNEL="MRP-INTL" CUST_ID="500078693" CUST_IP="10.5.2.33" USED_STORED_CREDIT_CARD="F" LOGGED_IN_USERNAME="suma.binger@net-a-porter.com">
+    <TENDER_LINE TL_ID="1211191" TYPE="Card" RANK="1">
+      <VALUE CURRENCY="GBP">33.60</VALUE>
+      <PAYMENT_DETAILS>
+        <PRE_AUTH_CODE>20000243</PRE_AUTH_CODE>
+      </PAYMENT_DETAILS>
+    </TENDER_LINE>
+    <PROMOTION_BASKET PB_ID="1" TYPE="free_shipping" DESCRIPTION="Mr P - INTL - Staff Free Shipping">
+      <VALUE CURRENCY="GBP">0.00</VALUE>
+    </PROMOTION_BASKET>
+    <PROMOTION_BASKET PB_ID="2" TYPE="percentage_discount" DESCRIPTION="Mr P - INTL - Staff Discount 30%">
+      <VALUE CURRENCY="GBP">0.00</VALUE>
+    </PROMOTION_BASKET>
+    <PROMOTION_LINE PL_ID="1" TYPE="free_shipping" DESCRIPTION="Mr P - INTL - Staff Free Shipping">
+      <VALUE CURRENCY="GBP">0.00</VALUE>
+      <ORDER_LINE_ID>5019058</ORDER_LINE_ID>
+    </PROMOTION_LINE>
+    <PROMOTION_LINE PL_ID="2" TYPE="percentage_discount" DESCRIPTION="Mr P - INTL - Staff Discount 30%">
+      <VALUE CURRENCY="GBP">14.40</VALUE>
+      <ORDER_LINE_ID>5019058</ORDER_LINE_ID>
+    </PROMOTION_LINE>
+    <BILLING_DETAILS>
+      <NAME>
+        <TITLE>Mr</TITLE>
+        <FIRST_NAME>suma</FIRST_NAME>
+        <LAST_NAME>binger</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>316, Headley Road east</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2>Woodley</ADDRESS_LINE_2>
+        <ADDRESS_LINE_3>316, Headley Road east</ADDRESS_LINE_3>
+        <TOWNCITY>Reading</TOWNCITY>
+        <COUNTY>Berkshire</COUNTY>
+        <STATE />
+        <POSTCODE>RG5 4SJ</POSTCODE>
+        <COUNTRY>GB</COUNTRY>
+      </ADDRESS>
+      <CONTACT_DETAILS>
+        <TELEPHONE TYPE="HOME" />
+        <TELEPHONE TYPE="MOBILE">8967895789</TELEPHONE>
+        <TELEPHONE TYPE="OFFICE">789798798789798</TELEPHONE>
+        <EMAIL>suma.binger@net-a-porter.com</EMAIL>
+      </CONTACT_DETAILS>
+    </BILLING_DETAILS>
+    <DELIVERY_DETAILS>
+      <NAME>
+        <TITLE>Mr</TITLE>
+        <FIRST_NAME>suma</FIRST_NAME>
+        <LAST_NAME>binger</LAST_NAME>
+      </NAME>
+      <ADDRESS>
+        <ADDRESS_LINE_1>36, headly road east</ADDRESS_LINE_1>
+        <ADDRESS_LINE_2 />
+        <ADDRESS_LINE_3>36, headly road east</ADDRESS_LINE_3>
+        <TOWNCITY>slough</TOWNCITY>
+        <COUNTY />
+        <STATE />
+        <POSTCODE>SL3 8NP</POSTCODE>
+        <COUNTRY>GB</COUNTRY>
+      </ADDRESS>
+      <ORDER_LINE OL_ID="5019058" DESCRIPTION="Harlequin Socks" SKU="300861-005" QUANTITY="3" OL_SEQ="1">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">9.33</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">1.87</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      <ORDER_LINE OL_ID="5019059" DESCRIPTION="UK Express" SKU="900003-001" QUANTITY="1" OL_SEQ="2">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      <ORDER_LINE OL_ID="5019060" DESCRIPTION="Signature Packaging" SKU="900006-001" QUANTITY="1" OL_SEQ="3">
+        <UNIT_NET_PRICE>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </UNIT_NET_PRICE>
+        <TAX>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </TAX>
+        <DUTIES>
+          <VALUE CURRENCY="GBP">0.00</VALUE>
+        </DUTIES>
+      </ORDER_LINE>
+      <GIFT_MESSAGE>Suma's gift message MRP</GIFT_MESSAGE>
+      <STICKER>Mr Kumar</STICKER>
+    </DELIVERY_DETAILS>
+    <GROSS_TOTAL>
+      <VALUE CURRENCY="GBP">33.60</VALUE>
+    </GROSS_TOTAL>
+    <POSTAGE>
+      <VALUE CURRENCY="GBP">0.00</VALUE>
+    </POSTAGE>
+  </ORDER>
+</ORDERS>
+

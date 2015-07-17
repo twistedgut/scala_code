@@ -1,0 +1,13 @@
+<pre>
+
+h1. Warehouse Management
+    * whm-2472: bug fix.. location to be 4 digits 0001-9999
+    * WHM-2930: Fix "Returns Arrival" Search Page: Internal Server Error
+
+h1. Product Management
+    * PM-1928 Correct response status for quantity problem
+
+h1. Seaview
+    * SVW-180: Customer category updates to XT and Seaview
+
+</pre>

@@ -1,0 +1,48 @@
+<pre>
+
+
+h1. CANDO - Customer & Orders
+
+* CANDO-8644 - Added Non-Returnable Flag for JC
+* CANDO-8687 - Stop XT crashing when entering non-integer for PID in Reservation Search
+
+h1. DC2A - DC2 Automation
+
+* DCA-4473: Stop duplicate container_ready messages from adjusting inventory
+
+
+h1. DCOP - DC Operations
+
+*
+
+
+h1. SHIP - Expedited Shippping
+
+*
+
+
+h1. WHM - Warehouse
+
+*
+
+
+
+h1. Other
+
+h2. BS - Build Support
+
+*
+
+h2. PM - Product Management
+
+*
+
+h2. SAS - Search & Aggregation
+
+*
+
+h2. Misc
+
+*
+
+</pre>

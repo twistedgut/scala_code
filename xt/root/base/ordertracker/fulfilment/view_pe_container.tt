@@ -1,0 +1,209 @@
+
+[%#
+    This tote either contains a viable shipment or a collection of superfluous
+    items. Either way, this template is about displaying the items in a tote.
+
+    If we do contain a viable shipment, we want to strongly suggest to the
+    user that they view that shipment so they can fix it. If not, we want to
+    show them a list of available items.
+%]
+
+<!-- Meta-data about this tote -->
+<div class="formrow dividebelow divideabove">
+  <span class="fakelabel">Container ID:</span>
+  <p>[% container.id | html %]</p>
+</div>
+<div class="formrow dividebelow">
+  <span class="fakelabel">Container Type:</span>
+  <p>[% container.physical_type | html %]</p>
+</div>
+
+<!-- PE-specific -->
+[% IF container.status_id ==
+    db_constant('PUBLIC_CONTAINER_STATUS__PACKING_EXCEPTION_ITEMS') %]
+    <div class="formrow dividebelow">
+        <span class="fakelabel">Items Present:</span>
+        <p>[% shipment_items.size %]</p>
+    </div>
+    <div class="formrow dividebelow">
+        <span class="fakelabel">Associated Shipment:</span>
+        [% SET shipment_id = container.shipment_ids.first %]
+        <p><a href="/Fulfilment/Packing/CheckShipmentException?shipment_id=[% shipment_id %]">
+            [%- shipment_id -%]
+        </a></p>
+    </div>
+
+<!-- Superfluous specific -->
+[% ELSE %]
+    <div class="formrow dividebelow">
+      <span class="fakelabel">Cancelled Items Present:</span>
+      <p>[% shipment_items.size || 0 %]</p>
+    </div>
+    <div class="formrow dividebelow">
+      <span class="fakelabel">Unexpected Items Present:</span>
+      <p>[% orphaned_items.size || 0 %]</p>
+    </div>
+    [% IF orphaned_items.size %]
+    <form
+        action="/Fulfilment/PackingException/ViewContainer/RemoveOrphan"
+        method="POST"
+        name="remove_orphan">
+        <input type="hidden" name="container_id" value="[% container.id %]">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+
+        <div class="formrow dividebelow">
+            <label for="shipment_id">Remove Unexpected Item:</label>
+            <input type="text" name="sku" id="sku" value="" />
+        </div>
+        <div class="formrow dividebelow">
+            <input type="submit" name="submit" class="button" value="Submit &raquo;">
+        </div>
+    </form>
+    <script type="text/javascript">document.remove_orphan.sku.focus();</script>
+    [% ELSE %]
+    <form
+        name="send_to_putaway"
+        action="/Fulfilment/PackingException/ViewContainer/SendToPutaway"
+        method="POST">
+        [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+        <input type="hidden" name="container_id" value="[% container.id %]">
+
+        <div class="formrow dividebelow">
+            <input type="submit" name="submit" class="button" value="Mark as ready for put-away &raquo;">
+        </div>
+    </form>
+    [% END %]
+[% END %]
+<br>
+
+<!-- Show orphaned items -->
+[% IF orphaned_items.size %]
+<h3 class="title-[% channel_config.${container.get_channel.name} %]">Unexpected Items</span><br>
+    <table class="data wide-data divided-data" id="orphaned_items">
+        <thead>
+          <tr>
+            <th width="20%"></th><!-- Image -->
+            <th width="10%">SKU</th>
+            <th width="20%">Designer</th>
+            <th width="30%">Name</th>
+            <th width="10%">Size</th>
+            <th width="20%">Operator</th>
+            <th width="20%">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          [% FOREACH item = orphaned_items %]
+          [% SET item_id = item.id %]
+          [% SET product = item.variant.product %]
+          [%
+            IF product.get_product_channel_for_images.channel.name == 'MRPORTER.COM';
+                filename = product.id _ '_mrp';
+                image_size = 'l';
+            ELSE;
+                filename = product.id;
+                image_size = 'dl';
+            END
+           %]
+          <tr>
+            <td><a[% IF product.get_product_channel_for_images.live %] href="[% image_host_url %]/images/products/[% product.id %]/[% filename %]_in_[% image_size %].jpg" target="new" class="imagezoom" [% END %]><img src="[% orphaned_item_images.$item_id.0 %]" width="120"></a></td>
+            <td><a href="/StockControl/Inventory/Overview?product_id=[% item.get_true_variant.product_id %]">[% item.get_sku %]</a></td>
+            [%- IF item.variant %]
+            <td>[% item.variant.product.product_attribute.name | html %]</td>
+            <td>[% item.variant.product.designer.designer | html %]</td>
+            <td>[% item.variant.size.size | html %]</td>
+            [% ELSE %]
+            <td>[% item.voucher_variant.product.name | html %]</td>
+            <td><em>Gift Card</em></td>
+            <td>[% item.voucher_variant.product.value %][% item.voucher_variant.product.currency.currency | html %]</td>
+            [% END %]
+            <td>[% item.operator.name %]</td>
+            <td class="nowrap">[% item.date.strftime( '%d-%m-%Y %H:%M' ) %]</td>
+          </tr>
+        </tbody>
+        [% END %]
+    </table>
+[% END %]
+<br>
+
+<!-- Show shipment items -->
+[% IF container.status_id ==
+    db_constant('PUBLIC_CONTAINER_STATUS__PACKING_EXCEPTION_ITEMS') %]
+    <span class="title title-NAP">Shipment Items</span><br>
+    <table class="data wide-data divided-data" id="shipment_items">
+        <thead>
+          <tr>
+            <th></th><!-- Image -->
+            <th align="center">SKU</th>
+            <th>Designer</th>
+            <th>Name</th>
+            <th>Size</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="dividerHeader" colspan="[% colspan %]"></td></tr>
+          [% FOREACH item = container.shipment_items %]
+          [% SET item_id = item.id %]
+          [% SET product = shipment_item_info.$item_id.product %]
+          [%
+            IF product.get_product_channel_for_images.channel.name == 'MRPORTER.COM';
+                filename = product.id _ '_mrp';
+                image_size = 'l';
+            ELSE;
+                filename = product.id;
+                image_size = 'dl';
+            END
+           %]
+
+          <tr valign="middle" height="160">
+            <td width="20%"><a [% IF product.get_product_channel_for_images.live %] href="[% image_host_url %]/images/products/[% product.id %]/[% filename %]_in_[% image_size %].jpg" target="new" class="imagezoom" [% END %]><img src="[% shipment_item_info.$item_id.image.0 %]" width="120"></a></td>
+            <td width="15%" align="center">[% shipment_item_info.$item_id.product_id %]-[% shipment_item_info.$item_id.sku_size %]</td>
+            <td width="15%">[% shipment_item_info.$item_id.designer %]</td>
+            <td width="35%">[% shipment_item_info.$item_id.name %]</td>
+            <td width="15%">[% IF shipment_item_info.$item_id.short_name != "" %][% shipment_item_info.$item_id.short_name %] [% END %][% shipment_item_info.$item_id.designer_size %]</td>
+          </tr>
+          [% END %]
+        </tbody>
+    </table>
+
+<!-- Show cancelled items -->
+[% ELSIF shipment_items.size %]
+    <span class="title title-NAP">Cancelled Items</span><br>
+    <table class="data wide-data divided-data" id="cancelled_items">
+        <thead>
+          <tr>
+            <th></th><!-- Image -->
+            <th align="center">SKU</th>
+            <th>Designer</th>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Cancelled From</th>
+          </tr>
+        </thead>
+        <tbody>
+          [% FOREACH item = shipment_items %]
+          [% SET item_id = item.id %]
+          [% SET product = shipment_item_info.$item_id.product %]
+          [%
+            IF product.get_product_channel_for_images.channel.name == 'MRPORTER.COM';
+                filename = product.id _ '_mrp';
+                image_size = 'l';
+            ELSE;
+                filename = product.id;
+                image_size = 'dl';
+            END
+           %]
+
+          <!-- Item ID: [% item_id %] -->
+          <tr>
+            <td width="20%"><a [% IF product.get_product_channel_for_images.live %] href="[% image_host_url %]/images/products/[% product.id %]/[% filename %]_in_[% image_size %].jpg" target="new" class="imagezoom" [% END %]><img src="[% shipment_item_info.$item_id.image.0 %]" width="120"></a></td>
+            <td width="15%" align="center">[% shipment_item_info.$item_id.product_id %]-[% shipment_item_info.$item_id.sku_size %]</td>
+            <td width="15%">[% shipment_item_info.$item_id.designer || '<em>Gift Card</em>' %]</td>
+            <td width="15%">[% shipment_item_info.$item_id.name %]</td>
+            <td width="15%">[% IF shipment_item_info.$item_id.short_name != "" %][% shipment_item_info.$item_id.short_name %] [% END %][% shipment_item_info.$item_id.designer_size %]</td>
+            <td width="15%"><a href="/Fulfilment/PackingException/OrderView?order_id=[% item.shipment.order.id %]">[% item.shipment_id %]</a></td>
+          </tr>
+          [% END %]
+        </tbody>
+    </table>
+[% END %]
+<br>

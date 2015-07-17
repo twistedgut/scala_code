@@ -1,0 +1,222 @@
+[%-
+    SET can_create_pre_order = 0;
+    IF department_id == db_constant('DEPARTMENT__PERSONAL_SHOPPING')
+        || department_id == db_constant('DEPARTMENT__FASHION_ADVISOR');
+    THEN;
+        can_create_pre_order = 1;
+    END;
+-%]
+[% IF customer %]
+    <h3 class="title-[% channel_config.$sales_channel %]">Customer Reservations [% IF is_pre_order_active %]&amp; Pre Order[% END %]</h3>
+    <br>
+
+    <b>Customer:</b>&nbsp;[% customer.first_name %] [% customer.last_name %]<br />
+    <b>Customer Number:</b>&nbsp; [% customer.is_customer_number %]<br />
+    <br>
+
+    [% IF is_pre_order_active && can_create_pre_order %]
+        <span class="horizontal_form_alignment" id="customer__create_pre_order_button_wrapper">
+            <form method="get" action="/StockControl/Reservation/PreOrder/SelectProducts">
+                <input type="hidden" name="customer_id" value="[% customer.id %]">
+                <input type="submit" class="button" value="Create Pre-Order for this customer">
+            </form>
+        </span>
+    [% END %]
+    <span class="horizontal_form_alignment" id="customer__create_multi_reservation_button_wrapper">
+        <form method="get" action="/StockControl/Reservation/MultipleReservations/SelectProducts">
+            <input type="hidden" name="customer_id" value="[% customer.id %]">
+            <input type="submit" class="button" value="Create Multiple Reservations for this customer">
+        </form>
+    </span>
+    <br clear="all">
+
+    <br>
+    [% reservation_tabview = BLOCK %]
+        <div id="reservation_tabview">
+        [% IF reservations.size %]
+            <script type="text/javascript">
+                $(function() {
+                    $('span[id^="toggle_"]').click(function() {
+                        var status_id = $(this).attr('id').match(/\d+$/);
+                        $('tbody[class="reservations_in_'+status_id+'"]').toggle();
+                    });
+                });
+            </script>
+            <table class="wide-data data">
+                <thead>
+                    <tr>
+                        <th>View</th>
+                        <th colspan="[% reservation_statuses.size %]">Toggle Show / Hide</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="dividebelow">
+                        <td>&nbsp;&nbsp;Status</td>
+                        [% FOREACH status = reservation_statuses %]
+                            <td><span class="fakelink" id="toggle_[% status.id %]">[% status.status %]</span></td>
+                        [% END %]
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+            <br>
+            <table class="wide-data data" id="reservation_list">
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Sales Channel</th>
+                        <th>Operator</th>
+                        <th>Source</th>
+                        <th>Type</th>
+                        <th>Created</th>
+                        <th>Uploaded</th>
+                        <th>Expires</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                [% FOREACH reservation = reservations %]
+                [% SET previous_status_id = 0 %]
+                [% IF reservation.status_id != previous_status_id %]
+                [% UNLESS LOOP.first %]</tbody>[% END %]
+                <tbody class="reservations_in_[% reservation.status_id %]">
+                [% END %]
+                    <tr class="dividebelow" id="reservation_id_[% reservation.id %]">
+                        <td><a href="/StockControl/Reservation/Product?product_id=[% reservation.variant.product_id %]#[% reservation.variant_id %]">[% reservation.variant.sku %]</a></td>
+                        <td><span class="title-[% channel_config.$sales_channel %]">[% sales_channel %]</span></td>
+                        <td>[% reservation.operator.name %]</td>
+                        <td>[% reservation.reservation_source.source | html %]</td>
+                        <td>[% reservation.reservation_type.type | html %]</td>
+                        <td>[% reservation.date_created.strftime('%d-%m-%y') %]</td>
+                        <td>[% reservation.date_uploaded.strftime('%d-%m-%y') %]</td>
+                        <td>[% reservation.date_expired.strftime('%d-%m-%y') %]</td>
+                        <td>[% reservation.status.status %]</td>
+                    </tr>
+                [% END %]
+                [% UNLESS reservations.size == 0 %]</tbody>[% END %]
+            </table>
+        [% ELSE %]
+        No reservations for this customer.
+        [% END %]
+        </div>
+    [% END %]
+
+    [% preorder_tabview = BLOCK %]
+        <div id="preorder_tabview">
+        [% IF preorders.size %]
+            [% FOREACH preorder = preorders %]
+            <strong><a href="/StockControl/Reservation/PreOrder/Summary?pre_order_id=[% preorder.id %]">Pre Order Nr. [% preorder.pre_order_number %]</a></strong>&nbsp;&nbsp;&nbsp;<strong>Status: </strong>[% preorder.pre_order_status.status %][% IF preorder.is_incomplete || preorder.is_payment_declined %]&nbsp;-&nbsp;<a href="/StockControl/Reservation/PreOrder/Basket?pre_order_id=[% preorder.id %]">continue</a>[% END %]
+            <table class="wide-data data" id="preorder_[% preorder.id %]">
+                <thead>
+                    <tr>
+                        <th width="10%">SKU</th>
+                        <th width="35%">Name</th>
+                        <th width="5%">Size</th>
+                        <th width="5%">Quantity</th>
+                        [% IF preorder.has_discount %]<th>Discount</th>[% END %]
+                        <th width="10%">Source</th>
+                        <th width="5%">Type</th>
+                        <th width="10%">Created</th>
+                        <th width="10%">Operator</th>
+                        <th width="10%">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="reservations_in_[% reservation.status_id %]">
+                    [% SET items=preorder.pre_order_items_rs.get_consolidated_items_for_display  %]
+                    [% FOREACH item IN items %]
+                    <tr class="dividebelow">
+                        <td>[% item.variant.sku %]</td>
+                        <td>[% item.variant.product.preorder_name %]</td>
+                        <td>[% item.variant.size.size %]</td>
+                        <td>[% item.get_column('count') %]</td>
+                        [% IF preorder.has_discount %]<td>[% preorder.applied_discount_percent %]%</td>[% END %]
+                        <td>[% IF preorder.reservation_source.source %][% preorder.reservation_source.source %][% ELSE %]n/a[% END %]</td>
+                        <td>[% IF preorder.reservation_type.type %][% preorder.reservation_type.type %][% ELSE %]n/a[% END %]</td>
+                        <td>[% preorder.created.strftime('%d-%m-%y') %]</td>
+                        <td>[% preorder.operator.name %]</td>
+                        <td>[% item.pre_order_item_status.status %]</td>
+                    </tr>
+                    [% END %]
+                </tbody>
+            </table>
+            <br>
+            [% END %]
+        [% ELSE %]
+        No pre-orders for this customer.
+        [% END %]
+        </div>
+    [% END %]
+
+    [% tabview = {
+        tabs_label = '',
+        tabs = [
+            {
+                id       = 1,
+                channel  = channel_config.$sales_channel,
+                name     = 'Reservations',
+                selected = 1,
+                active   = 1,
+                content  = reservation_tabview,
+            },
+            {
+                id       = 2,
+                channel  = channel_config.$sales_channel,
+                name     = 'Pre Orders',
+                selected = 0,
+                active   = is_pre_order_active,
+                content  = preorder_tabview,
+            }
+        ]
+    }
+    %]
+
+    [% INCLUDE generic/tabview.tt tabs %]
+
+[% ELSE %]
+
+<span class="title">Customer Search</span><br>
+<form name="reservationCustomerSearch" action="/StockControl/Reservation/Customer" method="post">
+[% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+<input type="hidden" name="search" value="1">
+<div class="formrow divideabove dividebelow">
+    <label for="customer_number">Customer Number</label>
+    <input type="text" name="customer_number" />
+</div>
+<div class="formrow dividebelow">
+    <label for="first_name">First Name</label>
+    <input type="text" name="first_name" />
+</div>
+<div class="formrow dividebelow">
+    <label for="last_name">Surname</label>
+    <input type="text" name="last_name" />
+</div>
+<div class="formrow dividebelow">
+    <label for="email">Email</label>
+    <input type="text" name="email" />
+</div>
+<div class="formrow buttons aftertable">
+    <input type="submit" name="submit" value="Submit &raquo;" class="button">
+</div>
+</form>
+
+[% IF customers.size %]
+<table class="wide-data data">
+    <thead>
+        <tr>
+            <th>Customer Number</th>
+            <th>Name</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+    [% FOREACH custid = customers.keys.nsort %]
+        <tr class="dividebelow">
+            <td><a href="/StockControl/Reservation/Customer?customer_id=[% custid %]">[% customers.$custid.is_customer_number %]</a></td>
+            <td>[% customers.$custid.first_name %] [% customers.$custid.last_name %]</td>
+            <td>[% customers.$custid.email %]</td>
+        </tr>
+    [% END %]
+    </tbody>
+</table>
+[% END %]
+
+[% END %]

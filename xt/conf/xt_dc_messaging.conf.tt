@@ -1,0 +1,11 @@
+[% NAP_CONFIG_HEADER %]
+
+log4perl             [% XTDC_CONF_DIR %]/log4perl/amq_consumer.conf
+<log4perlopts>
+  autoflush 1
+</log4perlopts>
+
+# Include for XTDC1 or XTDC2
+<<Include xt_dc_messaging_[% NAP_HOST_TYPE %].conf>>
+
+<<Include wms_activemq_[% NAP_HOST_TYPE %].conf>>

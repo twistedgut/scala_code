@@ -1,0 +1,1 @@
+[% MACRO dc_specific(template) PROCESS "dc_specific/$DC_NAME/$template" %]

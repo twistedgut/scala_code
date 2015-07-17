@@ -1,0 +1,77 @@
+<!-- TT BEGIN - stocktracker/goods_in/recent_deliveries.tt -->
+
+
+<!-- Recent Deliveries -->
+<div id="recent_deliveries">
+    <table style="width: 100%" cellpadding="0" cellspacing="0" border="0" class="data">
+    [% tbl_recent_deliveries_numcols = 9 %]
+        <thead>
+        <tr style="height: 60px">
+            [% select_num_weeks = [1..12] %]
+            <td class="blank" colspan="[% tbl_recent_deliveries_numcols %]">
+                <form name="select_weeks" action="" method="get">
+                    [% INCLUDE page_elements/forms/dbl_submit_token.tt %]
+                    <label for="select_weeks" style="font-weight: bold">List items delivered in the previous&nbsp;</label>
+                    <select name="select_weeks" id="select_weeks" onchange="this.form.submit()">
+                    [% FOREACH num_weeks = select_num_weeks %]
+                        <option value="[% num_weeks %]" [% IF num_weeks == select_weeks %] SELECTED[% END %]>[% num_weeks %]</option>
+                    [% END %]
+                    </select>
+                    <label for="select_weeks" style="font-weight: bold">&nbsp;Weeks.</label>&nbsp;&nbsp;
+                    (as at [% current_date.strftime('%F %R') %])
+                </form>
+            </td>
+        </tr>
+        <tr><td class="blank" colspan="[% tbl_recent_deliveries_numcols %]">
+          [% PROCESS shared/pager.tt
+                url_suffix_params={'select_weeks' => select_weeks},
+                record_label="deliveries"
+                url_path="/GoodsIn/RecentDeliveries"
+          %]
+        </td></tr>
+        <tr>
+            <td colspan="[% tbl_recent_deliveries_numcols %]" class="dividerHeader"></td>
+        </tr>
+        <tr>
+            <td class="tableHeader" style="width: 8%">&nbsp;Delivery</td>
+            <td class="tableHeader" style="width: 14%">Date</td>
+            <td class="tableHeader" style="width: 12%">Status</td>
+            <td class="tableHeader" style="width: 10%">PID</td>
+            <td class="tableHeader" style="width: 15%">Sales Channel</td>
+            <td class="tableHeader" style="width: 15%">Designer</td>
+            <td class="tableHeader" style="width: 10%; text-align: right">Packing&nbsp;Slip</td>
+            <td class="tableHeader" style="width: 10%; text-align: right">Quantity&nbsp;&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="[% tbl_recent_deliveries_numcols %]" class="dividerHeader"></td>
+        </tr>
+        </thead>
+
+        [% CALL recent_deliveries.reset;WHILE (delivery = recent_deliveries.next);
+            # We won't need voucher_product, so get public_product explicitly
+            product = delivery.stock_order.public_product;
+            pid = product.id || delivery.stock_order.voucher_product_id;
+            po = delivery.stock_order.purchase_order;
+            channel = po.channel;
+        %]
+            <tr style="height: 10">
+                <td style="text-align: left">&nbsp;[% delivery.id %]</td>
+                <td style="text-align: left">[% delivery.date.strftime('%F %R') %]</td>
+                <td style="text-align: left">[% delivery.status.status %]</td>
+                <td style="text-align: left; background-color: #">
+                    <a href="../StockControl/Inventory/Overview?product_id=[% pid %]">[% pid %]</a>
+                </td>
+                <td><span class="title-[% channel.business.config_section %]">[% channel.name %]</span></td>
+                <td style="text-align: left; background-color: #">[% product.designer.designer || 'Gift Voucher (N/A)' %]</td>
+                <td style="text-align: right; background-color: #">[% delivery.get_total_packing_slip %]</td>
+                <td style="text-align: right; background-color: #">[% delivery.get_total_quantity %]&nbsp;&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="[% tbl_recent_deliveries_numcols %]" class="divider"></td>
+            </tr>
+        [% END %]
+    </table>
+</div>
+<br />
+
+<!-- TT END - stocktracker/goods_in/recent_deliveries.tt -->

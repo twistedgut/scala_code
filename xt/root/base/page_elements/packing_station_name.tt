@@ -1,0 +1,11 @@
+[% IF preferences.packing_station_name %]
+    <div id="packing_station">
+        <div class="station_icon">
+            <img src="/images/icons/printer.png" title="Current Packing Station" alt="Current Packing Station" border="0" />
+        </div>
+        <div class="station_name">
+            <span>[% preferences.packing_station_name.replace('_',' ') %]</span>
+        </div>
+    </div>
+    <br clear="all" />
+[% END %]

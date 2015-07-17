@@ -1,0 +1,23 @@
+[% PROCESS dc_specific.tt %]
+<!-- Template name: [% template.name %] -->
+
+<table width=635 border=0 cellpadding=0 cellspacing=0>
+    <tr>
+        <td><img src="/images/blank.gif" width="1" height="[% spacer_height %]" border="0"></td>
+    </tr>
+    <tr>
+        <td align="left">
+<font face="arial" size=1 color="#000000">
+[% tt_comp_addr %]
+[% IF country.tax_code %]
+	[% country.tax_name %] REG NO: [% country.tax_code %]<br>
+    [% dc_specific('print/document_footer/company_registered.tt') %]
+[% END %]
+<br/>
+<br/>
+NEED HELP? Email [% customercare_email %] or call 
+[% dc_specific('print/document_footer/contact_and_hours.tt') %]
+</font>
+        </td>
+    </tr>
+</table>

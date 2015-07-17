@@ -1,0 +1,535 @@
+# Don't really strip files - shave seconds
+%define __os_install_post /usr/lib/rpm/brp-compress; echo 'Not stripping.'
+
+# Name,Version,Source and BuildRoot are going to be populated by the make script before this line
+%define manifest %{_builddir}/%{name}-%{version}-%{release}.manifest
+
+%define NAP_PROPERTIES_FILE /etc/nap.properties
+%define LOCAL_PROPERTIES_FILE   /etc/nap_local.properties
+
+%define XTDC_BASE_DIR       /opt/xt/deploy/xtracker
+%define XTDC_CONF_DIR       /etc/xtdc
+%define XTDC_LOGS_DIR       /var/log/nap/xt
+
+%define XTDC_GROUP      xt
+%define XTDC_USER       xt-web
+%define XTDC_USER_JQ        xt-jq
+%define XTDC_USER_AMQ       xt-amq
+%define XTDC_USER_CRON      xt-cron
+
+%define XTDC_TTCACHE        /tmp/ttcache
+%define XTDC_STATIC_DATA        /var/data/xt_static
+%define XTDC_GENERATED_CSS %{XTDC_BASE_DIR}/root/static/css/xtracker.css %{XTDC_BASE_DIR}/root/static/css/print.css
+
+%define sysconfdir     %{XTDC_BASE_DIR}
+%define buildscriptdir %{XTDC_BASE_DIR}/script/build
+
+# Defining paths to be exported in PATH as the RPM has a very pristine path
+# whilst installing
+%define PERL_NAP_BIN_PATH         /opt/xt/xt-perl/bin
+%define POSTGRES_NAP_BIN_PATH     /usr/pgsql-9.0/bin
+
+# Defining a spec-level macro to substitute username placeholders with the
+# correct spec-defined value
+%define replace_usernames() (                         \
+    %{__sed} 's,XTDC_USER_JQ,%{XTDC_USER_JQ},         \
+              s,XTDC_USER_AMQ,%{XTDC_USER_AMQ},       \
+              s,XTDC_USER_CRON,%{XTDC_USER_CRON},     \
+              s,XTDC_USER,%{XTDC_USER},               \
+              s,XTDC_GROUP,%{XTDC_GROUP},' )
+
+%define INSTALL_LOG %{XTDC_LOGS_DIR}/install_%{name}-%{version}-%{release}.log
+
+Summary:  XTDC - The system used for order fulfilment in the Distribution Centres.
+Release:  0
+Group:    Web
+License:  Commercial
+Vendor:   Net-A-Porter
+Packager: Backend Team <backend@net-a-porter.com>
+BuildArch: noarch
+
+# External deps
+Requires: htmldoc
+Requires: sudo
+Requires: liberation-fonts
+Requires: lsof
+Requires: ghostscript
+Requires: psutils
+Requires: poppler-utils
+
+# Fonts required for Unicode support in printing.
+Requires: fonts-KOI8-R-75dpi
+Requires: fonts-oriya
+Requires: fonts-gujarati
+Requires: fonts-ISO8859-2-100dpi
+Requires: fonts-KOI8-R
+Requires: fonts-korean
+Requires: fonts-bengali
+Requires: fonts-telugu
+Requires: fonts-hebrew
+Requires: fonts-arabic
+Requires: fonts-japanese
+Requires: fonts-punjabi
+Requires: fonts-hindi
+Requires: fonts-kannada
+Requires: fonts-ISO8859-2-75dpi
+Requires: fonts-chinese
+Requires: fonts-tamil
+Requires: fonts-ISO8859-2
+Requires: fonts-malayalam
+Requires: fonts-KOI8-R-100dpi
+Requires: fonts-sinhala
+Requires: freefont
+
+# requested by techops
+# based on email + http://confluence.net-a-porter.com/display/DEV/XT+Server+Migration+Checklist
+Requires: ghostscript-fonts
+Requires: libpng-devel
+
+Requires: perl-nap >= 5.20.1-5199.91
+Requires: yui-nap
+Requires: jquery-nap >= 1.8-1
+Requires: bootstrap >= 3.1-16
+Requires: postgresql93 >= 9.3.13
+Requires: warehouse-common >= 2.0.20
+Requires: xt-migrate-users >= 1-4
+# Product Service / Solr client:
+# this used to be part of the app but moved to a shared-between-app RPM
+Requires: NAP-Service-Product >= 1.0.2
+Requires: NAP-Solr-Perl >= 1.1.4
+Requires: Plack-Middleware-NAP-ServerStatus
+
+Requires: nap-metrics-graphite
+
+# It got renamed to warehouse-common but provides the same files
+Obsoletes: warehouse_common
+
+# this provides a module that used to live in apache-nap
+Requires: NAP-Apache-Admin-Config >= 0.95-0.1386352780
+
+Conflicts:        apache-nap
+Conflicts: apache-config-nap
+
+# Internal packages we're providing even though the rpm mechanism doesn't catch them
+Provides: perl-nap(Test::XTracker::Data)
+Provides: perl-nap(Test::XTracker::Mechanize)
+Provides: perl-nap(XT::ActiveMQ::DC)
+Provides: perl-nap(XTracker::Constants::FromDB)
+
+
+
+
+
+
+%description
+XT - DC Warehouse Management System
+%{?_githash}
+
+
+
+
+
+
+
+%prep
+%setup -q
+
+# Provides filtering
+%{__cat} << 'EOF' > %{name}.prov
+#!%{_buildshell}
+%{__grep} -v %{_docdir} - |%{__perl} %{__perl_provides} $* \
+    | sed -e 's/perl(/perl-nap(/g' \
+    | tee -a /tmp/%{name}_provides
+EOF
+
+%global __perl_provides %%{_builddir}/%{name}-%{version}/%{name}.prov
+%{__chmod} +x %{__perl_provides}
+
+# Requires filtering
+%{__cat} << 'EOF' > %{name}.req
+#!%{_buildshell}
+%{__grep} -v %{_docdir} - |%{__perl} %{__perl_requires} $* \
+    | sed -e 's/perl(/perl-nap(/g' \
+    | tee -a /tmp/%{name}_requires
+EOF
+
+%global __perl_requires %{_builddir}/%{name}-%{version}/%{name}.req
+%{__chmod} +x %{__perl_requires}
+
+
+
+
+
+
+%build
+
+
+
+
+
+
+
+
+%install
+
+# clean out previous builds
+rm -rf %{buildroot}
+
+# create the system base
+install -m 0755 -d ${RPM_BUILD_ROOT}%XTDC_BASE_DIR
+
+#rsync -avl -P --stats --exclude "*.rpmbuild*" . $RPM_BUILD_ROOT/%XTDC_BASE_DIR
+rsync -al --exclude "*.rpmbuild*" . ${RPM_BUILD_ROOT}%XTDC_BASE_DIR
+
+# create version file
+echo %{VERSION} > ${RPM_BUILD_ROOT}%{XTDC_BASE_DIR}/VERSION
+
+# create dummy config so we can the overwrite but still make use of RPM's config functionality
+install -m 0755 -d ${RPM_BUILD_ROOT}%sysconfdir
+
+# symlink jobqueuectl into init.d
+install -m 0755 -d ${RPM_BUILD_ROOT}/etc/init.d
+
+# Check properties file - fail build on error
+%{__cat} ${RPM_BUILD_ROOT}%XTDC_BASE_DIR/conf/xtracker_path.properties  \
+    | %{__sed} -f ${RPM_BUILD_ROOT}%{buildscriptdir}/strip_comments.sed \
+    | %{__awk} -f ${RPM_BUILD_ROOT}%{buildscriptdir}/path_properties.awk --check
+
+# Add miscellaneous data directories
+%{__cat} ${RPM_BUILD_ROOT}%XTDC_BASE_DIR/conf/xtracker_path.properties  \
+    | %{__sed} -f ${RPM_BUILD_ROOT}%{buildscriptdir}/strip_comments.sed \
+    | %{__awk} -f ${RPM_BUILD_ROOT}%{buildscriptdir}/path_properties.awk --print_path \
+    | xargs -n1 -I FILE install -m 0755 -d ${RPM_BUILD_ROOT}FILE
+
+# create symlinks
+for script in xt_amq_consumer_ctl xt_psp_amq_consumer_ctl jobqueuectl xt; do
+    echo "[ln-init-file] ${script}";
+    if [ -f ${RPM_BUILD_ROOT}/%XTDC_BASE_DIR/script/${script} ]; then
+        echo "[DEBUG] ln -sv %XTDC_BASE_DIR/script/${script} -t $RPM_BUILD_ROOT/etc/init.d/";
+        ln -sv %XTDC_BASE_DIR/script/${script} -t $RPM_BUILD_ROOT/etc/init.d/;
+    else
+        echo "[ERROR] can't link %XTDC_BASE_DIR/script/${script} - not found";
+    fi
+done
+
+# build the file list automagically into %{manifest}
+cd $RPM_BUILD_ROOT
+rm -f %{manifest}
+
+# Find and add application directories to manifest file
+find ./* -path './opt/xt*' -type d -print \
+    | sed 's,^\.,\%attr(0775\,%{XTDC_USER}\,%{XTDC_GROUP}) \%dir ,' >> %{manifest}
+
+# Find and add application files to manifest file
+find ./* -path './opt/xt*' -type f -print \
+    | sed 's,^\.,\%attr(-\,%{XTDC_USER}\,%{XTDC_GROUP}) ,' >> %{manifest}
+
+# Find and add data and log directories to manifest file
+%{__cat} ${RPM_BUILD_ROOT}%XTDC_BASE_DIR/conf/xtracker_path.properties  \
+    | %{__sed} -f ${RPM_BUILD_ROOT}%{buildscriptdir}/strip_comments.sed \
+    | %{__awk} -f ${RPM_BUILD_ROOT}%{buildscriptdir}/path_properties.awk --rpm_attr \
+    | %{replace_usernames} \
+    >> %{manifest}
+
+# Find and add application symlinks to manifest file
+find ./* -type l \
+    | sed 's,^\.,\%attr(-\,%{XTDC_USER}\,%{XTDC_GROUP}) ,' >> %{manifest}
+
+# Add definitions from manifest files
+
+
+
+
+
+
+
+%files -f %{manifest}
+
+# Default ownership and permissions
+%defattr(-,%{XTDC_USER},%{XTDC_GROUP})
+
+
+
+
+
+
+
+
+%pre
+
+# create our logs dir
+install -m 0755 -o %{XTDC_USER} -g %{XTDC_GROUP} -d %{XTDC_LOGS_DIR}
+
+{
+
+echo "###################################################"
+echo "            START PRE INSTALL SCRIPTS              "
+echo "###################################################"
+date
+
+EXIT_STATUS=0
+
+
+# Create XT config folder
+[ -d %XTDC_CONF_DIR ] || mkdir -m 0755 %XTDC_CONF_DIR
+
+# Create shared system group
+getent group %{XTDC_GROUP} > /dev/null || groupadd -r %{XTDC_GROUP} > /dev/null
+
+# Assert the existence of the required group. Die horribly if absent
+getent group %{XTDC_GROUP} > /dev/null
+if [ $? -ne 0 ]; then
+    echo "Absent group: %{XTDC_GROUP} ...Aborting...";
+    exit 1;
+fi
+
+# Create system users (no shell)
+for user in %{XTDC_USER_JQ} %{XTDC_USER_AMQ} xml
+do
+    getent passwd ${user} > /dev/null  \
+        || useradd -g %{XTDC_GROUP} -r -d /home/${user} -m -s /sbin/nologin ${user} > /dev/null
+
+    # Ensure the user is in the XTDC group
+    usermod -a -G %{XTDC_GROUP} ${user}
+
+    # Assert the existence of the users. Die horribly if absent
+    getent passwd ${user} > /dev/null
+    if [ $? -ne 0 ]; then
+        echo "Absent user: ${user} ...Aborting...";
+        exit 1;
+    fi
+done;
+
+# Create system users (shell)
+for user in %{XTDC_USER} %{XTDC_USER_CRON};
+do
+    getent passwd ${user} > /dev/null  \
+        || useradd -g %{XTDC_GROUP} -r -d /home/${user} -m -s /bin/bash ${user} > /dev/null
+
+    # Ensure the user is in the XTDC group
+    usermod -a -G %{XTDC_GROUP} ${user}
+
+    # Create an .ssh directory
+    [ -d /home/${user}/.ssh ] || mkdir -m 0700 /home/${user}/.ssh
+    chown ${user} /home/${user}/.ssh
+
+    # Assert the existence of the users. Die horribly if absent
+    getent passwd ${user} > /dev/null
+    if [ $? -ne 0 ]; then
+        echo "Absent user: ${user} ...Aborting...";
+        exit 1;
+    fi
+done;
+
+# Assert the existence of the properties file.
+if [ ! -e %NAP_PROPERTIES_FILE ]; then
+    echo "I don't seem to be able to find the %NAP_PROPERTIES_FILE file...Aborting...";
+    exit 1;
+fi
+
+SERVICES=( $( awk '/XT_SERVICES/ { for (i = 2; i <= NF ; i++) { print $i } }' %NAP_PROPERTIES_FILE ) )
+
+# from: http://www.ibm.com/developerworks/library/l-rpm2/
+if [ "$1" = "1" ]; then
+  # Perform tasks to prepare for the initial installation
+  true; # bash doesn't like 'empty' conditional blocks
+elif [ "$1" = "2" ]; then
+    # Perform whatever maintenance must occur before the upgrade begins
+    echo "Job Queues Running:"
+    ps -ef | grep [J]Q
+    echo "[pre-hook/upgrade] Stopping services..."
+    for svc in ${SERVICES[*]}; do
+        if [ -f /etc/init.d/${svc} ]; then
+            # HACKY HACK (CCW)
+            case $svc in
+            jobqueuectl)
+                ARGS='--worker-group=ALL';
+                ;;
+            *)
+                ARGS='';
+                ;;
+            esac;
+
+            echo "[stop] /etc/init.d/${svc} $ARGS stop";
+            /etc/init.d/${svc} $ARGS stop;
+        fi
+    done
+    echo "Job Queues Running:"
+    ps -ef | grep [J]Q
+fi
+
+# We need to find a way to have this higher up rather than per section.
+export PATH=%PERL_NAP_BIN_PATH:%POSTGRES_NAP_BIN_PATH:$PATH
+
+
+if [ $EXIT_STATUS -ne 0 ]
+      then echo; echo; echo; echo " ONE OR MORE PRE INSTALL COMMANDS FAILED"; echo; echo; echo
+fi
+
+
+echo "###################################################"
+echo "              END PRE INSTALL SCRIPTS              "
+echo "###################################################"
+date
+
+} | tee -a %INSTALL_LOG
+
+
+
+
+
+
+
+
+
+%post
+
+{
+
+echo "###################################################"
+echo "            START POST INSTALL SCRIPTS             "
+echo "###################################################"
+date
+
+EXIT_STATUS=0
+
+
+export PATH=%PERL_NAP_BIN_PATH:%POSTGRES_NAP_BIN_PATH:$PATH
+
+pushd %XTDC_BASE_DIR || EXIT_STATUS=$?
+# It helps in VM's with clock skew
+touch Makefile.PL  || EXIT_STATUS=$?
+perl Makefile.PL || EXIT_STATUS=$?
+
+if [ -e %LOCAL_PROPERTIES_FILE ]; then
+  extra_opts="LOCAL_PROPERTIES_FILE=%LOCAL_PROPERTIES_FILE"
+else
+  extra_opts=""
+fi
+
+# Generate configs
+# Apply DB patches
+make setup RPM=1 NOECHO="" \
+ NAP_PROPERTIES_FILE=%NAP_PROPERTIES_FILE ${extra_opts} \
+ XTDC_BASE_DIR=%XTDC_BASE_DIR \
+ XTDC_CONF_DIR=%XTDC_CONF_DIR \
+ XTDC_LOGS_DIR=%XTDC_LOGS_DIR \
+ XTDC_USER=%XTDC_USER \
+ XTDC_USER_JQ=%XTDC_USER_JQ \
+ XTDC_USER_AMQ=%XTDC_USER_AMQ \
+ APP_VERSION=%{version} || EXIT_STATUS=$?
+
+if [ $EXIT_STATUS != 0 ]; then
+    # my google-fu is failing me, there does not appear to be a way to abort
+    # the install and prevent the rpm from 'installing successfully'
+    # For now we'll make it *really obvious* that make setup failed
+
+    # one obvious side-effect is that we don't reach the point where services
+    # are (re)started
+
+    _Box () {
+        str="$@"
+        len=$((${#str}+4))
+        for i in $(seq $len); do echo -n '*'; done;
+        echo; echo "* "$str" *";
+        for i in $(seq $len); do echo -n '*'; done;
+        echo
+    }
+
+    _Box '"make setup" did not complete successfully';
+    _Box 'the post-install steps were aborted';
+    echo " - patcher may not have been run";
+    echo " - services will not have been started";
+    _Box 'Please record and report full terminal output';
+    exit -1;
+fi
+
+# remove any stray .LCK files
+rm -f %{XTDC_LOGS_DIR}/.*.LCK || EXIT_STATUS=$?
+
+# Clear out the template cache
+# Not using a variable here to be explicit with the 'rm' target dir
+rm -rf /tmp/ttcache/* || EXIT_STATUS=$?
+
+%{XTDC_BASE_DIR}/script/DAVE-QA/printer-setup.pl --location nh5 --skiphosts
+
+# WHM-3090 Run populate printers script
+%{XTDC_BASE_DIR}/script/populate_printers
+
+SERVICES=( $( awk '/XT_SERVICES/ { for (i = 2; i <= NF ; i++) { print $i } }' %NAP_PROPERTIES_FILE ) )
+
+echo -e "\nStarting services..."
+for svc in ${SERVICES[*]}; do
+    if [ -f /etc/init.d/${svc} ]; then
+        # HACKY HACK (CCW)
+        case $svc in
+        jobqueuectl)
+            ARGS='--worker-group=ALL';
+            ;;
+        *)
+            ARGS='';
+            ;;
+        esac;
+
+        echo "[start] /etc/init.d/${svc} $ARGS start";
+        /etc/init.d/${svc} $ARGS start;
+    fi
+done
+echo "Job Queues Running:"
+ps -ef | grep [J]Q
+
+true # to silence RPM warnings when installing on a box where we don't
+     # start the Job Queues
+
+
+if [ $EXIT_STATUS -ne 0 ]
+    then echo; echo; echo; echo " ONE OR MORE POST INSTALL COMMANDS FAILED"; echo; echo; echo
+fi
+
+echo "###################################################"
+echo "              END POST INSTALL SCRIPTS             "
+echo "###################################################"
+date
+
+} | tee -a %INSTALL_LOG
+
+
+
+
+
+
+%preun
+
+SERVICES=( $( awk '/XT_SERVICES/ { for (i = 2; i <= NF ; i++) { print $i } }' %NAP_PROPERTIES_FILE ) )
+
+if [ "$1" = "0" ]; then
+    # package removal
+    echo "Job Queues Running:"
+    # This in an informational check only
+    # don't fail the RPM action if the grep finds nothing
+    ps -ef | grep [J]Q || true
+    echo "[preun-hook/remove] Stopping services..."
+    for svc in ${SERVICES[*]}; do
+        if [ -f /etc/init.d/${svc} ]; then
+            # HACKY HACK (CCW)
+            case $svc in
+            jobqueuectl)
+                ARGS='--worker-group=ALL';
+                ;;
+            *)
+                ARGS='';
+                ;;
+            esac;
+
+            echo "[stop] /etc/init.d/${svc} $ARGS stop";
+            /etc/init.d/${svc} $ARGS stop;
+        fi
+    done
+    echo "Job Queues Running:"
+    # This in an informational check only
+    # don't fail the RPM action if the grep finds nothing
+    ps -ef | grep [J]Q || true
+elif [ "$1" = "1" ]; then
+    # package upgrade
+    true; # bash doesn't like 'empty' conditional blocks
+fi
