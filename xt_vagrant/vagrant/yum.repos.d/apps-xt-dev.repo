@@ -1,9 +1,0 @@
-[apps-xt-dev]
-name=apps-xt-dev
-enabled=1
-gpgcheck=0
-
-baseurl=http://pulp.wtf.nap/pulp/repos/apps/xt/dev
-
-keepcache=0
-metadata_expire=1
