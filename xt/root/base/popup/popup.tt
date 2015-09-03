@@ -1,5 +1,0 @@
-[% PROCESS popup/header.tt %]
-
-[% PROCESS $content %]
-
-[% PROCESS popup/footer.tt %]

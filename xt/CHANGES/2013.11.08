@@ -1,9 +1,0 @@
-<pre>
-
-h1. DC2A
-    * DCA-2062 - Migration Process
-    * DCA-2649 - Migration Report
-    * DCA-2923 - Migration report shows containers processed on Putaway Problem Resolution page
-    * DCA-2357 Display pick sscheduler runtime properties on picking overview page
-    * DCA-2944: Cancelled/cancel pending shipment items going back to NEW after short pick
-</pre>

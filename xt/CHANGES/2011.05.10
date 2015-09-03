@@ -1,8 +1,0 @@
-<pre>
-
-h1. Live site point release fixes
- 
-  * Tweaking of vertically-compressed container shipments page for handheld
-  * Optimise RTV SQL to help live performance issues
-
-</pre>

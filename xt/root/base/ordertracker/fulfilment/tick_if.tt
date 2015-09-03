@@ -1,3 +1,0 @@
-[%- MACRO tick_if(condition) BLOCK -%]
-    [%- IF condition; '<img src="/images/icons/tick.png">'; ELSE; '&nbsp;'; END -%]
-[%- END -%]

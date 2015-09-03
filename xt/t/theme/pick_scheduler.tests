@@ -1,7 +1,0 @@
-t/20-units/class/Test/XTracker/Schema/ResultSet/Public/Shipment.pm
-t/20-units/class/Test/XTracker/Schema/ResultSet/Public/Allocation.pm
-t/20-units/class/Test/XTracker/Pick/Scheduler.pm
-t/20-units/class/Test/XTracker/Pick/Scheduler/GohActive.pm
-
-t/30-functional/other/class/Test/NAP/Induction.pm
-

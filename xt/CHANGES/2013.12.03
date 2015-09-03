@@ -1,8 +1,0 @@
-<pre>
-
-h1. DC2A
-    * DCA-2829: While performing pick_complete on allocation do not put on hold those shipments that are already held.
-    * DCA-2566: Default cursor in container box on induction page
-    * DCA-2926: Fix allocation search with quicksearch
-
-</pre>

@@ -1,8 +1,0 @@
-<pre>
-h2. Bugs [Blue]
-    * REL-838: Convert Store Credit to Refund
-    * REL-839: Show Order Number on Store Credit Logs on Finance->Store Credits & Customer View pages
-    * REL-725: Now Cancel existing Renumerations and Create new ones when Add/Remove/Convert Return Items
-    * REL-819: Stock Control > Purchase Order > Search >  Search Results > Ordered value NOT UPDATED when PIDs are cancelled via Stock Control > Purchase Order > Overview
-    * REL-810: Add store credit to customers that don't exist in XT but do on the PWS
-</pre>

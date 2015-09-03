@@ -1,1 +1,0 @@
-for a in `ls /opt/xt/deploy/xtracker/script/data_transfer/web_site/editorial/magazine`; do  echo "./add_editorial_products.pl --cat=${a} --file=magazine/${a}"; ./add_editorial_products.pl --cat=${a} --file=/opt/xt/deploy/xtracker/script/data_transfer/web_site/editorial/magazine/${a}; done

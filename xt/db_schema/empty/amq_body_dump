@@ -1,5 +1,0 @@
-#!/bin/bash
-
-body=$(json_xs < $1 | grep body | perl -pe 's/^\s*"body" : "(.*?)",$/$1/; s/\\"/"/g')
-
-echo "$body" | json_xs

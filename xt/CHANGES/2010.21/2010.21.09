@@ -1,9 +1,0 @@
-<pre>
-
-h2. Bug fix
-
-EN-1393/REL-904
-Fix so that nap non-sale orders are identified correctly
-and the sla is set to 1 day instead of 2
-
-</pre>

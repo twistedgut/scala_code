@@ -1,4 +1,0 @@
-BEGIN;
-    ALTER TABLE shipment DROP COLUMN sticker;
-    ALTER TABLE orders ADD COLUMN sticker VARCHAR(255);
-COMMIT;

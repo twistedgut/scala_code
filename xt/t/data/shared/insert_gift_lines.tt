@@ -1,3 +1,0 @@
-[% FOREACH gl IN order.gift_lines %]
-<GIFT_LINE SKU="[% gl.sku %]" [% IF gl.description %]DESCRIPTION="[% gl.description %]"[% END %] [% IF gl.opted_out %]OPTED_OUT="[% gl.opted_out %]"[% END %] />
-[% END %]

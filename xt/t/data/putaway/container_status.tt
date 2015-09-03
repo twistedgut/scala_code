@@ -1,5 +1,0 @@
-[% PROCESS 'stocktracker/goods_in/putaway_admin_container_status.inc'
-    # All the parameters are passed in from the test
-%]
-
-container_display_status is "[% container_display_status %]"

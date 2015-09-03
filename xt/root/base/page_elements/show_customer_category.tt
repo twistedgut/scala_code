@@ -1,1 +1,0 @@
-[% IF row.customer_category_id != db_constant('CUSTOMER_CATEGORY__NONE') %]<span title="Customer Class: [% row.customer_class %]">[% row.customer_category %]</span>[% ELSE %]&nbsp;[% END %]

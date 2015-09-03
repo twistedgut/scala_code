@@ -1,8 +1,0 @@
-<pre>
-
-h1. CANDO
-    * CANDO-1534: PreOrder: New script to fix missing exports
-    * CANDO-1550: List Preorders that have been exported, but that don't yet have any associated orders
-    * CANDO-1566: Pre-Orders sometimes lose payment records from Orders when Address is changed
-
-</pre>

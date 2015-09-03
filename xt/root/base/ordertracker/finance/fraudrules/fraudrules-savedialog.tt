@@ -1,8 +1,0 @@
-<div id="fraudscreen__change_log_message">
-    <label for="fraudscreen__log_message">Change Log Message</label>
-    <div><textarea id="fraudscreen__log_message" name="fraudscreen__log_message" rows="5" cols="100%"></textarea></div>
-    <div class="fraudscreen__page_buttons">
-        <button class="button" id="fraudscreen__confirm_save_changes">Confirm Save Changes</button>
-        <button class="button" id="fraudscreen__cancel_save_changes">Cancel</button>
-    </div>
-</div>

@@ -1,5 +1,0 @@
-t/30-functional/other/class/Test/NAP/Fulfilment/GOHIntegration.pm
-t/20-units/class/Test/XT/Data/Fulfilment/GOH/Integration.pm
-t/20-units/class/Test/XTracker/Schema/Result/IntegrationContainer.pm
-t/20-units/class/Test/XT/DC/Messaging/Plugins/PRL/ContainerReady.pm
-t/20-units/class/Test/XTracker/Schema/Result/Public/AllocationItem.pm

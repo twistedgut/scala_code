@@ -1,3 +1,0 @@
-	<span class='title title-[% channel_config.$channel %]'>Transaction Log</span>
-
-    [% INCLUDE page_elements/stock_log_body.tt %]

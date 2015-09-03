@@ -1,7 +1,0 @@
-<pre>
-h2. Bugs [Blue]
-    * REL-846: Lost Shipment Charge Fix
-    * REL-851: No SKU's being shown on Return Items Log
-    * REL-854: Showing Late RMA Email when selected
-    * REL-788: Show Operator Name in Store Credit Logs
-</pre>

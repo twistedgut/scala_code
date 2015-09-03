@@ -1,9 +1,0 @@
-<pre>
-
-h1. MRP
- * measurements updates - highlight unwanted measurements in yello (6d9abc3)
-
-h1. RED
- * EN-1943: Made 'get_shipment_id_for_awb' & 'update_return_arrival_AWB' case insensitive searching for AWBs (829e8df)
-
-</pre>

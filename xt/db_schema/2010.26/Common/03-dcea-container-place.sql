@@ -1,6 +1,0 @@
-BEGIN;
-
-ALTER TABLE container ADD COLUMN place TEXT;
-
-COMMIT;
-

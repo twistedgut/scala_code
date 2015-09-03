@@ -1,7 +1,0 @@
-<div id="common__customer_details">
-    <h3 class="title-[% channel_config.$sales_channel %]">Customer</h3>
-    <b>Name:</b> [% customer.first_name %] [% customer.last_name %]<br>
-    <b>Number:</b> [% customer.is_customer_number %]<br>
-    <br>
-    <hr>
-</div>

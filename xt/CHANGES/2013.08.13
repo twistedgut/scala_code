@@ -1,7 +1,0 @@
-<pre>
-
-h1. DC2A
-* DCA-2594: Set shipment_item status to NEW if allocation_item is short after pick_complete
-* DCA-2600: Avoid trying to create sample shipments if product is missing storage_type
-
-</pre>

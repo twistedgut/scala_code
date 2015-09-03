@@ -1,7 +1,0 @@
-<pre>
-
-h1. Live site point release fixes
- 
-  * /StockControl/Reservation/Customer no longer eats all available memory for customers with a large reservations history
-
-</pre>

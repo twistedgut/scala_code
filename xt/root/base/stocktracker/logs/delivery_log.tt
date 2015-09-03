@@ -1,8 +1,0 @@
-
-<div id='display_product'>
-    [% PROCESS page_elements/display_product.tt %]
-</div>
-
-<div id='main_content'>
-    [% INCLUDE page_elements/log_body.tt %]
-</div>

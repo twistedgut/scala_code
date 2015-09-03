@@ -1,6 +1,0 @@
-latestorder	£96.033
-ordernum	70
-totalval	£29309.449
-lordernum	050524-113165
-lorderdate	2005-05-24 14:55:00
-lorderval	£96.033

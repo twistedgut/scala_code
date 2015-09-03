@@ -1,5 +1,0 @@
-BEGIN;
-
-ALTER TABLE log_putaway_discrepancy ADD COLUMN id SERIAL PRIMARY KEY;
-
-COMMIT;

@@ -1,5 +1,0 @@
-<script type="text/javascript" language="javascript">
-    (function() {
-        var tabView = new YAHOO.widget.TabView('tabContainer');
-    })();
-</script>

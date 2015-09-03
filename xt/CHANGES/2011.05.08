@@ -1,8 +1,0 @@
-<pre>
-
-h1. Live site point release fixes
- 
-  * Suppress excessive log warnings
-  * Fix stats scripts to use xt-perl not sys perl
-
-</pre>

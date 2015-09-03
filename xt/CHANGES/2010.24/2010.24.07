@@ -1,8 +1,0 @@
-<pre>
-
-h1. Bug Fixes
- 
- * Removed DEBUGING from 'has_vouchers' method              (8a549d9)
- * EN-1262: Fix to prevent Double refunds                   (212aa94)
-
-</pre>

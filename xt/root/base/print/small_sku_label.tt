@@ -1,7 +1,0 @@
-^XA
-^BY1,2,10
-^FO060,155^A0N,26,26^FDSize: [% size %]^FS
-^FO060,025^BCN,70,N,N^FD[% sku %]^FS
-^FO060,120^A0N,28,28^FD[% sku %]^FS
-^PQ[% copies %]^FS
-^XZ

@@ -1,7 +1,0 @@
-#api__payment__refund_history__popup {
-     display: none;
-}
-
-.api__payment__refund_history__popup__no_close .ui-dialog-titlebar-close {
-    display: none;
-}

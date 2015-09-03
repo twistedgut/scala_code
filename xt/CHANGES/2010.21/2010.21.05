@@ -1,8 +1,0 @@
-<pre>
-
-h2. Enhancements
-
-EN-1118 Este Lauder Promotion
-Fixed broken order importer archiving - now checks for error not "if == 0"
-
-</pre>

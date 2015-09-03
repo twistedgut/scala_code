@@ -1,9 +1,0 @@
-<!-- BEGIN root/base/finance/reimbursements/bulk_done.tt_done -->
-<div id="bulk_reimbursement_result">
-    [%- IF bulk_reimbursement_id -%]
-        <span id="bulk_reimbursement_id" style="visibility:hidden">[%- bulk_reimbursement_id -%]</span>
-        <h2>Advise user to check messages for update</h2>
-    [%- END -%]
-</div>
-<!-- END root/base/finance/reimbursements/bulk_done.tt -->
-

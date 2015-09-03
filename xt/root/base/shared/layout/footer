@@ -1,4 +1,0 @@
-<p id="footer">
-    [%- USE date(format = '%Y'); current_year = date.format -%]
-    xTracker-DC  ([% application.version.string || 'unknown_version' %] / IWS phase [% application.iws_rollout_phase %] / PRL phase [% application.prl_rollout_phase %] / [% application.config_timestamp %]). &copy; 2006 - [% current_year %] NET-A-PORTER
-</p>
