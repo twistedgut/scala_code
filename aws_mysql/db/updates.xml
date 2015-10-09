@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- see http://www.liquibase.org/documentation/databasechangelog.html
+     and http://www.liquibase.org/documentation/changeset.html
+     for documentation -->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+        >
+
+    <changeSet author="j.maslen" id="1">
+        <sqlFile path="patches/00001-base_schema.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet author="l.bird" id="2">
+        <sqlFile path="patches/00002-reasons.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet author="s.cole" id="3">
+        <sqlFile path="patches/00003-logs.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet author="l.bird" id="4">
+        <sqlFile path="patches/00004-logs_update.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet author="j.maslen" id="5">
+        <sqlFile path="patches/00005-logs_update.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet author="j.maslen" id="6">
+        <sqlFile path="patches/00006-create_foreign_keys.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet author="l.bird" id="7">
+        <sqlFile path="patches/00007-logs_update.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet author="s.cole" id="8">
+        <sqlFile path="patches/00008-create_inner_and_outer.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet author="a.todd" id="9">
+        <sqlFile path="patches/00009-add_box_threshold.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet author="m.esquerra" id="10">
+        <sqlFile path="patches/00010-add_reason_type.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet author="m.esquerra" id="11">
+        <sqlFile path="patches/00011-create_system_reasons.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+
+</databaseChangeLog>
