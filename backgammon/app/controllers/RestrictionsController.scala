@@ -10,7 +10,8 @@ import domain._
 import domain.activemq.{AmqDeliveryRestriction, RestrictionWindow}
 import domain.auth._
 import domain.deliveryrestrictions._
-import play.api.mvc.{Action, Controller}
+import play.api.libs.json.JsValue
+import play.api.mvc.{Action, AnyContent, Controller}
 import repository._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -45,7 +46,7 @@ trait RestrictionsController extends Controller with HasAuthManager with StrictL
     httpMethod = "PUT"
   )
   @ApiImplicitParams(Array(new ApiImplicitParam(dataType = "List[domain.deliveryrestrictions.DeliveryRestrictionUpdate]", paramType = "body")))
-  def update() = Authed(User) {
+  def update(): Authed[AnyContent] = Authed(User) {
     Action.async { implicit request =>
       val updateBody: Option[Seq[DeliveryRestrictionUpdate]] = request.bodyAs[Seq[DeliveryRestrictionUpdate]]
       updateBody match {
@@ -75,51 +76,33 @@ trait RestrictionsController extends Controller with HasAuthManager with StrictL
   @ApiOperation(
     nickname = "Resend Delivery Restrictions for date range",
     value = "Resend Delivery Restrictions for date range",
-    httpMethod = "GET"
-  )
-  def resend2(
-               @ApiParam(name = "fromDate", required = true, defaultValue = "2016-01-01") @QueryParam("fromDate") fromDate: String,
-               @ApiParam(name = "toDate", required = true, defaultValue = "2016-02-29") @QueryParam("toDate") toDate: String,
-               @ApiParam(name = "dc", required = true, defaultValue = "DC1") @QueryParam("dc") dc: String
-             ) = Authed(User) {
-    Action.async { implicit request =>
-      val datesValid = areValidDates(fromDate, toDate)
-      if (datesValid) {
-        val futureProd = deliveryRestrictions.resend(DeliveryRestrictionResend(fromDate, toDate, dc))
-        futureProd map {
-          res => res.sendAmqMessages()
-            Ok(buildResponse(true))
-        }
-      } else {
-        Future.successful(BadRequest(s"Invalid dates provided, please check: from date = $fromDate, to date = $toDate"))
-      }
-    }
-  }
-
-  @ApiOperation(
-    nickname = "Kevin",
-    value = "Resend",
     httpMethod = "POST"
   )
   @ApiImplicitParams(Array(new ApiImplicitParam(dataType = "domain.deliveryrestrictions.DeliveryRestrictionResend", paramType = "body")))
-  //@ApiImplicitParams(Array(new ApiImplicitParam(dataType = "List[domain.deliveryrestrictions.DeliveryRestrictionUpdate]", paramType = "body")))
-  def resend() = Authed(User) {
-    Action.async(parse.json) { request =>
-      val res: DeliveryRestrictionResend = request.body.as[DeliveryRestrictionResend]
-      val datesValid = areValidDates(res.fromDate, res.toDate)
-      if (datesValid) {
-        val futureProd = deliveryRestrictions.resend(res)
-        futureProd map {
-          restrictions => restrictions.sendAmqMessages()
-          Ok(APIResponse(
-              uri = request.path,
-              responseBody = None,
-              success = true,
-              error_msg = ""
-          ))
-        }
-      } else {
-        Future.successful(BadRequest(s"Invalid dates provided, please check: from date = ${res.fromDate}, to date = ${res.toDate}"))
+  def resend(): Authed[AnyContent] = Authed(User) {
+    Action.async { request =>
+      val res: Option[DeliveryRestrictionResend] = request.bodyAs[DeliveryRestrictionResend]
+      res match {
+        case Some(resResend) =>
+          //TODO slip in check that DC entered is in config
+          val validDates = areValidDates(resResend.fromDate, resResend.toDate)
+          val validDc    = isValidDc(resResend.dcCode)
+          if (validDates && validDc) {
+            val futureProd = deliveryRestrictions.resend(resResend)
+            futureProd map {
+              restrictions => restrictions.sendAmqMessages()
+                Ok(APIResponse(
+                  uri = request.path,
+                  responseBody = None,
+                  success = true,
+                  error_msg = ""
+                ))
+            }
+          } else {
+            Future.successful(BadRequest(s"Invalid parameters provided, please check: " +
+              s"from date = ${resResend.fromDate}, to date = ${resResend.toDate}, dc = ${resResend.dcCode}"))
+          }
+        case None => Future.successful(BadRequest("Invalid request"))
       }
     }
   }
@@ -156,6 +139,10 @@ trait RestrictionsController extends Controller with HasAuthManager with StrictL
     }
   }
 
+  private def isValidDc(dc: String): Boolean = {
+    val xtConf = SmcConfig.getConfig("xt_channel_idents")
+    xtConf.hasPath(dc)
+  }
 
   private def areValidDates(fromDate: String, toDate: String): Boolean = {
     val format = new SimpleDateFormat("yyyy-MM-dd")

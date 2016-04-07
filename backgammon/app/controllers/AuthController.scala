@@ -20,7 +20,7 @@ trait AuthController extends Controller {
 
   @ApiOperation(nickname= "login", value="login", httpMethod = "POST")
   @ApiImplicitParams(Array(new ApiImplicitParam(dataType = "domain.auth.LoginDetails", paramType = "body")))
-  def login() = Action { req =>
+  def login(): Action[AnyContent] = Action { req =>
     req.bodyAs[LoginDetails] match {
       case None => BadRequest("No username or password supplied")
       case Some(loginDetails) => Auth.check(loginDetails.username, loginDetails.password) match {

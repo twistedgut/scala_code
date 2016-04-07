@@ -39,7 +39,6 @@ GET         /api-docs/health            pl.matisoft.swagger.ApiHelpController.ge
 #TODO: Make fromDate, toDate Strings into :LocalDate perhaps?
 GET         /restrictions/delivery      controllers.RestrictionsControllerImpl.get(shippingAvailabilityId :List[Int], fromDate :String, toDate :String, stage :List[String])
 PUT         /restrictions/delivery      controllers.RestrictionsControllerImpl.update
-GET         /restrictions/resend2       controllers.RestrictionsControllerImpl.resend2(fromDate: String, toDate: String, dc: String)
 POST        /restrictions/resend        controllers.RestrictionsControllerImpl.resend
 GET         /restrictions/delivery/blah controllers.RestrictionsControllerImpl.blah(op: String, fromDate: String, toDate: String, dcCode:String)
 GET         /api-docs/restrictions/delivery pl.matisoft.swagger.ApiHelpController.getResource(path = "/restrictions/delivery")

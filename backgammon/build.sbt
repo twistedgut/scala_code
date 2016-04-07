@@ -24,7 +24,6 @@ lazy val root = (project in file(".")).
       "org.postgresql"              %  "postgresql"                  % "9.4-1203-jdbc42",
       "com.typesafe.play"           %% "play-slick-evolutions"       % "1.1.0",
       "pl.matisoft"                 %% "swagger-play24"              % "1.4",
-      "com.netaporter"              %% "sosdb"                       % "0.1.51",
       "com.typesafe.scala-logging"  %% "scala-logging"               % "3.1.0",
       "net.logstash.logback"        %  "logstash-logback-encoder"    % "3.4",
       "com.typesafe.akka"           %% "akka-actor"                  % akka,
@@ -37,7 +36,7 @@ lazy val root = (project in file(".")).
       specs2 % Test
     ),
     resolvers           += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases",
-    resolvers           += "net-a-porter" at "http://artifactory.dave.net-a-porter.com:8081/artifactory/nap-releases-local",
+    //resolvers           += "net-a-porter" at "http://artifactory.dave.net-a-porter.com:8081/artifactory/nap-releases-local",
 
     // Play provides two styles of routers, one expects its actions to be injected, the
     // other, legacy style, accesses its actions statically.

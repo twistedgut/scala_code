@@ -1,8 +1,8 @@
 Vagrant.configure(2) do |config|
   # Online documentation for this file available at https://docs.vagrantup.com.
 
-  config.vm.box = "vagrant-centos-66-1427729137.box"
-  config.vm.box_url = "http://pulp.wtf.nap/pulp/repos/vagrant/vagrant-centos-66-1427729137.box"
+  config.vm.box = "boxcutter/centos66"
+  #config.vm.box_url = "http://pulp.wtf.nap/pulp/repos/vagrant/vagrant-centos-66-1427729137.box"
 
   config.vm.network "forwarded_port", guest: 9000, host: 9001
   config.vm.network "forwarded_port", guest: 5432, host: 5432
@@ -15,7 +15,8 @@ Vagrant.configure(2) do |config|
 
   # TODO: Setup puppet (or something else) to do this for us
   config.vm.provision "shell", inline: <<-SHELL
-    cp /vagrant/vagrant-setup/repos/*.repo /etc/yum.repos.d/
+    #cp /vagrant/vagrant-setup/repos/*.repo /etc/yum.repos.d/
+    yum localinstall https://download.postgresql.org/pub/repos/yum/9.3/redhat/rhel-6-x86_64/pgdg-centos93-9.3-2.noarch.rpm
     yum clean all -y
     yum upgrade --nogpgcheck -y
     yum install postgresql93-server -y
@@ -28,7 +29,7 @@ Vagrant.configure(2) do |config|
     yum install postgresql93-jdbc --nogpgcheck -y
     yum install java-1.7.0-openjdk-devel --nogpgcheck -y
     yum install java-1.8.0-openjdk-devel --nogpgcheck -y
-    update-alternatives --set java /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.51-0.b16.el6_6.x86_64/jre/bin/java
+    update-alternatives --set java /usr/lib/jvm/java-1.8.0-openjdk.x86_64/bin/java
     yum install mlocate -y --nogpgcheck
     yum install liquibase --nogpgcheck -y
     yum install rpm-build -y --nogpgcheck
@@ -45,7 +46,7 @@ Vagrant.configure(2) do |config|
     echo "export SOS_DB_USER=$SOS_DB_USER" >> /home/vagrant/.bashrc
 
     # Need this as else system can not identify it's own hostname as itself (liquibase)
-    echo "127.0.0.1 centos-66-1427729136" >> /etc/hosts
+    echo "127.0.0.1 centos66" >> /etc/hosts
     cd /vagrant/
     ./db/refresh_db
     ./activator clean stage

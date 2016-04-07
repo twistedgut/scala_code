@@ -8,6 +8,7 @@ import domain.deliveryrestrictions.DeliveryRestrictionResend
 import helpers.TestResponses
 import org.specs2.mock.Mockito
 import org.specs2.specification.Scope
+import play.api.libs.iteratee.Iteratee
 import play.api.libs.json._
 import play.api.mvc._
 import play.api.test.Helpers._
@@ -52,8 +53,7 @@ class RestrictionsControllerSpec extends PlaySpecification with Mockito {
   }
   "update and delete restrictions successfully" in new TestEndpoint {
     val restriction = fakeRestrictionUpdate.next()
-    val updateBody  = Json.toJson(Seq(restriction))
-
+    val updateBody: JsValue  = Json.toJson(Seq(restriction))
     deliveryRestrictions.update(Seq(restriction)) returns Future.successful(true)
 
     // faked data for AMQ message
@@ -63,10 +63,10 @@ class RestrictionsControllerSpec extends PlaySpecification with Mockito {
     deliveryRestrictions.getAmqChannelRestrictions(window) returns
       Future.successful(Seq(AmqChannelRestriction(AmqDeliveryRestriction("2016-02-09", "transit", "fakesku"), "NAP")))
 
-    implicit val fR = FakeRequest(PUT, "/restrictions/delivery").withBody(AnyContentAsJson(updateBody))
+    implicit val fakeR: FakeRequest[AnyContentAsJson] = FakeRequest(PUT, "/restrictions/delivery").withBody(AnyContentAsJson(updateBody))
     val expectedResult = Future.successful { Ok(buildResponse(true)) }
 
-    val result: Future[Result] = update().apply(fR)
+    val result: Future[Result] = update().apply(fakeR)
 
     status(result)        must_=== OK
     contentType(result)   must_=== Some("application/json")
@@ -75,10 +75,10 @@ class RestrictionsControllerSpec extends PlaySpecification with Mockito {
   "Throw a 400 if the request body is invalid" in new TestEndpoint {
     val updateBody = Json.toJson("INVALID REQUEST")
 
-    implicit val fR    = FakeRequest(PUT, "/restrictions/delivery").withBody(AnyContentAsJson(updateBody))
+    implicit val fakeR    = FakeRequest(PUT, "/restrictions/delivery").withBody(AnyContentAsJson(updateBody))
     val expectedResult = Future.successful(BadRequest("Invalid request"))
 
-    val result: Future[Result] = update().apply(fR)
+    val result: Future[Result] = update().apply(fakeR)
 
     status(result)        must_=== 400
     contentAsJson(result) must_=== contentAsJson(expectedResult)
@@ -96,146 +96,55 @@ class RestrictionsControllerSpec extends PlaySpecification with Mockito {
   }
 
   "/restrictions/resend" should {
-    "return true where the dates provided are valid"  in new TestEndpoint {
+    "complete successfully where the dates and dc provided are valid"  in new TestEndpoint {
       val date             = "2016-02-29"
-
       val expectedResponse = Json.obj(
         "uri"       -> "/restrictions/resend",
         "success"   -> JsBoolean(true),
         "error_msg" -> ""
       )
-
-//DeliveryRestrictionResend(date,date,"DC2")
       val res      = DeliveryRestrictionResend(date,date, "DC1")
       val resJson  = Json.toJson(res)
-
       val window           = RestrictionWindow(date, date)
-      val restriction      = Seq(AmqChannelRestriction(AmqDeliveryRestriction("2016-02-09", "delivery", "fakesku"), "NAP"))
-
+      val restriction      = Seq(AmqChannelRestriction(AmqDeliveryRestriction("2016-02-29", "delivery", "fakesku"), "NAP"))
       deliveryRestrictions.resend(res) returns
         Future.successful(AmqResendMessageProducer("DC1", window, restriction, amqActorSystem))
-
-//      val resResend = Json.parse(
-//        """{
-//           "fromDate" : "2016-02-29",
-//           "toDate"   : "2016-02-29",
-//           "dc"       : "DC1"
-//        }""")
-//
-//      val resResend2 = Json.obj("fromDate" -> date, "toDate" -> date, "dc" -> "DC1")
-
-      implicit val fakeR = FakeRequest(POST, "/restrictions/resend").withBody(AnyContentAsJson(resJson))
-      val result: Future[Result] = rese  resend()
-      update().apply(fR)
-
-
-
-
-      //deliveryRestrictions.getAmqChannelRestrictions(window) returns Future.successful(restriction)
-
-
-//      implicit val fR = FakeRequest(GET, s"/restrictions/resend?fromDate=$date&toDate=$date&dc=DC1")
-
-
-      implicit val fR = FakeRequest(POST, "/restrictions/resend").withBody(AnyContentAsJson(resJson))
-//      //val result2: Future[Result] = resend().apply(fR)
-//
-//
-//      //val request = FakeRequest(POST, "/restrictions/resend").withJsonBody(resResend)
-//
-//      //val ER: Future[Result] = Future.successful { Ok(buildResponse(expectedResponse)) }
-//
-//      val result2: Future[Result] = resend().apply(FakeRequest(POST, "/restrictions/resend").withBody(AnyContentAsJson(triffJson))).run
-//
-//      status(result2)        must_=== OK
-//      contentType(result2)   must_=== Some("application/json")
-      expectedResponse must_=== expectedResponse
+      implicit val fakeR: FakeRequest[AnyContentAsJson] = FakeRequest(POST, "/restrictions/resend").withBody(AnyContentAsJson(resJson))
+      val result: Future[Result] = resend().apply(fakeR)
+      status(result)        must_=== OK
+      contentType(result)   must_=== Some("application/json")
+      contentAsJson(result) must_=== expectedResponse
     }
   }
 
+  "return 400 where a provided date is not valid"  in new TestEndpoint {
+    val validDate              = "2016-02-29"
+    val nonValidDate           = "2016-23-32"
+    val res                    = DeliveryRestrictionResend(validDate, nonValidDate, "DC1")
+    val resJson                = Json.toJson(res)
+    implicit val fakeR         = FakeRequest(POST, "/restrictions/resend").withBody(AnyContentAsJson(resJson))
+    val result: Future[Result] = resend().apply(fakeR)
+    status(result)             must_=== 400
+  }
 
+  "return 400 where the from date is later than the to date"  in new TestEndpoint {
+    val fromDate               = "2016-03-01"
+    val toDate                 = "2016-02-29"
+    val res                    = DeliveryRestrictionResend(fromDate, toDate, "DC1")
+    val resJson                = Json.toJson(res)
+    implicit val fakeR         = FakeRequest(POST, "/restrictions/resend").withBody(AnyContentAsJson(resJson))
+    val result: Future[Result] = resend().apply(fakeR)
+    status(result)             must_=== 400
+  }
 
-
-
-//  val restriction = fakeRestrictionUpdate.next()
-//  val updateBody  = Json.toJson(Seq(restriction))
-//
-//  deliveryRestrictions.update(Seq(restriction)) returns Future.successful(true)
-//
-//  // faked data for AMQ message
-//  deliveryRestrictions.getRestrictionWindow(Seq(restriction)) returns RestrictionWindow("2016-02-09", "2016-02-10")
-//  val window = deliveryRestrictions.getRestrictionWindow(Seq(restriction))
-//  deliveryRestrictions.getAvailabilityDc(restriction) returns Future.successful("DC1")
-//  deliveryRestrictions.getAmqChannelRestrictions(window) returns
-//    Future.successful(Seq(AmqChannelRestriction(AmqDeliveryRestriction("2016-02-09", "transit", "fakesku"), "NAP")))
-//
-//  implicit val fR = FakeRequest(PUT, "/restrictions/delivery").withBody(AnyContentAsJson(updateBody))
-//  val expectedResult = Future.successful { Ok(buildResponse(true)) }
-//
-//  val result: Future[Result] = update().apply(fR)
-//
-//  status(result)        must_=== OK
-//  contentType(result)   must_=== Some("application/json")
-//  contentAsJson(result) must_=== contentAsJson(expectedResult)
-
-
-
-
-
-//  case class DeliveryRestrictionResend(
-//                                        fromDate: String,
-//                                        toDate: String,
-//                                        dcCode: String
-//                                      )
-
-
-//  def fakeShippingOptionUpdate() = {
-//    Counter { suffix =>
-//      ShippingOptionUpdate(
-//        1 == suffix % 2,
-//        1 == suffix % 2,
-//        BigDecimal(suffix),
-//        s"Currency code $suffix",
-//        suffix.toInt,
-//        1 == suffix % 2
-//      )
-//    }
-//  }
-
-//  val avId        = 1
-//  val update      = fakeShippingOptionUpdate().next()
-//  val updateJson  = Json.toJson(update)
-//
-//  shippingOption.updateOption(avId, update) returns Future.successful(1)
-//
-//  implicit val fR            = FakeRequest(PUT, s"/shipping/option/$avId").withBody(AnyContentAsJson(updateJson))
-//  val result: Future[Result] = updateOption(avId).apply(fR)
-//
-//  status(result) mustEqual 200
-
-//  case class ShippingOptionUpdate(
-//                                   isEnabled                : Boolean,
-//                                   isCustomerFacing         : Boolean,
-//                                   price                    : BigDecimal,
-//                                   currencyCode             : String,
-//                                   signatureRequiredStatusId: Int,
-//                                   isTaxInc                 : Boolean )
-
-
-
-//  "return 400 where a provided date is not valid"  in new TestEndpoint {
-//    val invalidDate            = "2016-22-30"
-//    implicit val fR            = FakeRequest(GET, s"/restrictions/resend?fromDate=$invalidDate&toDate=$invalidDate&dc=DC1")
-//    val result: Future[Result] = resend(invalidDate, invalidDate, "DC1").apply(fR)
-//    status(result)             must_=== 400
-//  }
-//
-//  "return 400 where the from date is later than the to date"  in new TestEndpoint {
-//    val fromDate               = "2016-02-29"
-//    val toDate                 = "2016-02-28"
-//    implicit val fR            = FakeRequest(GET, s"/restrictions/resend?fromDate=$fromDate&toDate=$toDate&dc=DC1")
-//    val result: Future[Result] = resend(fromDate, toDate, "DC1").apply(fR)
-//    status(result)             must_=== 400
-//  }
+  "return 400 where the dc provided is not found in configuration"  in new TestEndpoint {
+    val fromDate               = "2016-02-01"
+    val toDate                 = "2016-02-29"
+    val res                    = DeliveryRestrictionResend(fromDate, toDate, "XC9CX")
+    val resJson                = Json.toJson(res)
+    implicit val fakeR         = FakeRequest(POST, "/restrictions/resend").withBody(AnyContentAsJson(resJson))
+    val result: Future[Result] = resend().apply(fakeR)
+    status(result)             must_=== 400
+  }
 
 }
