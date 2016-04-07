@@ -1,0 +1,65 @@
+
+Building API End Points.
+-------------------------
+
+This is how you'd typically start writing an end-point:
+
+  def logout() = Action(parse.raw) { req =>
+    Ok(APIResponse(
+      uri = req.path,
+      responseBody = None,
+      success = true,
+      error_msg = ""
+    )).withNewSession
+  }
+
+ADD SECURITY TO YOUR HANDLER
+----------------------------
+
+If your end point needs to be authorised insert the Authed(Admin) {}  or Authed(User) {} action
+around your own action like so:
+
+  def searchShippingOptions() = Authed(User) {
+    Action.async { implicit request =>
+      //normal code...
+    }
+  }
+
+STANDARDISE YOUR HANDLER
+------------------------
+
+We provide a function buildResponse that automatically inserts your object into the standard response:
+
+   buildResponse(something)
+
+which makes:
+
+   APIResponse(
+     uri -> "/shipping/options",
+     error_msg -> "",
+     responseBody -> something
+     success -> true
+   )
+
+CONVERT YOUR RESPONSE TO JSON
+-----------------------------
+
+We provide an implicit conversion from Result(content) -> Result(json) so "Ok(object)"" will become "Ok(json(object))"" e.g.
+
+  def searchShippingOptions() = Authed(User) {
+    Action.async { implicit request =>
+      //normal code...
+      options.search().map(options => Ok(buildResponse(options)))
+    }
+  }
+
+GET YOUR REQUEST BODY AS A JSON OBJECT
+--------------------------------------
+
+We provide this mechanism for getting your objects in a JSON format:
+
+  val input = req.bodyAs[LoginDetails]
+
+
+You should be able to combine all of the techniques above to write great handlers quickly and easily and integrated
+safely in the rest of the application.

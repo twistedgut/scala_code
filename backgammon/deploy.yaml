@@ -1,0 +1,23 @@
+global:
+  ldap_group: Fulfilment-Stock
+  autopromote: dev
+
+# HIERA PACKAGE CONFIGURATION
+packages:
+  smcapi:
+    nap_role: nap_role_smcapi
+    hiera_role: smc
+    pulp_repo: smcapi
+    deployment_type: puppet-ssh
+
+# PROMOTION & TASKS/GOALS
+promotions:
+  dev:
+    order.prefix: 01
+  likelive:
+    order.prefix: 02
+  prod_lega:
+    order.prefix: 03
+  prod_legb:
+    order.prefix: 04
+

@@ -1,0 +1,34 @@
+<configuration>
+
+  <conversionRule conversionWord="coloredLevel" converterClass="play.api.Logger$ColoredLevel" />
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <fieldNames>
+        <timestamp>timestamp</timestamp>
+      </fieldNames>
+    </encoder>
+  </appender>
+
+  <!--
+    The logger name is typically the Java/Scala package name.
+    This configures the log level to log at for a package and its children packages.
+  -->
+  <logger name="play" level="INFO" />
+  <logger name="application" level="INFO" />
+  <logger name="nap" level="INFO"/>
+  <logger name="akka" level="ERROR" />
+
+  <!-- Slick logging: set these to DEBUG to enable logging -->
+  <logger name="slick.jdbc.JdbcBackend.statement"      level="INFO"/> <!-- log SQL -->
+  <logger name="slick.jdbc.JdbcBackend.benchmark"      level="INFO"/> <!-- log DB query execution performance -->
+  <logger name="slick.compiler.QueryCompilerBenchmark" level="INFO"/> <!-- log Slick query compilation performance -->
+  <logger name="slick.jdbc.StatementInvoker.result"    level="INFO"/> <!-- log query results (very verbose) -->
+  <logger name="swagger"                               level="ERROR"/>
+  <logger name="designerCountryRestrictions"           level="ERROR"/>
+
+  <root level="INFO">
+    <appender-ref ref="STDOUT" />
+  </root>
+
+</configuration>
